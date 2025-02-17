@@ -1,0 +1,28 @@
+[versions]
+
+# Minecraft
+minecraft = "1.21"
+fabricLoader = "0.16.0"
+fabricApi = "0.100.8+1.21"
+fabricKt = "1.11.0+kotlin.2.0.0"
+loom = "1.6-SNAPSHOT"
+
+# Dependencies
+resourcefulConfig = "3.0.2"
+resourcefulConfigKt = "3.0.2"
+
+# Dev Dependencies
+devauth = "1.2.1"
+
+[libraries]
+
+resourcefulconfig = { module = "com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21", version.ref = "resourcefulConfig" }
+resourcefulconfigkt = { module = "com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21", version.ref = "resourcefulConfigKt" }
+fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoader" }
+fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
+fabricKt = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabricKt" }
+
+devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
+
+[plugins]
+loom = { id = "fabric-loom", version.ref = "loom" }

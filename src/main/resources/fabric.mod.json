@@ -1,0 +1,30 @@
+{
+    "schemaVersion": 1,
+    "id": "examplemod",
+    "version": "${version}",
+    "name": "examplemod",
+    "description": "",
+    "authors": [ ],
+    "contact": { },
+    "license": "All-Rights-Reserved",
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            {
+                "adapter": "kotlin",
+                "value": "com.example.template.ExampleMod"
+            }
+        ],
+        "modmenu": [
+            "com.example.template.ModMenuCompat"
+        ]
+    },
+    "mixins": [
+        "template.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "fabric": "*",
+        "minecraft": "${minecraft_version}"
+    }
+}
