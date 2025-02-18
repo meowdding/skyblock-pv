@@ -10,7 +10,10 @@
     "environment": "client",
     "entrypoints": {
         "main": [
-            "tech.thatgravyboat.skyblockpv.Init"
+            {
+                "adapter": "kotlin",
+                "value": "tech.thatgravyboat.skyblockpv.Init"
+            }
         ]
     },
     "mixins": [

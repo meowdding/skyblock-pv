@@ -13,4 +13,5 @@ fun JsonElement?.asLong(default: Long): Long = parse(default) { it.asLong }
 
 fun JsonElement?.asUUID(default: UUID): UUID = parse(default) { UUID.fromString(it.asString) }
 fun JsonElement?.asString(default: String): String = parse(default) { it.asString }
-fun <K, V> JsonElement?.asMap(mapper: (String, JsonElement) -> Pair<K, V>): Map<K, V> = parse(emptyMap<K, V>()) { it.asJsonObject.entrySet().associate { mapper(it.key, it.value) } }
+fun <K, V> JsonElement?.asMap(mapper: (String, JsonElement) -> Pair<K, V>): Map<K, V> =
+    parse(emptyMap<K, V>()) { it.asJsonObject.entrySet().associate { mapper(it.key, it.value) } }
