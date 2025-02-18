@@ -1,9 +1,12 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "Example Mod"
+rootProject.name = "SkyBlockPV"
 
 pluginManagement {
     repositories {
-        maven("https://maven.fabricmc.net/")
+        maven("https://maven.fabricmc.net/") {
+            name = "Fabric"
+        }
         gradlePluginPortal()
     }
 }
