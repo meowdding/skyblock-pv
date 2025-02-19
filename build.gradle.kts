@@ -26,7 +26,8 @@ loom {
         }
     }
 
-    afterEvaluate {
+    // Mixin Hotswap might break more than it fixes
+    /*afterEvaluate {
         val mixinPath = configurations.compileClasspath.get()
             .files { it.group == "net.fabricmc" && it.name == "sponge-mixin" }
             .first()
@@ -35,7 +36,7 @@ loom {
                 vmArgs.add("-javaagent:$mixinPath")
             }
         }
-    }
+    }*/
 }
 
 repositories {
