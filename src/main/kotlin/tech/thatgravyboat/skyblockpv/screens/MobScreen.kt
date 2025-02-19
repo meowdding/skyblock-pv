@@ -43,7 +43,6 @@ object MobScreen : BaseCursorScreen(CommonText.EMPTY) {
             val mobData = profile?.mobData ?: emptyList()
             val sortedByKills = mobData.filter { it.kills != 0L }.sortedByDescending { it.kills }
             val sortedByDeaths = mobData.filter { it.deaths != 0L }.sortedByDescending { it.deaths }
-            println(sortedByDeaths)
 
             val killsColumn = createList("Kills", sortedByKills, true, columnWidth, columnHeight)
             val deathsColumn = createList("Deaths", sortedByDeaths, false, columnWidth, columnHeight)
