@@ -5,7 +5,7 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockpv.screens.TestScreen
+import tech.thatgravyboat.skyblockpv.screens.CollectionScreen
 
 object Init : ModInitializer {
     override fun onInitialize() {
@@ -21,7 +21,7 @@ object Init : ModInitializer {
         event.register("pv") {
             callback {
                 McClient.tell {
-                    McClient.setScreen(TestScreen)
+                    McClient.setScreen(CollectionScreen)
                 }
             }
         }
