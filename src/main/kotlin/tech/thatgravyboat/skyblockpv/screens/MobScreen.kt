@@ -10,10 +10,10 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
-import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
+import tech.thatgravyboat.skyblockpv.data.MobData
 import tech.thatgravyboat.skyblockpv.utils.widgets.SpriteWidget
 import java.util.*
 
@@ -32,6 +32,8 @@ object MobScreen : BaseCursorScreen(CommonText.EMPTY) {
 
         CoroutineScope(Dispatchers.IO).launch {
             val screen = this@MobScreen
+            val columnWidth = width / 2 - 20
+            val columnHeight = height - 20
 
             val profiles = ProfileAPI.getProfiles(uuid)
             val profile = profiles.find { it.selected }
@@ -39,34 +41,12 @@ object MobScreen : BaseCursorScreen(CommonText.EMPTY) {
             val row = LinearLayout.horizontal().spacing(5)
 
             val mobData = profile?.mobData ?: emptyList()
-            val sortedByKills = mobData.filter { it.kills != 0L }.sortedBy { it.kills }
-            val sortedByDeaths = mobData.filter { it.deaths != 0L }.sortedBy { it.deaths }
+            val sortedByKills = mobData.filter { it.kills != 0L }.sortedByDescending { it.kills }
+            val sortedByDeaths = mobData.filter { it.deaths != 0L }.sortedByDescending { it.deaths }
+            println(sortedByDeaths)
 
-            val totalKills = sortedByKills.sumOf { it.kills }
-            val totalDeaths = sortedByDeaths.sumOf { it.deaths }
-
-            val columnWidth = width / 2 - 20
-            val columnHeight = height - 20
-
-            val killsColumn = LinearLayout.vertical().spacing(5)
-            val killsList = ListWidget(columnWidth, columnHeight)
-
-            sortedByKills.forEach { (id, amount) ->
-                killsList.add(TextWidget(Text.of("$id: ${amount.toFormattedString()}")))
-            }
-
-            killsColumn.addChild(TextWidget(Text.of("Kills ($totalKills)")))
-            killsColumn.addChild(killsList)
-
-            val deathsColumn = LinearLayout.vertical().spacing(5)
-            val deathsList = ListWidget(columnWidth, columnHeight)
-
-            sortedByDeaths.forEach { (id, amount) ->
-                deathsList.add(TextWidget(Text.of("$id: ${amount.toFormattedString()}")))
-            }
-
-            deathsColumn.addChild(TextWidget(Text.of("Deaths ($totalDeaths)")))
-            deathsColumn.addChild(deathsList)
+            val killsColumn = createList("Kills", sortedByKills, true, columnWidth, columnHeight)
+            val deathsColumn = createList("Deaths", sortedByDeaths, false, columnWidth, columnHeight)
 
             row.addChild(killsColumn)
             row.addChild(deathsColumn)
@@ -76,9 +56,24 @@ object MobScreen : BaseCursorScreen(CommonText.EMPTY) {
             FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
             FrameLayout.centerInRectangle(row, bg.x, bg.y, bg.width, bg.height)
 
-            bg.visitWidgets(screen::addRenderableWidget)
+            bg.visitWidgets(screen::addRenderableOnly)
             row.visitWidgets(screen::addRenderableWidget)
         }
+    }
+
+    private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int): LinearLayout {
+        val column = LinearLayout.vertical().spacing(5)
+        val listWidget = ListWidget(width, height)
+
+        list.forEach { (id, kills, death) ->
+            val formattedName = id.split("_").joinToString(" ") { it.replaceFirstChar { it.titlecase() } }
+            listWidget.add(TextWidget(Text.of("$formattedName: ${if (useKills) kills else death}")))
+        }
+
+        column.addChild(TextWidget(Text.of(name)))
+        column.addChild(listWidget)
+
+        return column
     }
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {

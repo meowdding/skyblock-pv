@@ -53,7 +53,7 @@ object CollectionScreen : BaseCursorScreen(CommonText.EMPTY) {
             FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
             FrameLayout.centerInRectangle(row, bg.x, bg.y, bg.width, bg.height)
 
-            bg.visitWidgets(screen::addRenderableWidget)
+            bg.visitWidgets(screen::addRenderableOnly)
             row.visitWidgets(screen::addRenderableWidget)
         }
     }
