@@ -1,11 +1,11 @@
 package tech.thatgravyboat.skyblockpv.utils
 
 import com.google.gson.JsonElement
-import com.google.gson.JsonPrimitive
 import java.util.*
 
-private fun <T> JsonElement?.parse(default: T, mapper: (JsonPrimitive) -> T): T =
-    takeIf { it is JsonPrimitive }?.runCatching { mapper(this as JsonPrimitive) }?.getOrNull() ?: default
+private fun <T> JsonElement?.parse(default: T, mapper: (JsonElement) -> T): T = this?.runCatching {
+    mapper(this)
+}?.getOrNull() ?: default
 
 fun JsonElement?.asBoolean(default: Boolean): Boolean = parse(default) { it.asBoolean }
 fun JsonElement?.asLong(default: Long): Long = parse(default) { it.asLong }
