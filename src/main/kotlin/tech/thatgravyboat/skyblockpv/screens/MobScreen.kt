@@ -66,8 +66,8 @@ object MobScreen : BaseCursorScreen(CommonText.EMPTY) {
         val listWidget = ListWidget(width, height)
 
         list.forEach { (id, kills, death) ->
-            if (useKills) listWidget.add(TextWidget(Text.of("$id: $kills")))
-            else listWidget.add(TextWidget(Text.of("$id: $death")))
+            val formattedName = id.split("_").joinToString(" ") { it.replaceFirstChar { it.titlecase() } }
+            listWidget.add(TextWidget(Text.of("$formattedName: ${if (useKills) kills else death}")))
         }
 
         column.addChild(TextWidget(Text.of(name)))
