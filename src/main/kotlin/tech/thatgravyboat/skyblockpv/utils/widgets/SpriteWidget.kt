@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.utils.widgets
 
 import com.mojang.blaze3d.systems.RenderSystem
+import com.teamresourceful.resourcefullib.client.screens.CursorScreen
 import earth.terrarium.olympus.client.components.base.BaseWidget
 import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
 import earth.terrarium.olympus.client.components.base.renderer.WidgetRendererContext
@@ -11,8 +12,13 @@ import net.minecraft.util.ARGB
 import java.util.function.Function
 
 class SpriteWidget : BaseWidget() {
+
     private var renderer: WidgetRenderer<in SpriteWidget?> = WidgetRenderer.empty<SpriteWidget?>()
     private var resourceLocation: ResourceLocation? = null
+
+    init {
+        active = false
+    }
 
     override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         this.isHovered = graphics.containsPointInScissor(mouseX, mouseY) && this.isMouseOver(mouseX.toDouble(), mouseY.toDouble())
@@ -46,4 +52,7 @@ class SpriteWidget : BaseWidget() {
 
     override fun withSize(width: Int, height: Int): SpriteWidget = super.withSize(width, height) as SpriteWidget
 
+    override fun getCursor(): CursorScreen.Cursor {
+        return CursorScreen.Cursor.DEFAULT
+    }
 }
