@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.screens
 
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
+import com.teamresourceful.resourcefullib.common.color.Color
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.ui.UIConstants
@@ -44,11 +45,11 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
             // as you can see, maya has no idea what she is doing
             PvTabs.entries.forEach { tab ->
                 val button = Button()
-                button.withCallback { McClient.tell { McClient.setScreen(tab.create(uuid)) } }
                 button.setSize(20, 20)
                 if (tab.name == name) {
-                    button.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIConstants.BUTTON.enabled))
+                    button.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIConstants.BUTTON.enabled).withColor(Color.DEFAULT))
                 } else {
+                    button.withCallback { McClient.tell { McClient.setScreen(tab.create(uuid)) } }
                     button.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIConstants.BUTTON.disabled))
                 }
                 button.withTooltip(Component.literal(tab.name))
