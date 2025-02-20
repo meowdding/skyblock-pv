@@ -9,23 +9,17 @@ import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
-import tech.thatgravyboat.skyblockpv.utils.displays.Alignment
-import tech.thatgravyboat.skyblockpv.utils.displays.Display
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asTable
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.centerIn
+import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.util.*
 
 class CollectionScreen(player: UUID) : BasePvScreen("COLLECTION", player) {
     private var currentCategory = CollectionCategory.MINING
 
-    override suspend fun create(width: Int, height: Int, bg: DisplayWidget) {
-        val columnHeight = height - 20
+    override suspend fun create(bg: DisplayWidget) {
+        val columnHeight = uiHeight - 20
 
         val profile = ProfileAPI.getProfiles(uuid).find { it.selected } ?: return
-        val scrollable = ListWidget(width, columnHeight)
+        val scrollable = ListWidget(uiWidth, columnHeight)
         val filteredCollections = profile.collections.filter { it.category == currentCategory }
         val table = buildList {
             filteredCollections.chunked(2).forEach { chunk ->
@@ -35,13 +29,13 @@ class CollectionScreen(player: UUID) : BasePvScreen("COLLECTION", player) {
                 }
                 add(row)
             }
-        }.asTable().centerIn(width, -1).asWidget()
+        }.asTable().centerIn(uiWidth, -1).asWidget()
 
         scrollable.add(table)
 
         FrameLayout.centerInRectangle(scrollable, bg.x, bg.y, bg.width, bg.height)
 
-        scrollable.visitWidgets(this@CollectionScreen::addRenderableWidget)
+        scrollable.visitWidgets(this::addRenderableWidget)
     }
 
     private fun getElement(col: CollectionItem): Display {

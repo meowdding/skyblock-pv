@@ -14,31 +14,28 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
-import java.util.UUID
+import java.util.*
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
 abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen(CommonText.EMPTY) {
 
-    abstract suspend fun create(width: Int, height: Int, bg: DisplayWidget)
+    val uiWidth get() = (this.width * 0.6).toInt()
+    val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
+
+    abstract suspend fun create(bg: DisplayWidget)
 
     override fun init() {
-        val width = (this.width * 0.6).toInt()
-        val height = (width * ASPECT_RATIO).toInt()
-
-        val bg = Displays.background(UIConstants.BUTTON.enabled, width, height).asWidget()
+        val bg = Displays.background(UIConstants.BUTTON.enabled, uiWidth, uiHeight).asWidget()
 
         CoroutineScope(Dispatchers.IO).launch {
             val screen = this@BasePvScreen
 
             FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
-
-            bg.visitWidgets(screen::addRenderableOnly)
 
             val tabs = LinearLayout.vertical().spacing(2)
 
@@ -59,9 +56,10 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
             tabs.arrangeElements()
             tabs.setPosition(bg.x + bg.width, bg.y + 5)
 
-            tabs.visitWidgets(this@BasePvScreen::addRenderableWidget)
+            bg.visitWidgets(screen::addRenderableOnly)
+            tabs.visitWidgets(screen::addRenderableWidget)
 
-            create(width, height, bg)
+            create(bg)
         }
     }
 
