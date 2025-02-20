@@ -12,9 +12,9 @@ import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import java.util.*
 
 class MobScreen(uuid: UUID) : BasePvScreen("MOB", uuid) {
-    override suspend fun create(width: Int, height: Int, bg: DisplayWidget) {
-        val columnWidth = width / 2 - 20
-        val columnHeight = height - 20
+    override suspend fun create(bg: DisplayWidget) {
+        val columnWidth = uiWidth / 2 - 20
+        val columnHeight = uiHeight - 20
 
         val profiles = ProfileAPI.getProfiles(uuid)
         val profile = profiles.find { it.selected }
@@ -35,7 +35,7 @@ class MobScreen(uuid: UUID) : BasePvScreen("MOB", uuid) {
 
         FrameLayout.centerInRectangle(row, bg.x, bg.y, bg.width, bg.height)
 
-        row.visitWidgets(this@MobScreen::addRenderableWidget)
+        row.visitWidgets(this::addRenderableWidget)
     }
 
     private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int): LinearLayout {
