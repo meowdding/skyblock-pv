@@ -14,7 +14,8 @@ import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.data.MobData
-import tech.thatgravyboat.skyblockpv.utils.widgets.SpriteWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import java.util.*
 
 private const val ASPECT_RATIO = 9.0 / 16.0
@@ -24,9 +25,7 @@ object MobScreen : BaseCursorScreen(CommonText.EMPTY) {
         val width = (this.width * 0.6).toInt()
         val height = (width * ASPECT_RATIO).toInt()
 
-        val bg = SpriteWidget()
-            .withTexture(UIConstants.BUTTON.enabled)
-            .withSize(width, height)
+        val bg = Displays.background(UIConstants.BUTTON.enabled, width, height).asWidget()
 
         val uuid = UUID.fromString("b75d7e0a-03d0-4c2a-ae47-809b6b808246")
 
