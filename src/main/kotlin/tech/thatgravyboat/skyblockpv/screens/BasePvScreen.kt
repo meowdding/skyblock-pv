@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import com.teamresourceful.resourcefullib.common.color.Color
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.components.string.TextWidget
 import earth.terrarium.olympus.client.ui.UIConstants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,11 +32,15 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
 
     override fun init() {
         val bg = Displays.background(UIConstants.BUTTON.enabled, uiWidth, uiHeight).asWidget()
+        val loading = TextWidget(Component.literal("Loading..."))
 
         CoroutineScope(Dispatchers.IO).launch {
             val screen = this@BasePvScreen
 
             FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
+
+            loading.withCenterAlignment()
+            FrameLayout.centerInRectangle(loading, 0, 0, screen.width, screen.height)
 
             val tabs = LinearLayout.vertical().spacing(2)
 
@@ -58,8 +63,11 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
 
             bg.visitWidgets(screen::addRenderableOnly)
             tabs.visitWidgets(screen::addRenderableWidget)
+            loading.visitWidgets(screen::addRenderableOnly)
 
             create(bg)
+
+            loading.visible = false
         }
     }
 
