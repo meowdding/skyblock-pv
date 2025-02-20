@@ -46,6 +46,10 @@ fun List<Any>.asLayer(): Display {
     )
 }
 
+fun List<List<Display>>.asTable(spacing: Int = 0): Display = Displays.table(this, spacing)
+
+fun Display.centerIn(width: Int, height: Int): Display = Displays.center(width, height, this)
+
 fun Display.asWidget(): DisplayWidget {
     return DisplayWidget(this)
 }
