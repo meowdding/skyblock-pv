@@ -1,5 +1,7 @@
 package tech.thatgravyboat.skyblockpv.api
 
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import java.util.*
 
@@ -24,7 +26,10 @@ object ProfileAPI {
         val cached = getCachedProfiles(uuid)
         if (cached != null) return cached
 
-        val result = HypixelAPI.get(PATH, mapOf("uuid" to uuid.toString())) ?: return emptyList()
+        val result = HypixelAPI.get(PATH, mapOf("uuid" to uuid.toString())) ?: run {
+            Text.of("Something went wrong :3").send()
+            return emptyList()
+        }
 
         val profiles = result.getAsJsonArray("profiles").mapNotNull { SkyblockProfile.fromJson(it.asJsonObject, uuid) }
 

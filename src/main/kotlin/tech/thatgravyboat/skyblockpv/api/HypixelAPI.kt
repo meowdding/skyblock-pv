@@ -5,7 +5,7 @@ import tech.thatgravyboat.skyblockapi.utils.http.Http
 
 // TODO switch to some other api :3
 private const val API_URL = "https://api.hypixel.net/%s"
-private const val API_KEY = "9e6cd2ad-bcf0-4fc5-9d05-f84c3790e784"
+private const val API_KEY = "7ac3ca8c-95ed-4dc4-80d8-c4b4b80c4705"
 
 object HypixelAPI {
 
