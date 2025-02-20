@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.screens
+package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import earth.terrarium.olympus.client.components.base.ListWidget
 import net.minecraft.client.gui.layouts.FrameLayout
@@ -8,6 +8,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
+import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.Alignment
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
@@ -17,7 +18,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.centerIn
 import java.util.*
 
-class CollectionScreen(player: UUID) : BasePvScreen(player) {
+class CollectionScreen(player: UUID) : BasePvScreen("COLLECTION", player) {
     private var currentCategory = CollectionCategory.MINING
 
     override suspend fun create(width: Int, height: Int, bg: DisplayWidget) {

@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.screens
+package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.string.TextWidget
@@ -7,10 +7,11 @@ import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.data.MobData
+import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import java.util.*
 
-class MobScreen(uuid: UUID) : BasePvScreen(uuid) {
+class MobScreen(uuid: UUID) : BasePvScreen("MOB", uuid) {
     override suspend fun create(width: Int, height: Int, bg: DisplayWidget) {
         val columnWidth = width / 2 - 20
         val columnHeight = height - 20
