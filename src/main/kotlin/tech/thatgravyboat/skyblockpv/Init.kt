@@ -1,9 +1,7 @@
 package tech.thatgravyboat.skyblockpv
 
 import com.mojang.brigadier.arguments.StringArgumentType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ModInitializer
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
@@ -37,7 +35,7 @@ object Init : ModInitializer {
             then("player", StringArgumentType.string(), SkyblockPlayerSuggestionProvider) {
                 callback {
                     val player = this.getArgument("player", String::class.java)
-                    CoroutineScope(Dispatchers.IO).launch {
+                    runBlocking {
                         val uuid = MojangAPI.getUUID(player)
                         if (uuid == null) {
                             McPlayer.self?.displayClientMessage(Component.literal("§cPlayer could not be found"), false)
