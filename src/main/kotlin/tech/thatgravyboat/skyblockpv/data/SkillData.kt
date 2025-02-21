@@ -11,20 +11,22 @@ fun getSkillLevel(skill: String, exp: Long): Int {
     return (SkillAPI.skillLevels.entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
 }
 
-fun getIconFromSkillName(name: String): ResourceLocation = when (name) {
-    "SKILL_COMBAT" -> Init.id("skill/combat")
-    "SKILL_FARMING" -> Init.id("skill/farming")
-    "SKILL_FISHING" -> Init.id("skill/fishing")
-    "SKILL_MINING" -> Init.id("skill/mining")
-    "SKILL_FORAGING" -> Init.id("skill/foraging")
-    "SKILL_ENCHANTING" -> Init.id("skill/enchanting")
-    "SKILL_ALCHEMY" -> Init.id("skill/alchemy")
-    "SKILL_TAMING" -> Init.id("skill/taming")
-    "SKILL_SOCIAL" -> Init.id("skill/social")
-    "SKILL_RUNECRAFTING" -> Init.id("skill/runecrafting")
-    "SKILL_CARPENTRY" -> Init.id("skill/carpentry")
-    else -> Init.id("skill/idk")
-}
+fun getIconFromSkillName(name: String): ResourceLocation = Init.id(
+    when (name) {
+        "SKILL_COMBAT" -> "icon/skill/combat"
+        "SKILL_FARMING" -> "icon/skill/farming"
+        "SKILL_FISHING" -> "icon/skill/fishing"
+        "SKILL_MINING" -> "icon/skill/mining"
+        "SKILL_FORAGING" -> "icon/skill/foraging"
+        "SKILL_ENCHANTING" -> "icon/skill/enchanting"
+        "SKILL_ALCHEMY" -> "icon/skill/alchemy"
+        "SKILL_TAMING" -> "icon/skill/taming"
+        "SKILL_SOCIAL" -> "icon/skill/social"
+        "SKILL_RUNECRAFTING" -> "icon/skill/runecrafting"
+        "SKILL_CARPENTRY" -> "icon/skill/carpentry"
+        else -> "icon/questionmark"
+    },
+)
 
 private fun convertFromPlayerApiSkillName(name: String) = name.split("_").drop(1).joinToString("_").lowercase()
 
