@@ -8,6 +8,7 @@ private fun <T> JsonElement?.parse(default: T, mapper: (JsonElement) -> T): T = 
 }?.getOrNull() ?: default
 
 fun JsonElement?.asBoolean(default: Boolean): Boolean = parse(default) { it.asBoolean }
+fun JsonElement?.asInt(default: Int): Int = parse(default) { it.asInt }
 fun JsonElement?.asLong(default: Long): Long = parse(default) { it.asLong }
 
 

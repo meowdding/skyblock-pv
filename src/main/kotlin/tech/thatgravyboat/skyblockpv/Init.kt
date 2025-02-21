@@ -12,14 +12,15 @@ import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockpv.api.MojangAPI
+import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyblockPlayerSuggestionProvider
-import tech.thatgravyboat.skyblockpv.screens.tabs.MobScreen
 import tech.thatgravyboat.skyblockpv.screens.PvTabs
 
 object Init : ModInitializer {
     override fun onInitialize() {
         val modules = listOf(
             this,
+            SkillAPI,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }
