@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ModInitializer
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
@@ -49,4 +50,6 @@ object Init : ModInitializer {
             }
         }
     }
+
+    fun id(path: String) = ResourceLocation.fromNamespaceAndPath("skyblock-pv", path)
 }
