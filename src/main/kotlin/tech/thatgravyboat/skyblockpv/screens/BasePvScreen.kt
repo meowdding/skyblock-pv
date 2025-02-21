@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens
 
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
-import com.teamresourceful.resourcefullib.common.color.Color
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.components.string.TextWidget
@@ -10,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.network.chat.Component
@@ -49,11 +47,13 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
                 val button = Button()
                 button.setSize(20, 20)
                 if (tab.name == name) {
-                    button.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIConstants.BUTTON.enabled).withColor(Color.DEFAULT))
+                    button.withTexture(UIConstants.PRIMARY_BUTTON)
                 } else {
                     button.withCallback { McClient.tell { McClient.setScreen(tab.create(uuid)) } }
-                    button.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIConstants.BUTTON.disabled))
+                    button.withTexture(UIConstants.BUTTON)
                 }
+                // Don't bother actually aligning the icon yet, design will change anyway :3
+                button.withRenderer(WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.icon, ctx.x, ctx.y) })
                 button.withTooltip(Component.literal(tab.name))
                 tabs.addChild(button)
             }
