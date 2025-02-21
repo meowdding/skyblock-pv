@@ -4,6 +4,8 @@ import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
+import tech.thatgravyboat.skyblockpv.data.getIconFromSkillName
+import tech.thatgravyboat.skyblockpv.data.getSkillLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.util.*
@@ -39,6 +41,19 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
     fun createRightColumn(profile: SkyblockProfile, width: Int): DisplayWidget {
         val column = buildList {
             add(Displays.text("Skills"))
+            val skillDisplayElementWidth = 30
+            val skillElementsPerRow = width / skillDisplayElementWidth
+
+            profile.skill.asSequence().chunked(skillElementsPerRow).map { chunk ->
+                chunk.map { (skill, data) ->
+                    val level = getSkillLevel(skill, data)
+                    listOf(
+                        Displays.sprite(getIconFromSkillName(skill), 12, 12),
+                        Displays.text("$level"),
+                    ).toRow(1)
+                }.toRow(5)
+            }.toList().toColumn(5).also { add(it) }
+
             add(Displays.text("Slayer"))
             add(Displays.text("Collection"))
         }.toColumn()
