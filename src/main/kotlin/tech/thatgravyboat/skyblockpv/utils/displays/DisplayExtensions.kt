@@ -50,6 +50,6 @@ fun List<List<Display>>.asTable(spacing: Int = 0): Display = Displays.table(this
 
 fun Display.centerIn(width: Int, height: Int): Display = Displays.center(width, height, this)
 
-fun Display.asWidget(): DisplayWidget {
-    return DisplayWidget(this)
-}
+fun Display.withBackground(color: UInt): Display = Displays.background(color, this)
+
+fun Display.asWidget(): DisplayWidget = DisplayWidget(this)
