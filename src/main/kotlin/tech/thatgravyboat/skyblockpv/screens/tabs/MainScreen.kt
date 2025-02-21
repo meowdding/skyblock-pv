@@ -51,7 +51,7 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
                         Displays.sprite(getIconFromSkillName(skill), 12, 12),
                         Displays.text("$level"),
                     ).toRow(1)
-                }.toRow(5)
+                }.toRow(5).centerIn(width, -1)
             }.toList().toColumn(5).also { add(it) }
 
             add(Displays.text("Slayer"))
