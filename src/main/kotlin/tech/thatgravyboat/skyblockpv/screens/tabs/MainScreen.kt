@@ -1,12 +1,14 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import net.minecraft.client.gui.layouts.LinearLayout
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.getIconFromSkillName
 import tech.thatgravyboat.skyblockpv.data.getSkillLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
+import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.util.*
 
@@ -31,8 +33,9 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
 
     fun createMiddleColumn(profile: SkyblockProfile, width: Int): DisplayWidget {
         val column = buildList<Display> {
-            // TODO: load gameprofile from uuid and create a custom player from the gameprofile
-            Displays.entity(McPlayer.self!!, width, width, 40).withBackground(0xD0000000u).centerIn(-1, uiHeight).also { add(it) }
+            val fakeProfile = McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: McPlayer.self?.gameProfile ?: return@buildList
+
+            Displays.entity(FakePlayer(fakeProfile), width, width, 40).withBackground(0xD0000000u).centerIn(-1, uiHeight).also { add(it) }
         }.toColumn()
 
         return Displays.background(0x400000FFu, Displays.fixed(width, uiHeight, column)).asWidget()
