@@ -14,6 +14,8 @@ import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
+import tech.thatgravyboat.skyblockpv.api.ProfileAPI
+import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -21,7 +23,7 @@ import java.util.*
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
-abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen(CommonText.EMPTY) {
+abstract class BasePvScreen(val name: String, val uuid: UUID, var profile: SkyblockProfile? = null) : BaseCursorScreen(CommonText.EMPTY) {
 
     val uiWidth get() = (this.width * 0.6).toInt()
     val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
@@ -49,7 +51,7 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
                 if (tab.name == name) {
                     button.withTexture(UIConstants.PRIMARY_BUTTON)
                 } else {
-                    button.withCallback { McClient.tell { McClient.setScreen(tab.create(uuid)) } }
+                    button.withCallback { McClient.tell { McClient.setScreen(tab.create(uuid, profile)) } }
                     button.withTexture(UIConstants.BUTTON)
                 }
                 // Don't bother actually aligning the icon yet, design will change anyway :3
@@ -65,6 +67,7 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
             tabs.visitWidgets(screen::addRenderableWidget)
             loading.visitWidgets(screen::addRenderableOnly)
 
+            if (profile == null) profile = fetchProfile()
             create(bg)
 
             loading.visible = false
@@ -74,5 +77,9 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         this.renderBlurredBackground()
         this.renderTransparentBackground(guiGraphics)
+    }
+
+    suspend fun fetchProfile(): SkyblockProfile? {
+        return ProfileAPI.getProfiles(uuid).find { it.selected }
     }
 }

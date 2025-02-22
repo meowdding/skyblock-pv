@@ -8,9 +8,15 @@ import java.util.*
 private const val API_URL = "https://api.mojang.com/%s"
 
 object MojangAPI {
+
+    private var uuidCache: MutableMap<String, UUID> = mutableMapOf()
+
     suspend fun getUUID(name: String): UUID? {
-        val string = get("users/profiles/minecraft/$name")?.get("id")?.asString ?: return null
-        return fromDashlessUUID(string)
+        if (!uuidCache.containsKey(name)) {
+            val string = get("users/profiles/minecraft/$name")?.get("id")?.asString ?: return null
+            uuidCache[name] = fromDashlessUUID(string)
+        }
+        return uuidCache[name]
     }
 
     suspend fun get(endpoint: String): JsonObject? {
