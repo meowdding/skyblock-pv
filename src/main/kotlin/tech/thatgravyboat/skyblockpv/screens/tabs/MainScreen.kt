@@ -39,7 +39,15 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
 
     fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
         val fakeProfile = McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: McPlayer.self!!.gameProfile
-        val playerWidget = Displays.entity(FakePlayer(fakeProfile), width, width, 40).withBackground(0xD0000000u).asWidget()
+        val playerWidget = Displays.placeholder(width, width).asWidget().withRenderer { gr, ctx, _ ->
+            Displays.entity(
+                FakePlayer(fakeProfile),
+                width, width,
+                width / 2,
+                // todo align on eyes, not on center x center y
+                ctx.mouseX.toFloat() - ctx.x, ctx.mouseY.toFloat() - ctx.y,
+            ).withBackground(0xD0000000u).render(gr, ctx.x, ctx.y)
+        }
 
         val layout = LinearLayout.vertical()
         layout.addChild(SpacerElement.height((uiHeight - playerWidget.height) / 2))
