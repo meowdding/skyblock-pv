@@ -7,6 +7,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.MobData
+import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
 import tech.thatgravyboat.skyblockpv.utils.*
 import java.util.*
 
@@ -18,6 +19,7 @@ data class SkyblockProfile(
     val skill: Map<String, Long> = emptyMap(),
     val collections: List<CollectionItem>,
     val mobData: List<MobData>,
+    val slayer: Map<String, SlayerTypeData>,
 ) {
     companion object {
 
@@ -25,6 +27,7 @@ data class SkyblockProfile(
             val member = json.getAsJsonObject("members").getAsJsonObject(user.toString().replace("-", "")) ?: return null
             val playerStats = member.getAsJsonObject("player_stats") ?: return null
             val playerData = member.getAsJsonObject("player_data") ?: return null
+            val slayerData = member.getAsJsonObject("slayer") ?: return null
 
             return SkyblockProfile(
                 selected = json["selected"].asBoolean(false),
@@ -57,6 +60,21 @@ data class SkyblockProfile(
                             mobId = id,
                             kills = kills[id] ?: 0,
                             deaths = deaths[id] ?: 0,
+                        )
+                    }
+                },
+
+                slayer = run {
+                    slayerData["slayer_bosses"].asMap { name, data ->
+                        val data = data.asJsonObject
+                        name to SlayerTypeData(
+                            exp = data["xp"].asLong(0),
+                            bossAttemptsTier = (0..4).associateWith { tier ->
+                                data["boss_attempts_tier_$tier"].asInt(0)
+                            },
+                            bossKillsTier = (0..4).associateWith { tier ->
+                                data["boss_kills_tier_$tier"].asInt(0)
+                            },
                         )
                     }
                 },
