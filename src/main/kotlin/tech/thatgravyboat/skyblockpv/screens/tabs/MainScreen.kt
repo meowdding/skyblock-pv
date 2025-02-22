@@ -61,9 +61,9 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
                 var profileName = profile.id.name
                 when (profile.profileType) {
                     ProfileType.NORMAL -> {}
-                    ProfileType.BINGO -> profileName += " Ⓑ"
+                    ProfileType.BINGO -> profileName += " §9Ⓑ"
                     ProfileType.IRONMAN -> profileName += " ♻"
-                    ProfileType.STRANDED -> profileName += " ☀"
+                    ProfileType.STRANDED -> profileName += " §a☀"
                     ProfileType.UNKNOWN -> {}
                 }
                 return@dropdown Text.of(profileName)
