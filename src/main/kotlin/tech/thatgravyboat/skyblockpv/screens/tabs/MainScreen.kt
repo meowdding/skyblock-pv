@@ -80,8 +80,6 @@ class MainScreen(uuid: UUID, profile: SkyblockProfile? = null) : BasePvScreen("M
             }
         )
 
-        dropdown
-
         layout.addChild(dropdown)
 
         return layout

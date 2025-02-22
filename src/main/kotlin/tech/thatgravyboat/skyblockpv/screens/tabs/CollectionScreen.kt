@@ -19,9 +19,9 @@ class CollectionScreen(player: UUID, profile: SkyblockProfile? = null) : BasePvS
     override suspend fun create(bg: DisplayWidget) {
         val columnHeight = uiHeight - 20
 
-        if (profile == null) return
+        val profile = profile ?: return
         val scrollable = ListWidget(uiWidth, columnHeight)
-        val filteredCollections = profile!!.collections.filter { it.category == currentCategory }
+        val filteredCollections = profile.collections.filter { it.category == currentCategory }
         val table = buildList {
             filteredCollections.chunked(2).forEach { chunk ->
                 val row = buildList {
