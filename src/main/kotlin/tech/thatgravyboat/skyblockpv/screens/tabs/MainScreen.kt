@@ -41,11 +41,14 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
     fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
         val fakeProfile = McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: McPlayer.self!!.gameProfile
         val playerWidget = Displays.placeholder(width, width).asWidget().withRenderer { gr, ctx, _ ->
+            // TODO: see why opening the dropdown causes the ctx to not know the mouse
+            val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 } ?: Float.NaN
+            val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 } ?: Float.NaN
             Displays.entity(
                 FakePlayer(fakeProfile),
                 width, width,
                 width / 2,
-                ctx.mouseX.toFloat() - ctx.x, ctx.mouseY.toFloat() - ctx.y,
+                eyesX, eyesY,
             ).withBackground(0xD0000000u).render(gr, ctx.x, ctx.y)
         }
 
