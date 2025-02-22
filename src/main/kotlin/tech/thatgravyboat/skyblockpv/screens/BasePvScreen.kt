@@ -34,46 +34,52 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     val uiWidth get() = (this.width * 0.6).toInt()
     val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
 
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            profile = fetchProfile()
+            McClient.tell { init() }
+        }
+    }
+
     abstract suspend fun create(bg: DisplayWidget)
 
     override fun init() {
+        val screen = this@BasePvScreen
         val bg = Displays.background(UIConstants.BUTTON.enabled, uiWidth, uiHeight).asWidget()
         val loading = TextWidget(Component.literal("Loading..."))
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val screen = this@BasePvScreen
+        FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
 
-            FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
+        loading.withCenterAlignment()
+        FrameLayout.centerInRectangle(loading, 0, 0, screen.width, screen.height)
 
-            loading.withCenterAlignment()
-            FrameLayout.centerInRectangle(loading, 0, 0, screen.width, screen.height)
+        val tabs = LinearLayout.vertical().spacing(2)
 
-            val tabs = LinearLayout.vertical().spacing(2)
-
-            // as you can see, maya has no idea what she is doing
-            PvTabs.entries.forEach { tab ->
-                val button = Button()
-                button.setSize(20, 20)
-                if (tab.name == name) {
-                    button.withTexture(UIConstants.PRIMARY_BUTTON)
-                } else {
-                    button.withCallback { McClient.tell { McClient.setScreen(tab.create(gameProfile, profile)) } }
-                    button.withTexture(UIConstants.BUTTON)
-                }
-                // Don't bother actually aligning the icon yet, design will change anyway :3
-                button.withRenderer(WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.icon, ctx.x, ctx.y) })
-                button.withTooltip(Component.literal(tab.name))
-                tabs.addChild(button)
+        // as you can see, maya has no idea what she is doing
+        PvTabs.entries.forEach { tab ->
+            val button = Button()
+            button.setSize(20, 20)
+            if (tab.name == name) {
+                button.withTexture(UIConstants.PRIMARY_BUTTON)
+            } else {
+                button.withCallback { McClient.tell { McClient.setScreen(tab.create(gameProfile, profile)) } }
+                button.withTexture(UIConstants.BUTTON)
             }
+            // Don't bother actually aligning the icon yet, design will change anyway :3
+            button.withRenderer(WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.icon, ctx.x, ctx.y) })
+            button.withTooltip(Component.literal(tab.name))
+            tabs.addChild(button)
+        }
 
-            tabs.arrangeElements()
-            tabs.setPosition(bg.x + bg.width, bg.y + 5)
+        tabs.arrangeElements()
+        tabs.setPosition(bg.x + bg.width, bg.y + 5)
 
-            bg.visitWidgets(screen::addRenderableOnly)
-            tabs.visitWidgets(screen::addRenderableWidget)
-            loading.visitWidgets(screen::addRenderableOnly)
+        bg.visitWidgets(screen::addRenderableOnly)
+        tabs.visitWidgets(screen::addRenderableWidget)
+        loading.visitWidgets(screen::addRenderableOnly)
 
-            if (profile == null) profile = fetchProfile()
+        if (profile == null) return
+        CoroutineScope(Dispatchers.IO).launch {
             create(bg)
 
             val profileWidth = 100
