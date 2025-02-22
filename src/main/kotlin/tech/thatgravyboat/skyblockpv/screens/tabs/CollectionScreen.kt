@@ -11,13 +11,12 @@ import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.*
-import java.util.*
 
 class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("COLLECTION", gameProfile, profile) {
 
     private var currentCategory = CollectionCategory.MINING
 
-    override suspend fun create(bg: DisplayWidget) {
+    override fun create(bg: DisplayWidget) {
         val columnHeight = uiHeight - 20
 
         val profile = profile ?: return

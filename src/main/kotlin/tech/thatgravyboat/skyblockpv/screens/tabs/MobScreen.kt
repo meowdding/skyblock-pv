@@ -10,10 +10,9 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.MobData
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import java.util.*
 
 class MobScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MOB", gameProfile, profile) {
-    override suspend fun create(bg: DisplayWidget) {
+    override fun create(bg: DisplayWidget) {
         val columnWidth = uiWidth / 2 - 20
         val columnHeight = uiHeight - 20
 
