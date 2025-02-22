@@ -1,8 +1,13 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
+import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import net.minecraft.client.gui.layouts.LinearLayout
+import net.minecraft.client.gui.layouts.SpacerElement
+import org.apache.commons.lang3.function.Consumers
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.getIconFromSkillName
@@ -14,7 +19,8 @@ import java.util.*
 
 class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
     override suspend fun create(bg: DisplayWidget) {
-        val profile = ProfileAPI.getProfiles(uuid).find { it.selected } ?: return
+        val profiles = ProfileAPI.getProfiles(uuid)
+        val profile = profiles.find { it.selected } ?: return
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
@@ -23,7 +29,7 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
         val col1 = Displays.background(0x40FF0000u, Displays.fixed(sideColumnWidth, uiHeight, Displays.text("§8Col 1"))).asWidget()
 
         cols.addChild(col1)
-        cols.addChild(createMiddleColumn(profile, middleColumnWidth))
+        cols.addChild(createMiddleColumn(profiles, middleColumnWidth))
         cols.addChild(createRightColumn(profile, sideColumnWidth))
 
         cols.arrangeElements()
@@ -31,14 +37,25 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
         cols.visitWidgets(this::addRenderableWidget)
     }
 
-    fun createMiddleColumn(profile: SkyblockProfile, width: Int): DisplayWidget {
-        val column = buildList<Display> {
-            val fakeProfile = McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: McPlayer.self?.gameProfile ?: return@buildList
+    fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
+        val fakeProfile = McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: McPlayer.self!!.gameProfile
+        val playerWidget = Displays.entity(FakePlayer(fakeProfile), width, width, 40).withBackground(0xD0000000u).asWidget()
 
-            Displays.entity(FakePlayer(fakeProfile), width, width, 40).withBackground(0xD0000000u).centerIn(-1, uiHeight).also { add(it) }
-        }.toColumn()
+        val layout = LinearLayout.vertical()
+        layout.addChild(SpacerElement.height((uiHeight - playerWidget.height) / 2))
+        layout.addChild(playerWidget)
 
-        return Displays.background(0x400000FFu, Displays.fixed(width, uiHeight, column)).asWidget()
+        val state = DropdownState<SkyblockProfile>.of<SkyblockProfile>(profiles.find { it.selected } ?: profiles.first())
+        val dropdown = Widgets.dropdown(
+            state,
+            profiles,
+            { profile -> Text.of(profile.id.name) },
+            { button -> button.withSize(width, 20) },
+            Consumers.nop(), // TODO: make actually function
+        )
+        layout.addChild(dropdown)
+
+        return layout
     }
 
     fun createRightColumn(profile: SkyblockProfile, width: Int): DisplayWidget {
