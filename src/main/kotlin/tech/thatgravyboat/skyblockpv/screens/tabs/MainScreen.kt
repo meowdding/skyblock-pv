@@ -5,6 +5,7 @@ import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import org.apache.commons.lang3.function.Consumers
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -56,7 +57,17 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
         val dropdown = Widgets.dropdown(
             state,
             profiles,
-            { profile -> Text.of(profile.id.name) },
+            { profile ->
+                var profileName = profile.id.name
+                when (profile.profileType) {
+                    ProfileType.NORMAL -> {}
+                    ProfileType.BINGO -> profileName += " Ⓑ"
+                    ProfileType.IRONMAN -> profileName += " ♻"
+                    ProfileType.STRANDED -> profileName += " ☀"
+                    ProfileType.UNKNOWN -> {}
+                }
+                return@dropdown Text.of(profileName)
+            },
             { button -> button.withSize(width, 20) },
             Consumers.nop(), // TODO: make actually function
         )
