@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.api.data
 
 import com.google.gson.JsonObject
 import net.minecraft.Util
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
@@ -12,6 +13,7 @@ import java.util.*
 data class SkyblockProfile(
     val selected: Boolean,
     val id: ProfileId,
+    val profileType: ProfileType = ProfileType.UNKNOWN,
 
     val skill: Map<String, Long> = emptyMap(),
     val collections: List<CollectionItem>,
@@ -30,6 +32,15 @@ data class SkyblockProfile(
                     id = json["profile_id"].asUUID(Util.NIL_UUID),
                     name = json["cute_name"].asString("Unknown"),
                 ),
+
+                profileType = json.get("game_mode")?.asString.let {
+                    when (it) {
+                        "ironman" -> ProfileType.IRONMAN
+                        "island" -> ProfileType.STRANDED
+                        "bingo" -> ProfileType.BINGO
+                        else -> ProfileType.NORMAL
+                    }
+                },
 
                 skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) },
 
