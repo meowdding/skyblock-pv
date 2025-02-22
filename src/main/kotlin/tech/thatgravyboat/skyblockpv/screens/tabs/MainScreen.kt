@@ -1,13 +1,8 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
-import earth.terrarium.olympus.client.components.Widgets
-import earth.terrarium.olympus.client.components.dropdown.DropdownState
+import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
-import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
-import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.getIconFromSkillName
@@ -15,18 +10,16 @@ import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
 import tech.thatgravyboat.skyblockpv.data.getSkillLevel
 import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
-import tech.thatgravyboat.skyblockpv.screens.PvTabs
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.displays.*
-import java.util.*
 
-class MainScreen(uuid: UUID, profile: SkyblockProfile? = null) : BasePvScreen("MAIN", uuid, profile) {
-  
+class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
+
     private var cachedX = 0.0F
     private var cachedY = 0.0F
-  
+
     override suspend fun create(bg: DisplayWidget) {
-        val profiles = ProfileAPI.getProfiles(uuid)
+        val profiles = ProfileAPI.getProfiles(gameProfile.id)
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
@@ -44,13 +37,12 @@ class MainScreen(uuid: UUID, profile: SkyblockProfile? = null) : BasePvScreen("M
     }
 
     fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
-        val fakeProfile = McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: McPlayer.self!!.gameProfile
         val playerWidget = Displays.placeholder(width, width).asWidget().withRenderer { gr, ctx, _ ->
             // TODO: see why opening the dropdown causes the ctx to not know the mouse
             val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             Displays.entity(
-                FakePlayer(fakeProfile),
+                FakePlayer(gameProfile),
                 width, width,
                 width / 2,
                 eyesX, eyesY,
@@ -60,31 +52,6 @@ class MainScreen(uuid: UUID, profile: SkyblockProfile? = null) : BasePvScreen("M
         val layout = LinearLayout.vertical()
         layout.addChild(SpacerElement.height((uiHeight - playerWidget.height) / 2))
         layout.addChild(playerWidget)
-
-        val state = DropdownState<SkyblockProfile>.of<SkyblockProfile>(profile)
-        val dropdown = Widgets.dropdown(
-            state,
-            profiles,
-            { profile ->
-                Text.of(
-                    profile.id.name + when (profile.profileType) {
-                        ProfileType.NORMAL -> ""
-                        ProfileType.BINGO -> " §9Ⓑ"
-                        ProfileType.IRONMAN -> " ♻"
-                        ProfileType.STRANDED -> " §a☀"
-                        ProfileType.UNKNOWN -> " §c§ka"
-                    },
-                )
-            },
-            { button -> button.withSize(width, 20) },
-            { builder ->
-                builder.withCallback { profile ->
-                    McClient.tell { McClient.setScreen(PvTabs.MAIN.create(uuid, profile)) }
-                }
-            }
-        )
-
-        layout.addChild(dropdown)
 
         return layout
     }

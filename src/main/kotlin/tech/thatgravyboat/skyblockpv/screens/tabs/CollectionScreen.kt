@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
+import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.base.ListWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.world.item.ItemStack
@@ -12,7 +13,7 @@ import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.util.*
 
-class CollectionScreen(player: UUID, profile: SkyblockProfile? = null) : BasePvScreen("COLLECTION", player, profile) {
+class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("COLLECTION", gameProfile, profile) {
 
     private var currentCategory = CollectionCategory.MINING
 
