@@ -5,22 +5,23 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockpv.api.ProfileAPI
+import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.util.*
 
-class CollectionScreen(player: UUID) : BasePvScreen("COLLECTION", player) {
+class CollectionScreen(player: UUID, profile: SkyblockProfile? = null) : BasePvScreen("COLLECTION", player, profile) {
+
     private var currentCategory = CollectionCategory.MINING
 
     override suspend fun create(bg: DisplayWidget) {
         val columnHeight = uiHeight - 20
 
-        val profile = ProfileAPI.getProfiles(uuid).find { it.selected } ?: return
+        if (profile == null) return
         val scrollable = ListWidget(uiWidth, columnHeight)
-        val filteredCollections = profile.collections.filter { it.category == currentCategory }
+        val filteredCollections = profile!!.collections.filter { it.category == currentCategory }
         val table = buildList {
             filteredCollections.chunked(2).forEach { chunk ->
                 val row = buildList {

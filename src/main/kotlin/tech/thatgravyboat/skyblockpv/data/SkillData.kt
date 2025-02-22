@@ -5,9 +5,10 @@ import tech.thatgravyboat.skyblockpv.Init
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 
 fun getSkillLevel(skill: String, exp: Long): Int {
-    val maxLevel = SkillAPI.skillData.firstNotNullOf { (name, data) ->
+    val maxLevel = SkillAPI.skillData.firstNotNullOfOrNull { (name, data) ->
         if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
     }
+    if (maxLevel == null) return 0
     return (SkillAPI.skillLevels.entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
 }
 
