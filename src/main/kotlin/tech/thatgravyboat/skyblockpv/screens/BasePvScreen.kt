@@ -31,17 +31,20 @@ private const val ASPECT_RATIO = 9.0 / 16.0
 
 abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var profile: SkyblockProfile? = null) : BaseCursorScreen(CommonText.EMPTY) {
 
+    var profiles: List<SkyblockProfile> = emptyList()
+
     val uiWidth get() = (this.width * 0.6).toInt()
     val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
             profile = fetchProfile()
+            profiles = ProfileAPI.getProfiles(gameProfile.id)
             McClient.tell { init() }
         }
     }
 
-    abstract suspend fun create(bg: DisplayWidget)
+    abstract fun create(bg: DisplayWidget)
 
     override fun init() {
         val screen = this@BasePvScreen
@@ -79,49 +82,46 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         loading.visitWidgets(screen::addRenderableOnly)
 
         if (profile == null) return
-        CoroutineScope(Dispatchers.IO).launch {
-            create(bg)
+        create(bg)
 
-            val profileWidth = 100
+        val profileWidth = 100
 
-            val usernameState = State.of<String>(gameProfile.name)
-            val username = Widgets.textInput(usernameState) { box ->
-                //TODO: probably open a new screen on enter with the username, waiting for sophie to implement on enter
-            }
-            username.withPlaceholder("Username...")
-            username.withSize(profileWidth, 20)
-            username.setPosition(bg.x + bg.width - profileWidth, bg.y + bg.height)
-            username.visitWidgets(screen::addRenderableWidget)
-
-            val profiles = ProfileAPI.getProfiles(gameProfile.id)
-            val dropdownState = DropdownState<SkyblockProfile>.of<SkyblockProfile>(profile)
-            val dropdown = Widgets.dropdown(
-                dropdownState,
-                profiles,
-                { profile ->
-                    Text.of(
-                        profile.id.name + when (profile.profileType) {
-                            ProfileType.NORMAL -> ""
-                            ProfileType.BINGO -> " §9Ⓑ"
-                            ProfileType.IRONMAN -> " ♻"
-                            ProfileType.STRANDED -> " §a☀"
-                            ProfileType.UNKNOWN -> " §c§ka"
-                        },
-                    )
-                },
-                { button -> button.withSize(profileWidth, 20) },
-                { builder ->
-                    builder.withCallback { profile ->
-                        McClient.tell { McClient.setScreen(PvTabs.entries.first { tab -> tab.name == this@BasePvScreen.name }.create(gameProfile, profile)) }
-                    }
-                    builder.withAlignment(OverlayAlignment.TOP_LEFT)
-                },
-            )
-            dropdown.setPosition(bg.x, bg.y + bg.height)
-            dropdown.visitWidgets(screen::addRenderableWidget)
-
-            loading.visible = false
+        val usernameState = State.of<String>(gameProfile.name)
+        val username = Widgets.textInput(usernameState) { box ->
+            //TODO: probably open a new screen on enter with the username, waiting for sophie to implement on enter
         }
+        username.withPlaceholder("Username...")
+        username.withSize(profileWidth, 20)
+        username.setPosition(bg.x + bg.width - profileWidth, bg.y + bg.height)
+        username.visitWidgets(screen::addRenderableWidget)
+
+        val dropdownState = DropdownState<SkyblockProfile>.of<SkyblockProfile>(profile)
+        val dropdown = Widgets.dropdown(
+            dropdownState,
+            profiles,
+            { profile ->
+                Text.of(
+                    profile.id.name + when (profile.profileType) {
+                        ProfileType.NORMAL -> ""
+                        ProfileType.BINGO -> " §9Ⓑ"
+                        ProfileType.IRONMAN -> " ♻"
+                        ProfileType.STRANDED -> " §a☀"
+                        ProfileType.UNKNOWN -> " §c§ka"
+                    },
+                )
+            },
+            { button -> button.withSize(profileWidth, 20) },
+            { builder ->
+                builder.withCallback { profile ->
+                    McClient.tell { McClient.setScreen(PvTabs.entries.first { tab -> tab.name == this@BasePvScreen.name }.create(gameProfile, profile)) }
+                }
+                builder.withAlignment(OverlayAlignment.TOP_LEFT)
+            },
+        )
+        dropdown.setPosition(bg.x, bg.y + bg.height)
+        dropdown.visitWidgets(screen::addRenderableWidget)
+
+        loading.visible = false
     }
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {

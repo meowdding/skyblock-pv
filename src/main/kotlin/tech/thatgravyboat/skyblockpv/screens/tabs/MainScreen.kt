@@ -3,7 +3,6 @@ package tech.thatgravyboat.skyblockpv.screens.tabs
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
-import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.getIconFromSkillName
 import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
@@ -18,8 +17,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
     private var cachedX = 0.0F
     private var cachedY = 0.0F
 
-    override suspend fun create(bg: DisplayWidget) {
-        val profiles = ProfileAPI.getProfiles(gameProfile.id)
+    override fun create(bg: DisplayWidget) {
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
