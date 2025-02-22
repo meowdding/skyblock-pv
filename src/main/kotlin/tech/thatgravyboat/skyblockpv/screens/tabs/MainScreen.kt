@@ -12,7 +12,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.getIconFromSkillName
+import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
 import tech.thatgravyboat.skyblockpv.data.getSkillLevel
+import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.displays.*
@@ -61,13 +63,15 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
             state,
             profiles,
             { profile ->
-                Text.of(profile.id.name + when (profile.profileType) {
-                    ProfileType.NORMAL -> ""
-                    ProfileType.BINGO -> " §9Ⓑ"
-                    ProfileType.IRONMAN -> " ♻"
-                    ProfileType.STRANDED -> " §a☀"
-                    ProfileType.UNKNOWN -> " §c§ka"
-                })
+                Text.of(
+                    profile.id.name + when (profile.profileType) {
+                        ProfileType.NORMAL -> ""
+                        ProfileType.BINGO -> " §9Ⓑ"
+                        ProfileType.IRONMAN -> " ♻"
+                        ProfileType.STRANDED -> " §a☀"
+                        ProfileType.UNKNOWN -> " §c§ka"
+                    },
+                )
             },
             { button -> button.withSize(width, 20) },
             Consumers.nop(), // TODO: make actually function
@@ -93,7 +97,19 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
                 }.toRow(5).centerIn(width, -1)
             }.toList().toColumn(5).also { add(it) }
 
+            add(Displays.text(""))
             add(Displays.text("Slayer"))
+            profile.slayer.asSequence().chunked(skillElementsPerRow).map { chunk ->
+                chunk.map { (slayer, data) ->
+                    val level = getSlayerLevel(slayer, data.exp)
+                    listOf(
+                        Displays.sprite(getIconFromSlayerName(slayer), 12, 12),
+                        Displays.text("$level"),
+                    ).toRow(1)
+                }.toRow(5).centerIn(width, -1)
+            }.toList().toColumn(5).also { add(it) }
+
+            add(Displays.text(""))
             add(Displays.text("Collection"))
         }.toColumn()
 
