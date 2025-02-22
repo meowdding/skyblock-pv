@@ -5,19 +5,16 @@ import earth.terrarium.olympus.client.components.string.TextWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockpv.api.ProfileAPI
+import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.MobData
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import java.util.*
 
-class MobScreen(uuid: UUID) : BasePvScreen("MOB", uuid) {
+class MobScreen(uuid: UUID, profile: SkyblockProfile? = null) : BasePvScreen("MOB", uuid, profile) {
     override suspend fun create(bg: DisplayWidget) {
         val columnWidth = uiWidth / 2 - 20
         val columnHeight = uiHeight - 20
-
-        val profiles = ProfileAPI.getProfiles(uuid)
-        val profile = profiles.find { it.selected }
 
         val row = LinearLayout.horizontal().spacing(5)
 

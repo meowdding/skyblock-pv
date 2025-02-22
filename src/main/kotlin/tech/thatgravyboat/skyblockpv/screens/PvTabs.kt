@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.screens
 
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.screens.tabs.CollectionScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.MainScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.MobScreen
@@ -15,6 +16,10 @@ enum class PvTabs(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
     ;
 
     fun create(uuid: UUID): BasePvScreen {
-        return screen.constructors.first().call(uuid)
+        return screen.constructors.first().call(uuid, null)
+    }
+
+    fun create(uuid: UUID, profile: SkyblockProfile?): BasePvScreen {
+        return screen.constructors.first().call(uuid, profile)
     }
 }
