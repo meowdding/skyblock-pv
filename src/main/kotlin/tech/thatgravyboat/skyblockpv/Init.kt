@@ -30,7 +30,7 @@ object Init : ModInitializer {
         event.register("pv") {
             callback {
                 McClient.tell {
-                    McClient.setScreen(PvTabs.MAIN.create(McPlayer.self!!.uuid))
+                    McClient.setScreen(PvTabs.MAIN.create(McClient.self.gameProfile))
                 }
             }
             then("player", StringArgumentType.string(), SkyblockPlayerSuggestionProvider) {
@@ -42,7 +42,7 @@ object Init : ModInitializer {
                             McPlayer.self?.displayClientMessage(Component.literal("§cPlayer could not be found"), false)
                         } else {
                             McClient.tell {
-                                McClient.setScreen(PvTabs.MAIN.create(uuid))
+                                McClient.setScreen(PvTabs.MAIN.create(McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: return@tell))
                             }
                         }
                     }
