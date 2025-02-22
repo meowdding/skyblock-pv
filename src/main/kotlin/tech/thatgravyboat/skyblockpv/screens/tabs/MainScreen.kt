@@ -4,7 +4,6 @@ import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
-import org.apache.commons.lang3.function.Consumers
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -16,14 +15,14 @@ import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
 import tech.thatgravyboat.skyblockpv.data.getSkillLevel
 import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
+import tech.thatgravyboat.skyblockpv.screens.PvTabs
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.util.*
 
-class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
+class MainScreen(uuid: UUID, profile: SkyblockProfile? = null) : BasePvScreen("MAIN", uuid, profile) {
     override suspend fun create(bg: DisplayWidget) {
         val profiles = ProfileAPI.getProfiles(uuid)
-        val profile = profiles.find { it.selected } ?: return
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
@@ -33,7 +32,7 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
 
         cols.addChild(col1)
         cols.addChild(createMiddleColumn(profiles, middleColumnWidth))
-        cols.addChild(createRightColumn(profile, sideColumnWidth))
+        cols.addChild(createRightColumn(profile!!, sideColumnWidth))
 
         cols.arrangeElements()
         cols.setPosition(bg.x, bg.y)
@@ -58,7 +57,7 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
         layout.addChild(SpacerElement.height((uiHeight - playerWidget.height) / 2))
         layout.addChild(playerWidget)
 
-        val state = DropdownState<SkyblockProfile>.of<SkyblockProfile>(profiles.find { it.selected } ?: profiles.first())
+        val state = DropdownState<SkyblockProfile>.of<SkyblockProfile>(profile)
         val dropdown = Widgets.dropdown(
             state,
             profiles,
@@ -74,8 +73,13 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
                 )
             },
             { button -> button.withSize(width, 20) },
-            Consumers.nop(), // TODO: make actually function
+            { builder ->
+                builder.withCallback { profile ->
+                    McClient.tell { McClient.setScreen(PvTabs.MAIN.create(uuid, profile)) }
+                }
+            }
         )
+
         layout.addChild(dropdown)
 
         return layout
