@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens
 
+import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
@@ -15,11 +16,11 @@ enum class PvTabs(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
     MOB(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance),
     ;
 
-    fun create(uuid: UUID): BasePvScreen {
-        return screen.constructors.first().call(uuid, null)
+    fun create(gameProfile: GameProfile): BasePvScreen {
+        return screen.constructors.first().call(gameProfile, null)
     }
 
-    fun create(uuid: UUID, profile: SkyblockProfile?): BasePvScreen {
-        return screen.constructors.first().call(uuid, profile)
+    fun create(gameProfile: GameProfile, profile: SkyblockProfile?): BasePvScreen {
+        return screen.constructors.first().call(gameProfile, profile)
     }
 }

@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
+import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.string.TextWidget
 import net.minecraft.client.gui.layouts.FrameLayout
@@ -11,7 +12,7 @@ import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import java.util.*
 
-class MobScreen(uuid: UUID, profile: SkyblockProfile? = null) : BasePvScreen("MOB", uuid, profile) {
+class MobScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MOB", gameProfile, profile) {
     override suspend fun create(bg: DisplayWidget) {
         val columnWidth = uiWidth / 2 - 20
         val columnHeight = uiHeight - 20
