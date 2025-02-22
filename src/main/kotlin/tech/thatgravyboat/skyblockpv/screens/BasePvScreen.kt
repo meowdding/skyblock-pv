@@ -5,7 +5,9 @@ import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.components.string.TextWidget
 import earth.terrarium.olympus.client.ui.UIConstants
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
@@ -30,7 +32,7 @@ abstract class BasePvScreen(val name: String, val uuid: UUID) : BaseCursorScreen
         val bg = Displays.background(UIConstants.BUTTON.enabled, uiWidth, uiHeight).asWidget()
         val loading = TextWidget(Component.literal("Loading..."))
 
-        runBlocking {
+        CoroutineScope(Dispatchers.IO).launch {
             val screen = this@BasePvScreen
 
             FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
