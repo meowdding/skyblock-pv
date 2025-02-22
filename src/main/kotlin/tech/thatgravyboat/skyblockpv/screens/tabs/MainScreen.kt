@@ -58,15 +58,13 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
             state,
             profiles,
             { profile ->
-                var profileName = profile.id.name
-                when (profile.profileType) {
-                    ProfileType.NORMAL -> {}
-                    ProfileType.BINGO -> profileName += " §9Ⓑ"
-                    ProfileType.IRONMAN -> profileName += " ♻"
-                    ProfileType.STRANDED -> profileName += " §a☀"
-                    ProfileType.UNKNOWN -> {}
-                }
-                return@dropdown Text.of(profileName)
+                Text.of(profile.id.name + when (profile.profileType) {
+                    ProfileType.NORMAL -> ""
+                    ProfileType.BINGO -> " §9Ⓑ"
+                    ProfileType.IRONMAN -> " ♻"
+                    ProfileType.STRANDED -> " §a☀"
+                    ProfileType.UNKNOWN -> ""
+                })
             },
             { button -> button.withSize(width, 20) },
             Consumers.nop(), // TODO: make actually function
