@@ -7,8 +7,9 @@ import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.components.string.TextWidget
-import earth.terrarium.olympus.client.utils.State
+import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIConstants
+import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -107,7 +108,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
                     builder.withCallback { profile ->
                         McClient.tell { McClient.setScreen(PvTabs.entries.first { tab -> tab.name == this@BasePvScreen.name }.create(gameProfile, profile)) }
                     }
-                }
+                    builder.withAlignment(OverlayAlignment.TOP_LEFT)
+                },
             )
             dropdown.setPosition(bg.x, bg.y + bg.height)
             dropdown.visitWidgets(screen::addRenderableWidget)
