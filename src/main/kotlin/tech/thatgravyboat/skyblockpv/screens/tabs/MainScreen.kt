@@ -44,7 +44,6 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
                 FakePlayer(fakeProfile),
                 width, width,
                 width / 2,
-                // todo align on eyes, not on center x center y
                 ctx.mouseX.toFloat() - ctx.x, ctx.mouseY.toFloat() - ctx.y,
             ).withBackground(0xD0000000u).render(gr, ctx.x, ctx.y)
         }
