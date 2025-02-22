@@ -60,6 +60,10 @@ object Displays {
         }
     }
 
+    fun placeholder(width: Int, height: Int): Display {
+        return fixed(width, height, empty())
+    }
+
     fun background(color: UInt, display: Display): Display {
         return object : Display {
             override fun getWidth() = display.getWidth()
