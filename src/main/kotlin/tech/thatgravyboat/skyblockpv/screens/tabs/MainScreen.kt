@@ -63,7 +63,7 @@ class MainScreen(uuid: UUID) : BasePvScreen("MAIN", uuid) {
                     ProfileType.BINGO -> " §9Ⓑ"
                     ProfileType.IRONMAN -> " ♻"
                     ProfileType.STRANDED -> " §a☀"
-                    ProfileType.UNKNOWN -> ""
+                    ProfileType.UNKNOWN -> " §c§ka"
                 })
             },
             { button -> button.withSize(width, 20) },
