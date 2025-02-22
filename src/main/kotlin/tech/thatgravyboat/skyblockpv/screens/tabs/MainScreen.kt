@@ -22,6 +22,10 @@ import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.util.*
 
 class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
+  
+    private var cachedX = 0.0F
+    private var cachedY = 0.0F
+  
     override suspend fun create(bg: DisplayWidget) {
         val profiles = ProfileAPI.getProfiles(gameProfile.id)
         val middleColumnWidth = (uiWidth * 0.2).toInt()
@@ -43,8 +47,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
     fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
         val playerWidget = Displays.placeholder(width, width).asWidget().withRenderer { gr, ctx, _ ->
             // TODO: see why opening the dropdown causes the ctx to not know the mouse
-            val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 } ?: Float.NaN
-            val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 } ?: Float.NaN
+            val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
+            val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             Displays.entity(
                 FakePlayer(gameProfile),
                 width, width,
