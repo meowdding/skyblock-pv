@@ -2,17 +2,28 @@ package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.buttons.Button
+import earth.terrarium.olympus.client.components.buttons.ButtonShapes
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.ui.UIConstants
+import kotlinx.coroutines.runBlocking
+import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.api.StatusAPI
+import tech.thatgravyboat.skyblockpv.api.data.PlayerStatus
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
+import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
+import tech.thatgravyboat.skyblockpv.utils.Utils.translate
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 
@@ -51,9 +62,34 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
             ).withBackground(0xD0000000u).render(gr, ctx.x, ctx.y)
         }
 
+        val statusButtonWidget = Button()
+        statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of("§fLoad Status")))
+        statusButtonWidget.setSize(width, 20)
+        statusButtonWidget.withTexture(ExtraConstants.BUTTON_DARK)
+        statusButtonWidget.withCallback {
+            statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of("§fLoading...")))
+            runBlocking {
+                val status = StatusAPI.getStatus(gameProfile.id)
+                if (status == null) {
+                    statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of("§4ERROR")))
+                    return@runBlocking
+                }
+                val statusText = when (status.status) {
+                    PlayerStatus.Status.ONLINE -> "§aONLINE - "
+                    PlayerStatus.Status.OFFLINE -> "§cOFFLINE - "
+                    PlayerStatus.Status.ERROR -> "§4ERROR"
+                }
+                val locationText = status.location ?: "Unknown"
+                statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of(statusText + locationText)))
+                statusButtonWidget.asDisabled()
+            }
+        }
+
         val layout = LinearLayout.vertical()
         layout.addChild(SpacerElement.height((uiHeight - playerWidget.height) / 2))
         layout.addChild(playerWidget)
+        layout.addChild(SpacerElement.height(5))
+        layout.addChild(statusButtonWidget)
 
         return layout
     }

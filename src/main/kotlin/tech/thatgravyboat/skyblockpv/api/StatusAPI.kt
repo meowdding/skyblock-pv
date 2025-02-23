@@ -1,10 +1,9 @@
 package tech.thatgravyboat.skyblockpv.api
 
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.data.PlayerStatus
-import java.util.UUID
+import java.util.*
 
 private const val PATH = "v2/status"
 
