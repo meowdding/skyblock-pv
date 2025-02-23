@@ -40,7 +40,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         CoroutineScope(Dispatchers.IO).launch {
             profile = fetchProfile()
             profiles = ProfileAPI.getProfiles(gameProfile.id)
-            McClient.tell { init() }
+            McClient.tell { rebuildWidgets() }
         }
     }
 
