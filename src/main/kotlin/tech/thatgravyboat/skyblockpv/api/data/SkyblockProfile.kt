@@ -46,44 +46,45 @@ data class SkyblockProfile(
                 },
 
                 skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) },
+                collections = member.getCollectionData(),
+                mobData = playerStats.getMobData(),
+                slayer = slayerData.getSlayerData(),
+            )
+        }
 
-                collections = run {
-                    val playerCollections = member["collection"].asMap { id, amount -> id to amount.asLong(0) }
-                    CollectionCategory.entries.flatMap { it.collections.toList() }.map {
-                        it to (playerCollections[it] ?: 0)
-                    }.mapNotNull { (id, amount) ->
-                        CollectionCategory.getCategoryByItemName(id)?.let {
-                            CollectionItem(it, id, SkyBlockItems.getItemById(id), amount)
-                        }
-                    }
+        private fun JsonObject.getCollectionData(): List<CollectionItem> {
+            val playerCollections = this["collection"].asMap { id, amount -> id to amount.asLong(0) }
+            return CollectionCategory.entries.flatMap { it.collections.toList() }.map {
+                it to (playerCollections[it] ?: 0)
+            }.mapNotNull { (id, amount) ->
+                CollectionCategory.getCategoryByItemName(id)?.let {
+                    CollectionItem(it, id, SkyBlockItems.getItemById(id), amount)
+                }
+            }
+        }
+
+        private fun JsonObject.getMobData(): List<MobData> {
+            val deaths = this["deaths"].asMap { id, amount -> id to amount.asLong(0) }
+            val kills = this["kills"].asMap { id, amount -> id to amount.asLong(0) }
+
+            return (deaths.keys + kills.keys).map { id ->
+                MobData(
+                    mobId = id,
+                    kills = kills[id] ?: 0,
+                    deaths = deaths[id] ?: 0,
+                )
+            }
+        }
+
+        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { name, data ->
+            val data = data.asJsonObject
+            name to SlayerTypeData(
+                exp = data["xp"].asLong(0),
+                bossAttemptsTier = (0..4).associateWith { tier ->
+                    data["boss_attempts_tier_$tier"].asInt(0)
                 },
-
-                mobData = run {
-                    val deaths = playerStats["deaths"].asMap { id, amount -> id to amount.asLong(0) }
-                    val kills = playerStats["kills"].asMap { id, amount -> id to amount.asLong(0) }
-
-                    (deaths.keys + kills.keys).map { id ->
-                        MobData(
-                            mobId = id,
-                            kills = kills[id] ?: 0,
-                            deaths = deaths[id] ?: 0,
-                        )
-                    }
-                },
-
-                slayer = run {
-                    slayerData["slayer_bosses"].asMap { name, data ->
-                        val data = data.asJsonObject
-                        name to SlayerTypeData(
-                            exp = data["xp"].asLong(0),
-                            bossAttemptsTier = (0..4).associateWith { tier ->
-                                data["boss_attempts_tier_$tier"].asInt(0)
-                            },
-                            bossKillsTier = (0..4).associateWith { tier ->
-                                data["boss_kills_tier_$tier"].asInt(0)
-                            },
-                        )
-                    }
+                bossKillsTier = (0..4).associateWith { tier ->
+                    data["boss_kills_tier_$tier"].asInt(0)
                 },
             )
         }
