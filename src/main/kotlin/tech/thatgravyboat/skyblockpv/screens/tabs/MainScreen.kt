@@ -2,7 +2,6 @@ package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.Widgets
-import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
@@ -12,6 +11,7 @@ import tech.thatgravyboat.skyblockpv.data.getIconFromSkillName
 import tech.thatgravyboat.skyblockpv.data.getSkillLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
+import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
@@ -65,8 +65,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         column.addChild(Widgets.text(Text.of("Skills")).withShadow())
 
         profile.skill.asSequence().chunked(skillElementsPerRow).forEach { chunk ->
-            val frame = FrameLayout(width, uiHeight)
-            val element = frame.addChild(LinearLayout.horizontal().spacing(5))
+            val element = LinearLayout.horizontal().spacing(5)
             chunk.forEach { (skill, data) ->
                 val level = getSkillLevel(skill, data)
                 val widget = listOf(
@@ -75,9 +74,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
                 ).toRow(1).asWidget().withTooltip(Text.of("$skill: $level"))
                 element.addChild(widget)
             }
-            element.arrangeElements()
-            frame.arrangeElements()
-            column.addChild(frame)
+            column.addChild(element.centerHorizontally(width))
         }
 
         return column
