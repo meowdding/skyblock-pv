@@ -4,7 +4,6 @@ import com.google.gson.JsonObject
 import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
-import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.MobData
 import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
@@ -54,10 +53,11 @@ data class SkyblockProfile(
 
         private fun JsonObject.getCollectionData(): List<CollectionItem> {
             val playerCollections = this["collection"].asMap { id, amount -> id to amount.asLong(0) }
-            return CollectionCategory.entries.flatMap { it.collections.toList() }.map {
-                it to (playerCollections[it] ?: 0)
+            val allCollections = CollectionAPI.collectionData.entries.flatMap { it.value.items.entries }.associate { it.key to it.value }
+            return allCollections.map { (id, _) ->
+                id to (playerCollections[id] ?: 0)
             }.mapNotNull { (id, amount) ->
-                CollectionCategory.getCategoryByItemName(id)?.let {
+                CollectionAPI.getCategoryByItemName(id)?.let {
                     CollectionItem(it, id, SkyBlockItems.getItemById(id), amount)
                 }
             }

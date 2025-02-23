@@ -12,6 +12,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockpv.api.MojangAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
+import tech.thatgravyboat.skyblockpv.api.data.CollectionAPI
 import tech.thatgravyboat.skyblockpv.command.SkyblockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.screens.PvTabs
 
@@ -20,6 +21,7 @@ object Init : ModInitializer {
         val modules = listOf(
             this,
             SkillAPI,
+            CollectionAPI,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }

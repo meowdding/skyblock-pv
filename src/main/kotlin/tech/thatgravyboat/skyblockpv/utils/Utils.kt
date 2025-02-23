@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.utils
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.gui.GuiGraphics
+import java.text.DecimalFormat
 
 object Utils {
 
@@ -24,4 +25,6 @@ object Utils {
         this.action()
         this.popPose()
     }
+
+    fun Number.round(): String = DecimalFormat("#.##").format(this)
 }
