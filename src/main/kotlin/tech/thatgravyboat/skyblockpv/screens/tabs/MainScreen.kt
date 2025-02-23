@@ -6,6 +6,7 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.resources.ResourceLocation
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
@@ -27,9 +28,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
 
         val cols = LinearLayout.horizontal()
 
-        val col1 = Displays.background(0x40FF0000u, Displays.fixed(sideColumnWidth, uiHeight, Displays.text("§8Col 1"))).asWidget()
-
-        cols.addChild(col1)
+        cols.addChild(createLeftColumn(profile!!, sideColumnWidth))
         cols.addChild(createMiddleColumn(profiles, middleColumnWidth))
         cols.addChild(createRightColumn(profile!!, sideColumnWidth))
 
@@ -38,9 +37,42 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         cols.visitWidgets(this::addRenderableWidget)
     }
 
-    fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
+    private fun createLeftColumn(profile: SkyblockProfile, width: Int): Layout {
+        val column = LinearLayout.vertical()
+        column.addChild(SpacerElement.height(5))
+
+        column.addChild(getTitleWidget("Info", width))
+
+        val infoColumn = LinearLayout.vertical().spacing(2)
+        infoColumn.addChild(SpacerElement.height(5))
+        infoColumn.addChild(Widgets.text(Text.of("Purse: ${profile.currency.purse.toFormattedString()}")))
+        infoColumn.addChild(Widgets.text(Text.of("Motes: ${profile.currency.motes.toFormattedString()}")))
+        infoColumn.addChild(
+            Widgets.text(
+                Text.of(
+                    buildString {
+                        append("Bank: ")
+                        val soloBank = profile.currency.soloBank.takeIf { it != 0L }?.toFormattedString()
+                        val mainBank = profile.currency.mainBank.takeIf { it != 0L }?.toFormattedString()
+
+                        if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
+                        else append(soloBank ?: mainBank ?: "0")
+                    },
+                ),
+            ),
+        )
+        infoColumn.addChild(Widgets.text(Text.of("Cookie Active: ${profile.currency.cookieBuffActive}")))
+        infoColumn.addChild(SpacerElement.height(5))
+
+        infoColumn.arrangeElements()
+
+        column.addChild(getMainContentWidget(infoColumn, width).centerHorizontally(width))
+
+        return column
+    }
+
+    private fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
         val playerWidget = Displays.placeholder(width, width).asWidget().withRenderer { gr, ctx, _ ->
-            // TODO: see why opening the dropdown causes the ctx to not know the mouse
             val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             Displays.entity(
@@ -58,22 +90,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         return layout
     }
 
-    fun createRightColumn(profile: SkyblockProfile, width: Int): Layout {
+    private fun createRightColumn(profile: SkyblockProfile, width: Int): Layout {
         val skillDisplayElementWidth = 30
         val skillElementsPerRow = width / skillDisplayElementWidth
         val column = LinearLayout.vertical()
         column.addChild(SpacerElement.height(5))
 
         fun <T> addSection(title: String, data: Sequence<Pair<String, T>>, getIcon: (String) -> ResourceLocation, getLevel: (String, T) -> Int) {
-            val titleWidget = Widgets.frame { compoundWidget ->
-                compoundWidget.withContents { contents ->
-                    contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
-                    contents.addChild(Widgets.text(Text.of(title)).centerHorizontally(width))
-                }
-                compoundWidget.withStretchToContentSize()
-            }
-
-            column.addChild(titleWidget)
+            column.addChild(getTitleWidget(title, width))
 
             val mainContent = LinearLayout.vertical().spacing(5)
             mainContent.addChild(SpacerElement.height(5))
@@ -94,15 +118,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
 
             mainContent.arrangeElements()
 
-            val mainContentWidget = Widgets.frame { compoundWidget ->
-                compoundWidget.withContents { contents ->
-                    contents.addChild(Displays.background(SkyBlockPv.id("box/box"), width - 10, mainContent.height).asWidget())
-                    contents.addChild(mainContent)
-                }
-                compoundWidget.withStretchToContentSize()
-            }
-
-            column.addChild(mainContentWidget)
+            column.addChild(getMainContentWidget(mainContent, width))
         }
 
         addSection<Long>("Skills", profile.skill.asSequence().map { it.toPair() }, ::getIconFromSkillName, ::getSkillLevel)
@@ -112,7 +128,22 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         }
 
         return column
+    }
 
+    private fun getTitleWidget(title: String, width: Int) = Widgets.frame { compoundWidget ->
+        compoundWidget.withContents { contents ->
+            contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
+            contents.addChild(Widgets.text(Text.of(title)).centerHorizontally(width))
+        }
+        compoundWidget.withStretchToContentSize()
+    }
+
+    private fun getMainContentWidget(content: Layout, width: Int) = Widgets.frame { compoundWidget ->
+        compoundWidget.withContents { contents ->
+            contents.addChild(Displays.background(SkyBlockPv.id("box/box"), width - 10, content.height).asWidget())
+            contents.addChild(content)
+        }
+        compoundWidget.withStretchToContentSize()
     }
 
 }

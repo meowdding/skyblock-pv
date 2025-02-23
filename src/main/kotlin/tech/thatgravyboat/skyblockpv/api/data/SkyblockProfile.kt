@@ -4,7 +4,9 @@ import com.google.gson.JsonObject
 import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
+import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
+import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.MobData
 import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
 import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
@@ -16,7 +18,8 @@ data class SkyblockProfile(
     val id: ProfileId,
     val profileType: ProfileType = ProfileType.UNKNOWN,
 
-    val skill: Map<String, Long> = emptyMap(),
+    val currency: Currency,
+    val skill: Map<String, Long>,
     val collections: List<CollectionItem>,
     val mobData: List<MobData>,
     val slayer: Map<String, SlayerTypeData>,
@@ -45,6 +48,20 @@ data class SkyblockProfile(
                     }
                 },
 
+                currency = run {
+                    val currencies = member.getAsJsonObject("currencies")
+                    val profile = member.getAsJsonObject("profile")
+
+                    Currency(
+                        purse = currencies["coin_purse"].asLong(0),
+                        motes = currencies["motes_purse"].asLong(0),
+                        mainBank = member["banking"].asLong(0),
+                        soloBank = json.getAsJsonObject("banking")?.get("balance").asLong(0),
+                        cookieBuffActive = profile["cookie_buff_active"].asBoolean(false),
+                    )
+                },
+
+                //  todo: missing skill data when not unlocked
                 skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkyBlockOrder(),
                 collections = member.getCollectionData(),
                 mobData = playerStats.getMobData(),
