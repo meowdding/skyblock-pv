@@ -5,14 +5,16 @@ import earth.terrarium.olympus.client.components.Widgets
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
+import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
-import tech.thatgravyboat.skyblockpv.data.getIconFromSkillName
-import tech.thatgravyboat.skyblockpv.data.getSkillLevel
+import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.displays.*
+
 
 class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
 
@@ -59,56 +61,58 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
     fun createRightColumn(profile: SkyblockProfile, width: Int): Layout {
         val skillDisplayElementWidth = 30
         val skillElementsPerRow = width / skillDisplayElementWidth
+        val column = LinearLayout.vertical()
+        column.addChild(SpacerElement.height(5))
 
-        val column = LinearLayout.vertical().spacing(5)
-
-        column.addChild(Widgets.text(Text.of("Skills")).withShadow())
-
-        profile.skill.asSequence().chunked(skillElementsPerRow).forEach { chunk ->
-            val element = LinearLayout.horizontal().spacing(5)
-            chunk.forEach { (skill, data) ->
-                val level = getSkillLevel(skill, data)
-                val widget = listOf(
-                    Displays.sprite(getIconFromSkillName(skill), 12, 12),
-                    Displays.text("$level"),
-                ).toRow(1).asWidget().withTooltip(Text.of("$skill: $level"))
-                element.addChild(widget)
+        fun <T> addSection(title: String, data: Sequence<Pair<String, T>>, getIcon: (String) -> ResourceLocation, getLevel: (String, T) -> Int) {
+            val titleWidget = Widgets.frame { compoundWidget ->
+                compoundWidget.withContents { contents ->
+                    contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
+                    contents.addChild(Widgets.text(Text.of(title)).centerHorizontally(width))
+                }
+                compoundWidget.withStretchToContentSize()
             }
-            column.addChild(element.centerHorizontally(width))
+
+            column.addChild(titleWidget)
+
+            val mainContent = LinearLayout.vertical().spacing(5)
+            mainContent.addChild(SpacerElement.height(5))
+
+            data.chunked(skillElementsPerRow).forEach { chunk ->
+                val element = LinearLayout.horizontal().spacing(5)
+                chunk.forEach { (name, data) ->
+                    val level = getLevel(name, data)
+                    val widget = listOf(
+                        Displays.sprite(getIcon(name), 12, 12),
+                        Displays.text("$level"),
+                    ).toRow(1).asWidget().withTooltip(Text.of("$name: $level"))
+                    element.addChild(widget)
+                }
+                mainContent.addChild(element.centerHorizontally(width))
+            }
+            mainContent.addChild(SpacerElement.height(5))
+
+            mainContent.arrangeElements()
+
+            val mainContentWidget = Widgets.frame { compoundWidget ->
+                compoundWidget.withContents { contents ->
+                    contents.addChild(Displays.background(SkyBlockPv.id("box/box"), width - 10, mainContent.height).asWidget())
+                    contents.addChild(mainContent)
+                }
+                compoundWidget.withStretchToContentSize()
+            }
+
+            column.addChild(mainContentWidget)
+        }
+
+        addSection<Long>("Skills", profile.skill.asSequence().map { it.toPair() }, ::getIconFromSkillName, ::getSkillLevel)
+        column.addChild(Widgets.text(Text.of("")))
+        addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, ::getIconFromSlayerName) { name, data ->
+            getSlayerLevel(name, data.exp)
         }
 
         return column
 
-
-        /*val column = buildList {
-            add(Displays.text("Skills"))
-
-            profile.skill.asSequence().chunked(skillElementsPerRow).map { chunk ->
-                chunk.map { (skill, data) ->
-                    val level = getSkillLevel(skill, data)
-                    listOf(
-                        Displays.sprite(getIconFromSkillName(skill), 12, 12),
-                        Displays.text("$level"),
-                    ).toRow(1).asWidget().withTooltip(Text.of("$skill: $level"))
-                }.toRow(5).centerIn(width, -1)
-            }.toList().toColumn(5).also { add(it) }
-
-            add(Displays.text(""))
-            add(Displays.text("Slayer"))
-            profile.slayer.asSequence().chunked(skillElementsPerRow).map { chunk ->
-                chunk.map { (slayer, data) ->
-                    val level = getSlayerLevel(slayer, data.exp)
-                    listOf(
-                        Displays.sprite(getIconFromSlayerName(slayer), 12, 12),
-                        Displays.text("$level"),
-                    ).toRow(1)
-                }.toRow(5).centerIn(width, -1)
-            }.toList().toColumn(5).also { add(it) }
-
-            add(Displays.text(""))
-            add(Displays.text("Collection"))
-        }.toColumn()
-
-        return Displays.background(0x4000FF00u, Displays.fixed(width, uiHeight, column)).asWidget()*/
     }
+
 }
