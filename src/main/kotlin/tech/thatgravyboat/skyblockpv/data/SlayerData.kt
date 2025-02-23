@@ -31,6 +31,7 @@ fun getIconFromSlayerName(name: String): ResourceLocation = SkyBlockPv.id(
         "wolf" -> "icon/slayer/sven"
         "enderman" -> "icon/slayer/voidgloom"
         "blaze" -> "icon/slayer/inferno"
+        "vampire" -> "icon/slayer/vampire"
         else -> "icon/questionmark"
     },
 )
