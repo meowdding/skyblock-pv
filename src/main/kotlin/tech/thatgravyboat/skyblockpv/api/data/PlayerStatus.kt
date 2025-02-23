@@ -9,10 +9,6 @@ data class PlayerStatus(
     val map: String?
 ) {
 
-    override fun toString(): String {
-        return "PlayerStatus(status=$status, location=$location, gameType=$gameType, map=$map)"
-    }
-
     companion object {
         fun fromJson(json: JsonObject): PlayerStatus {
             if (json.has("success") && json.get("success").asBoolean) {
