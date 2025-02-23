@@ -38,8 +38,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            profile = fetchProfile()
             profiles = ProfileAPI.getProfiles(gameProfile.id)
+            profile = profile ?: profiles.find { it.selected }
             McClient.tell { rebuildWidgets() }
         }
     }
@@ -127,9 +127,5 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         this.renderBlurredBackground()
         this.renderTransparentBackground(guiGraphics)
-    }
-
-    suspend fun fetchProfile(): SkyblockProfile? {
-        return ProfileAPI.getProfiles(gameProfile.id).find { it.selected }
     }
 }
