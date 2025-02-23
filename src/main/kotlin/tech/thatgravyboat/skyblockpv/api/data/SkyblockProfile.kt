@@ -47,8 +47,15 @@ data class SkyblockProfile(
 
                 skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) },
 
-                collections = member["collection"].asMap { string, element -> string to element.asLong(0) }.mapNotNull { (id, amount) ->
-                    CollectionCategory.getCategoryByItemName(id)?.let { CollectionItem(it, id, SkyBlockItems.getItemById(id), amount) }
+                collections = run {
+                    val playerCollections = member["collection"].asMap { id, amount -> id to amount.asLong(0) }
+                    CollectionCategory.entries.flatMap { it.collections.toList() }.map {
+                        it to (playerCollections[it] ?: 0)
+                    }.mapNotNull { (id, amount) ->
+                        CollectionCategory.getCategoryByItemName(id)?.let {
+                            CollectionItem(it, id, SkyBlockItems.getItemById(id), amount)
+                        }
+                    }
                 },
 
                 mobData = run {

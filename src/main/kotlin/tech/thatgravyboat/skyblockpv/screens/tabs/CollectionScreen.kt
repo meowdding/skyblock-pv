@@ -22,6 +22,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = nul
         val profile = profile ?: return
         val scrollable = ListWidget(uiWidth, columnHeight)
         val filteredCollections = profile.collections.filter { it.category == currentCategory }
+        println(filteredCollections)
         val table = buildList {
             filteredCollections.chunked(2).forEach { chunk ->
                 val row = buildList {
