@@ -21,6 +21,7 @@ import org.joml.Vector3f
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.width
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
 import tech.thatgravyboat.skyblockpv.utils.Utils.translate
@@ -188,7 +189,7 @@ object Displays {
         component: Component,
         maxWidth: Int = NO_SPLIT,
         color: () -> UInt = { 0xFFFFFFFFu },
-        shadow: Boolean = true
+        shadow: Boolean = true,
     ): Display {
         val lines = if (maxWidth == NO_SPLIT) listOf(component.visualOrderText) else McFont.split(component, maxWidth)
         val width = lines.maxOfOrNull(McFont::width) ?: 0
@@ -208,7 +209,7 @@ object Displays {
     fun text(
         sequence: FormattedCharSequence,
         color: () -> UInt = { 0xFFFFFFFFu },
-        shadow: Boolean = true
+        shadow: Boolean = true,
     ): Display {
         return object : Display {
             override fun getWidth() = McFont.width(sequence)
@@ -228,7 +229,7 @@ object Displays {
     fun row(
         vararg displays: Display,
         spacing: Int = 0,
-        alignment: Alignment = Alignment.START
+        alignment: Alignment = Alignment.START,
     ): Display {
         return object : Display {
             override fun getWidth() = displays.sumOf { it.getWidth() } + spacing * (displays.size - 1)
@@ -260,7 +261,7 @@ object Displays {
     fun column(
         vararg displays: Display,
         spacing: Int = 0,
-        alignment: Alignment = Alignment.START
+        alignment: Alignment = Alignment.START,
     ): Display {
         return object : Display {
             override fun getWidth() = displays.maxOfOrNull { it.getWidth() } ?: 0
@@ -304,7 +305,7 @@ object Displays {
     }
 
     fun <T> renderable(renderable: T, width: Int = -1, height: Int = -1): Display
-            where T : Renderable, T : LayoutElement {
+        where T : Renderable, T : LayoutElement {
         return object : Display {
             override fun getWidth(): Int = if (width == -1) renderable.width else width
             override fun getHeight(): Int = if (height == -1) renderable.height else height
@@ -389,7 +390,7 @@ object Displays {
                     positionOffset,
                     baseRotation,
                     tiltRotation,
-                    entity
+                    entity,
                 )
                 entity.yBodyRot = originalBodyRotation
                 entity.yRot = originalYRotation
@@ -402,7 +403,7 @@ object Displays {
 
     fun table(
         table: List<List<Display>>,
-        spacing: Int = 0
+        spacing: Int = 0,
     ): Display {
         return object : Display {
             override fun getHeight(): Int = table.sumOf { it.maxOf { it.getHeight() } } + (table.size - 1) * spacing
@@ -430,6 +431,27 @@ object Displays {
                         }
                     }
                     currentY += rowHeight + spacing
+                }
+            }
+        }
+    }
+
+    fun progress(
+        progress: Float,
+        width: Int = 91,
+        height: Int = 5,
+    ): Display {
+        return object : Display {
+            private val background = SkyBlockPv.id("progressbar/background")
+            private val foreground = SkyBlockPv.id("progressbar/foreground")
+            override fun getWidth() = width
+            override fun getHeight() = height
+
+            override fun render(graphics: GuiGraphics) {
+                val progressWidth = (width * progress).toInt()
+                graphics.blitSprite(RenderType::guiTextured, background, 0, 0, width, height)
+                graphics.scissor(0, 0, progressWidth, height) {
+                    graphics.blitSprite(RenderType::guiTextured, foreground, 0, 0, width, height)
                 }
             }
         }

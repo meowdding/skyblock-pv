@@ -12,7 +12,7 @@
         "main": [
             {
                 "adapter": "kotlin",
-                "value": "tech.thatgravyboat.skyblockpv.Init"
+                "value": "tech.thatgravyboat.skyblockpv.SkyBlockPv"
             }
         ]
     },

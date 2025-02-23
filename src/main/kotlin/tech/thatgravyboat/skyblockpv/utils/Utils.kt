@@ -2,6 +2,9 @@ package tech.thatgravyboat.skyblockpv.utils
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.layouts.FrameLayout
+import net.minecraft.client.gui.layouts.LayoutElement
+import java.text.DecimalFormat
 
 object Utils {
 
@@ -23,5 +26,15 @@ object Utils {
         this.pushPose()
         this.action()
         this.popPose()
+    }
+
+    fun Number.round(): String = DecimalFormat("#.##").format(this)
+
+    fun LayoutElement.centerVertically(height: Int) : LayoutElement {
+        return FrameLayout(0, height).also { it.addChild(this) }
+    }
+
+    fun LayoutElement.centerHorizontally(width: Int) : LayoutElement {
+        return FrameLayout(width, 0).also { it.addChild(this) }
     }
 }

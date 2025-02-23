@@ -6,18 +6,19 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockpv.api.data.CollectionAPI
+import tech.thatgravyboat.skyblockpv.api.data.CollectionAPI.getProgressToNextLevel
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
-import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
+import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.*
-import java.util.*
 
 class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("COLLECTION", gameProfile, profile) {
 
-    private var currentCategory = CollectionCategory.MINING
+    private var currentCategory = "MINING"
 
-    override suspend fun create(bg: DisplayWidget) {
+    override fun create(bg: DisplayWidget) {
         val columnHeight = uiHeight - 20
 
         val profile = profile ?: return
@@ -31,7 +32,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = nul
                 }
                 add(row)
             }
-        }.asTable().centerIn(uiWidth, -1).asWidget()
+        }.asTable(5).centerIn(uiWidth, -1).asWidget()
 
         scrollable.add(table)
 
@@ -41,9 +42,14 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = nul
     }
 
     private fun getElement(col: CollectionItem): Display {
+        val collectionEntry = CollectionAPI.getCollectionEntry(col.itemId) ?: return Displays.text("Unknown Item")
+        val prog = collectionEntry.getProgressToNextLevel(col.amount)
         val display = Displays.row(
             Displays.item(col.itemStack ?: ItemStack.EMPTY),
-            Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.toFormattedString()}")),
+            listOf(
+                Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.toFormattedString()}")),
+                listOf(Displays.progress(prog.second), Displays.text("${(prog.second * 100).round()}% to ${prog.first}")).toRow(3),
+            ).toColumn(1),
             spacing = 5,
             alignment = Alignment.CENTER,
         )

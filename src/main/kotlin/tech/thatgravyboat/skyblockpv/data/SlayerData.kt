@@ -1,7 +1,7 @@
 package tech.thatgravyboat.skyblockpv.data
 
 import net.minecraft.resources.ResourceLocation
-import tech.thatgravyboat.skyblockpv.Init
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 
 private val xpPerLevelNormal = mapOf(
     1 to 10L,
@@ -24,13 +24,14 @@ private val xpPerLevelVampire = mapOf(
 )
 
 
-fun getIconFromSlayerName(name: String): ResourceLocation = Init.id(
+fun getIconFromSlayerName(name: String): ResourceLocation = SkyBlockPv.id(
     when (name) {
         "zombie" -> "icon/slayer/revenant"
         "spider" -> "icon/slayer/tarantula"
         "wolf" -> "icon/slayer/sven"
         "enderman" -> "icon/slayer/voidgloom"
         "blaze" -> "icon/slayer/inferno"
+        "vampire" -> "icon/slayer/vampire"
         else -> "icon/questionmark"
     },
 )
