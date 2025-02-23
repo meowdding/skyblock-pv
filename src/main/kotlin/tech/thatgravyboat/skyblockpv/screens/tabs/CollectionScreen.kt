@@ -6,8 +6,8 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockpv.api.data.CollectionAPI
-import tech.thatgravyboat.skyblockpv.api.data.CollectionAPI.getProgressToNextLevel
+import tech.thatgravyboat.skyblockpv.api.CollectionAPI
+import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToNextLevel
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
