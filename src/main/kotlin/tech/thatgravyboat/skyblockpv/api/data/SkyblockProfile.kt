@@ -7,6 +7,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.MobData
 import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
+import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
 import tech.thatgravyboat.skyblockpv.utils.*
 import java.util.*
 
@@ -44,7 +45,7 @@ data class SkyblockProfile(
                     }
                 },
 
-                skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) },
+                skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkyBlockOrder(),
                 collections = member.getCollectionData(),
                 mobData = playerStats.getMobData(),
                 slayer = slayerData.getSlayerData(),
@@ -53,7 +54,7 @@ data class SkyblockProfile(
 
         private fun JsonObject.getCollectionData(): List<CollectionItem> {
             val playerCollections = this["collection"].asMap { id, amount -> id to amount.asLong(0) }
-            val allCollections = CollectionAPI.collectionData.entries.flatMap { it.value.items.entries }.associate { it.key to it.value }
+            val allCollections = CollectionAPI.collectionData.entries.flatMap { it.value.items.entries }.associate { it.key to it.value }.sortToSkyBlockOrder()
             return allCollections.map { (id, _) ->
                 id to (playerCollections[id] ?: 0)
             }.mapNotNull { (id, amount) ->
@@ -87,6 +88,6 @@ data class SkyblockProfile(
                     data["boss_kills_tier_$tier"].asInt(0)
                 },
             )
-        }
+        }.sortToSkyBlockOrder()
     }
 }
