@@ -98,5 +98,5 @@ object SortedEntries {
     )
 
     fun List<String>.sortToSkyBlockOrder() = sortedBy { sortedList.indexOf(it) }
-    fun <T : Any> Map<String, T>.sortToSkyBlockOrder() = toList().sortedBy { sortedList.indexOf(it.first) }.toMap()
+    fun <T> Map<String, T>.sortToSkyBlockOrder() = toList().sortedBy { sortedList.indexOf(it.first) }.toMap()
 }
