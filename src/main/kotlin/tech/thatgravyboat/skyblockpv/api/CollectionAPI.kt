@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.api.data
+package tech.thatgravyboat.skyblockpv.api
 
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
