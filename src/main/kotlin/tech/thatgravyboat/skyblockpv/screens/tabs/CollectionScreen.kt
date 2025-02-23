@@ -30,7 +30,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = nul
                 }
                 add(row)
             }
-        }.asTable().centerIn(uiWidth, -1).asWidget()
+        }.asTable(5).centerIn(uiWidth, -1).asWidget()
 
         scrollable.add(table)
 
@@ -42,7 +42,10 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = nul
     private fun getElement(col: CollectionItem): Display {
         val display = Displays.row(
             Displays.item(col.itemStack ?: ItemStack.EMPTY),
-            Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.toFormattedString()}")),
+            listOf(
+                Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.toFormattedString()}")),
+                listOf(Displays.progress(0.5f), Displays.text("0.5% VII")).toRow(3),
+            ).toColumn(1),
             spacing = 5,
             alignment = Alignment.CENTER,
         )
