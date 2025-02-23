@@ -21,7 +21,7 @@ import org.joml.Vector3f
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.width
-import tech.thatgravyboat.skyblockpv.Init
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
 import tech.thatgravyboat.skyblockpv.utils.Utils.translate
@@ -442,8 +442,8 @@ object Displays {
         height: Int = 5,
     ): Display {
         return object : Display {
-            private val background = Init.id("progressbar/background")
-            private val foreground = Init.id("progressbar/foreground")
+            private val background = SkyBlockPv.id("progressbar/background")
+            private val foreground = SkyBlockPv.id("progressbar/foreground")
             override fun getWidth() = width
             override fun getHeight() = height
 

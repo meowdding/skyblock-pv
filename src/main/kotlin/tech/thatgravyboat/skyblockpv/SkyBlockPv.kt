@@ -16,7 +16,7 @@ import tech.thatgravyboat.skyblockpv.api.data.CollectionAPI
 import tech.thatgravyboat.skyblockpv.command.SkyblockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.screens.PvTabs
 
-object Init : ModInitializer {
+object SkyBlockPv : ModInitializer {
     override fun onInitialize() {
         val modules = listOf(
             this,

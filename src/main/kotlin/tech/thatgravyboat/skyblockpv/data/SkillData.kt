@@ -1,7 +1,7 @@
 package tech.thatgravyboat.skyblockpv.data
 
 import net.minecraft.resources.ResourceLocation
-import tech.thatgravyboat.skyblockpv.Init
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 
 fun getSkillLevel(skill: String, exp: Long): Int {
@@ -12,7 +12,7 @@ fun getSkillLevel(skill: String, exp: Long): Int {
     return (SkillAPI.skillLevels.entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
 }
 
-fun getIconFromSkillName(name: String): ResourceLocation = Init.id(
+fun getIconFromSkillName(name: String): ResourceLocation = SkyBlockPv.id(
     when (name) {
         "SKILL_COMBAT" -> "icon/skill/combat"
         "SKILL_FARMING" -> "icon/skill/farming"
