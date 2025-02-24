@@ -13,15 +13,15 @@ import java.util.concurrent.CompletableFuture
 
 object SkyBlockPlayerSuggestionProvider : SuggestionProvider<FabricClientCommandSource> {
     override fun getSuggestions(context: CommandContext<FabricClientCommandSource?>, builder: SuggestionsBuilder): CompletableFuture<Suggestions?>? {
-        PartyAPI.members.forEach { member ->
-            if (SharedSuggestionProvider.matchesSubStr(builder.remaining, member.name)) builder.suggest(member.name)
-        }
-        FriendsAPI.friends.forEach { friend ->
-            if (SharedSuggestionProvider.matchesSubStr(builder.remaining, friend.name)) builder.suggest(friend.name)
-        }
-        McClient.players.forEach { playerInfo ->
-            if (SharedSuggestionProvider.matchesSubStr(builder.remaining, playerInfo.profile.name)) builder.suggest(playerInfo.profile.name)
-        }
+        PartyAPI.members.forEach { member -> suggest(builder, builder.remaining, member.name) }
+        FriendsAPI.friends.forEach { friend -> suggest(builder, builder.remaining, friend.name) }
+        McClient.players.forEach { playerInfo -> suggest(builder, builder.remaining, playerInfo.profile.name) }
         return builder.buildFuture()
+    }
+
+    private fun suggest(builder: SuggestionsBuilder, remaining: String, name: String?) {
+        if (SharedSuggestionProvider.matchesSubStr(remaining.lowercase(), name?.lowercase())) {
+            builder.suggest(name)
+        }
     }
 }
