@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.api.PronounsDbAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI.getIconFromSkillName
 import tech.thatgravyboat.skyblockpv.api.SkillAPI.getSkillLevel
 import tech.thatgravyboat.skyblockpv.api.StatusAPI
@@ -86,6 +87,12 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
                 Widgets.text("Skill Avg: ${skillAvg.round()}")
                     .withTooltip(Text.of("HypixelAPI doesn't provide your actual max Taming Level, so we just assumes that it's 60.")),
             )
+            // todo i think this causes even more delay when opening
+            runBlocking {
+                PronounsDbAPI.get(gameProfile.id).takeIf { it.isNotEmpty() }?.let { pronouns ->
+                    string("Pronouns: ${pronouns.joinToString(", ")}")
+                }
+            }
             spacer(height = 5)
         }
 
