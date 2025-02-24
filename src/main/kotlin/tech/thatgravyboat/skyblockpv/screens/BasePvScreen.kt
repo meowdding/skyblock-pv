@@ -22,16 +22,16 @@ import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.MojangAPI
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
-import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
+import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
-abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var profile: SkyblockProfile? = null) : BaseCursorScreen(CommonText.EMPTY) {
+abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var profile: SkyBlockProfile? = null) : BaseCursorScreen(CommonText.EMPTY) {
 
-    var profiles: List<SkyblockProfile> = emptyList()
+    var profiles: List<SkyBlockProfile> = emptyList()
 
     val uiWidth get() = (this.width * 0.6).toInt()
     val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
@@ -105,7 +105,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         username.setPosition(bg.x + bg.width - profileWidth, bg.y + bg.height)
         username.visitWidgets(screen::addRenderableWidget)
 
-        val dropdownState = DropdownState<SkyblockProfile>.of<SkyblockProfile>(profile)
+        val dropdownState = DropdownState<SkyBlockProfile>.of<SkyBlockProfile>(profile)
         val dropdown = Widgets.dropdown(
             dropdownState,
             profiles,

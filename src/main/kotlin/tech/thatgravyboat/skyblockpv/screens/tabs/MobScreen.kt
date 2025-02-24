@@ -6,13 +6,13 @@ import earth.terrarium.olympus.client.components.base.ListWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
-import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
+import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.MobData
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 
-class MobScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MOB", gameProfile, profile) {
+class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MOB", gameProfile, profile) {
     override fun create(bg: DisplayWidget) {
         val columnWidth = uiWidth / 2 - 20
         val columnHeight = uiHeight - 20

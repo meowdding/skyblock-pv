@@ -13,14 +13,14 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getIconFromCollectionType
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToNextLevel
-import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
+import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
-class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("COLLECTION", gameProfile, profile) {
+class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("COLLECTION", gameProfile, profile) {
 
     private var currentCategory = "FARMING"
 

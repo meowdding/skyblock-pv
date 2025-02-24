@@ -2,7 +2,7 @@ package tech.thatgravyboat.skyblockpv.api
 
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
-import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
+import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import java.util.*
 
 private const val PATH = "v2/skyblock/profiles"
@@ -12,7 +12,7 @@ object ProfileAPI {
 
     private val cache: MutableMap<String, CacheEntry> = mutableMapOf()
 
-    private fun getCachedProfiles(uuid: UUID): List<SkyblockProfile>? {
+    private fun getCachedProfiles(uuid: UUID): List<SkyBlockProfile>? {
         val entry = cache[uuid.toString()] ?: return null
         return if (System.currentTimeMillis() - entry.timestamp < CACHE_TIME) {
             entry.profiles
@@ -22,7 +22,7 @@ object ProfileAPI {
         }
     }
 
-    suspend fun getProfiles(uuid: UUID): List<SkyblockProfile> {
+    suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> {
         val cached = getCachedProfiles(uuid)
         if (cached != null) return cached
 
@@ -31,7 +31,7 @@ object ProfileAPI {
             return emptyList()
         }
 
-        val profiles = result.getAsJsonArray("profiles").mapNotNull { SkyblockProfile.fromJson(it.asJsonObject, uuid) }
+        val profiles = result.getAsJsonArray("profiles").mapNotNull { SkyBlockProfile.fromJson(it.asJsonObject, uuid) }
 
         cache[uuid.toString()] = CacheEntry(profiles, System.currentTimeMillis())
 
@@ -40,6 +40,6 @@ object ProfileAPI {
 }
 
 private class CacheEntry(
-    val profiles: List<SkyblockProfile>,
-    val timestamp: Long
+    val profiles: List<SkyBlockProfile>,
+    val timestamp: Long,
 )

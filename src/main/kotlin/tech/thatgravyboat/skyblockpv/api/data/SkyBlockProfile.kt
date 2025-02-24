@@ -13,7 +13,7 @@ import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
 import tech.thatgravyboat.skyblockpv.utils.*
 import java.util.*
 
-data class SkyblockProfile(
+data class SkyBlockProfile(
     val selected: Boolean,
     val id: ProfileId,
     val profileType: ProfileType = ProfileType.UNKNOWN,
@@ -29,13 +29,13 @@ data class SkyblockProfile(
 ) {
     companion object {
 
-        fun fromJson(json: JsonObject, user: UUID): SkyblockProfile? {
+        fun fromJson(json: JsonObject, user: UUID): SkyBlockProfile? {
             val member = json.getAsJsonObject("members").getAsJsonObject(user.toString().replace("-", "")) ?: return null
             val playerStats = member.getAsJsonObject("player_stats")
             val playerData = member.getAsJsonObject("player_data")
             val profile = member.getAsJsonObject("profile")
 
-            return SkyblockProfile(
+            return SkyBlockProfile(
                 selected = json["selected"].asBoolean(false),
                 id = ProfileId(
                     id = json["profile_id"].asUUID(Util.NIL_UUID),

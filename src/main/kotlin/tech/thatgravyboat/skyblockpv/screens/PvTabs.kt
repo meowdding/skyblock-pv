@@ -3,11 +3,10 @@ package tech.thatgravyboat.skyblockpv.screens
 import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
+import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.tabs.CollectionScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.MainScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.MobScreen
-import java.util.*
 import kotlin.reflect.KClass
 
 enum class PvTabs(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
@@ -20,7 +19,7 @@ enum class PvTabs(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
         return screen.constructors.first().call(gameProfile, null)
     }
 
-    fun create(gameProfile: GameProfile, profile: SkyblockProfile?): BasePvScreen {
+    fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BasePvScreen {
         return screen.constructors.first().call(gameProfile, profile)
     }
 }
