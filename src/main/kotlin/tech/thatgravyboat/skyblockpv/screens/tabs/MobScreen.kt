@@ -10,6 +10,7 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.MobData
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 
 class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MOB", gameProfile, profile) {
@@ -37,7 +38,7 @@ class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
     }
 
     private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int) = LayoutBuild.vertical(5) {
-        string(name)
+        widget(Widgets.text(name).centerHorizontally(width))
 
         val listWidget = ListWidget(width, height)
 
