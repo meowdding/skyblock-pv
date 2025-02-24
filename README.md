@@ -28,7 +28,7 @@ TODO: (typos are mayas fault)
 - [ ] PRONOUNS???
 - [ ] Guild
 - [ ] Fairy Souls
-- [ ] Skill avg and stuff
+- [x] Skill avg and stuff
 - [x] Cookie buff
 - [ ] essences
 - [ ] Auctions
