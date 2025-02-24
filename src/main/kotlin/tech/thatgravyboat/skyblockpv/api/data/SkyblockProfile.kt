@@ -19,6 +19,9 @@ data class SkyblockProfile(
     val profileType: ProfileType = ProfileType.UNKNOWN,
 
     val currency: Currency,
+    /**Level to Progress*/
+    val skyBlockLevel: Pair<Int, Int>,
+    val firstJoin: Long,
     val skill: Map<String, Long>,
     val collections: List<CollectionItem>,
     val mobData: List<MobData>,
@@ -28,9 +31,9 @@ data class SkyblockProfile(
 
         fun fromJson(json: JsonObject, user: UUID): SkyblockProfile? {
             val member = json.getAsJsonObject("members").getAsJsonObject(user.toString().replace("-", "")) ?: return null
-            val playerStats = member.getAsJsonObject("player_stats") ?: return null
-            val playerData = member.getAsJsonObject("player_data") ?: return null
-            val slayerData = member.getAsJsonObject("slayer") ?: return null
+            val playerStats = member.getAsJsonObject("player_stats")
+            val playerData = member.getAsJsonObject("player_data")
+            val profile = member.getAsJsonObject("profile")
 
             return SkyblockProfile(
                 selected = json["selected"].asBoolean(false),
@@ -50,7 +53,6 @@ data class SkyblockProfile(
 
                 currency = run {
                     val currencies = member.getAsJsonObject("currencies")
-                    val profile = member.getAsJsonObject("profile")
 
                     Currency(
                         purse = currencies["coin_purse"].asLong(0),
@@ -61,11 +63,19 @@ data class SkyblockProfile(
                     )
                 },
 
+                firstJoin = profile["first_join"].asLong(0),
+                skyBlockLevel = run {
+                    val level = member.getAsJsonObject("leveling")
+                    val experience = level["experience"].asInt(0)
+
+                    experience / 100 to (experience % 100).toInt()
+                },
+
                 //  todo: missing skill data when not unlocked
                 skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkyBlockOrder(),
                 collections = member.getCollectionData(),
                 mobData = playerStats.getMobData(),
-                slayer = slayerData.getSlayerData(),
+                slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
             )
         }
 

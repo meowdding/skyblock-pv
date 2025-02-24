@@ -1,12 +1,13 @@
 package tech.thatgravyboat.skyblockpv.utils
 
 import earth.terrarium.olympus.client.components.Widgets
-import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LinearLayout
+import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 
 object LayoutBuild {
-    fun vertical(spacing: Int = 2, builder: VerticalLayoutBuilder.() -> Unit): LinearLayout {
+    fun vertical(spacing: Int = 0, builder: VerticalLayoutBuilder.() -> Unit): LinearLayout {
         val builder = VerticalLayoutBuilder()
         builder.builder()
         return builder.build(spacing)
@@ -20,9 +21,9 @@ object LayoutBuild {
 }
 
 abstract class LayoutBuilder {
-    protected val widgets = mutableListOf<AbstractWidget>()
+    protected val widgets = mutableListOf<LayoutElement>()
 
-    fun widget(widget: AbstractWidget) {
+    fun widget(widget: LayoutElement) {
         widgets.add(widget)
     }
 
@@ -32,6 +33,10 @@ abstract class LayoutBuilder {
 
     fun string(component: Component) {
         widgets.add(Widgets.text(component))
+    }
+
+    fun spacer(width: Int = 0, height: Int = 0) {
+        widgets.add(SpacerElement(width, height))
     }
 
 
