@@ -7,7 +7,7 @@ TODO: (typos are mayas fault)
 - [x] Player render
 - [x] Status
 - [ ] Networth + Weight
-- [ ] Level
+- [x] Level
 - [ ] Skills (done-ish?)
 - [x] Profile
 - [x] Name
@@ -24,7 +24,7 @@ TODO: (typos are mayas fault)
 
 - [x] Bank
 - [x] Purse
-- [ ] joined
+- [x] joined
 - [ ] PRONOUNS???
 - [ ] Guild
 - [ ] Fairy Souls
@@ -58,9 +58,11 @@ TODO: (typos are mayas fault)
 
 ## Collections
 
-- [ ] Normal collections in tabs
+- [x] Normal collections in tabs
 - [ ] Minions
-- [ ] Pets
+
+## Pets
+
 - [ ] all pets
 - [ ] each pet with stats
 
@@ -77,7 +79,9 @@ TODO: (typos are mayas fault)
 ## Beastiary
 
 - [ ] different islands with mobs and progress bars
-- [ ] Crimson isle
+
+## Crimson isle
+
 - [ ] Kundra stats
 - [ ] Dojo Stats
 - [ ] Faction stats
@@ -88,7 +92,6 @@ TODO: (typos are mayas fault)
 - [ ] Value
 - [ ] dontations and raririties and such
 - [ ] Preview of the museum items
--
 
 ## Rift
 
