@@ -23,8 +23,10 @@ import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.displays.*
+import java.text.SimpleDateFormat
 
 
 class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
@@ -36,29 +38,27 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
-        val cols = LinearLayout.horizontal()
-
-        cols.addChild(createLeftColumn(profile!!, sideColumnWidth))
-        cols.addChild(createMiddleColumn(profiles, middleColumnWidth))
-        cols.addChild(createRightColumn(profile!!, sideColumnWidth))
+        val cols = LayoutBuild.horizontal {
+            widget(createLeftColumn(profile!!, sideColumnWidth))
+            widget(createMiddleColumn(profiles, middleColumnWidth))
+            widget(createRightColumn(profile!!, sideColumnWidth))
+        }
 
         cols.arrangeElements()
         cols.setPosition(bg.x, bg.y)
         cols.visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createLeftColumn(profile: SkyblockProfile, width: Int): Layout {
-        val column = LinearLayout.vertical()
-        column.addChild(SpacerElement.height(5))
+    private fun createLeftColumn(profile: SkyblockProfile, width: Int) = LayoutBuild.vertical {
+        spacer(height = 5)
 
-        column.addChild(getTitleWidget("Info", width))
+        widget(getTitleWidget("Info", width))
 
-        val infoColumn = LinearLayout.vertical().spacing(2)
-        infoColumn.addChild(SpacerElement.height(5))
-        infoColumn.addChild(Widgets.text("Purse: ${profile.currency.purse.toFormattedString()}"))
-        infoColumn.addChild(Widgets.text("Motes: ${profile.currency.motes.toFormattedString()}"))
-        infoColumn.addChild(
-            Widgets.text(
+        val infoColumn = LayoutBuild.vertical(2) {
+            spacer(height = 5)
+            string("Purse: ${profile.currency.purse.toFormattedString()}")
+            string("Motes: ${profile.currency.motes.toFormattedString()}")
+            string(
                 buildString {
                     append("Bank: ")
                     val soloBank = profile.currency.soloBank.takeIf { it != 0L }?.toFormattedString()
@@ -67,16 +67,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
                     if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
                     else append(soloBank ?: mainBank ?: "0")
                 },
-            ),
-        )
-        infoColumn.addChild(Widgets.text("Cookie Active: ${profile.currency.cookieBuffActive}"))
-        infoColumn.addChild(SpacerElement.height(5))
+            )
+            string("Cookie Buff: ${"§aActive".takeIf { profile.currency.cookieBuffActive } ?: "§cInactive"}")
+            string("SkyBlock Level: ${profile.skyBlockLevel.first} (${profile.skyBlockLevel.second}/100)")
+            string("First Join: ${SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)}")
+            spacer(height = 5)
+        }
 
-        infoColumn.arrangeElements()
-
-        column.addChild(getMainContentWidget(infoColumn, width).centerHorizontally(width))
-
-        return column
+        widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
     }
 
     private fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
