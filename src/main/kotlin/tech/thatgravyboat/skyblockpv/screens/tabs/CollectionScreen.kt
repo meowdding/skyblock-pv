@@ -2,7 +2,11 @@ package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.base.ListWidget
+import earth.terrarium.olympus.client.components.buttons.Button
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.ui.UIConstants
 import net.minecraft.client.gui.layouts.FrameLayout
+import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -10,13 +14,15 @@ import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToNextLevel
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
+import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
+import tech.thatgravyboat.skyblockpv.data.getIconFromCollectionType
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("COLLECTION", gameProfile, profile) {
 
-    private var currentCategory = "MINING"
+    private var currentCategory = "FARMING"
 
     override fun create(bg: DisplayWidget) {
         val columnHeight = uiHeight - 20
@@ -39,6 +45,28 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyblockProfile? = nul
         FrameLayout.centerInRectangle(scrollable, bg.x, bg.y, bg.width, bg.height)
 
         scrollable.visitWidgets(this::addRenderableWidget)
+
+        val categories = profile.collections.map { it.category }.distinct().sortToSkyBlockOrder()
+        val buttonRow = LinearLayout.horizontal().spacing(5)
+        categories.forEach { category ->
+            val button = Button()
+            button.setSize(20, 20)
+            if (category == currentCategory) {
+                button.withTexture(UIConstants.PRIMARY_BUTTON)
+            } else {
+                button.withCallback {
+                    currentCategory = category
+                    this.rebuildWidgets()
+                }
+                button.withTexture(UIConstants.BUTTON)
+            }
+            button.withRenderer(WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(getIconFromCollectionType(category), ctx.x, ctx.y) })
+            button.withTooltip(Text.of(category))
+            buttonRow.addChild(button)
+        }
+        buttonRow.arrangeElements()
+        buttonRow.setPosition(bg.x + 20, bg.y - buttonRow.height)
+        buttonRow.visitWidgets(this::addRenderableWidget)
     }
 
     private fun getElement(col: CollectionItem): Display {
