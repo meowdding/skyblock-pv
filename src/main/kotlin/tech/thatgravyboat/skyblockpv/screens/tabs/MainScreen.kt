@@ -17,7 +17,7 @@ import tech.thatgravyboat.skyblockpv.api.SkillAPI.getIconFromSkillName
 import tech.thatgravyboat.skyblockpv.api.SkillAPI.getSkillLevel
 import tech.thatgravyboat.skyblockpv.api.StatusAPI
 import tech.thatgravyboat.skyblockpv.api.data.PlayerStatus
-import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
+import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
 import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
 import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
@@ -31,7 +31,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 
 
-class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
+class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
 
     private var cachedX = 0.0F
     private var cachedY = 0.0F
@@ -51,7 +51,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         cols.visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createLeftColumn(profile: SkyblockProfile, width: Int) = LayoutBuild.vertical {
+    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
         spacer(height = 5)
 
         val irrelevantSkills = listOf(
@@ -99,7 +99,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
     }
 
-    private fun createMiddleColumn(profiles: List<SkyblockProfile>, width: Int): LinearLayout {
+    private fun createMiddleColumn(profiles: List<SkyBlockProfile>, width: Int): LinearLayout {
         val playerWidget = Displays.placeholder(width, width).asWidget().withRenderer { gr, ctx, _ ->
             val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
@@ -143,7 +143,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         return layout
     }
 
-    private fun createRightColumn(profile: SkyblockProfile, width: Int): Layout {
+    private fun createRightColumn(profile: SkyBlockProfile, width: Int): Layout {
         val skillDisplayElementWidth = 30
         val skillElementsPerRow = width / skillDisplayElementWidth
         val column = LinearLayout.vertical()

@@ -11,7 +11,7 @@ import tech.thatgravyboat.skyblockapi.api.profile.party.PartyAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import java.util.concurrent.CompletableFuture
 
-object SkyblockPlayerSuggestionProvider : SuggestionProvider<FabricClientCommandSource> {
+object SkyBlockPlayerSuggestionProvider : SuggestionProvider<FabricClientCommandSource> {
     override fun getSuggestions(context: CommandContext<FabricClientCommandSource?>, builder: SuggestionsBuilder): CompletableFuture<Suggestions?>? {
         PartyAPI.members.forEach { member ->
             if (SharedSuggestionProvider.matchesSubStr(builder.remaining, member.name)) builder.suggest(member.name)

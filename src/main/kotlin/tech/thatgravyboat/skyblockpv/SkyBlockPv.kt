@@ -13,7 +13,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.MojangAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
-import tech.thatgravyboat.skyblockpv.command.SkyblockPlayerSuggestionProvider
+import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.screens.PvTabs
 
 object SkyBlockPv : ModInitializer {
@@ -35,7 +35,7 @@ object SkyBlockPv : ModInitializer {
                     McClient.setScreen(PvTabs.MAIN.create(McClient.self.gameProfile))
                 }
             }
-            then("player", StringArgumentType.string(), SkyblockPlayerSuggestionProvider) {
+            then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 callback {
                     val player = this.getArgument("player", String::class.java)
                     runBlocking {
