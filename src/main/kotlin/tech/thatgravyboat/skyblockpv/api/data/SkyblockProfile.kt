@@ -52,7 +52,7 @@ data class SkyblockProfile(
                 },
 
                 currency = run {
-                    val currencies = member.getAsJsonObject("currencies")
+                    val currencies = member.getAsJsonObject("currencies") ?: JsonObject()
 
                     Currency(
                         purse = currencies["coin_purse"].asLong(0),
@@ -74,7 +74,7 @@ data class SkyblockProfile(
                 //  todo: missing skill data when not unlocked
                 skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkyBlockOrder(),
                 collections = member.getCollectionData(),
-                mobData = playerStats.getMobData(),
+                mobData = playerStats?.getMobData() ?: emptyList(),
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
             )
         }
