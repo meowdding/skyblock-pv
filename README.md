@@ -25,7 +25,7 @@ TODO: (typos are mayas fault)
 - [x] Bank
 - [x] Purse
 - [x] joined
-- [ ] PRONOUNS???
+- [x] PRONOUNS??? (!!!!!!!!)
 - [ ] Guild
 - [ ] Fairy Souls
 - [x] Skill avg and stuff
