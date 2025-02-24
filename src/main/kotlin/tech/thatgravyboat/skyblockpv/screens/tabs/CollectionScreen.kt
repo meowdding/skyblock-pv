@@ -11,11 +11,11 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
+import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getIconFromCollectionType
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToNextLevel
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
-import tech.thatgravyboat.skyblockpv.data.getIconFromCollectionType
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.*

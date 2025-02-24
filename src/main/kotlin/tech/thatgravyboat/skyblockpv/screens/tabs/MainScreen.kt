@@ -12,10 +12,14 @@ import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.api.SkillAPI.getIconFromSkillName
+import tech.thatgravyboat.skyblockpv.api.SkillAPI.getSkillLevel
 import tech.thatgravyboat.skyblockpv.api.StatusAPI
 import tech.thatgravyboat.skyblockpv.api.data.PlayerStatus
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
-import tech.thatgravyboat.skyblockpv.data.*
+import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
+import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
+import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
