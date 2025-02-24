@@ -5,6 +5,7 @@ import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.string.TextWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.data.MobData
@@ -41,7 +42,7 @@ class MobScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : Ba
 
         list.forEach { (id, kills, death) ->
             val formattedName = id.split("_").joinToString(" ") { it.replaceFirstChar { it.titlecase() } }
-            listWidget.add(TextWidget(Text.of("$formattedName: ${if (useKills) kills else death}")))
+            listWidget.add(TextWidget(Text.of("$formattedName: ${(if (useKills) kills else death).toFormattedString()}")))
         }
 
         column.addChild(TextWidget(Text.of(name)))
