@@ -3,11 +3,8 @@ package tech.thatgravyboat.skyblockpv.screens.tabs
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
-import earth.terrarium.olympus.client.components.buttons.ButtonShapes
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import earth.terrarium.olympus.client.ui.UIConstants
 import kotlinx.coroutines.runBlocking
-import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
@@ -23,8 +20,6 @@ import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
-import tech.thatgravyboat.skyblockpv.utils.Utils.translate
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 
@@ -56,23 +51,21 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
 
         val infoColumn = LinearLayout.vertical().spacing(2)
         infoColumn.addChild(SpacerElement.height(5))
-        infoColumn.addChild(Widgets.text(Text.of("Purse: ${profile.currency.purse.toFormattedString()}")))
-        infoColumn.addChild(Widgets.text(Text.of("Motes: ${profile.currency.motes.toFormattedString()}")))
+        infoColumn.addChild(Widgets.text("Purse: ${profile.currency.purse.toFormattedString()}"))
+        infoColumn.addChild(Widgets.text("Motes: ${profile.currency.motes.toFormattedString()}"))
         infoColumn.addChild(
             Widgets.text(
-                Text.of(
-                    buildString {
-                        append("Bank: ")
-                        val soloBank = profile.currency.soloBank.takeIf { it != 0L }?.toFormattedString()
-                        val mainBank = profile.currency.mainBank.takeIf { it != 0L }?.toFormattedString()
+                buildString {
+                    append("Bank: ")
+                    val soloBank = profile.currency.soloBank.takeIf { it != 0L }?.toFormattedString()
+                    val mainBank = profile.currency.mainBank.takeIf { it != 0L }?.toFormattedString()
 
-                        if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
-                        else append(soloBank ?: mainBank ?: "0")
-                    },
-                ),
+                    if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
+                    else append(soloBank ?: mainBank ?: "0")
+                },
             ),
         )
-        infoColumn.addChild(Widgets.text(Text.of("Cookie Active: ${profile.currency.cookieBuffActive}")))
+        infoColumn.addChild(Widgets.text("Cookie Active: ${profile.currency.cookieBuffActive}"))
         infoColumn.addChild(SpacerElement.height(5))
 
         infoColumn.arrangeElements()
@@ -158,7 +151,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
         }
 
         addSection<Long>("Skills", profile.skill.asSequence().map { it.toPair() }, ::getIconFromSkillName, ::getSkillLevel)
-        column.addChild(Widgets.text(Text.of("")))
+        column.addChild(Widgets.text(""))
         addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, ::getIconFromSlayerName) { name, data ->
             getSlayerLevel(name, data.exp)
         }
@@ -169,7 +162,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
     private fun getTitleWidget(title: String, width: Int) = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->
             contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
-            contents.addChild(Widgets.text(Text.of(title)).centerHorizontally(width))
+            contents.addChild(Widgets.text(title).centerHorizontally(width))
         }
         compoundWidget.withStretchToContentSize()
     }

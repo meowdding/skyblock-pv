@@ -6,7 +6,6 @@ import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import earth.terrarium.olympus.client.components.string.TextWidget
 import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIConstants
 import earth.terrarium.olympus.client.utils.State
@@ -16,7 +15,6 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
-import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
@@ -49,7 +47,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     override fun init() {
         val screen = this@BasePvScreen
         val bg = Displays.background(UIConstants.BUTTON.enabled, uiWidth, uiHeight).asWidget()
-        val loading = TextWidget(Component.literal("Loading..."))
+        val loading = Widgets.text("Loading...")
 
         FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
 
@@ -70,7 +68,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
             button.withRenderer(WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.icon, ctx.x, ctx.y) })
-            button.withTooltip(Component.literal(tab.name))
+            button.withTooltip(Text.of(tab.name))
             tabs.addChild(button)
         }
 
