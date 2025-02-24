@@ -26,8 +26,12 @@ import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.toRow
 import java.text.SimpleDateFormat
 
 
@@ -100,15 +104,19 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     private fun createMiddleColumn(profiles: List<SkyBlockProfile>, width: Int): LinearLayout {
-        val playerWidget = Displays.placeholder(width, width).asWidget().withRenderer { gr, ctx, _ ->
+        val height = (width * 1.1).toInt()
+        val playerWidget = Displays.background(SkyBlockPv.id("buttons/dark/disabled"), width, height).asWidget().withRenderer { gr, ctx, _ ->
             val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
-            Displays.entity(
-                FakePlayer(gameProfile),
-                width, width,
-                width / 2,
-                eyesX, eyesY,
-            ).withBackground(0xD0000000u).render(gr, ctx.x, ctx.y)
+            gr.pushPop {
+                translate(0f, 0f, 100f)
+                Displays.entity(
+                    FakePlayer(gameProfile),
+                    width, height,
+                    width / 2,
+                    eyesX, eyesY,
+                ).render(gr, ctx.x, ctx.y)
+            }
         }
 
         val statusButtonWidget = Button()
