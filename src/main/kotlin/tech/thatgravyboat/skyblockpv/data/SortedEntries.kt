@@ -88,6 +88,14 @@ object SortedEntries {
         "WILTED_BERBERIS",
         "TIMITE",
 
+        // Collection Category
+        "FARMING",
+        "MINING",
+        "COMBAT",
+        "FORAGING",
+        "FISHING",
+        "RIFT",
+
         // Slayer
         "zombie",
         "spider",
