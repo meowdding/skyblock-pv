@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.api
 
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
+import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionEntry
@@ -14,6 +15,16 @@ private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/colle
 object CollectionAPI {
     var collectionData: Map<String, CollectionCategory> = emptyMap()
         private set
+
+    fun getIconFromCollectionType(type: String) = when (type) {
+        "MINING" -> Items.STONE_PICKAXE.defaultInstance
+        "FARMING" -> Items.GOLDEN_HOE.defaultInstance
+        "COMBAT" -> Items.STONE_SWORD.defaultInstance
+        "FORAGING" -> Items.JUNGLE_SAPLING.defaultInstance
+        "FISHING" -> Items.FISHING_ROD.defaultInstance
+        "RIFT" -> Items.MYCELIUM.defaultInstance
+        else -> Items.BARRIER.defaultInstance
+    }
 
     fun getCategoryByItemName(id: String) = collectionData.entries.find { it.value.items.containsKey(id) }?.key
 

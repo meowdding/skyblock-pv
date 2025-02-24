@@ -2,7 +2,9 @@ package tech.thatgravyboat.skyblockpv.api
 
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
+import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.http.Http
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.data.SkillData
 import tech.thatgravyboat.skyblockpv.utils.asInt
 import tech.thatgravyboat.skyblockpv.utils.asLong
@@ -15,6 +17,33 @@ object SkillAPI {
         private set
     var skillLevels: Map<Int, Long> = emptyMap()
         private set
+
+    fun getSkillLevel(skill: String, exp: Long): Int {
+        val maxLevel = skillData.firstNotNullOfOrNull { (name, data) ->
+            if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
+        }
+        if (maxLevel == null) return 0
+        return (skillLevels.entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
+    }
+
+    fun getIconFromSkillName(name: String): ResourceLocation = SkyBlockPv.id(
+        when (name) {
+            "SKILL_COMBAT" -> "icon/skill/combat"
+            "SKILL_FARMING" -> "icon/skill/farming"
+            "SKILL_FISHING" -> "icon/skill/fishing"
+            "SKILL_MINING" -> "icon/skill/mining"
+            "SKILL_FORAGING" -> "icon/skill/foraging"
+            "SKILL_ENCHANTING" -> "icon/skill/enchanting"
+            "SKILL_ALCHEMY" -> "icon/skill/alchemy"
+            "SKILL_TAMING" -> "icon/skill/taming"
+            "SKILL_SOCIAL" -> "icon/skill/social"
+            "SKILL_RUNECRAFTING" -> "icon/skill/runecrafting"
+            "SKILL_CARPENTRY" -> "icon/skill/carpentry"
+            else -> "icon/questionmark"
+        },
+    )
+
+    private fun convertFromPlayerApiSkillName(name: String) = name.split("_").drop(1).joinToString("_").lowercase()
 
     init {
         runBlocking {
