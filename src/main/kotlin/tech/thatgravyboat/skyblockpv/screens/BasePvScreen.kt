@@ -12,6 +12,7 @@ import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
@@ -19,6 +20,7 @@ import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockpv.api.MojangAPI
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyblockProfile
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
@@ -86,7 +88,17 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
         val usernameState = State.of<String>(gameProfile.name)
         val username = Widgets.textInput(usernameState) { box ->
-            //TODO: probably open a new screen on enter with the username, waiting for sophie to implement on enter
+            box.withEnterCallback {
+                runBlocking {
+                    // TODO: dedupe code with command
+                    val uuid = MojangAPI.getUUID(box.value)
+                    if (uuid != null) {
+                        McClient.tell {
+                            McClient.setScreen(PvTabs.MAIN.create(McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: return@tell))
+                        }
+                    }
+                }
+            }
         }
         username.withPlaceholder("Username...")
         username.withSize(profileWidth, 20)
