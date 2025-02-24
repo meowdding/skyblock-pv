@@ -25,6 +25,7 @@ import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 
@@ -52,6 +53,16 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
     private fun createLeftColumn(profile: SkyblockProfile, width: Int) = LayoutBuild.vertical {
         spacer(height = 5)
 
+        val irrelevantSkills = listOf(
+            "SKILL_RUNECRAFTING",
+            "SKILL_SOCIAL",
+        )
+
+        val skillAvg = profile.skill
+            .filterNot { it.key in irrelevantSkills }
+            .map { getSkillLevel(it.key, it.value) }
+            .average()
+
         widget(getTitleWidget("Info", width))
 
         val infoColumn = LayoutBuild.vertical(2) {
@@ -71,6 +82,10 @@ class MainScreen(gameProfile: GameProfile, profile: SkyblockProfile? = null) : B
             string("Cookie Buff: ${"§aActive".takeIf { profile.currency.cookieBuffActive } ?: "§cInactive"}")
             string("SkyBlock Level: ${profile.skyBlockLevel.first} (${profile.skyBlockLevel.second}/100)")
             string("First Join: ${SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)}")
+            widget(
+                Widgets.text("Skill Avg: ${skillAvg.round()}")
+                    .withTooltip(Text.of("HypixelAPI doesn't provide your actual max Taming Level, so we just assumes that it's 60.")),
+            )
             spacer(height = 5)
         }
 
