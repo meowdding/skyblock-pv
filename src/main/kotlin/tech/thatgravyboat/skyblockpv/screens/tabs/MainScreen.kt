@@ -8,11 +8,13 @@ import kotlinx.coroutines.runBlocking
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.PronounsDbAPI
+import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI.getIconFromSkillName
 import tech.thatgravyboat.skyblockpv.api.SkillAPI.getSkillLevel
 import tech.thatgravyboat.skyblockpv.api.StatusAPI
@@ -168,7 +170,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val column = LinearLayout.vertical()
         column.addChild(SpacerElement.height(5))
 
-        fun <T> addSection(title: String, data: Sequence<Pair<String, T>>, getIcon: (String) -> ResourceLocation, getLevel: (String, T) -> Int) {
+        fun <T> addSection(title: String, data: Sequence<Pair<String, T>>, getToolTip: (String, T) -> Component?, getIcon: (String) -> ResourceLocation, getLevel: (String, T) -> Int) {
             column.addChild(getTitleWidget(title, width))
 
             val mainContent = LinearLayout.vertical().spacing(5)
@@ -181,7 +183,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     val widget = listOf(
                         Displays.sprite(getIcon(name), 12, 12),
                         Displays.text("$level"),
-                    ).toRow(1).asWidget().withTooltip(Text.of("$name: $level"))
+                    ).toRow(1).asWidget()
+                    getToolTip(name, data)?.let { widget.withTooltip(it) }
                     element.addChild(widget)
                 }
                 mainContent.addChild(element.centerHorizontally(width))
@@ -193,9 +196,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             column.addChild(getMainContentWidget(mainContent, width))
         }
 
-        addSection<Long>("Skills", profile.skill.asSequence().map { it.toPair() }, ::getIconFromSkillName, ::getSkillLevel)
+        addSection<Long>("Skills", profile.skill.asSequence().map { it.toPair() }, { name, num ->
+            SkillAPI.getProgressToNextLevel(name, num).let { progress ->
+                if (progress == 1f) Text.of("§cMaxed!")
+                else Text.of("§a${(progress * 100).round()}% to next level")
+            }
+        }, ::getIconFromSkillName, ::getSkillLevel)
         column.addChild(Widgets.text(""))
-        addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, ::getIconFromSlayerName) { name, data ->
+        addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, { a, b -> null }, ::getIconFromSlayerName) { name, data ->
             getSlayerLevel(name, data.exp)
         }
 
