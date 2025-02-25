@@ -36,11 +36,15 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     val uiWidth get() = (this.width * 0.75).toInt()
     val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
 
+    var initedWithProfile = false
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             profiles = ProfileAPI.getProfiles(gameProfile.id)
             profile = profile ?: profiles.find { it.selected }
-            McClient.tell { rebuildWidgets() }
+            if (!initedWithProfile) {
+                McClient.tell { rebuildWidgets() }
+            }
         }
     }
 
@@ -82,6 +86,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         loading.visitWidgets(screen::addRenderableOnly)
 
         if (profile == null) return
+        initedWithProfile = true
         create(bg)
 
         val profileWidth = 100
