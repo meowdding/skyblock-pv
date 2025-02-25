@@ -18,6 +18,14 @@ object SkillAPI {
     var skillLevels: Map<Int, Long> = emptyMap()
         private set
 
+    fun getProgressToNextLevel(skill: String, exp: Long): Float {
+        val currentLevel = getSkillLevel(skill, exp)
+        val nextLevel = currentLevel + 1
+        val currentExp = skillLevels[currentLevel] ?: return 0f
+        val nextExp = skillLevels[nextLevel] ?: return 1f
+        return (exp - currentExp).toFloat() / (nextExp - currentExp)
+    }
+
     fun getSkillLevel(skill: String, exp: Long): Int {
         val maxLevel = skillData.firstNotNullOfOrNull { (name, data) ->
             if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
