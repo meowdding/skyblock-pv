@@ -13,7 +13,7 @@ public class MinecraftMixin {
 
     @WrapOperation(method = "resizeDisplay", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;calculateScale(IZ)I"))
     private int overrideGuiScale(Window instance, int guiScale, boolean forceUnicode, Operation<Integer> original) {
-        var minScale = instance.getWidth() < 960 ? 1 : 2;
+        var minScale = instance.getScreenWidth() < 960 ? 1 : 2;
         guiScale = ForcedGuiScaleScreen.isInForcedScaleGui() ? Math.min(guiScale, minScale) : guiScale;
         return original.call(instance, guiScale, forceUnicode);
     }
