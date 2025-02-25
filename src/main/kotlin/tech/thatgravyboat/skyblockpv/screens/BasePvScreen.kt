@@ -123,8 +123,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             { button -> button.withSize(profileWidth, 20) },
             { builder ->
                 builder.withCallback { profile ->
-                    // TODO: do we need to rebuild the screen or does this.rebuildWidgets() work?
-                    McClient.tell { McClient.setScreen(PvTabs.entries.first { tab -> tab.name == this@BasePvScreen.name }.create(gameProfile, profile)) }
+                    this.profile = profile
+                    this.rebuildWidgets()
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
             },
