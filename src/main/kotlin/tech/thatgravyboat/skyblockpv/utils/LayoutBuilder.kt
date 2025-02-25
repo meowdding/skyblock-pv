@@ -5,6 +5,8 @@ import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
+import tech.thatgravyboat.skyblockpv.utils.displays.Display
+import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 object LayoutBuild {
     fun vertical(spacing: Int = 0, builder: VerticalLayoutBuilder.() -> Unit): LinearLayout {
@@ -29,6 +31,10 @@ abstract class LayoutBuilder {
 
     fun string(text: String) {
         widgets.add(Widgets.text(text))
+    }
+
+    fun display(display: Display) {
+        widgets.add(display.asWidget())
     }
 
     fun string(component: Component) {
