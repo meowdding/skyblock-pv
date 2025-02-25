@@ -2,6 +2,8 @@ package tech.thatgravyboat.skyblockpv.utils.displays
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
+import com.teamresourceful.resourcefullib.client.utils.RenderUtils
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.PlayerFaceRenderer
 import net.minecraft.client.gui.components.Renderable
@@ -18,9 +20,11 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.ItemStack
 import org.joml.Quaternionf
 import org.joml.Vector3f
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.width
+import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
@@ -452,6 +456,22 @@ object Displays {
                 graphics.blitSprite(RenderType::guiTextured, background, 0, 0, width, height)
                 graphics.scissor(0, 0, progressWidth, height) {
                     graphics.blitSprite(RenderType::guiTextured, foreground, 0, 0, width, height)
+                }
+            }
+        }
+    }
+
+    fun tooltip(display: Display, component: Component): Display {
+        return object : Display {
+            override fun getWidth() = display.getWidth()
+            override fun getHeight() = display.getHeight()
+            override fun render(graphics: GuiGraphics) {
+                val translation = RenderUtils.getTranslation(graphics.pose())
+                val (mouseX, mouseY) = McClient.mouse
+                display.render(graphics)
+
+                if (mouseX.toInt() in translation.x()..(translation.x() + this.getWidth()) && mouseY.toInt() in translation.y()..translation.y() + this.getHeight()) {
+                    ScreenUtils.setTooltip(component.splitLines())
                 }
             }
         }

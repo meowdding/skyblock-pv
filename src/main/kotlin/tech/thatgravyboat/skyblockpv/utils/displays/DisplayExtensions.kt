@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.utils.displays
 
 import net.minecraft.network.chat.Component
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 
 fun List<Any>.toColumn(spacing: Int = 0, alignment: Alignment = Alignment.START): Display {
@@ -53,3 +54,5 @@ fun Display.centerIn(width: Int, height: Int): Display = Displays.center(width, 
 fun Display.withBackground(color: UInt): Display = Displays.background(color, this)
 
 fun Display.asWidget(): DisplayWidget = DisplayWidget(this)
+
+fun Display.withTooltip(vararg tooltip: Any?): Display = Displays.tooltip(this, Text.multiline(*tooltip))
