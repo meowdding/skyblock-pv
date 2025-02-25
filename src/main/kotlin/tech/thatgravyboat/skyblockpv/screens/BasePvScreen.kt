@@ -29,11 +29,11 @@ import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
-abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var profile: SkyBlockProfile? = null) : BaseCursorScreen(CommonText.EMPTY), ForcedGuiScaleScreen {
+abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var profile: SkyBlockProfile? = null) : BaseCursorScreen(CommonText.EMPTY) {
 
     var profiles: List<SkyBlockProfile> = emptyList()
 
-    val uiWidth get() = (this.width * 0.7).toInt()
+    val uiWidth get() = (this.width * 0.75).toInt()
     val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
 
     init {

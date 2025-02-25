@@ -14,7 +14,6 @@ import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.MojangAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
-import tech.thatgravyboat.skyblockpv.screens.ForcedGuiScaleScreen
 import tech.thatgravyboat.skyblockpv.screens.PvTabs
 
 object SkyBlockPv : ModInitializer {
@@ -23,7 +22,6 @@ object SkyBlockPv : ModInitializer {
             this,
             SkillAPI,
             CollectionAPI,
-            ForcedGuiScaleScreen.Companion
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }
