@@ -154,6 +154,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     private fun createRightColumn(profile: SkyBlockProfile, width: Int): Layout {
         val skillDisplayElementWidth = 30
         val skillElementsPerRow = width / skillDisplayElementWidth
+
+        if (skillElementsPerRow < 1) return LinearLayout.vertical()
+
         val column = LinearLayout.vertical()
         column.addChild(SpacerElement.height(5))
 
