@@ -97,7 +97,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             )
             display(
                 grayText("Skill Avg: ${skillAvg.round()}")
-                    .withTooltip("HypixelAPI doesn't provide your actual max Taming Level, so we just assumes that it's 60."),
+                    .withTooltip("HypixelAPI doesn't provide your actual max Taming Level,", "so we just assumes that it's 60."),
             )
 
             display(
