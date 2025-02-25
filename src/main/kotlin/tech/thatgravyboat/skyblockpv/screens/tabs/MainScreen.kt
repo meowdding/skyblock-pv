@@ -91,12 +91,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 Widgets.text("Skill Avg: ${skillAvg.round()}")
                     .withTooltip(Text.of("HypixelAPI doesn't provide your actual max Taming Level, so we just assumes that it's 60.")),
             )
-            // todo i think this causes even more delay when opening
-            runBlocking {
-                PronounsDbAPI.get(gameProfile.id).takeIf { it.isNotEmpty() }?.let { pronouns ->
-                    string("Pronouns: ${pronouns.joinToString(", ")}")
-                }
-            }
+
+            display(
+                listOf(
+                    Displays.text("Pronouns: ", color = { 0x555555u }, shadow = false),
+                    PronounsDbAPI.getDisplay(gameProfile.id),
+                ).toRow(),
+            )
+
             spacer(height = 5)
         }
 
