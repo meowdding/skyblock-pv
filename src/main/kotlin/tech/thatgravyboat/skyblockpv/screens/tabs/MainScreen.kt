@@ -32,6 +32,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.toRow
+import tech.thatgravyboat.skyblockpv.utils.displays.withTooltip
 import java.text.SimpleDateFormat
 
 
@@ -71,6 +72,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         widget(getTitleWidget("Info", width))
 
         val infoColumn = LayoutBuild.vertical(2) {
+            fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
+
             spacer(height = 5)
             string("Purse: ${profile.currency.purse.toFormattedString()}")
             string("Motes: ${profile.currency.motes.toFormattedString()}")
@@ -86,17 +89,20 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             )
             string("Cookie Buff: ${"§aActive".takeIf { profile.currency.cookieBuffActive } ?: "§cInactive"}")
             string("SkyBlock Level: ${profile.skyBlockLevel.first} (${profile.skyBlockLevel.second}/100)")
-            string("First Join: ${SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)}")
-            widget(
-                Widgets.text("Skill Avg: ${skillAvg.round()}")
-                    .withTooltip(Text.of("HypixelAPI doesn't provide your actual max Taming Level, so we just assumes that it's 60.")),
+            display(
+                grayText("First Join: ${SimpleDateFormat("yyyy.MM.dd").format(profile.firstJoin)}")
+                    .withTooltip(SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)),
+            )
+            display(
+                grayText("Skill Avg: ${skillAvg.round()}")
+                    .withTooltip("HypixelAPI doesn't provide your actual max Taming Level, so we just assumes that it's 60."),
             )
 
             display(
                 listOf(
-                    Displays.text("Pronouns: ", color = { 0x555555u }, shadow = false),
+                    grayText("Pronouns: "),
                     PronounsDbAPI.getDisplay(gameProfile.id),
-                ).toRow(),
+                ).toRow().withTooltip("Provided by https://pronoundb.org/"),
             )
 
             spacer(height = 5)
