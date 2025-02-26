@@ -90,7 +90,10 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 },
             )
             string("Cookie Buff: ${"§aActive".takeIf { profile.currency.cookieBuffActive } ?: "§cInactive"}")
-            string("SkyBlock Level: ${profile.skyBlockLevel.first} (${profile.skyBlockLevel.second}/100)")
+            display(
+                grayText("SkyBlock Level: ${profile.skyBlockLevel.first}")
+                    .withTooltip("Progress: ${profile.skyBlockLevel.second}/100"),
+            )
             display(
                 grayText("First Join: ${SimpleDateFormat("yyyy.MM.dd").format(profile.firstJoin)}")
                     .withTooltip(SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)),
@@ -170,7 +173,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val column = LinearLayout.vertical()
         column.addChild(SpacerElement.height(5))
 
-        fun <T> addSection(title: String, data: Sequence<Pair<String, T>>, getToolTip: (String, T) -> Component?, getIcon: (String) -> ResourceLocation, getLevel: (String, T) -> Int) {
+        fun <T> addSection(
+            title: String,
+            data: Sequence<Pair<String, T>>,
+            getToolTip: (String, T) -> Component?,
+            getIcon: (String) -> ResourceLocation,
+            getLevel: (String, T) -> Int,
+        ) {
             column.addChild(getTitleWidget(title, width))
 
             val mainContent = LinearLayout.vertical().spacing(5)
@@ -196,12 +205,16 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             column.addChild(getMainContentWidget(mainContent, width))
         }
 
-        addSection<Long>("Skills", profile.skill.asSequence().map { it.toPair() }, { name, num ->
-            SkillAPI.getProgressToNextLevel(name, num).let { progress ->
-                if (progress == 1f) Text.of("§cMaxed!")
-                else Text.of("§a${(progress * 100).round()}% to next level")
-            }
-        }, ::getIconFromSkillName, ::getSkillLevel)
+        addSection<Long>(
+            "Skills", profile.skill.asSequence().map { it.toPair() },
+            { name, num ->
+                SkillAPI.getProgressToNextLevel(name, num).let { progress ->
+                    if (progress == 1f) Text.of("§cMaxed!")
+                    else Text.of("§a${(progress * 100).round()}% to next level")
+                }
+            },
+            ::getIconFromSkillName, ::getSkillLevel,
+        )
         column.addChild(Widgets.text(""))
         addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, { a, b -> null }, ::getIconFromSlayerName) { name, data ->
             getSlayerLevel(name, data.exp)
