@@ -5,10 +5,8 @@ import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
-import tech.thatgravyboat.skyblockpv.data.CollectionItem
+import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
-import tech.thatgravyboat.skyblockpv.data.MobData
-import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
 import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
 import tech.thatgravyboat.skyblockpv.utils.*
 import java.util.*
@@ -26,6 +24,7 @@ data class SkyBlockProfile(
     val collections: List<CollectionItem>,
     val mobData: List<MobData>,
     val slayer: Map<String, SlayerTypeData>,
+    val dungeonData: DungeonData?,
 ) {
     companion object {
 
@@ -76,6 +75,44 @@ data class SkyBlockProfile(
                 collections = member.getCollectionData(),
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
+                dungeonData = member.getAsJsonObject("dungeons")?.parseDungeonData(),
+            )
+        }
+
+        private fun JsonObject.parseDungeonData(): DungeonData {
+            val dungeonsTypes = this.getAsJsonObject("dungeon_types")
+            val catacombs = dungeonsTypes.getAsJsonObject("catacombs").parseDungeonType()
+            val catacombsMaster = dungeonsTypes.getAsJsonObject("master_catacombs").parseDungeonType()
+            val classExperience = this.getAsJsonObject("player_classes").parseClassExperience()
+            val secrets = this["secrets"].asLong(0)
+
+            return DungeonData(
+                dungeonTypes = mapOf(
+                    "catacombs" to catacombs,
+                    "master_catacombs" to catacombsMaster,
+                ),
+                classExperience = classExperience,
+                secrets = secrets,
+            )
+        }
+
+        private fun JsonObject.parseClassExperience() = this.asMap { id, data ->
+            id to data.asJsonObject["experience"].asLong(0)
+        }
+
+        private fun JsonObject.parseDungeonType(): DungeonTypeData {
+            val timesPlayed = this["times_played"].asMap { id, amount -> id to amount.asLong(0) }
+            val tierCompletions = this["tier_completions"].asMap { id, amount -> id to amount.asLong(0) }
+            val fastestTime = this["fastest_time"].asMap { id, amount -> id to amount.asLong(0) }
+            val bestScore = this["best_score"].asMap { id, amount -> id to amount.asLong(0) }
+            val experience = this["experience"].asLong(0)
+
+            return DungeonTypeData(
+                timesPlayed = timesPlayed,
+                tierCompletions = tierCompletions,
+                fastestTime = fastestTime,
+                bestScore = bestScore,
+                experience = experience,
             )
         }
 
