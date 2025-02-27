@@ -146,6 +146,14 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         refreshButton.withCallback { this.rebuildWidgets() }
 
         addRenderableWidget(refreshButton)
+
+
+        addRenderableOnly(
+            Widgets.text(Text.join("${gameProfile.name} (${profile?.id?.name}) - ", Text.translatable("skyblockpv.tab.${name.lowercase()}")))
+                .withCenterAlignment()
+                .withSize(this.uiWidth, 20)
+                .withPosition(bg.x, 5)
+        )
     }
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
