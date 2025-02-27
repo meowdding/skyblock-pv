@@ -23,6 +23,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.MojangAPI
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -138,6 +139,16 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         dropdown.visitWidgets(screen::addRenderableWidget)
 
         loading.visible = false
+
+
+        val refreshButton = Button()
+            .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
+        refreshButton.withSize(40, 20)
+        refreshButton.withTexture(ExtraConstants.BUTTON_DARK)
+        refreshButton.setPosition(0, 0)
+        refreshButton.withCallback { this.rebuildWidgets() }
+
+        addRenderableWidget(refreshButton)
     }
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
