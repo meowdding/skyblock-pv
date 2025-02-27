@@ -54,6 +54,15 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         cols.arrangeElements()
         cols.setPosition(bg.x, bg.y)
         cols.visitWidgets(this::addRenderableWidget)
+
+        val refreshButton = Button()
+            .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
+        refreshButton.withSize(40, 20)
+        refreshButton.withTexture(ExtraConstants.BUTTON_DARK)
+        refreshButton.setPosition(0, 0)
+        refreshButton.withCallback { this.rebuildWidgets() }
+
+        addRenderableWidget(refreshButton)
     }
 
     private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
