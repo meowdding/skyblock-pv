@@ -4,13 +4,8 @@ TODO: (typos are mayas fault)
 
 ## Main screen
 
-- [x] Player render
-- [x] Status
 - [ ] Networth + Weight
-- [x] Level
 - [ ] Skills (done-ish?)
-- [x] Profile
-- [x] Name
 
 ## Dungeon
 
@@ -22,19 +17,11 @@ TODO: (typos are mayas fault)
 
 ## All Stats
 
-- [x] Bank
-- [x] Purse
-- [x] joined
-- [x] PRONOUNS??? (!!!!!!!!)
 - [ ] Guild
 - [ ] Fairy Souls
-- [x] Skill avg and stuff
-- [x] Cookie buff
 - [ ] essences
 - [ ] Auctions
 - [ ] Ores Mined, sea creature killed, items fished etc.
-- [x] Kills
-- [x] Deaths
 
 ## Chocolate Factory (seperate tab in stats)
 
@@ -58,7 +45,6 @@ TODO: (typos are mayas fault)
 
 ## Collections
 
-- [x] Normal collections in tabs
 - [ ] Minions
 
 ## Pets
