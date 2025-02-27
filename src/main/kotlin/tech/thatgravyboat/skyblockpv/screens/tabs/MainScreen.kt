@@ -8,11 +8,17 @@ import kotlinx.coroutines.runBlocking
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
+import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import tech.thatgravyboat.skyblockapi.helpers.McLevel
+import tech.thatgravyboat.skyblockapi.helpers.McPlayer
+import tech.thatgravyboat.skyblockapi.utils.extentions.getRawLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.PronounsDbAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI.getIconFromSkillName
@@ -109,6 +115,23 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
+
+        profile.inventory.forEachIndexed { index, itemStack ->
+            val item = Displays.item(itemStack).asWidget()
+            item.setSize(10, 10)
+            val component = Component.literal("")
+            component.append(itemStack.hoverName)
+            component.append(CommonText.NEWLINE)
+            if (itemStack.components[DataComponents.LORE] != null) {
+                for (line in itemStack.components[DataComponents.LORE]!!.lines) {
+                    component.append(line)
+                    component.append(CommonText.NEWLINE)
+                }
+            }
+            item.withTooltip(component)
+            item.setPosition(width / 2 + index * 3, height / 2)
+            item.visitWidgets(this@MainScreen::addRenderableWidget)
+        }
     }
 
     private fun createMiddleColumn(profiles: List<SkyBlockProfile>, width: Int): LinearLayout {

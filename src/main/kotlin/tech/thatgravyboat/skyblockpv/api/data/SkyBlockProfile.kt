@@ -1,15 +1,25 @@
 package tech.thatgravyboat.skyblockpv.api.data
 
 import com.google.gson.JsonObject
+import net.azureaaron.legacyitemdfu.LegacyItemStackFixer
 import net.minecraft.Util
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtAccounter
+import net.minecraft.nbt.NbtIo
+import net.minecraft.util.datafix.fixes.ItemStackTagFix
+import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
+import tech.thatgravyboat.skyblockapi.helpers.McLevel
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
 import tech.thatgravyboat.skyblockpv.utils.*
+import java.io.ByteArrayInputStream
 import java.util.*
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 data class SkyBlockProfile(
     val selected: Boolean,
@@ -25,6 +35,7 @@ data class SkyBlockProfile(
     val mobData: List<MobData>,
     val slayer: Map<String, SlayerTypeData>,
     val dungeonData: DungeonData?,
+    val inventory: MutableList<ItemStack>
 ) {
     companion object {
 
@@ -76,6 +87,8 @@ data class SkyBlockProfile(
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
                 dungeonData = member.getAsJsonObject("dungeons")?.parseDungeonData(),
+
+                inventory = member.getAsJsonObject("inventory")?.getAsJsonObject("inv_contents")?.getInventory() ?: mutableListOf()
             )
         }
 
@@ -153,5 +166,18 @@ data class SkyBlockProfile(
                 },
             )
         }.sortToSkyBlockOrder()
+
+        @OptIn(ExperimentalEncodingApi::class)
+        private fun JsonObject.getInventory(): MutableList<ItemStack> {
+            try {
+                if (!this.has("data")) return mutableListOf()
+                val itemList = NbtIo.readCompressed(ByteArrayInputStream(Base64.decode(this.get("data").asString)), NbtAccounter.unlimitedHeap()).getList("i", 10)
+                return itemList.map { item -> item.legacyStack() }.toMutableList()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return mutableListOf()
+        }
     }
 }
