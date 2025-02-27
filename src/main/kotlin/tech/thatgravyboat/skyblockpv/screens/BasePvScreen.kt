@@ -64,16 +64,22 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
         // as you can see, maya has no idea what she is doing
         PvTabs.entries.forEach { tab ->
+            var selected = tab.name == name
             val button = Button()
-            button.setSize(20, 20)
-            if (tab.name == name) {
-                button.withTexture(UIConstants.PRIMARY_BUTTON)
+            button.setSize(22, 20)
+            if (selected) {
+                button.withTexture(ExtraConstants.TAB_RIGHT_SELECTED)
             } else {
                 button.withCallback { McClient.tell { McClient.setScreen(tab.create(gameProfile, profile)) } }
-                button.withTexture(UIConstants.BUTTON)
+                button.withTexture(ExtraConstants.TAB_RIGHT)
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
-            button.withRenderer(WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.icon, ctx.x, ctx.y) })
+            button.withRenderer(
+                WidgetRenderers.padded(
+                    0, 3 - if (selected) 1 else 0, 0, 0,
+                    WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.icon, ctx.x, ctx.y) }
+                )
+            )
             button.withTooltip(Text.of(tab.name))
             tabs.addChild(button)
         }
