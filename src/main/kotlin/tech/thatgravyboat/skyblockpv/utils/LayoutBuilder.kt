@@ -45,6 +45,18 @@ abstract class LayoutBuilder {
         widgets.add(SpacerElement(width, height))
     }
 
+    fun vertical(spacing: Int = 0, builder: VerticalLayoutBuilder.() -> Unit) {
+        val builder = VerticalLayoutBuilder()
+        builder.builder()
+        widgets.add(builder.build(spacing))
+    }
+
+    fun horizontal(spacing: Int = 0, builder: HorizontalLayoutBuilder.() -> Unit) {
+        val builder = HorizontalLayoutBuilder()
+        builder.builder()
+        widgets.add(builder.build(spacing))
+    }
+
 
     abstract fun build(spacing: Int = 0): LinearLayout
 }
