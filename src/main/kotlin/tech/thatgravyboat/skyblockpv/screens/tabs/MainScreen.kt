@@ -28,13 +28,11 @@ import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
+import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.toRow
-import tech.thatgravyboat.skyblockpv.utils.displays.withTooltip
+import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 
 
@@ -76,7 +74,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val infoColumn = LayoutBuild.vertical(2) {
             fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
 
-            spacer(height = 5)
             string("Purse: ${profile.currency.purse.toFormattedString()}")
             string("Motes: ${profile.currency.motes.toFormattedString()}")
             string(
@@ -109,8 +106,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     PronounsDbAPI.getDisplay(gameProfile.id),
                 ).toRow().withTooltip("Provided by https://pronoundb.org/"),
             )
-
-            spacer(height = 5)
         }
 
         widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
@@ -165,7 +160,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     private fun createRightColumn(profile: SkyBlockProfile, width: Int): Layout {
-        val skillDisplayElementWidth = 30
+        val skillDisplayElementWidth = 35
         val skillElementsPerRow = width / skillDisplayElementWidth
 
         if (skillElementsPerRow < 1) return LinearLayout.vertical()
@@ -183,7 +178,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             column.addChild(getTitleWidget(title, width))
 
             val mainContent = LinearLayout.vertical().spacing(5)
-            mainContent.addChild(SpacerElement.height(5))
 
             data.chunked(skillElementsPerRow).forEach { chunk ->
                 val element = LinearLayout.horizontal().spacing(5)
@@ -191,14 +185,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     val level = getLevel(name, data)
                     val widget = listOf(
                         Displays.sprite(getIcon(name), 12, 12),
-                        Displays.text("$level"),
+                        Displays.text("$level", color = { 0x555555u }, shadow = false),
                     ).toRow(1).asWidget()
                     getToolTip(name, data)?.let { widget.withTooltip(it) }
                     element.addChild(widget)
                 }
                 mainContent.addChild(element.centerHorizontally(width))
             }
-            mainContent.addChild(SpacerElement.height(5))
 
             mainContent.arrangeElements()
 
@@ -221,22 +214,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         return column
-    }
-
-    private fun getTitleWidget(title: String, width: Int) = Widgets.frame { compoundWidget ->
-        compoundWidget.withContents { contents ->
-            contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
-            contents.addChild(Widgets.text(title).centerHorizontally(width))
-        }
-        compoundWidget.withStretchToContentSize()
-    }
-
-    private fun getMainContentWidget(content: Layout, width: Int) = Widgets.frame { compoundWidget ->
-        compoundWidget.withContents { contents ->
-            contents.addChild(Displays.background(SkyBlockPv.id("box/box"), width - 10, content.height).asWidget())
-            contents.addChild(content)
-        }
-        compoundWidget.withStretchToContentSize()
     }
 
 }
