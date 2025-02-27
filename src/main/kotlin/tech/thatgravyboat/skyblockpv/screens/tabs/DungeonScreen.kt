@@ -16,6 +16,19 @@ import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("DUNGEON", gameProfile, profile) {
+    val classToLevel by lazy {
+        profile?.dungeonData?.classExperience?.map { (name, xp) ->
+            name to (levelXpMap.entries.findLast { it.value < xp }?.key ?: 50)
+        }?.toMap()
+    }
+
+    val classToProgress by lazy {
+        profile?.dungeonData?.classExperience?.map { (name, xp) ->
+            val level = classToLevel?.get(name)!!
+            name to (xp - levelXpMap[level]!!).toFloat() / (levelXpMap[level + 1]!! - levelXpMap[level]!!)
+        }?.toMap()
+    }
+
     override fun create(bg: DisplayWidget) {
         val dungeonData = profile?.dungeonData!!
         val row = LayoutBuild.horizontal(5) {
@@ -36,7 +49,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val masterModeCompl = dungeonData.dungeonTypes["master_catacombs"]?.tierCompletions
 
         val mainContent = LayoutBuild.vertical {
-            string("Class Average: TODO")
+            string("Class Average: ${classToLevel?.map { it.value }?.toList()?.average()}")
             string("Secrets: ${dungeonData.secrets.toFormattedString()}")
             string("Secrets/Run: ${(dungeonData.secrets / (countRuns(catacombsCompl) + countRuns(masterModeCompl))).round()}")
         }
@@ -47,15 +60,26 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun createLevelingDisplay(dungeonData: DungeonData) = LayoutBuild.vertical {
         val catacombsXp = dungeonData.dungeonTypes["catacombs"]?.experience ?: 0
-        val classXp = dungeonData.classExperience
 
         val catacombsLevel = levelXpMap.entries.findLast { it.value < catacombsXp }?.key ?: 50
         val catacombsProgressToNext = (catacombsXp - levelXpMap[catacombsLevel]!!).toFloat() / (levelXpMap[catacombsLevel + 1]!! - levelXpMap[catacombsLevel]!!)
+
+        fun getClass(name: String) = LayoutBuild.vertical(5) {
+            val level = classToLevel?.get(name)!!
+            val progress = classToProgress?.get(name)!!
+            string("${name.replaceFirstChar { it.uppercase() }}: $level")
+            display(Displays.progress(progress))
+        }
 
         val mainContent = LayoutBuild.vertical(10) {
             vertical(5) {
                 string("Catacombs: $catacombsLevel")
                 display(Displays.progress(catacombsProgressToNext))
+                widget(getClass("healer"))
+                widget(getClass("mage"))
+                widget(getClass("berserk"))
+                widget(getClass("archer"))
+                widget(getClass("tank"))
             }
         }
 
@@ -142,7 +166,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         47 to 285559640,
         48 to 360559640,
         49 to 453559640,
-        50 to 569809640
+        50 to 569809640,
     )
     // endregion
 
