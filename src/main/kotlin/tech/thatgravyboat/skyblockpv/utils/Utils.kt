@@ -1,16 +1,22 @@
 package tech.thatgravyboat.skyblockpv.utils
 
+import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.vertex.PoseStack
 import earth.terrarium.olympus.client.components.Widgets
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import java.text.DecimalFormat
+import kotlin.jvm.optionals.getOrNull
 
 object Utils {
+
+    var isFetchingGameProfile = false
+        private set
 
     fun PoseStack.translate(x: Int, y: Int, z: Int) {
         this.translate(x.toFloat(), y.toFloat(), z.toFloat())
@@ -62,5 +68,15 @@ object Utils {
             contents.addChild(contentWithSpacer.centerHorizontally(width))
         }
         compoundWidget.withStretchToContentSize()
+    }
+
+    fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
+        if (isFetchingGameProfile) return
+        isFetchingGameProfile = true
+        SkullBlockEntity.fetchGameProfile(username)
+            .thenAccept { profile ->
+                callback(profile.getOrNull())
+                isFetchingGameProfile = false
+            }
     }
 }

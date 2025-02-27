@@ -12,11 +12,9 @@ import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
-import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
@@ -24,10 +22,10 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
+import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
-import kotlin.jvm.optionals.getOrNull
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
@@ -96,12 +94,10 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         val usernameState = State.of<String>(gameProfile.name)
         val username = Widgets.textInput(usernameState) { box ->
             box.withEnterCallback {
-                runBlocking {
-                    // TODO: dedupe code with command
-                    val profile = SkullBlockEntity.fetchGameProfile(box.value).join().getOrNull()
-                    if (profile != null) {
+                Utils.fetchGameProfile(box.value) { profile ->
+                    profile?.let {
                         McClient.tell {
-                            McClient.setScreen(PvTabs.MAIN.create(profile))
+                            McClient.setScreen(PvTabs.MAIN.create(it))
                         }
                     }
                 }
