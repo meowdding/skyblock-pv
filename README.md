@@ -3,7 +3,7 @@
 TODO: (typos are mayas fault)
 
 <details>
-<summary>## Main screen</summary>
+<summary>Main screen</summary>
 
 - [ ] Networth + Weight
 - [ ] Skills (done-ish?)
@@ -11,7 +11,7 @@ TODO: (typos are mayas fault)
 </details>
 
 <details>
-<summary>## Dungeon</summary>
+<summary>Dungeon</summary>
 
 - [ ] Cata level
 - [ ] Class Stats
@@ -21,7 +21,8 @@ TODO: (typos are mayas fault)
 
 </details>
 
-## All Stats
+<details>
+<summary>All Stats</summary>
 
 - [ ] Guild
 - [ ] Fairy Souls
@@ -29,14 +30,20 @@ TODO: (typos are mayas fault)
 - [ ] Auctions
 - [ ] Ores Mined, sea creature killed, items fished etc.
 
-## Chocolate Factory (seperate tab in stats)
+<details>
+<summary>Chocolate Factory (seperate tab in stats)</summary>
+
+</details>
 
 - [ ] Rabbit Family
 - [ ] modifiers
 - [ ] Stats
 - [ ] found rabbits stats
 
-## Storage
+</details>
+
+<details>
+<summary>Storage</summary>
 
 - [ ] Inventory
 - [ ] Hotbar
@@ -49,16 +56,25 @@ TODO: (typos are mayas fault)
 - [ ] Fishing Bag
 - [ ] Potion bag
 
-## Collections
+</details>
+
+<details>
+<summary>Collections</summary>
 
 - [ ] Minions
 
-## Pets
+</details>
+
+<details>
+<summary>Pets</summary>
 
 - [ ] all pets
 - [ ] each pet with stats
 
-## Mining
+</details>
+
+<details>
+<summary>Mining</summary>
 
 - [ ] HOTM
 - [ ] Powders
@@ -68,24 +84,36 @@ TODO: (typos are mayas fault)
 - [ ] Trophy Fishing
 - [ ] Trophy fish milestones
 
-## Beastiary
+</details>
+
+<details>
+<summary>Beastiary</summary>
 
 - [ ] different islands with mobs and progress bars
 
-## Crimson isle
+</details>
+
+<details>
+<summary>Crimson isle</summary>
 
 - [ ] Kundra stats
 - [ ] Dojo Stats
 - [ ] Faction stats
 - [ ] matriarch shit
 
-## Museum
+</details>
+
+<details>
+<summary>Museum</summary>
 
 - [ ] Value
 - [ ] dontations and raririties and such
 - [ ] Preview of the museum items
 
-## Rift
+</details>
+
+<details>
+<summary>Rift</summary>
 
 - [ ] Montezuna
 - [ ] Armor
@@ -97,7 +125,10 @@ TODO: (typos are mayas fault)
 - [ ] Burger
 - [ ] Enigma Souls
 
-## Garden
+</details>
+
+<details>
+<summary>Garden</summary>
 
 - [ ] Crop milestones
 - [ ] crop upgrades
@@ -107,3 +138,5 @@ TODO: (typos are mayas fault)
 - [ ] plots
 - [ ] visitor stats
 - [ ] Composters
+
+</details>
