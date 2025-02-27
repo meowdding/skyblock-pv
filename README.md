@@ -2,18 +2,24 @@
 
 TODO: (typos are mayas fault)
 
-## Main screen
+<details>
+<summary>## Main screen</summary>
 
 - [ ] Networth + Weight
 - [ ] Skills (done-ish?)
 
-## Dungeon
+</details>
+
+<details>
+<summary>## Dungeon</summary>
 
 - [ ] Cata level
 - [ ] Class Stats
 - [ ] Boss Stats
 - [ ] Total data
 - [ ] Extra tab for master mode
+
+</details>
 
 ## All Stats
 
