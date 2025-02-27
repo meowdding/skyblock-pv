@@ -410,14 +410,14 @@ object Displays {
         spacing: Int = 0,
     ): Display {
         return object : Display {
+            val columnWidths = (0 until table.maxOf { it.size }).map { col ->
+                table.maxOfOrNull { row -> row.getOrNull(col)?.getWidth() ?: 0 } ?: 0
+            }
+
             override fun getHeight(): Int = table.sumOf { it.maxOf { it.getHeight() } } + (table.size - 1) * spacing
-            override fun getWidth(): Int = table.maxOf { it.sumOf { it.getWidth() } + (it.size - 1) * spacing }
+            override fun getWidth(): Int = columnWidths.sum() + (columnWidths.size - 1) * spacing
 
             override fun render(graphics: GuiGraphics) {
-                val columnWidths = (0 until table.maxOf { it.size }).map { col ->
-                    table.maxOfOrNull { row -> row.getOrNull(col)?.getWidth() ?: 0 } ?: 0
-                }
-
                 var currentY = 0
 
                 table.forEach { row ->
