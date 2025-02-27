@@ -11,17 +11,6 @@ TODO: (typos are mayas fault)
 </details>
 
 <details>
-<summary>Dungeon</summary>
-
-- [ ] Cata level
-- [ ] Class Stats
-- [ ] Boss Stats
-- [ ] Total data
-- [ ] Extra tab for master mode
-
-</details>
-
-<details>
 <summary>All Stats</summary>
 
 - [ ] Guild
