@@ -31,25 +31,20 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun countRuns(completions: Map<String, Long>?) = completions?.filterKeys { it != "total" }?.values?.sum() ?: 0
 
     private fun createInfoBoxDisplay(dungeonData: DungeonData) = LayoutBuild.vertical {
-        val width = 200
         val catacombsCompl = dungeonData.dungeonTypes["catacombs"]?.tierCompletions
         val masterModeCompl = dungeonData.dungeonTypes["master_catacombs"]?.tierCompletions
 
-        widget(Utils.getTitleWidget("Dungeon Info", width))
-        widget(
-            Utils.getMainContentWidget(
-                LayoutBuild.vertical {
-                    string("Class Average: TODO")
-                    string("Secrets: ${dungeonData.secrets.toFormattedString()}")
-                    string("Secrets/Run: ${(dungeonData.secrets / (countRuns(catacombsCompl) + countRuns(masterModeCompl))).round()}")
-                },
-                width,
-            ),
-        )
+        val mainContent = LayoutBuild.vertical {
+            string("Class Average: TODO")
+            string("Secrets: ${dungeonData.secrets.toFormattedString()}")
+            string("Secrets/Run: ${(dungeonData.secrets / (countRuns(catacombsCompl) + countRuns(masterModeCompl))).round()}")
+        }
+
+        widget(Utils.getTitleWidget("Dungeon Info", mainContent.width + 20))
+        widget(Utils.getMainContentWidget(mainContent, mainContent.width + 20))
     }
 
     private fun createRunsDisplay(dungeonData: DungeonData): LayoutElement {
-        val width = 200
         val catacombs = dungeonData.dungeonTypes["catacombs"]
         val masterMode = dungeonData.dungeonTypes["master_catacombs"]
         val catacombsComp = catacombs?.tierCompletions
@@ -60,10 +55,10 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }
 
         val table = buildList {
-            add(listOf("", "Catacombs", "Master"))
+            add(listOf("", "Cata", "Master"))
             getRow("Bonzo", "1")
             getRow("Scarf", "2")
-            getRow("Professor", "3")
+            getRow("Prof.", "3")
             getRow("Thorn", "4")
             getRow("Livid", "5")
             getRow("Sadan", "6")
@@ -72,8 +67,8 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }.map { it.map { Displays.text(it, color = { 0x555555u }, shadow = false) } }.asTable(10).asWidget()
 
         return LayoutBuild.vertical {
-            widget(Utils.getTitleWidget("Dungeon Runs", width))
-            widget(Utils.getMainContentWidget(table, width))
+            widget(Utils.getTitleWidget("Dungeon Runs", table.width + 20))
+            widget(Utils.getMainContentWidget(table, table.width + 20))
         }
     }
 
