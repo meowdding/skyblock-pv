@@ -16,17 +16,18 @@ import kotlinx.coroutines.runBlocking
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
+import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockpv.api.MojangAPI
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import kotlin.jvm.optionals.getOrNull
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
@@ -97,10 +98,10 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             box.withEnterCallback {
                 runBlocking {
                     // TODO: dedupe code with command
-                    val uuid = MojangAPI.getUUID(box.value)
-                    if (uuid != null) {
+                    val profile = SkullBlockEntity.fetchGameProfile(box.value).join().getOrNull()
+                    if (profile != null) {
                         McClient.tell {
-                            McClient.setScreen(PvTabs.MAIN.create(McClient.self.minecraftSessionService.fetchProfile(uuid, false)?.profile ?: return@tell))
+                            McClient.setScreen(PvTabs.MAIN.create(profile))
                         }
                     }
                 }
