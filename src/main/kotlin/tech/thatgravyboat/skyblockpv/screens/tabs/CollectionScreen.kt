@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import earth.terrarium.olympus.client.ui.UIConstants
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.world.item.ItemStack
@@ -17,6 +16,7 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
+import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
@@ -47,20 +47,24 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         scrollable.visitWidgets(this::addRenderableWidget)
 
         val categories = profile.collections.map { it.category }.distinct().sortToSkyBlockOrder()
-        val buttonRow = LinearLayout.horizontal().spacing(5)
+        val buttonRow = LinearLayout.horizontal().spacing(2)
         categories.forEach { category ->
+            val selected = category == currentCategory
             val button = Button()
-            button.setSize(20, 20)
-            if (category == currentCategory) {
-                button.withTexture(UIConstants.PRIMARY_BUTTON)
+            button.setSize(20, 22)
+            if (selected) {
+                button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
             } else {
                 button.withCallback {
                     currentCategory = category
                     this.rebuildWidgets()
                 }
-                button.withTexture(UIConstants.BUTTON)
+                button.withTexture(ExtraConstants.TAB_TOP)
             }
-            button.withRenderer(WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(getIconFromCollectionType(category), ctx.x, ctx.y) })
+            button.withRenderer(WidgetRenderers.padded(
+                4, 0, 0, 0,
+                WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(getIconFromCollectionType(category), ctx.x, ctx.y) }
+            ))
             button.withTooltip(Text.of(category))
             buttonRow.addChild(button)
         }
