@@ -10,6 +10,7 @@ import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -145,7 +146,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     PlayerStatus.Status.OFFLINE -> "§cOFFLINE - "
                     PlayerStatus.Status.ERROR -> "§4ERROR"
                 }
-                val locationText = status.location ?: "Unknown"
+                val locationText = SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location ?: "Unknown"
                 statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of(statusText + locationText)))
                 statusButtonWidget.asDisabled()
             }
