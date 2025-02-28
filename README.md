@@ -19,6 +19,8 @@ TODO: (typos are mayas fault)
 - [ ] Auctions
 - [ ] Ores Mined, sea creature killed, items fished etc.
 
+</details>
+
 <details>
 <summary>Chocolate Factory (seperate tab in stats)</summary>
 
