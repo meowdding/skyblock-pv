@@ -25,7 +25,10 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     val classToProgress by lazy {
         profile?.dungeonData?.classExperience?.map { (name, xp) ->
             val level = classToLevel?.get(name)!!
-            name to (xp - levelXpMap[level]!!).toFloat() / (levelXpMap[level + 1]!! - levelXpMap[level]!!)
+            val currentXp = levelXpMap[level]!!
+            val nextXp = levelXpMap[level + 1]
+
+            name to if (nextXp == null) 1.0f else (xp - currentXp).toFloat() / (nextXp - currentXp)
         }?.toMap()
     }
 
@@ -62,7 +65,11 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val catacombsXp = dungeonData.dungeonTypes["catacombs"]?.experience ?: 0
 
         val catacombsLevel = levelXpMap.entries.findLast { it.value < catacombsXp }?.key ?: 50
-        val catacombsProgressToNext = (catacombsXp - levelXpMap[catacombsLevel]!!).toFloat() / (levelXpMap[catacombsLevel + 1]!! - levelXpMap[catacombsLevel]!!)
+        val catacombsProgressToNext = if (levelXpMap.containsKey(catacombsLevel + 1)) {
+            (catacombsXp - levelXpMap[catacombsLevel]!!).toFloat() / (levelXpMap[catacombsLevel + 1]!! - levelXpMap[catacombsLevel]!!)
+        } else {
+            1.0f
+        }
 
         fun getClass(name: String) = LayoutBuild.vertical(5) {
             val level = classToLevel?.get(name)!!
