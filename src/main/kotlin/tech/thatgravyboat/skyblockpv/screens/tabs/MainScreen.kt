@@ -47,7 +47,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val cols = LayoutBuild.horizontal {
             widget(createLeftColumn(profile!!, sideColumnWidth))
-            widget(createMiddleColumn(profiles, middleColumnWidth))
+            widget(createMiddleColumn(profile!!, middleColumnWidth))
             widget(createRightColumn(profile!!, sideColumnWidth))
         }
 
@@ -111,7 +111,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
     }
 
-    private fun createMiddleColumn(profiles: List<SkyBlockProfile>, width: Int): LinearLayout {
+    private fun createMiddleColumn(profile: SkyBlockProfile, width: Int): LinearLayout {
         val height = (width * 1.1).toInt()
         val playerWidget = Displays.background(SkyBlockPv.id("buttons/dark/disabled"), width, height).asWidget().withRenderer { gr, ctx, _ ->
             val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
@@ -119,11 +119,11 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             gr.pushPop {
                 translate(0f, 0f, 100f)
                 Displays.entity(
-                    FakePlayer(gameProfile),
+                    FakePlayer(gameProfile, Text.join("[", profile.skyBlockLevel.first.toString(), "] ", gameProfile.name)),
                     width, height,
-                    width / 2,
+                    (width / 2.5).toInt(),
                     eyesX, eyesY,
-                ).render(gr, ctx.x, ctx.y)
+                ).render(gr, ctx.x, ctx.y + height / 10)
             }
         }
 
