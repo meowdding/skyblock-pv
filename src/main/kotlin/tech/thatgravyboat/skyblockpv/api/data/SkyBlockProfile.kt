@@ -60,6 +60,7 @@ data class SkyBlockProfile(
                         mainBank = member["banking"].asLong(0),
                         soloBank = json.getAsJsonObject("banking")?.get("balance").asLong(0),
                         cookieBuffActive = profile["cookie_buff_active"].asBoolean(false),
+                        essence = currencies["essence"].asMap { id, obj -> id to obj.asJsonObject["current"].asLong(0) },
                     )
                 },
 

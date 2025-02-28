@@ -161,11 +161,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     private fun createRightColumn(profile: SkyBlockProfile, width: Int): Layout {
-        val skillDisplayElementWidth = 35
-        val skillElementsPerRow = width / skillDisplayElementWidth
-
-        if (skillElementsPerRow < 1) return LinearLayout.vertical()
-
         val column = LinearLayout.vertical()
         column.addChild(SpacerElement.height(5))
 
@@ -174,23 +169,27 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             data: Sequence<Pair<String, T>>,
             getToolTip: (String, T) -> Component?,
             getIcon: (String) -> ResourceLocation,
-            getLevel: (String, T) -> Int,
+            getLevel: (String, T) -> Any,
         ) {
             column.addChild(getTitleWidget(title, width))
-
             val mainContent = LinearLayout.vertical().spacing(5)
 
-            data.chunked(skillElementsPerRow).forEach { chunk ->
+            val convertedElements = data.map { (name, data) ->
+                val level = getLevel(name, data).toString()
+                val widget = listOf(
+                    Displays.sprite(getIcon(name), 12, 12),
+                    Displays.text(level, color = { 0x555555u }, shadow = false),
+                ).toRow(1).asWidget()
+                getToolTip(name, data)?.let { widget.withTooltip(it) }
+                widget
+            }.toList()
+
+            val elementsPerRow = width / (convertedElements.first().width + 10)
+            if (elementsPerRow < 1) return
+
+            convertedElements.chunked(elementsPerRow).forEach { chunk ->
                 val element = LinearLayout.horizontal().spacing(5)
-                chunk.forEach { (name, data) ->
-                    val level = getLevel(name, data)
-                    val widget = listOf(
-                        Displays.sprite(getIcon(name), 12, 12),
-                        Displays.text("$level", color = { 0x555555u }, shadow = false),
-                    ).toRow(1).asWidget()
-                    getToolTip(name, data)?.let { widget.withTooltip(it) }
-                    element.addChild(widget)
-                }
+                chunk.forEach { element.addChild(it) }
                 mainContent.addChild(element.centerHorizontally(width))
             }
 
@@ -213,6 +212,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, { a, b -> null }, ::getIconFromSlayerName) { name, data ->
             getSlayerLevel(name, data.exp)
         }
+        column.addChild(Widgets.text(""))
+        addSection<Long>(
+            "Essence",
+            profile.currency.essence.asSequence().map { it.toPair() },
+            { a, b -> null },
+            { SkyBlockPv.id("icon/essence/${it.lowercase()}") },
+        ) { _, amount -> amount.toFormattedString() }
 
         return column
     }
