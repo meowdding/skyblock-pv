@@ -24,8 +24,6 @@ TODO: (typos are mayas fault)
 <details>
 <summary>Chocolate Factory (seperate tab in stats)</summary>
 
-</details>
-
 - [ ] Rabbit Family
 - [ ] modifiers
 - [ ] Stats
