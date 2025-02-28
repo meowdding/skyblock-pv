@@ -20,6 +20,7 @@ data class SkyBlockProfile(
     /**Level to Progress*/
     val skyBlockLevel: Pair<Int, Int>,
     val firstJoin: Long,
+    val fairySouls: Int,
     val skill: Map<String, Long>,
     val collections: List<CollectionItem>,
     val mobData: List<MobData>,
@@ -63,6 +64,7 @@ data class SkyBlockProfile(
                 },
 
                 firstJoin = profile["first_join"].asLong(0),
+                fairySouls = member.getAsJsonObject("fairy_soul")?.get("total_collected").asInt(0),
                 skyBlockLevel = run {
                     val level = member.getAsJsonObject("leveling")
                     val experience = level["experience"].asInt(0)
