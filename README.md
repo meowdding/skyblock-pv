@@ -14,7 +14,6 @@ TODO: (typos are mayas fault)
 <summary>All Stats</summary>
 
 - [ ] Guild
-- [ ] Fairy Souls
 - [ ] essences
 - [ ] Auctions
 - [ ] Ores Mined, sea creature killed, items fished etc.

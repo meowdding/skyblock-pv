@@ -106,6 +106,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     PronounsDbAPI.getDisplay(gameProfile.id),
                 ).toRow().withTooltip("Provided by https://pronoundb.org/"),
             )
+            string("Fairy Souls: ${profile.fairySouls}")
         }
 
         widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
