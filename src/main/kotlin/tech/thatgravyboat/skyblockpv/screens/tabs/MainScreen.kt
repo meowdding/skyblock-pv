@@ -1,11 +1,9 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
-import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import kotlinx.coroutines.runBlocking
-import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
@@ -161,9 +159,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         return layout
     }
 
-    private fun createRightColumn(profile: SkyBlockProfile, width: Int): Layout {
-        val column = LinearLayout.vertical()
-        column.addChild(SpacerElement.height(5))
+    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+        spacer(height = 5)
 
         fun <T> addSection(
             title: String,
@@ -172,7 +169,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             getIcon: (String) -> ResourceLocation,
             getLevel: (String, T) -> Any,
         ) {
-            column.addChild(getTitleWidget(title, width))
+            widget(getTitleWidget(title, width))
             val mainContent = LinearLayout.vertical().spacing(5)
 
             val convertedElements = data.map { (name, data) ->
@@ -196,7 +193,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
             mainContent.arrangeElements()
 
-            column.addChild(getMainContentWidget(mainContent, width))
+            widget(getMainContentWidget(mainContent, width))
         }
 
         addSection<Long>(
@@ -209,19 +206,21 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             },
             ::getIconFromSkillName, ::getSkillLevel,
         )
-        column.addChild(Widgets.text(""))
+
+        spacer(height = 10)
+
         addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, { a, b -> null }, ::getIconFromSlayerName) { name, data ->
             getSlayerLevel(name, data.exp)
         }
-        column.addChild(Widgets.text(""))
+
+        spacer(height = 10)
+
         addSection<Long>(
             "Essence",
             profile.currency.essence.asSequence().map { it.toPair() },
             { a, b -> null },
             { SkyBlockPv.id("icon/essence/${it.lowercase()}") },
         ) { _, amount -> amount.toFormattedString() }
-
-        return column
     }
 
 }
