@@ -17,6 +17,7 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
@@ -27,6 +28,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import kotlin.reflect.full.isSubclassOf
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
@@ -101,7 +103,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     private fun createTabs() = LayoutBuild.vertical(2) {
         // as you can see, maya has no idea what she is doing
         PvTabs.entries.forEach { tab ->
-            var selected = tab.name == name
+            val selected = tab.screen.isSubclassOf(McScreen.self!!::class)
             val button = Button()
             button.setSize(22, 20)
             if (selected) {
