@@ -26,6 +26,7 @@ data class SkyBlockProfile(
     val mobData: List<MobData>,
     val slayer: Map<String, SlayerTypeData>,
     val dungeonData: DungeonData?,
+    val mining: MiningCore?,
 ) {
     companion object {
 
@@ -79,6 +80,31 @@ data class SkyBlockProfile(
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
                 dungeonData = member.getAsJsonObject("dungeons")?.parseDungeonData(),
+                mining = member.getAsJsonObject("mining_core")?.parseMiningData(),
+            )
+        }
+
+        private fun JsonObject.parseMiningData(): MiningCore {
+            val nodes = this.getAsJsonObject("nodes").asMap { id, amount -> id to amount.asInt(0) }
+            val crystals = this.getAsJsonObject("crystals").asMap { id, data ->
+                val obj = data.asJsonObject
+                id to Crystal(
+                    state = obj["state"].asString(""),
+                    totalPlaced = obj["total_placed"].asInt(0),
+                    totalFound = obj["total_found"].asInt(0),
+                )
+            }
+
+            return MiningCore(
+                nodes = nodes,
+                crystals = crystals,
+                experience = this["experience"].asLong(0),
+                powderMithril = this["powder_mithril"].asInt(0),
+                powderSpentMithril = this["powder_spent_mithril"].asInt(0),
+                powderGemstone = this["powder_gemstone"].asInt(0),
+                powderSpentGemstone = this["powder_spent_gemstone"].asInt(0),
+                powderGlacite = this["powder_glacite"].asInt(0),
+                powderSpentGlacite = this["powder_spent_glacite"].asInt(0),
             )
         }
 
