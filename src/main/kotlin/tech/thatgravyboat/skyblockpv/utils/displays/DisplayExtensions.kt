@@ -43,11 +43,12 @@ fun List<Any>.asLayer(): Display {
                 is Display -> it
                 else -> throw IllegalArgumentException("Unsupported type: ${it::class.simpleName}")
             }
-        }.toTypedArray()
+        }.toTypedArray(),
     )
 }
 
-fun List<List<Display>>.asTable(spacing: Int = 0): Display = Displays.table(this, spacing)
+fun List<List<Any>>.asTable(spacing: Int = 0): Display =
+    Displays.table(this.map { it.map { it as? Display ?: Displays.text(it.toString(), color = { 0x555555u }, shadow = false) } }, spacing)
 
 fun Display.centerIn(width: Int, height: Int): Display = Displays.center(width, height, this)
 
