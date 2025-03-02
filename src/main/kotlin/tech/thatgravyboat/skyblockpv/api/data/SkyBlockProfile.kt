@@ -190,7 +190,7 @@ data class SkyBlockProfile(
 
         @OptIn(ExperimentalEncodingApi::class)
         private fun JsonObject.getInventory(): InventoryData {
-            val backpackIcons: MutableMap<Int, ItemStack> = InventoryData.Backpack.icons(this.getAsJsonObject("backpack_icons"))
+            val backpackIcons: Map<Int, ItemStack> = InventoryData.Backpack.icons(this.getAsJsonObject("backpack_icons"))
             val bagContents = this.getAsJsonObject("bag_contents")
             return InventoryData(
                 inventoryItems = this.getAsJsonObject("inv_contents")?.let { InventoryData.Inventory.fromJson(it) },
@@ -206,7 +206,7 @@ data class SkyBlockProfile(
                 backpacks = this.getAsJsonObject("backpack_contents")?.let {
                     InventoryData.Backpack.fromJson(it).map { (id, inv) ->
                         InventoryData.Backpack(items = inv, icon = backpackIcons[id] ?: ItemStack.EMPTY)
-                    }.toMutableList()
+                    }
                 },
                 wardrobe = this.getAsJsonObject("wardrobe_contents")?.getAsJsonObject("armor")?.let {
                     InventoryData.Wardrobe(

@@ -12,10 +12,10 @@ data class InventoryData(
     val inventoryItems: Inventory?,
     val armorItems: Inventory?,
     val equipmentItems: Inventory?,
-    val enderChestPages: MutableList<EnderChestPage>?,
-    val backpacks: MutableList<Backpack>?,
+    val enderChestPages: List<EnderChestPage>?,
+    val backpacks: List<Backpack>?,
     val potionBag: Inventory?,
-    val talismans: MutableList<TalismansPage>?,
+    val talismans: List<TalismansPage>?,
     val fishingBag: Inventory?,
     val sacks: Inventory?,
     val quiver: Inventory?,
@@ -43,11 +43,11 @@ data class InventoryData(
         val items: Inventory,
     ) {
         companion object {
-            fun fromJson(json: JsonObject): MutableList<EnderChestPage> {
+            fun fromJson(json: JsonObject): List<EnderChestPage> {
                 return json.get("data").getNbtJson()?.let {
                     // todo: actual size
-                    Inventory.fromJson(it).inventory.chunked(27).map { EnderChestPage(Inventory(it.toMutableList())) }.toMutableList()
-                } ?: mutableListOf()
+                    Inventory.fromJson(it).inventory.chunked(27).map { EnderChestPage(Inventory(it)) }
+                } ?: listOf()
             }
         }
     }
@@ -57,20 +57,16 @@ data class InventoryData(
         val icon: ItemStack,
     ) {
         companion object {
-            fun icons(json: JsonObject): MutableMap<Int, ItemStack> {
-                var icons = mutableMapOf<Int, ItemStack>()
-                json.entrySet().forEach { entry ->
-                    icons[entry.key.toInt()] = entry.value.asJsonObject.get("data").itemStack()
+            fun icons(json: JsonObject): Map<Int, ItemStack> {
+                return json.entrySet().associate { entry ->
+                    entry.key.toInt() to entry.value.asJsonObject.get("data").itemStack()
                 }
-                return icons
             }
 
-            fun fromJson(json: JsonObject): MutableMap<Int, Inventory> {
-                var backpacks = mutableMapOf<Int, Inventory>()
-                json.entrySet().forEach { entry ->
-                    backpacks[entry.key.toInt()] = Inventory.fromJson(entry.value.asJsonObject)
+            fun fromJson(json: JsonObject): Map<Int, Inventory> {
+                return json.entrySet().associate { entry ->
+                    entry.key.toInt() to Inventory.fromJson(entry.value.asJsonObject)
                 }
-                return backpacks
             }
         }
     }
@@ -79,24 +75,24 @@ data class InventoryData(
         val talismans: Inventory,
     ) {
         companion object {
-            fun fromJson(json: JsonObject): MutableList<TalismansPage> {
+            fun fromJson(json: JsonObject): List<TalismansPage> {
                 return json.get("data").getNbtJson()?.let {
                     // todo: actual size
-                    Inventory.fromJson(it).inventory.chunked(27).map { TalismansPage(Inventory(it.toMutableList())) }.toMutableList()
-                } ?: mutableListOf()
+                    Inventory.fromJson(it).inventory.chunked(27).map { TalismansPage(Inventory(it)) }
+                } ?: listOf()
             }
         }
     }
 
     class Inventory(
-        val inventory: MutableList<ItemStack>,
+        val inventory: List<ItemStack>,
     ) {
         companion object {
             @OptIn(ExperimentalEncodingApi::class)
             fun fromJson(json: JsonObject): Inventory {
-                if (!json.has("data")) return Inventory(mutableListOf())
+                if (!json.has("data")) return Inventory(listOf())
                 val itemList = json.get("data").getNbt().getList("i", 10)
-                return Inventory(itemList.map { item -> item.legacyStack() }.toMutableList())
+                return Inventory(itemList.map { item -> item.legacyStack() })
             }
         }
     }
