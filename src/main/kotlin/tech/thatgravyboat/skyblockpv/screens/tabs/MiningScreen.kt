@@ -38,5 +38,15 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
         widget(getTitleWidget("Powder", width - 5))
         widget(getMainContentWidget(powderTable, width - 5))
 
+        spacer(height = 5)
+
+        mining.crystals.map { (name, crystal) ->
+            val formattedName = name.split("_").first().lowercase().replaceFirstChar { it.uppercase() }
+            val state = "§2✔".takeIf { crystal.state == "FOUND" } ?: "§4❌"
+            listOf(formattedName, "§l$state", "")
+        }.chunked(2).map { it.flatten() }.asTable(5).asWidget().let {
+            widget(getTitleWidget("Placed Crystals", width - 5))
+            widget(getMainContentWidget(it, width - 5))
+        }
     }
 }
