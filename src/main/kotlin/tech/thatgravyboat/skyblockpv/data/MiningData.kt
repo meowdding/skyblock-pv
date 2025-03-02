@@ -10,8 +10,7 @@ data class MiningCore(
     val powderSpentGemstone: Int,
     val powderGlacite: Int,
     val powderSpentGlacite: Int,
-
-    )
+)
 
 data class Crystal(
     val state: String,
