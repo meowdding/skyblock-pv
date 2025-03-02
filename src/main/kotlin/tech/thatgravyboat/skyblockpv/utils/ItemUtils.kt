@@ -1,5 +1,7 @@
 package tech.thatgravyboat.skyblockpv.utils
 
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.mojang.serialization.Dynamic
 import net.azureaaron.legacyitemdfu.LegacyItemStackFixer
 import net.azureaaron.legacyitemdfu.TypeReferences
@@ -8,6 +10,7 @@ import net.minecraft.nbt.Tag
 import net.minecraft.resources.RegistryOps
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 fun Tag.legacyStack(): ItemStack {
     val ops: RegistryOps<Tag>? = McClient.self.connection?.registryAccess()?.createSerializationContext(NbtOps.INSTANCE)
@@ -23,4 +26,13 @@ fun Tag.legacyStack(): ItemStack {
         .get()
 
     return stack
+}
+
+@OptIn(ExperimentalEncodingApi::class)
+fun JsonObject.itemStack(): ItemStack {
+    return this.getNbt().legacyStack()
+}
+
+fun JsonElement.itemStack(): ItemStack {
+    return this.getNbt().legacyStack()
 }

@@ -23,7 +23,7 @@ data class SkyBlockProfile(
     val profileType: ProfileType = ProfileType.UNKNOWN,
 
     val currency: Currency,
-    val inventory: MutableList<ItemStack>,
+    val inventory: InventoryData?,
     /**Level to Progress*/
     val skyBlockLevel: Pair<Int, Int>,
     val firstJoin: Long,
@@ -59,7 +59,7 @@ data class SkyBlockProfile(
                     }
                 },
 
-                inventory = member.getAsJsonObject("inventory")?.getAsJsonObject("inv_contents")?.getInventory() ?: mutableListOf(),
+                inventory = member.getAsJsonObject("inventory")?.getInventory(),
 
                 currency = run {
                     val currencies = member.getAsJsonObject("currencies") ?: JsonObject()
@@ -193,16 +193,31 @@ data class SkyBlockProfile(
         }.sortToSkyBlockOrder()
 
         @OptIn(ExperimentalEncodingApi::class)
-        private fun JsonObject.getInventory(): MutableList<ItemStack> {
-            try {
-                if (!this.has("data")) return mutableListOf()
-                val itemList = NbtIo.readCompressed(ByteArrayInputStream(Base64.decode(this.get("data").asString)), NbtAccounter.unlimitedHeap()).getList("i", 10)
-                return itemList.map { item -> item.legacyStack() }.toMutableList()
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return mutableListOf()
+        private fun JsonObject.getInventory(): InventoryData {
+            val backpackIcons: MutableMap<Int, ItemStack> = InventoryData.Backpack.icons(this.getAsJsonObject("backpack_icons"))
+            val bagContents = this.getAsJsonObject("bag_contents")
+            return InventoryData(
+                inventoryItems = InventoryData.Inventory.fromJson(this.getAsJsonObject("inv_contents")),
+                enderChestPages = InventoryData.EnderChestPage.fromJson(this.getAsJsonObject("ender_chest_contents")),
+                potionBag = InventoryData.Inventory.fromJson(bagContents.getAsJsonObject("potion_bag")),
+                talismans = InventoryData.TalismansPage.fromJson(bagContents.getAsJsonObject("talisman_bag")),
+                fishingBag = InventoryData.Inventory.fromJson(bagContents.getAsJsonObject("fishing_bag")),
+                sacks = InventoryData.Inventory.fromJson(bagContents.getAsJsonObject("sacks")),
+                quiver = InventoryData.Inventory.fromJson(bagContents.getAsJsonObject("quiver")),
+                armorItems = InventoryData.Inventory.fromJson(this.getAsJsonObject("inv_armor")),
+                equipmentItems = InventoryData.Inventory.fromJson(this.getAsJsonObject("equipment_contents")),
+                personalVault = InventoryData.Inventory.fromJson(this.getAsJsonObject("personal_vault_contents")),
+                backpacks = InventoryData.Backpack.fromJson(this.getAsJsonObject("backpack_contents")).map { (id, inv) ->
+                    InventoryData.Backpack(
+                        items = inv,
+                        icon = backpackIcons[id] ?: ItemStack.EMPTY
+                    )
+                }.toMutableList(),
+                wardrobe = InventoryData.Wardrobe(
+                        equippedArmor = this.getAsJsonObject("wardrobe_equipped_slot").asInt,
+                        armor = InventoryData.Wardrobe.fromJson(this.getAsJsonObject("wardrobe_contents").getAsJsonObject("armor"))
+                    )
+            )
         }
     }
 }
