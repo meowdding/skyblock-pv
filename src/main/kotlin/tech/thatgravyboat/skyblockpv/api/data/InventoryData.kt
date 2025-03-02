@@ -6,7 +6,6 @@ import tech.thatgravyboat.skyblockpv.utils.getNbt
 import tech.thatgravyboat.skyblockpv.utils.getNbtJson
 import tech.thatgravyboat.skyblockpv.utils.itemStack
 import tech.thatgravyboat.skyblockpv.utils.legacyStack
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 data class InventoryData(
     val inventoryItems: Inventory?,
@@ -88,7 +87,6 @@ data class InventoryData(
         val inventory: List<ItemStack>,
     ) {
         companion object {
-            @OptIn(ExperimentalEncodingApi::class)
             fun fromJson(json: JsonObject): Inventory {
                 if (!json.has("data")) return Inventory(listOf())
                 val itemList = json.get("data").getNbt().getList("i", 10)

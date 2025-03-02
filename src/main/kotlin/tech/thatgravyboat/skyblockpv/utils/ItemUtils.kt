@@ -10,7 +10,6 @@ import net.minecraft.nbt.Tag
 import net.minecraft.resources.RegistryOps
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 fun Tag.legacyStack(): ItemStack {
     val ops: RegistryOps<Tag>? = McClient.self.connection?.registryAccess()?.createSerializationContext(NbtOps.INSTANCE)
@@ -28,7 +27,6 @@ fun Tag.legacyStack(): ItemStack {
     return stack
 }
 
-@OptIn(ExperimentalEncodingApi::class)
 fun JsonObject.itemStack(): ItemStack {
     return this.getNbt().legacyStack()
 }

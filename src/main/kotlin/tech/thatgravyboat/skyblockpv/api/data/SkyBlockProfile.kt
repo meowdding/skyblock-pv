@@ -11,7 +11,6 @@ import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
 import tech.thatgravyboat.skyblockpv.utils.*
 import java.util.*
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 data class SkyBlockProfile(
     val selected: Boolean,
@@ -188,7 +187,6 @@ data class SkyBlockProfile(
             )
         }.sortToSkyBlockOrder()
 
-        @OptIn(ExperimentalEncodingApi::class)
         private fun JsonObject.getInventory(): InventoryData {
             val backpackIcons: Map<Int, ItemStack> = InventoryData.Backpack.icons(this.getAsJsonObject("backpack_icons"))
             val bagContents = this.getAsJsonObject("bag_contents")
