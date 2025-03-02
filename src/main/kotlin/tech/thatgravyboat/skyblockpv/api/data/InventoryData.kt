@@ -1,9 +1,7 @@
 package tech.thatgravyboat.skyblockpv.api.data
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockpv.utils.getNbt
 import tech.thatgravyboat.skyblockpv.utils.getNbtJson
 import tech.thatgravyboat.skyblockpv.utils.itemStack
@@ -11,26 +9,26 @@ import tech.thatgravyboat.skyblockpv.utils.legacyStack
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 data class InventoryData(
-    val inventoryItems: Inventory,
-    val armorItems: Inventory,
-    val equipmentItems: Inventory,
-    val enderChestPages: MutableList<EnderChestPage>,
-    val backpacks: MutableList<Backpack>,
-    val potionBag: Inventory,
-    val talismans: MutableList<TalismansPage>,
-    val fishingBag: Inventory,
-    val sacks: Inventory,
-    val quiver: Inventory,
-    val personalVault: Inventory,
-    val wardrobe: Wardrobe
+    val inventoryItems: Inventory?,
+    val armorItems: Inventory?,
+    val equipmentItems: Inventory?,
+    val enderChestPages: MutableList<EnderChestPage>?,
+    val backpacks: MutableList<Backpack>?,
+    val potionBag: Inventory?,
+    val talismans: MutableList<TalismansPage>?,
+    val fishingBag: Inventory?,
+    val sacks: Inventory?,
+    val quiver: Inventory?,
+    val personalVault: Inventory?,
+    val wardrobe: Wardrobe?,
 ) {
 
     data class Wardrobe(
         val equippedArmor: Int,
-        val armor: WardrobeArmor
+        val armor: WardrobeArmor,
     ) {
         data class WardrobeArmor(
-            val armor: Inventory
+            val armor: Inventory,
         )
 
         companion object {
@@ -42,19 +40,21 @@ data class InventoryData(
     }
 
     data class EnderChestPage(
-        val items: Inventory
+        val items: Inventory,
     ) {
         companion object {
             fun fromJson(json: JsonObject): MutableList<EnderChestPage> {
-                Logger.info("Ender Chest: \n${json.get("data").getNbtJson()?.asString}")
-                return mutableListOf()
+                return json.get("data").getNbtJson()?.let {
+                    // todo: actual size
+                    Inventory.fromJson(it).inventory.chunked(27).map { EnderChestPage(Inventory(it.toMutableList())) }.toMutableList()
+                } ?: mutableListOf()
             }
         }
     }
 
     data class Backpack(
         val items: Inventory,
-        val icon: ItemStack
+        val icon: ItemStack,
     ) {
         companion object {
             fun icons(json: JsonObject): MutableMap<Int, ItemStack> {
@@ -68,7 +68,7 @@ data class InventoryData(
             fun fromJson(json: JsonObject): MutableMap<Int, Inventory> {
                 var backpacks = mutableMapOf<Int, Inventory>()
                 json.entrySet().forEach { entry ->
-                    backpacks[entry.key.toInt()] = Inventory.fromJson(entry.value.asJsonObject.getAsJsonObject("data"))
+                    backpacks[entry.key.toInt()] = Inventory.fromJson(entry.value.asJsonObject)
                 }
                 return backpacks
             }
@@ -76,18 +76,20 @@ data class InventoryData(
     }
 
     data class TalismansPage(
-        val talismans: Inventory
+        val talismans: Inventory,
     ) {
         companion object {
             fun fromJson(json: JsonObject): MutableList<TalismansPage> {
-                Logger.info("Talisman Bag: \n${json.getNbtJson()?.asString}")
-                return mutableListOf()
+                return json.get("data").getNbtJson()?.let {
+                    // todo: actual size
+                    Inventory.fromJson(it).inventory.chunked(27).map { TalismansPage(Inventory(it.toMutableList())) }.toMutableList()
+                } ?: mutableListOf()
             }
         }
     }
 
     class Inventory(
-        val inventory: MutableList<ItemStack>
+        val inventory: MutableList<ItemStack>,
     ) {
         companion object {
             @OptIn(ExperimentalEncodingApi::class)

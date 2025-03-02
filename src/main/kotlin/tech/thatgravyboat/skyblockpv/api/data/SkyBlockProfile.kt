@@ -2,8 +2,6 @@ package tech.thatgravyboat.skyblockpv.api.data
 
 import com.google.gson.JsonObject
 import net.minecraft.Util
-import net.minecraft.nbt.NbtAccounter
-import net.minecraft.nbt.NbtIo
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
@@ -12,9 +10,7 @@ import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
 import tech.thatgravyboat.skyblockpv.utils.*
-import java.io.ByteArrayInputStream
 import java.util.*
-import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 data class SkyBlockProfile(
@@ -197,26 +193,27 @@ data class SkyBlockProfile(
             val backpackIcons: MutableMap<Int, ItemStack> = InventoryData.Backpack.icons(this.getAsJsonObject("backpack_icons"))
             val bagContents = this.getAsJsonObject("bag_contents")
             return InventoryData(
-                inventoryItems = InventoryData.Inventory.fromJson(this.getAsJsonObject("inv_contents")),
-                enderChestPages = InventoryData.EnderChestPage.fromJson(this.getAsJsonObject("ender_chest_contents")),
-                potionBag = InventoryData.Inventory.fromJson(bagContents.getAsJsonObject("potion_bag")),
-                talismans = InventoryData.TalismansPage.fromJson(bagContents.getAsJsonObject("talisman_bag")),
-                fishingBag = InventoryData.Inventory.fromJson(bagContents.getAsJsonObject("fishing_bag")),
-                sacks = InventoryData.Inventory.fromJson(bagContents.getAsJsonObject("sacks")),
-                quiver = InventoryData.Inventory.fromJson(bagContents.getAsJsonObject("quiver")),
-                armorItems = InventoryData.Inventory.fromJson(this.getAsJsonObject("inv_armor")),
-                equipmentItems = InventoryData.Inventory.fromJson(this.getAsJsonObject("equipment_contents")),
-                personalVault = InventoryData.Inventory.fromJson(this.getAsJsonObject("personal_vault_contents")),
-                backpacks = InventoryData.Backpack.fromJson(this.getAsJsonObject("backpack_contents")).map { (id, inv) ->
-                    InventoryData.Backpack(
-                        items = inv,
-                        icon = backpackIcons[id] ?: ItemStack.EMPTY
+                inventoryItems = this.getAsJsonObject("inv_contents")?.let { InventoryData.Inventory.fromJson(it) },
+                enderChestPages = this.getAsJsonObject("ender_chest_contents")?.let { InventoryData.EnderChestPage.fromJson(it) },
+                potionBag = bagContents.getAsJsonObject("potion_bag")?.let { InventoryData.Inventory.fromJson(it) },
+                talismans = bagContents.getAsJsonObject("talisman_bag")?.let { InventoryData.TalismansPage.fromJson(it) },
+                fishingBag = bagContents.getAsJsonObject("fishing_bag")?.let { InventoryData.Inventory.fromJson(it) },
+                sacks = bagContents.getAsJsonObject("sacks")?.let { InventoryData.Inventory.fromJson(it) },
+                quiver = bagContents.getAsJsonObject("quiver")?.let { InventoryData.Inventory.fromJson(it) },
+                armorItems = this.getAsJsonObject("inv_armor")?.let { InventoryData.Inventory.fromJson(it) },
+                equipmentItems = this.getAsJsonObject("equipment_contents")?.let { InventoryData.Inventory.fromJson(it) },
+                personalVault = this.getAsJsonObject("personal_vault_contents")?.let { InventoryData.Inventory.fromJson(it) },
+                backpacks = this.getAsJsonObject("backpack_contents")?.let {
+                    InventoryData.Backpack.fromJson(it).map { (id, inv) ->
+                        InventoryData.Backpack(items = inv, icon = backpackIcons[id] ?: ItemStack.EMPTY)
+                    }.toMutableList()
+                },
+                wardrobe = this.getAsJsonObject("wardrobe_contents")?.getAsJsonObject("armor")?.let {
+                    InventoryData.Wardrobe(
+                        equippedArmor = this.get("wardrobe_equipped_slot").asInt,
+                        armor = InventoryData.Wardrobe.fromJson(it),
                     )
-                }.toMutableList(),
-                wardrobe = InventoryData.Wardrobe(
-                        equippedArmor = this.getAsJsonObject("wardrobe_equipped_slot").asInt,
-                        armor = InventoryData.Wardrobe.fromJson(this.getAsJsonObject("wardrobe_contents").getAsJsonObject("armor"))
-                    )
+                },
             )
         }
     }
