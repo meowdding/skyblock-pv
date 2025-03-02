@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.utils.displays
 
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 
@@ -48,7 +49,18 @@ fun List<Any>.asLayer(): Display {
 }
 
 fun List<List<Any>>.asTable(spacing: Int = 0): Display =
-    Displays.table(this.map { it.map { it as? Display ?: Displays.text(it.toString(), color = { 0x555555u }, shadow = false) } }, spacing)
+    Displays.table(
+        this.map {
+            it.map {
+                when (it) {
+                    is Display -> it
+                    is ResourceLocation -> Displays.sprite(it, 12, 12)
+                    else -> Displays.text(it.toString(), color = { 0x555555u }, shadow = false)
+                }
+            }
+        },
+        spacing,
+    )
 
 fun Display.centerIn(width: Int, height: Int): Display = Displays.center(width, height, this)
 
