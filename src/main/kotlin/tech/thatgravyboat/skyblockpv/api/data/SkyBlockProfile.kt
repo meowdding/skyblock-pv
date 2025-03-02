@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.api.data
 
 import com.google.gson.JsonObject
 import net.minecraft.Util
+import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
@@ -17,6 +18,7 @@ data class SkyBlockProfile(
     val profileType: ProfileType = ProfileType.UNKNOWN,
 
     val currency: Currency,
+    val inventory: InventoryData?,
     /**Level to Progress*/
     val skyBlockLevel: Pair<Int, Int>,
     val firstJoin: Long,
@@ -51,6 +53,8 @@ data class SkyBlockProfile(
                         else -> ProfileType.NORMAL
                     }
                 },
+
+                inventory = member.getAsJsonObject("inventory")?.getInventory(),
 
                 currency = run {
                     val currencies = member.getAsJsonObject("currencies") ?: JsonObject()
@@ -182,5 +186,33 @@ data class SkyBlockProfile(
                 },
             )
         }.sortToSkyBlockOrder()
+
+        private fun JsonObject.getInventory(): InventoryData {
+            val backpackIcons: Map<Int, ItemStack> = InventoryData.Backpack.icons(this.getAsJsonObject("backpack_icons"))
+            val bagContents = this.getAsJsonObject("bag_contents")
+            return InventoryData(
+                inventoryItems = this.getAsJsonObject("inv_contents")?.let { InventoryData.Inventory.fromJson(it) },
+                enderChestPages = this.getAsJsonObject("ender_chest_contents")?.let { InventoryData.EnderChestPage.fromJson(it) },
+                potionBag = bagContents.getAsJsonObject("potion_bag")?.let { InventoryData.Inventory.fromJson(it) },
+                talismans = bagContents.getAsJsonObject("talisman_bag")?.let { InventoryData.TalismansPage.fromJson(it) },
+                fishingBag = bagContents.getAsJsonObject("fishing_bag")?.let { InventoryData.Inventory.fromJson(it) },
+                sacks = bagContents.getAsJsonObject("sacks")?.let { InventoryData.Inventory.fromJson(it) },
+                quiver = bagContents.getAsJsonObject("quiver")?.let { InventoryData.Inventory.fromJson(it) },
+                armorItems = this.getAsJsonObject("inv_armor")?.let { InventoryData.Inventory.fromJson(it) },
+                equipmentItems = this.getAsJsonObject("equipment_contents")?.let { InventoryData.Inventory.fromJson(it) },
+                personalVault = this.getAsJsonObject("personal_vault_contents")?.let { InventoryData.Inventory.fromJson(it) },
+                backpacks = this.getAsJsonObject("backpack_contents")?.let {
+                    InventoryData.Backpack.fromJson(it).map { (id, inv) ->
+                        InventoryData.Backpack(items = inv, icon = backpackIcons[id] ?: ItemStack.EMPTY)
+                    }
+                },
+                wardrobe = this.getAsJsonObject("wardrobe_contents")?.getAsJsonObject("armor")?.let {
+                    InventoryData.Wardrobe(
+                        equippedArmor = this.get("wardrobe_equipped_slot").asInt,
+                        armor = InventoryData.Wardrobe.fromJson(it),
+                    )
+                },
+            )
+        }
     }
 }
