@@ -6,4 +6,5 @@ data class Currency(
     val soloBank: Long = 0,
     val motes: Long,
     val cookieBuffActive: Boolean,
+    val essence: Map<String, Long>,
 )

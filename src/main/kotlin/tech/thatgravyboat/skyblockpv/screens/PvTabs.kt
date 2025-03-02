@@ -4,10 +4,7 @@ import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.screens.tabs.CollectionScreen
-import tech.thatgravyboat.skyblockpv.screens.tabs.DungeonScreen
-import tech.thatgravyboat.skyblockpv.screens.tabs.MainScreen
-import tech.thatgravyboat.skyblockpv.screens.tabs.MobScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.*
 import kotlin.reflect.KClass
 
 enum class PvTabs(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
@@ -15,6 +12,7 @@ enum class PvTabs(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
     DUNGEON(DungeonScreen::class, Items.DIAMOND_SWORD.defaultInstance),
     COLLECTION(CollectionScreen::class, Items.ITEM_FRAME.defaultInstance),
     MOB(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance),
+    MINING(MiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
     ;
 
     fun create(gameProfile: GameProfile): BasePvScreen {

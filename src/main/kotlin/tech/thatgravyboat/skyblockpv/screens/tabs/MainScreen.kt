@@ -1,24 +1,17 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
-import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import kotlinx.coroutines.runBlocking
-import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
-import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import tech.thatgravyboat.skyblockapi.helpers.McLevel
-import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.utils.extentions.getRawLore
+import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
-import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
-import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.PronounsDbAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI.getIconFromSkillName
@@ -53,7 +46,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val cols = LayoutBuild.horizontal {
             widget(createLeftColumn(profile!!, sideColumnWidth))
-            widget(createMiddleColumn(profiles, middleColumnWidth))
+            widget(createMiddleColumn(profile!!, middleColumnWidth))
             widget(createRightColumn(profile!!, sideColumnWidth))
         }
 
@@ -112,29 +105,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     PronounsDbAPI.getDisplay(gameProfile.id),
                 ).toRow().withTooltip("Provided by https://pronoundb.org/"),
             )
+            string("Fairy Souls: ${profile.fairySouls}")
         }
 
         widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
-
-        profile.inventory.forEachIndexed { index, itemStack ->
-            val item = Displays.item(itemStack).asWidget()
-            item.setSize(10, 10)
-            val component = Component.literal("")
-            component.append(itemStack.hoverName)
-            component.append(CommonText.NEWLINE)
-            if (itemStack.components[DataComponents.LORE] != null) {
-                for (line in itemStack.components[DataComponents.LORE]!!.lines) {
-                    component.append(line)
-                    component.append(CommonText.NEWLINE)
-                }
-            }
-            item.withTooltip(component)
-            item.setPosition(width / 2 + index * 3, height / 2)
-            item.visitWidgets(this@MainScreen::addRenderableWidget)
-        }
     }
 
-    private fun createMiddleColumn(profiles: List<SkyBlockProfile>, width: Int): LinearLayout {
+    private fun createMiddleColumn(profile: SkyBlockProfile, width: Int): LinearLayout {
         val height = (width * 1.1).toInt()
         val playerWidget = Displays.background(SkyBlockPv.id("buttons/dark/disabled"), width, height).asWidget().withRenderer { gr, ctx, _ ->
             val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
@@ -142,11 +119,11 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             gr.pushPop {
                 translate(0f, 0f, 100f)
                 Displays.entity(
-                    FakePlayer(gameProfile),
+                    FakePlayer(gameProfile, Text.join("[", profile.skyBlockLevel.first.toString(), "] ", gameProfile.name)),
                     width, height,
-                    width / 2,
+                    (width / 2.5).toInt(),
                     eyesX, eyesY,
-                ).render(gr, ctx.x, ctx.y)
+                ).render(gr, ctx.x, ctx.y + height / 10)
             }
         }
 
@@ -167,7 +144,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     PlayerStatus.Status.OFFLINE -> "§cOFFLINE - "
                     PlayerStatus.Status.ERROR -> "§4ERROR"
                 }
-                val locationText = status.location ?: "Unknown"
+                val locationText = SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location ?: "Unknown"
                 statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of(statusText + locationText)))
                 statusButtonWidget.asDisabled()
             }
@@ -182,43 +159,41 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         return layout
     }
 
-    private fun createRightColumn(profile: SkyBlockProfile, width: Int): Layout {
-        val skillDisplayElementWidth = 35
-        val skillElementsPerRow = width / skillDisplayElementWidth
-
-        if (skillElementsPerRow < 1) return LinearLayout.vertical()
-
-        val column = LinearLayout.vertical()
-        column.addChild(SpacerElement.height(5))
+    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+        spacer(height = 5)
 
         fun <T> addSection(
             title: String,
             data: Sequence<Pair<String, T>>,
             getToolTip: (String, T) -> Component?,
             getIcon: (String) -> ResourceLocation,
-            getLevel: (String, T) -> Int,
+            getLevel: (String, T) -> Any,
         ) {
-            column.addChild(getTitleWidget(title, width))
-
+            widget(getTitleWidget(title, width))
             val mainContent = LinearLayout.vertical().spacing(5)
 
-            data.chunked(skillElementsPerRow).forEach { chunk ->
+            val convertedElements = data.map { (name, data) ->
+                val level = getLevel(name, data).toString()
+                val widget = listOf(
+                    Displays.sprite(getIcon(name), 12, 12),
+                    Displays.text(level, color = { 0x555555u }, shadow = false),
+                ).toRow(1).asWidget()
+                getToolTip(name, data)?.let { widget.withTooltip(it) }
+                widget
+            }.toList()
+
+            val elementsPerRow = width / (convertedElements.first().width + 10)
+            if (elementsPerRow < 1) return
+
+            convertedElements.chunked(elementsPerRow).forEach { chunk ->
                 val element = LinearLayout.horizontal().spacing(5)
-                chunk.forEach { (name, data) ->
-                    val level = getLevel(name, data)
-                    val widget = listOf(
-                        Displays.sprite(getIcon(name), 12, 12),
-                        Displays.text("$level", color = { 0x555555u }, shadow = false),
-                    ).toRow(1).asWidget()
-                    getToolTip(name, data)?.let { widget.withTooltip(it) }
-                    element.addChild(widget)
-                }
+                chunk.forEach { element.addChild(it) }
                 mainContent.addChild(element.centerHorizontally(width))
             }
 
             mainContent.arrangeElements()
 
-            column.addChild(getMainContentWidget(mainContent, width))
+            widget(getMainContentWidget(mainContent, width))
         }
 
         addSection<Long>(
@@ -231,12 +206,21 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             },
             ::getIconFromSkillName, ::getSkillLevel,
         )
-        column.addChild(Widgets.text(""))
+
+        spacer(height = 10)
+
         addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, { a, b -> null }, ::getIconFromSlayerName) { name, data ->
             getSlayerLevel(name, data.exp)
         }
 
-        return column
+        spacer(height = 10)
+
+        addSection<Long>(
+            "Essence",
+            profile.currency.essence.asSequence().map { it.toPair() },
+            { a, b -> null },
+            { SkyBlockPv.id("icon/essence/${it.lowercase()}") },
+        ) { _, amount -> amount.toFormattedString() }
     }
 
 }

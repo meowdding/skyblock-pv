@@ -79,4 +79,15 @@ object Utils {
                 isFetchingGameProfile = false
             }
     }
+
+    fun Number.shorten(): String {
+        val number = this.toLong()
+        return when {
+            number >= 1_000_000_000_000 -> String.format("%.1ft", number / 1_000_000_000_000.0)
+            number >= 1_000_000_000 -> String.format("%.1fb", number / 1_000_000_000.0)
+            number >= 1_000_000 -> String.format("%.1fm", number / 1_000_000.0)
+            number >= 1_000 -> String.format("%.1fk", number / 1_000.0)
+            else -> this.toString()
+        }
+    }
 }

@@ -14,15 +14,13 @@ TODO: (typos are mayas fault)
 <summary>All Stats</summary>
 
 - [ ] Guild
-- [ ] Fairy Souls
-- [ ] essences
 - [ ] Auctions
 - [ ] Ores Mined, sea creature killed, items fished etc.
 
+</details>
+
 <details>
 <summary>Chocolate Factory (seperate tab in stats)</summary>
-
-</details>
 
 - [ ] Rabbit Family
 - [ ] modifiers
@@ -69,7 +67,12 @@ TODO: (typos are mayas fault)
 - [ ] Powders
 - [ ] Nucelus Run stuff
 - [ ] Forge
-- [ ] Fishing
+
+</details>
+
+<details>
+<summary>Fishing</summary>
+
 - [ ] Trophy Fishing
 - [ ] Trophy fish milestones
 
