@@ -302,10 +302,7 @@ object Displays {
 
             override fun render(graphics: GuiGraphics) {
                 if (showTooltip) {
-                    val translation = RenderUtils.getTranslation(graphics.pose())
-                    val (mouseX, mouseY) = McClient.mouse
-
-                    if (mouseX.toInt() in translation.x()..(translation.x() + this.getWidth()) && mouseY.toInt() in translation.y()..translation.y() + this.getHeight()) {
+                    if (isMouseOver(this, graphics.pose())) {
                         ScreenUtils.setTooltip(item)
                     }
                 }
@@ -476,14 +473,21 @@ object Displays {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
             override fun render(graphics: GuiGraphics) {
-                val translation = RenderUtils.getTranslation(graphics.pose())
-                val (mouseX, mouseY) = McClient.mouse
                 display.render(graphics)
 
-                if (mouseX.toInt() in translation.x()..(translation.x() + this.getWidth()) && mouseY.toInt() in translation.y()..translation.y() + this.getHeight()) {
+                if (isMouseOver(display, graphics.pose())) {
                     ScreenUtils.setTooltip(component.splitLines())
                 }
             }
         }
+    }
+
+
+    private fun isMouseOver(display: Display, pose: PoseStack): Boolean {
+        val translation = RenderUtils.getTranslation(pose)
+        val (mouseX, mouseY) = McClient.mouse
+        val xRange = translation.x().toInt()..(translation.x() + display.getWidth())
+        val yRange = translation.y().toInt()..(translation.y() + display.getHeight())
+        return mouseX.toInt() in xRange && mouseY.toInt() in yRange
     }
 }
