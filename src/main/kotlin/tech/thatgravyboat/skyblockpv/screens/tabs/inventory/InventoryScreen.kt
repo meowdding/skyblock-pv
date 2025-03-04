@@ -32,7 +32,7 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     private fun createInventory(items: List<ItemStack>): DisplayWidget {
         val itemDisplays = items.chunked(9).map { chunk ->
             chunk.map { item ->
-                Displays.padding(2, Displays.item(item, showTooltip = true, stackSize = true))
+                Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
         }.reversed().asTable()
         return Displays.background(
