@@ -8,11 +8,14 @@ import net.azureaaron.legacyitemdfu.TypeReferences
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.Tag
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.RegistryOps
 import net.minecraft.util.Unit
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.component.ItemAttributeModifiers
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+
+fun ItemStack.getLore(): List<Component> = this[DataComponents.LORE]?.lines ?: emptyList()
 
 fun Tag.legacyStack(): ItemStack {
     val ops: RegistryOps<Tag>? = McClient.self.connection?.registryAccess()?.createSerializationContext(NbtOps.INSTANCE)
