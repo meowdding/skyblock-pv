@@ -46,7 +46,11 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         scrollable.visitWidgets(this::addRenderableWidget)
 
-        val categories = profile.collections.map { it.category }.distinct().sortToSkyBlockOrder()
+        addCategories(bg)
+    }
+
+    private fun addCategories(bg: DisplayWidget) {
+        val categories = profile!!.collections.map { it.category }.distinct().sortToSkyBlockOrder()
         val buttonRow = LinearLayout.horizontal().spacing(2)
         categories.forEach { category ->
             val selected = category == currentCategory
@@ -61,10 +65,12 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 }
                 button.withTexture(ExtraConstants.TAB_TOP)
             }
-            button.withRenderer(WidgetRenderers.padded(
-                4, 0, 0, 0,
-                WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(getIconFromCollectionType(category), ctx.x, ctx.y) }
-            ))
+            button.withRenderer(
+                WidgetRenderers.padded(
+                    4, 0, 0, 0,
+                    WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(getIconFromCollectionType(category), ctx.x, ctx.y) },
+                ),
+            )
             button.withTooltip(Text.of(category))
             buttonRow.addChild(button)
         }
