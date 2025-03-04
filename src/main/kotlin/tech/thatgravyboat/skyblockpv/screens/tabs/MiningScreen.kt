@@ -9,10 +9,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asTable
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MINING", gameProfile, profile) {
     val levelToExp = mapOf(
@@ -77,8 +74,11 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
         mining.crystals.map { (name, crystal) ->
             val formattedName = name.split("_").first().lowercase().replaceFirstChar { it.uppercase() }
-            val state = "§2✔".takeIf { crystal.state == "FOUND" } ?: "§4❌"
-            listOf(formattedName, "§l$state", "")
+            val state = ("§4❌".takeIf { crystal.state == "NOT_FOUND" } ?: "§2✔").let {
+                val state = crystal.state.split("_").joinToString(" ") { it.lowercase().replaceFirstChar { it.uppercase() } }
+                Displays.text("§l$it").withTooltip("State: $state")
+            }
+            listOf(formattedName, state, "")
         }.chunked(2).map { it.flatten() }.asTable(5).asWidget().let {
             widget(getTitleWidget("Placed Crystals", width - 5))
             widget(getMainContentWidget(it, width - 5))
