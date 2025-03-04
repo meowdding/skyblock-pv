@@ -2,6 +2,8 @@ package tech.thatgravyboat.skyblockpv.utils
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.mojang.authlib.GameProfile
+import com.mojang.authlib.properties.Property
 import com.mojang.serialization.Dynamic
 import net.azureaaron.legacyitemdfu.LegacyItemStackFixer
 import net.azureaaron.legacyitemdfu.TypeReferences
@@ -12,8 +14,19 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.RegistryOps
 import net.minecraft.util.Unit
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemAttributeModifiers
+import net.minecraft.world.item.component.ResolvableProfile
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import java.util.*
+
+fun createSkull(textureBase64: String): ItemStack {
+    val stack = ItemStack(Items.PLAYER_HEAD)
+    val profile = ResolvableProfile(GameProfile(UUID.randomUUID(), "a"))
+    profile.properties.put("textures", Property("textures", textureBase64))
+    stack.set(DataComponents.PROFILE, profile)
+    return stack
+}
 
 fun ItemStack.getLore(): List<Component> = this[DataComponents.LORE]?.lines ?: emptyList()
 
@@ -23,7 +36,7 @@ fun Tag.legacyStack(): ItemStack {
     val fixed: Dynamic<Tag> = LegacyItemStackFixer.getFixer().update(
         TypeReferences.LEGACY_ITEM_STACK, Dynamic<Tag>(ops, this),
         LegacyItemStackFixer.getFirstVersion(),
-        LegacyItemStackFixer.getLatestVersion()
+        LegacyItemStackFixer.getLatestVersion(),
     )
     val stack = ItemStack.CODEC.parse<Tag>(fixed)
         .setPartial(ItemStack.EMPTY)

@@ -8,6 +8,7 @@ import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -19,6 +20,7 @@ import tech.thatgravyboat.skyblockpv.api.SkillAPI.getSkillLevel
 import tech.thatgravyboat.skyblockpv.api.StatusAPI
 import tech.thatgravyboat.skyblockpv.api.data.PlayerStatus
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.data.SkullTextures
 import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
 import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
 import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
@@ -31,6 +33,8 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
+import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.createSkull
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 
@@ -166,7 +170,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             title: String,
             data: Sequence<Pair<String, T>>,
             getToolTip: (String, T) -> Component?,
-            getIcon: (String) -> ResourceLocation,
+            getIcon: (String) -> Any,
             getLevel: (String, T) -> Any,
         ) {
             widget(getTitleWidget(title, width))
@@ -174,8 +178,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
             val convertedElements = data.map { (name, data) ->
                 val level = getLevel(name, data).toString()
+                val iconValue = getIcon(name)
+                val icon = when (iconValue) {
+                    is ResourceLocation -> Displays.sprite(iconValue, 12, 12)
+                    is ItemStack -> Displays.item(iconValue, 12, 12)
+                    else -> error("Invalid icon type")
+                }
                 val widget = listOf(
-                    Displays.sprite(getIcon(name), 12, 12),
+                    icon,
                     Displays.text(level, color = { 0x555555u }, shadow = false),
                 ).toRow(1).asWidget()
                 getToolTip(name, data)?.let { widget.withTooltip(it) }
@@ -219,8 +229,20 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             "Essence",
             profile.currency.essence.asSequence().map { it.toPair() },
             { a, b -> null },
-            { SkyBlockPv.id("icon/essence/${it.lowercase()}") },
-        ) { _, amount -> amount.toFormattedString() }
+            {
+                when (it) {
+                    "WITHER" -> SkullTextures.WITHER_ESSENCE
+                    "SPIDER" -> SkullTextures.SPIDER_ESSENCE
+                    "UNDEAD" -> SkullTextures.UNDEAD_ESSENCE
+                    "DRAGON" -> SkullTextures.DRAGON_ESSENCE
+                    "GOLD" -> SkullTextures.GOLD_ESSENCE
+                    "DIAMOND" -> SkullTextures.DIAMOND_ESSENCE
+                    "ICE" -> SkullTextures.ICE_ESSENCE
+                    "CRIMSON" -> SkullTextures.CRIMSON_ESSENCE
+                    else -> error("Invalid essence type")
+                }.texture.let(::createSkull)
+            },
+        ) { _, amount -> amount.shorten() }
     }
 
 }
