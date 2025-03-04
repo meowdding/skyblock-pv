@@ -295,13 +295,13 @@ object Displays {
         }
     }
 
-    fun item(item: ItemStack, width: Int = 16, height: Int = 16, showTooltip: Boolean = false): Display {
+    fun item(item: ItemStack, width: Int = 16, height: Int = 16, showTooltip: Boolean = false, showStackSize: Boolean = false): Display {
         return object : Display {
             override fun getWidth() = width
             override fun getHeight() = height
 
             override fun render(graphics: GuiGraphics) {
-                if (showTooltip) {
+                if (showTooltip && item.isEmpty) {
                     if (isMouseOver(this, graphics.pose())) {
                         ScreenUtils.setTooltip(item)
                     }
@@ -310,6 +310,20 @@ object Displays {
                 graphics.pushPop {
                     scale(width / 16f, height / 16f, 1f)
                     graphics.renderItem(item, 0, 0)
+
+                    val stackSize = item.count
+                    if (showStackSize && stackSize > 1) {
+                        translate(0, 0, 151)
+                        val component = Text.of(stackSize.toString())
+                        graphics.drawString(
+                            McFont.self,
+                            component,
+                            width - McFont.width(component),
+                            height - McFont.height,
+                            0xFFFFFFFF.toInt(),
+                            true,
+                        )
+                    }
                 }
             }
         }

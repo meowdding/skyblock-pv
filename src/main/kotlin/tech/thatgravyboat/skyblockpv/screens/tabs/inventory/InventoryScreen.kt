@@ -6,11 +6,13 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
@@ -18,15 +20,25 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     override fun create(bg: DisplayWidget) {
         val row = LinearLayout.horizontal().spacing(5)
 
-        val item = profile!!.inventory!!.inventoryItems!!.inventory.first { it.item != ItemStack.EMPTY }
-
-        row.addChild(Displays.item(item, showTooltip = true).asWidget())
+        row.addChild(createInventory(profile!!.inventory!!.inventoryItems!!.inventory))
 
         FrameLayout.centerInRectangle(row, bg.x, bg.y, bg.width, bg.height)
 
         row.visitWidgets(this::addRenderableWidget)
 
         addCategories(bg)
+    }
+
+    private fun createInventory(items: List<ItemStack>): DisplayWidget {
+        val itemDisplays = items.chunked(9).map { chunk ->
+            chunk.map { item ->
+                Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
+            }
+        }.reversed().asTable()
+        return Displays.background(
+            SkyBlockPv.id("inventory/inventory-4"),
+            Displays.padding(2, itemDisplays)
+        ).asWidget()
     }
 
     private fun addCategories(bg: DisplayWidget) {
