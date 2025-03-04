@@ -29,6 +29,7 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
 import tech.thatgravyboat.skyblockpv.utils.Utils.translate
+import tech.thatgravyboat.skyblockpv.utils.getLore
 import kotlin.math.atan
 
 private const val NO_SPLIT = -1
@@ -295,13 +296,17 @@ object Displays {
         }
     }
 
-    fun item(item: ItemStack, width: Int = 16, height: Int = 16): Display {
+    fun item(item: ItemStack, width: Int = 16, height: Int = 16, showTooltip: Boolean = false): Display {
         return object : Display {
             override fun getWidth() = width
             override fun getHeight() = height
+
+            val tooltipDisplay = tooltip(placeholder(width, height), Text.join(item.hoverName, item.getLore().map { listOf("\n", it) }.flatten()))
+
             override fun render(graphics: GuiGraphics) {
                 graphics.pushPop {
                     scale(width / 16f, height / 16f, 1f)
+                    if (showTooltip) tooltipDisplay.render(graphics)
                     graphics.renderItem(item, 0, 0)
                 }
             }
