@@ -17,7 +17,6 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
@@ -28,7 +27,6 @@ import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
-import kotlin.reflect.full.isSubclassOf
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
@@ -103,10 +101,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     private fun createTabs() = LayoutBuild.vertical(2) {
         // as you can see, maya has no idea what she is doing
         PvTabs.entries.forEach { tab ->
-            val selected = tab.screen.isSubclassOf(McScreen.self!!::class)
             val button = Button()
             button.setSize(22, 20)
-            if (selected) {
+            if (tab.isSelected()) {
                 button.withTexture(ExtraConstants.TAB_RIGHT_SELECTED)
             } else {
                 button.withCallback { McClient.tell { McClient.setScreen(tab.create(gameProfile, profile)) } }
@@ -115,7 +112,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             // Don't bother actually aligning the icon yet, design will change anyway :3
             button.withRenderer(
                 WidgetRenderers.padded(
-                    0, 3 - if (selected) 1 else 0, 0, 0,
+                    0, 3 - if (tab.isSelected()) 1 else 0, 0, 0,
                     WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.icon, ctx.x, ctx.y) },
                 ),
             )
