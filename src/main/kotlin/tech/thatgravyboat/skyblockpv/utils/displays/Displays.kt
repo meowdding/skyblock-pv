@@ -29,7 +29,6 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
 import tech.thatgravyboat.skyblockpv.utils.Utils.translate
-import tech.thatgravyboat.skyblockpv.utils.getLore
 import kotlin.math.atan
 
 private const val NO_SPLIT = -1
@@ -301,12 +300,18 @@ object Displays {
             override fun getWidth() = width
             override fun getHeight() = height
 
-            val tooltipDisplay = tooltip(placeholder(width, height), Text.join(item.hoverName, item.getLore().map { listOf("\n", it) }.flatten()))
-
             override fun render(graphics: GuiGraphics) {
+                if (showTooltip) {
+                    val translation = RenderUtils.getTranslation(graphics.pose())
+                    val (mouseX, mouseY) = McClient.mouse
+
+                    if (mouseX.toInt() in translation.x()..(translation.x() + this.getWidth()) && mouseY.toInt() in translation.y()..translation.y() + this.getHeight()) {
+                        ScreenUtils.setTooltip(item)
+                    }
+                }
+
                 graphics.pushPop {
                     scale(width / 16f, height / 16f, 1f)
-                    if (showTooltip) tooltipDisplay.render(graphics)
                     graphics.renderItem(item, 0, 0)
                 }
             }
