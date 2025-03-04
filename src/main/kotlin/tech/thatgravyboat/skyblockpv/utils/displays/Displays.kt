@@ -295,13 +295,13 @@ object Displays {
         }
     }
 
-    fun item(item: ItemStack, width: Int = 16, height: Int = 16, showTooltip: Boolean = false, stackSize: Boolean = false): Display {
+    fun item(item: ItemStack, width: Int = 16, height: Int = 16, showTooltip: Boolean = false, showStackSize: Boolean = false): Display {
         return object : Display {
             override fun getWidth() = width
             override fun getHeight() = height
 
             override fun render(graphics: GuiGraphics) {
-                if (showTooltip) {
+                if (showTooltip && item.isEmpty) {
                     if (isMouseOver(this, graphics.pose())) {
                         ScreenUtils.setTooltip(item)
                     }
@@ -312,7 +312,7 @@ object Displays {
                     graphics.renderItem(item, 0, 0)
 
                     val stackSize = item.count
-                    if (stackSize > 1) {
+                    if (showStackSize && stackSize > 1) {
                         translate(0, 0, 151)
                         val component = Text.of(stackSize.toString())
                         graphics.drawString(
