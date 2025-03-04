@@ -5,10 +5,13 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.Dynamic
 import net.azureaaron.legacyitemdfu.LegacyItemStackFixer
 import net.azureaaron.legacyitemdfu.TypeReferences
+import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.RegistryOps
+import net.minecraft.util.Unit
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.component.ItemAttributeModifiers
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 
 fun Tag.legacyStack(): ItemStack {
@@ -23,6 +26,9 @@ fun Tag.legacyStack(): ItemStack {
         .setPartial(ItemStack.EMPTY)
         .resultOrPartial()
         .get()
+
+    stack.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
+    stack.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers(listOf(), false))
 
     return stack
 }
