@@ -301,7 +301,7 @@ object Displays {
             override fun getHeight() = height
 
             override fun render(graphics: GuiGraphics) {
-                if (showTooltip && item.isEmpty) {
+                if (showTooltip && !item.isEmpty) {
                     if (isMouseOver(this, graphics.pose())) {
                         ScreenUtils.setTooltip(item)
                     }
