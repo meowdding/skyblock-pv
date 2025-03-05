@@ -231,14 +231,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             { a, b -> null },
             {
                 when (it) {
-                    "ESSENCE_WITHER" -> SkullTextures.WITHER_ESSENCE
-                    "ESSENCE_SPIDER" -> SkullTextures.SPIDER_ESSENCE
-                    "ESSENCE_UNDEAD" -> SkullTextures.UNDEAD_ESSENCE
-                    "ESSENCE_DRAGON" -> SkullTextures.DRAGON_ESSENCE
-                    "ESSENCE_GOLD" -> SkullTextures.GOLD_ESSENCE
-                    "ESSENCE_DIAMOND" -> SkullTextures.DIAMOND_ESSENCE
-                    "ESSENCE_ICE" -> SkullTextures.ICE_ESSENCE
-                    "ESSENCE_CRIMSON" -> SkullTextures.CRIMSON_ESSENCE
+                    "WITHER" -> SkullTextures.WITHER_ESSENCE
+                    "SPIDER" -> SkullTextures.SPIDER_ESSENCE
+                    "UNDEAD" -> SkullTextures.UNDEAD_ESSENCE
+                    "DRAGON" -> SkullTextures.DRAGON_ESSENCE
+                    "GOLD" -> SkullTextures.GOLD_ESSENCE
+                    "DIAMOND" -> SkullTextures.DIAMOND_ESSENCE
+                    "ICE" -> SkullTextures.ICE_ESSENCE
+                    "CRIMSON" -> SkullTextures.CRIMSON_ESSENCE
                     else -> error("Invalid essence type")
                 }.texture.let(::createSkull)
             },

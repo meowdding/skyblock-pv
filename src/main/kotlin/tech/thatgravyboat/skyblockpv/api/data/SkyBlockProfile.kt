@@ -8,7 +8,10 @@ import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
-import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
+import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
+import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToEssenceOrder
+import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
+import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
 import tech.thatgravyboat.skyblockpv.utils.*
 import java.util.*
 
@@ -66,7 +69,7 @@ data class SkyBlockProfile(
                         soloBank = json.getAsJsonObject("banking")?.get("balance").asLong(0),
                         cookieBuffActive = profile["cookie_buff_active"].asBoolean(false),
                         // todo: add missing essences if not unlocked
-                        essence = currencies["essence"].asMap { id, obj -> "ESSENCE_$id" to obj.asJsonObject["current"].asLong(0) }.sortToSkyBlockOrder(),
+                        essence = currencies["essence"].asMap { id, obj -> id to obj.asJsonObject["current"].asLong(0) }.sortToEssenceOrder(),
                     )
                 },
 
@@ -80,7 +83,7 @@ data class SkyBlockProfile(
                 },
 
                 //  todo: missing skill data when not unlocked
-                skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkyBlockOrder(),
+                skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkillsOrder(),
                 collections = member.getCollectionData(),
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
@@ -152,7 +155,8 @@ data class SkyBlockProfile(
 
         private fun JsonObject.getCollectionData(): List<CollectionItem> {
             val playerCollections = this["collection"].asMap { id, amount -> id to amount.asLong(0) }
-            val allCollections = CollectionAPI.collectionData.entries.flatMap { it.value.items.entries }.associate { it.key to it.value }.sortToSkyBlockOrder()
+            val allCollections =
+                CollectionAPI.collectionData.entries.flatMap { it.value.items.entries }.associate { it.key to it.value }.sortToCollectionsOrder()
             return allCollections.map { (id, _) ->
                 id to (playerCollections[id] ?: 0)
             }.mapNotNull { (id, amount) ->
@@ -186,7 +190,7 @@ data class SkyBlockProfile(
                     data["boss_kills_tier_$tier"].asInt(0)
                 },
             )
-        }.sortToSkyBlockOrder()
+        }.sortToSlayerOrder()
 
         private fun JsonObject.getInventory(): InventoryData {
             val backpackIcons: Map<Int, ItemStack> = InventoryData.Backpack.icons(this.getAsJsonObject("backpack_icons"))
