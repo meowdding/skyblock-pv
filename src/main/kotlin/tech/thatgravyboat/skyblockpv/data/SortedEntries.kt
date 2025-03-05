@@ -105,14 +105,14 @@ object SortedEntries {
         "vampire",
 
         // Essence
-        "WITHER",
-        "SPIDER",
-        "UNDEAD",
-        "DRAGON",
-        "GOLD",
-        "DIAMOND",
-        "ICE",
-        "CRIMSON",
+        "ESSENCE_WITHER",
+        "ESSENCE_SPIDER",
+        "ESSENCE_UNDEAD",
+        "ESSENCE_DRAGON",
+        "ESSENCE_GOLD",
+        "ESSENCE_DIAMOND",
+        "ESSENCE_ICE",
+        "ESSENCE_CRIMSON",
     )
 
     fun List<String>.sortToSkyBlockOrder() = sortedBy { sortedList.indexOf(it) }

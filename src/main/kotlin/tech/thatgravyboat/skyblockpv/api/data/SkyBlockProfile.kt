@@ -65,8 +65,8 @@ data class SkyBlockProfile(
                         mainBank = member["banking"].asLong(0),
                         soloBank = json.getAsJsonObject("banking")?.get("balance").asLong(0),
                         cookieBuffActive = profile["cookie_buff_active"].asBoolean(false),
-                        // todo why does sorting not work
-                        essence = currencies["essence"].asMap { id, obj -> id to obj.asJsonObject["current"].asLong(0) }.sortToSkyBlockOrder(),
+                        // todo: add missing essences if not unlocked
+                        essence = currencies["essence"].asMap { id, obj -> "ESSENCE_$id" to obj.asJsonObject["current"].asLong(0) }.sortToSkyBlockOrder(),
                     )
                 },
 
