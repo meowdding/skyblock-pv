@@ -1,8 +1,7 @@
 package tech.thatgravyboat.skyblockpv.data
 
-object SortedEntries {
-    private val sortedList = listOf(
-        // Skills
+enum class SortedEntry(vararg entries: String) {
+    SKILLS(
         "SKILL_COMBAT",
         "SKILL_FARMING",
         "SKILL_FISHING",
@@ -14,8 +13,8 @@ object SortedEntries {
         "SKILL_RUNECRAFTING",
         "SKILL_TAMING",
         "SKILL_SOCIAL",
-
-        // Collections
+    ),
+    COLLECTIONS(
         "WHEAT",
         "CARROT_ITEM",
         "POTATO_ITEM",
@@ -87,34 +86,45 @@ object SortedEntries {
         "METAL_HEART",
         "WILTED_BERBERIS",
         "TIMITE",
-
-        // Collection Category
+    ),
+    COLLECTION_CATEGORY(
         "FARMING",
         "MINING",
         "COMBAT",
         "FORAGING",
         "FISHING",
         "RIFT",
-
-        // Slayer
+    ),
+    SLAYER(
         "zombie",
         "spider",
         "wolf",
         "enderman",
         "blaze",
         "vampire",
+    ),
+    ESSENCE(
+        "WITHER",
+        "SPIDER",
+        "UNDEAD",
+        "DRAGON",
+        "GOLD",
+        "DIAMOND",
+        "ICE",
+        "CRIMSON",
+    ),
+    ;
 
-        // Essence
-        "ESSENCE_WITHER",
-        "ESSENCE_SPIDER",
-        "ESSENCE_UNDEAD",
-        "ESSENCE_DRAGON",
-        "ESSENCE_GOLD",
-        "ESSENCE_DIAMOND",
-        "ESSENCE_ICE",
-        "ESSENCE_CRIMSON",
-    )
+    val list = entries.toList()
 
-    fun List<String>.sortToSkyBlockOrder() = sortedBy { sortedList.indexOf(it) }
-    fun <T> Map<String, T>.sortToSkyBlockOrder() = toList().sortedBy { sortedList.indexOf(it.first) }.toMap()
+    fun sortToSkyBlockOrder(list: List<String>) = list.sortedBy { list.indexOf(it) }
+    fun <T> sortToSkyBlockOrder(map: Map<String, T>) = map.toList().sortedBy { list.indexOf(it.first) }.toMap()
+
+    companion object {
+        fun <T> Map<String, T>.sortToSkillsOrder() = SKILLS.sortToSkyBlockOrder(this)
+        fun <T> Map<String, T>.sortToCollectionsOrder() = COLLECTIONS.sortToSkyBlockOrder(this)
+        fun List<String>.sortToCollectionCategoryOrder() = COLLECTION_CATEGORY.sortToSkyBlockOrder(this)
+        fun <T> Map<String, T>.sortToSlayerOrder() = SLAYER.sortToSkyBlockOrder(this)
+        fun <T> Map<String, T>.sortToEssenceOrder() = ESSENCE.sortToSkyBlockOrder(this)
+    }
 }

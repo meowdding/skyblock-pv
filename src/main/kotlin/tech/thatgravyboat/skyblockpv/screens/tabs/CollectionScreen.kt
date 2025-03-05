@@ -14,7 +14,7 @@ import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getIconFromCollectionType
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToNextLevel
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
-import tech.thatgravyboat.skyblockpv.data.SortedEntries.sortToSkyBlockOrder
+import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionCategoryOrder
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
@@ -50,7 +50,8 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     }
 
     private fun addCategories(bg: DisplayWidget) {
-        val categories = profile!!.collections.map { it.category }.distinct().sortToSkyBlockOrder()
+        // todo: fix ordering
+        val categories = profile!!.collections.map { it.category }.distinct().sortToCollectionCategoryOrder()
         val buttonRow = LinearLayout.horizontal().spacing(2)
         categories.forEach { category ->
             val selected = category == currentCategory
