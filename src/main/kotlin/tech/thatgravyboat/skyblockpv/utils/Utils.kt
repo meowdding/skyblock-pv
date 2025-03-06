@@ -48,6 +48,10 @@ object Utils {
         return FrameLayout(width, 0).also { it.addChild(this) }
     }
 
+    fun LayoutElement.center(width: Int, height: Int): LayoutElement {
+        return FrameLayout(width, height).also { it.addChild(this) }
+    }
+
 
     fun getTitleWidget(title: String, width: Int) = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->
