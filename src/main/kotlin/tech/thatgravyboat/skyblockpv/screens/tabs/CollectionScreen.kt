@@ -50,7 +50,6 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     }
 
     private fun addCategories(bg: DisplayWidget) {
-        // todo: fix ordering
         val categories = profile!!.collections.map { it.category }.distinct().sortToCollectionCategoryOrder()
         val buttonRow = LinearLayout.horizontal().spacing(2)
         categories.forEach { category ->

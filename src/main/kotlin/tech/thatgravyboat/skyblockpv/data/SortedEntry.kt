@@ -117,8 +117,8 @@ enum class SortedEntry(vararg entries: String) {
 
     val list = entries.toList()
 
-    fun sortToSkyBlockOrder(list: List<String>) = list.sortedBy { list.indexOf(it) }
-    fun <T> sortToSkyBlockOrder(map: Map<String, T>) = map.toList().sortedBy { list.indexOf(it.first) }.toMap()
+    fun sortToSkyBlockOrder(input: List<String>) = input.sortedBy { list.indexOf(it) }
+    fun <T> sortToSkyBlockOrder(input: Map<String, T>) = input.toList().sortedBy { list.indexOf(it.first) }.toMap()
 
     companion object {
         fun <T> Map<String, T>.sortToSkillsOrder() = SKILLS.sortToSkyBlockOrder(this)
