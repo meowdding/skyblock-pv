@@ -82,11 +82,18 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     private fun getElement(col: CollectionItem): Display {
         val collectionEntry = CollectionAPI.getCollectionEntry(col.itemId) ?: return Displays.text("Unknown Item")
         val prog = collectionEntry.getProgressToNextLevel(col.amount)
+
+        val progressText = if (prog.first == collectionEntry.maxTiers && prog.second == 1.0f) {
+            Displays.text("§2Maxed")
+        } else {
+            Displays.text("${(prog.second * 100).round()}% to ${prog.first}")
+        }
+
         val display = Displays.row(
             Displays.item(col.itemStack ?: ItemStack.EMPTY),
             listOf(
                 Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.toFormattedString()}")),
-                listOf(Displays.progress(prog.second), Displays.text("${(prog.second * 100).round()}% to ${prog.first}")).toRow(3),
+                listOf(Displays.progress(prog.second), progressText).toRow(3),
             ).toColumn(1),
             spacing = 5,
             alignment = Alignment.CENTER,
