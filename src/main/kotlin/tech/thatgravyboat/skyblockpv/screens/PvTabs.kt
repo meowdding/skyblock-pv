@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 enum class PvTabs(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
-    MAIN(MainScreen::class, ItemStack.EMPTY),
+    MAIN(MainScreen::class, ItemStack.EMPTY), // TODO: sophie pls add head icon here
     DUNGEON(DungeonScreen::class, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
     COLLECTION(CollectionScreen::class, Items.ITEM_FRAME.defaultInstance),
