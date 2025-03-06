@@ -15,8 +15,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
-class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
-    BasePvScreen("INVENTORY", gameProfile, profile) {
+class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("INVENTORY", gameProfile, profile) {
     override fun create(bg: DisplayWidget) {
         val row = LinearLayout.horizontal().spacing(5)
 
@@ -34,10 +33,10 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             chunk.map { item ->
                 Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
-        }.reversed().asTable()
+        }.reversed()
         return Displays.background(
-            SkyBlockPv.id("inventory/inventory-4"),
-            Displays.padding(2, itemDisplays)
+            SkyBlockPv.id("inventory/inventory-${itemDisplays.size}"),
+            Displays.padding(2, itemDisplays.asTable()),
         ).asWidget()
     }
 
