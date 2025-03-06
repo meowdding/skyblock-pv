@@ -52,7 +52,7 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         }
         val sortedItemDisplays = itemDisplays.drop(1) + itemDisplays.take(1)
         return Displays.background(
-            SkyBlockPv.id("inventory/inventory-${sortedItemDisplays.size}"),
+            SkyBlockPv.id("inventory/inventory-9x${sortedItemDisplays.size}"),
             Displays.padding(2, sortedItemDisplays.asTable()),
         ).asWidget()
     }
