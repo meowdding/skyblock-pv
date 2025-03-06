@@ -28,6 +28,7 @@ import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
@@ -48,15 +49,11 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
-        val cols = LayoutBuild.horizontal {
+        LayoutBuild.horizontal {
             widget(createLeftColumn(profile!!, sideColumnWidth))
             widget(createMiddleColumn(profile!!, middleColumnWidth))
             widget(createRightColumn(profile!!, sideColumnWidth))
-        }
-
-        cols.arrangeElements()
-        cols.setPosition(bg.x, bg.y)
-        cols.visitWidgets(this::addRenderableWidget)
+        }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
     }
 
     private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
