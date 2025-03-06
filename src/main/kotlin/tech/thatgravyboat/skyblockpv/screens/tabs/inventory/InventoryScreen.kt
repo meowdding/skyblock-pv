@@ -30,15 +30,21 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     private fun LayoutBuilder.createMainInventoryRow(height: Int) = horizontal {
         spacer(10, height)
         display(
-            profile!!.inventory!!.armorItems!!.inventory.reversed().map {
-                Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true))
-            }.toColumn().centerIn(-1, height),
+            Displays.background(
+                SkyBlockPv.id("inventory/inventory-1x4"),
+                profile!!.inventory!!.armorItems!!.inventory.reversed().map {
+                    Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true))
+                }.toColumn(),
+            ).centerIn(-1, height),
         )
         spacer(width = 10)
         display(
-            profile!!.inventory!!.equipmentItems!!.inventory.map {
-                Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true))
-            }.toColumn().centerIn(-1, height),
+            Displays.background(
+                SkyBlockPv.id("inventory/inventory-1x4"),
+                profile!!.inventory!!.equipmentItems!!.inventory.map {
+                    Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true))
+                }.toColumn(),
+            ).centerIn(-1, height),
         )
         spacer(width = 10)
         widget(createInventory(profile!!.inventory!!.inventoryItems!!.inventory).center(-1, height))
