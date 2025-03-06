@@ -17,6 +17,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("INVENTORY", gameProfile, profile) {
     override fun create(bg: DisplayWidget) {
+        profile ?: return
         val rowHeight = (uiHeight - 10) / 2
         LayoutBuild.vertical(5) {
             createMainInventoryRow(rowHeight)
@@ -27,8 +28,20 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     }
 
     private fun LayoutBuilder.createMainInventoryRow(height: Int) = horizontal {
-        spacer(height = height)
-        widget(createInventory(profile!!.inventory!!.inventoryItems!!.inventory).center(uiWidth, height))
+        spacer(10, height)
+        display(
+            profile!!.inventory!!.armorItems!!.inventory.reversed().map {
+                Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true))
+            }.toColumn().centerIn(-1, height),
+        )
+        spacer(width = 10)
+        display(
+            profile!!.inventory!!.equipmentItems!!.inventory.map {
+                Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true))
+            }.toColumn().centerIn(-1, height),
+        )
+        spacer(width = 10)
+        widget(createInventory(profile!!.inventory!!.inventoryItems!!.inventory).center(-1, height))
     }
 
     private fun createInventory(items: List<ItemStack>): DisplayWidget {
