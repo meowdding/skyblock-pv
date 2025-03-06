@@ -57,8 +57,14 @@ abstract class LayoutBuilder {
         widgets.add(builder.build(spacing))
     }
 
-
     abstract fun build(spacing: Int = 0): LinearLayout
+
+    companion object {
+        fun LinearLayout.setPos(x: Int, y: Int): LinearLayout {
+            this.setPosition(x, y)
+            return this
+        }
+    }
 }
 
 class VerticalLayoutBuilder : LayoutBuilder() {

@@ -3,13 +3,14 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.inventory
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asTable
@@ -17,13 +18,9 @@ import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("INVENTORY", gameProfile, profile) {
     override fun create(bg: DisplayWidget) {
-        val row = LinearLayout.horizontal().spacing(5)
-
-        row.addChild(createInventory(profile!!.inventory!!.inventoryItems!!.inventory))
-
-        FrameLayout.centerInRectangle(row, bg.x, bg.y, bg.width, bg.height)
-
-        row.visitWidgets(this::addRenderableWidget)
+        LayoutBuild.vertical {
+            widget(createInventory(profile!!.inventory!!.inventoryItems!!.inventory))
+        }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
 
         addCategories(bg)
     }

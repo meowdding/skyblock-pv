@@ -23,6 +23,7 @@ import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
@@ -61,8 +62,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         loading.withCenterAlignment()
         FrameLayout.centerInRectangle(loading, 0, 0, screen.width, screen.height)
 
-        val tabs = createTabs()
-        tabs.setPosition(bg.x + bg.width, bg.y + 5)
+        val tabs = createTabs().setPos(bg.x + bg.width, bg.y + 5)
 
         bg.visitWidgets(screen::addRenderableOnly)
         tabs.visitWidgets(screen::addRenderableWidget)
