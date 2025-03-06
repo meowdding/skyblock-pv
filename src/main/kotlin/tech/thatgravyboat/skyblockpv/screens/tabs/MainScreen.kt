@@ -119,8 +119,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             gr.pushPop {
                 translate(0f, 0f, 100f)
+                val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
                 Displays.entity(
-                    FakePlayer(gameProfile, Text.join("[", profile.skyBlockLevel.first.toString(), "] ", gameProfile.name)),
+                    FakePlayer(gameProfile, Text.join("[", profile.skyBlockLevel.first.toString(), "] ", gameProfile.name), armor),
                     width, height,
                     (width / 2.5).toInt(),
                     eyesX, eyesY,
