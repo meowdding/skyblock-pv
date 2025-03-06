@@ -44,8 +44,7 @@ data class InventoryData(
         companion object {
             fun fromJson(json: JsonObject): List<EnderChestPage> {
                 return json.get("data").getNbtJson()?.let {
-                    // todo: actual size
-                    Inventory.fromJson(it).inventory.chunked(27).map { EnderChestPage(Inventory(it)) }
+                    Inventory.fromJson(it).inventory.chunked(45).map { EnderChestPage(Inventory(it)) }
                 } ?: listOf()
             }
         }
@@ -76,8 +75,7 @@ data class InventoryData(
         companion object {
             fun fromJson(json: JsonObject): List<TalismansPage> {
                 return json.get("data").getNbtJson()?.let {
-                    // todo: actual size
-                    Inventory.fromJson(it).inventory.chunked(27).map { TalismansPage(Inventory(it)) }
+                    Inventory.fromJson(it).inventory.chunked(45).map { TalismansPage(Inventory(it)) }
                 } ?: listOf()
             }
         }
