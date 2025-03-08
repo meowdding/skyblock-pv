@@ -193,7 +193,7 @@ data class SkyBlockProfile(
         }.sortToSlayerOrder()
 
         private fun JsonObject.getInventory(): InventoryData {
-            val backpackIcons: Map<Int, ItemStack> = InventoryData.Backpack.icons(this.getAsJsonObject("backpack_icons"))
+            val backpackIcons: Map<Int, ItemStack> = this.getAsJsonObject("backpack_icons")?.let { InventoryData.Backpack.icons(it) } ?: emptyMap()
             val bagContents = this.getAsJsonObject("bag_contents")
             return InventoryData(
                 inventoryItems = this.getAsJsonObject("inv_contents")?.let { InventoryData.Inventory.fromJson(it) },
