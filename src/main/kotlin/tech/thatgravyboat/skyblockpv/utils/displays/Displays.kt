@@ -313,7 +313,7 @@ object Displays {
 
                     val stackSize = item.count
                     if (showStackSize && stackSize > 1) {
-                        translate(0, 0, 151)
+                        translate(1, 2, 200)
                         val component = Text.of(stackSize.toString())
                         graphics.drawString(
                             McFont.self,
