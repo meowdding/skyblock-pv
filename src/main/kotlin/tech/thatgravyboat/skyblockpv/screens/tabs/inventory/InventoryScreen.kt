@@ -14,7 +14,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils.center
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.Utils.translate
+import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("INVENTORY", gameProfile, profile) {
@@ -86,28 +86,19 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
         spacer(height = 10)
 
-        val carousel = listOf(
-            Displays.pushPop(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }, -1, false).centerIn(uiWidth - 200, -1)) {
-                //scale(0.8f, 0.8f, 1f)
-            },
-            Displays.pushPop(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }, 1, false).centerIn(uiWidth + 200, -1)) {
-                //scale(0.8f, 0.8f, 1f)
-            },
-            Displays.pushPop(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }).centerIn(uiWidth, -1)) {
-                translate(0, 0, 200)
-            },
-        ).asLayer()
-
-        display(carousel)
+        widget(CarouselWidget(
+            inventory.enderChestPages.map { createPagedInventory(it.items.inventory) },
+            0,
+            246
+        ).centerHorizontally(uiWidth))
 
     }
 
 
-    private fun createPagedInventory(items: List<List<ItemStack>>, pageOffset: Int = 0, showTooltip: Boolean = true): Display {
-        val newPage = if (page + pageOffset < 0) items.size - 1 else (page + pageOffset) % items.size
-        val itemDisplays = items[newPage].chunked(9).map { chunk ->
+    private fun createPagedInventory(items: List<ItemStack>): Display {
+        val itemDisplays = items.chunked(9).map { chunk ->
             chunk.map { item ->
-                Displays.padding(2, Displays.item(item, showTooltip = showTooltip, showStackSize = true))
+                Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
         }
         return Displays.background(
