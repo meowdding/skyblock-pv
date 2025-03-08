@@ -38,6 +38,7 @@ data class InventoryData(
         }
     }
 
+    // todo: last ec page if not maxed uses full page instead of only 1 row
     data class EnderChestPage(
         val items: Inventory,
     ) {
