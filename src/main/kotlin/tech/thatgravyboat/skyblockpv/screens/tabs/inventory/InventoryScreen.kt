@@ -14,6 +14,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils.center
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.Utils.translate
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("INVENTORY", gameProfile, profile) {
@@ -85,20 +86,34 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
         spacer(height = 10)
 
-        widget(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }).centerHorizontally(uiWidth))
+        val carousel = listOf(
+            Displays.pushPop(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }, -1, false).centerIn(uiWidth - 200, -1)) {
+                //scale(0.8f, 0.8f, 1f)
+            },
+            Displays.pushPop(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }, 1, false).centerIn(uiWidth + 200, -1)) {
+                //scale(0.8f, 0.8f, 1f)
+            },
+            Displays.pushPop(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }).centerIn(uiWidth, -1)) {
+                translate(0, 0, 200)
+            },
+        ).asLayer()
+
+        display(carousel)
+
     }
 
 
-    private fun createPagedInventory(items: List<List<ItemStack>>): DisplayWidget {
-        val itemDisplays = items[page].chunked(9).map { chunk ->
+    private fun createPagedInventory(items: List<List<ItemStack>>, pageOffset: Int = 0, showTooltip: Boolean = true): Display {
+        val newPage = if (page + pageOffset < 0) items.size - 1 else (page + pageOffset) % items.size
+        val itemDisplays = items[newPage].chunked(9).map { chunk ->
             chunk.map { item ->
-                Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
+                Displays.padding(2, Displays.item(item, showTooltip = showTooltip, showStackSize = true))
             }
         }
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-9x${itemDisplays.size}"),
             Displays.padding(2, itemDisplays.asTable()),
-        ).asWidget()
+        )
     }
 
     private fun addCategories(bg: DisplayWidget) {
