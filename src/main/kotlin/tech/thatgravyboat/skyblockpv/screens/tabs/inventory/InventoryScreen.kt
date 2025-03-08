@@ -28,26 +28,25 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     }
 
     private fun LayoutBuilder.createMainInventoryRow(height: Int) = horizontal {
+        val inventory = profile?.inventory ?: return@horizontal
+        val armor = inventory.armorItems?.inventory.orEmpty(4)
+        val equipment = inventory.equipmentItems?.inventory.orEmpty(4)
+
         spacer(10, height)
+        val armorAndEquipment = listOf(
+            armor.reversed().map { Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true)) }.toColumn(),
+            equipment.map { Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true)) }.toColumn(),
+        ).toRow()
+
         display(
             Displays.background(
-                SkyBlockPv.id("inventory/inventory-1x4"),
-                profile!!.inventory!!.armorItems!!.inventory.reversed().map {
-                    Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true))
-                }.toColumn(),
+                SkyBlockPv.id("inventory/inventory-2x4"),
+                Displays.padding(2, armorAndEquipment),
             ).centerIn(-1, height),
         )
+
         spacer(width = 10)
-        display(
-            Displays.background(
-                SkyBlockPv.id("inventory/inventory-1x4"),
-                profile!!.inventory!!.equipmentItems!!.inventory.map {
-                    Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true))
-                }.toColumn(),
-            ).centerIn(-1, height),
-        )
-        spacer(width = 10)
-        widget(createInventory(profile!!.inventory!!.inventoryItems!!.inventory).center(-1, height))
+        widget(createInventory(inventory.inventoryItems?.inventory.orEmpty(36)).center(-1, height))
     }
 
     private fun createInventory(items: List<ItemStack>): DisplayWidget {
@@ -90,4 +89,6 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         buttonRow.setPosition(bg.x + 20, bg.y - buttonRow.height)
         buttonRow.visitWidgets(this::addRenderableWidget)
     }
+
+    private fun List<ItemStack>?.orEmpty(size: Int) = this ?: List(size) { ItemStack.EMPTY }
 }
