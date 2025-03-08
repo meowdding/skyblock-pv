@@ -35,6 +35,8 @@ private const val NO_SPLIT = -1
 
 object Displays {
 
+    private var showTooltips = true
+
     fun empty(width: Int = 0, height: Int = 0): Display {
         return object : Display {
             override fun getWidth() = width
@@ -302,7 +304,7 @@ object Displays {
 
             override fun render(graphics: GuiGraphics) {
                 if (showTooltip && !item.isEmpty) {
-                    if (isMouseOver(this, graphics.pose())) {
+                    if (isMouseOver(this, graphics)) {
                         ScreenUtils.setTooltip(item)
                     }
                 }
@@ -489,19 +491,24 @@ object Displays {
             override fun render(graphics: GuiGraphics) {
                 display.render(graphics)
 
-                if (isMouseOver(display, graphics.pose())) {
+                if (isMouseOver(display, graphics)) {
                     ScreenUtils.setTooltip(component.splitLines())
                 }
             }
         }
     }
 
+    fun disableTooltips(action: () -> Unit) {
+        showTooltips = false
+        action()
+        showTooltips = true
+    }
 
-    private fun isMouseOver(display: Display, pose: PoseStack): Boolean {
-        val translation = RenderUtils.getTranslation(pose)
+    private fun isMouseOver(display: Display, graphics: GuiGraphics): Boolean {
+        val translation = RenderUtils.getTranslation(graphics.pose())
         val (mouseX, mouseY) = McClient.mouse
         val xRange = translation.x().toInt()..(translation.x() + display.getWidth())
         val yRange = translation.y().toInt()..(translation.y() + display.getHeight())
-        return mouseX.toInt() in xRange && mouseY.toInt() in yRange
+        return mouseX.toInt() in xRange && mouseY.toInt() in yRange && graphics.containsPointInScissor(mouseX.toInt(), mouseY.toInt()) && showTooltips
     }
 }
