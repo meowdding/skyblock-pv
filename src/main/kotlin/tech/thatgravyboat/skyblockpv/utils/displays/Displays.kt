@@ -350,7 +350,7 @@ object Displays {
         }
     }
 
-    fun pushPop(operations: PoseStack.() -> Unit, display: Display): Display {
+    fun pushPop(display: Display, operations: PoseStack.() -> Unit): Display {
         return object : Display {
             // Does not account for scaling
             override fun getWidth() = display.getWidth()
