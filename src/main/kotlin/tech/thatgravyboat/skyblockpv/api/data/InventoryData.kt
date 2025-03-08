@@ -43,9 +43,9 @@ data class InventoryData(
     ) {
         companion object {
             fun fromJson(json: JsonObject): List<EnderChestPage> {
-                return json.get("data").getNbtJson()?.let {
-                    Inventory.fromJson(it).inventory.chunked(45).map { EnderChestPage(Inventory(it)) }
-                } ?: listOf()
+                return json.get("data").getNbt().let {
+                    it.getList("i", 10).map { item -> item.legacyStack() }.chunked(45).map { EnderChestPage(Inventory(it)) }
+                }
             }
         }
     }
