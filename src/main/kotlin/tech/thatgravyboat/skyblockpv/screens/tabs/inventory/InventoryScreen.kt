@@ -14,7 +14,6 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils.center
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.Utils.centerVertically
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("INVENTORY", gameProfile, profile) {
@@ -24,7 +23,7 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         LayoutBuild.vertical(5) {
             createMainInventoryRow(rowHeight)
             display(Displays.background(0xFFAAAAAAu, Displays.placeholder(uiWidth - 10, 5)).centerIn(uiWidth, -1))
-            createSecondaryInventory(rowHeight)
+            createSecondaryInventory()
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
 
         addCategories(bg)
@@ -67,33 +66,26 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     var page = 0
 
-    private fun LayoutBuilder.createSecondaryInventory(height: Int) = horizontal {
-        val inventory = profile?.inventory ?: return@horizontal
+    private fun LayoutBuilder.createSecondaryInventory() = vertical {
+        val inventory = profile?.inventory ?: return@vertical
+        val buttonContainer = LinearLayout.horizontal().spacing(1)
 
-        val pageButtons = List(inventory.enderChestPages!!.size) {
-            Button()
+        repeat(inventory.enderChestPages!!.size) { index ->
+            val button = Button()
                 .withSize(20, 20)
                 .withTexture(ExtraConstants.BUTTON_DARK)
                 .withCallback {
-                    page = it
+                    page = index
                     this@InventoryScreen.rebuildWidgets()
                 }
+            buttonContainer.addChild(button)
         }
 
-        val buttonContainer = LinearLayout.vertical().spacing(1)
-        val maxRowWidth = pageButtons.size.coerceAtMost(5) * 20 + (pageButtons.size.coerceAtMost(5) - 1)
+        widget(buttonContainer.centerHorizontally(uiWidth))
 
-        pageButtons.chunked(5).forEach { chunk ->
-            val element = LinearLayout.horizontal().spacing(1)
-            chunk.forEach { element.addChild(it) }
-            buttonContainer.addChild(element.centerHorizontally(maxRowWidth))
-        }
+        spacer(height = 10)
 
-        widget(buttonContainer.centerVertically(height))
-
-        spacer(10, height)
-
-        widget(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }).center(-1, height))
+        widget(createPagedInventory(inventory.enderChestPages!!.map { it.items.inventory }).centerHorizontally(uiWidth))
     }
 
 
