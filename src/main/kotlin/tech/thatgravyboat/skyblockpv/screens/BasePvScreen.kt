@@ -113,7 +113,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             button.withRenderer(
                 WidgetRenderers.padded(
                     0, 3 - if (tab.isSelected()) 1 else 0, 0, 0,
-                    WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.icon, ctx.x, ctx.y) },
+                    WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
                 ),
             )
             button.withTooltip(Text.translatable("skyblockpv.tab.${tab.name.lowercase()}"))
