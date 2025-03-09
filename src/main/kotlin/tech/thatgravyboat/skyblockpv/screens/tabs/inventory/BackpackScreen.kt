@@ -17,10 +17,17 @@ class BackpackScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     override fun createInventoryWidget() = LayoutBuild.vertical {
         val inventory = profile?.inventory ?: return@vertical
+        val backpacks = inventory.backpacks ?: return@vertical
         val buttonContainer = LinearLayout.horizontal().spacing(1)
 
-        repeat(inventory.backpacks!!.size) { index ->
-            val icon = inventory.backpacks[index].icon // todo: fix backpack icon getting
+        var carousel = CarouselWidget(
+            backpacks.map { createInventory(it.items.inventory) },
+            page,
+            246,
+        )
+
+        repeat(backpacks.size) { index ->
+            val icon = backpacks[index].icon // todo: fix backpack icon getting
             icon.count = index + 1
             val itemDisplay = Displays.item(icon, showStackSize = true)
 
@@ -32,21 +39,13 @@ class BackpackScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 )
                 .withCallback {
                     page = index
-                    this@BackpackScreen.rebuildWidgets()
+                    carousel.index = index
                 }
             buttonContainer.addChild(button)
         }
 
         widget(buttonContainer.centerHorizontally(uiWidth))
-
         spacer(height = 10)
-
-        widget(
-            CarouselWidget(
-                inventory.backpacks.map { createInventory(it.items.inventory) },
-                page,
-                246,
-            ).centerHorizontally(uiWidth),
-        )
+        widget(carousel.centerHorizontally(uiWidth))
     }
 }

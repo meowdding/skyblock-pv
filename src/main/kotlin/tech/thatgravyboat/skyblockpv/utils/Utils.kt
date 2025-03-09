@@ -28,6 +28,12 @@ object Utils {
         this.disableScissor()
     }
 
+    inline fun GuiGraphics.scissorRange(x: IntRange, y: IntRange, action: () -> Unit) {
+        this.enableScissor(x.start, y.start, x.endInclusive, y.endInclusive)
+        action()
+        this.disableScissor()
+    }
+
     inline fun GuiGraphics.pushPop(action: PoseStack.() -> Unit) {
         this.pose().pushPop(action)
     }
