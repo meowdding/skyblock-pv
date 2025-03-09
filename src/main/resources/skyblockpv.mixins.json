@@ -4,10 +4,10 @@
     "package": "tech.thatgravyboat.skyblockpv.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
-        "compat.skyblocker.ProfileViewerScreenMixin"
+        "compat.ProfileViewerScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1
     },
-    "plugin": "tech.thatgravyboat.skyblockpv.utils.SkyblockPvMixinPlugin"
+    "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin"
 }

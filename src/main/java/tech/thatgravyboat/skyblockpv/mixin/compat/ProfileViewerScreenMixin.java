@@ -1,13 +1,15 @@
-package tech.thatgravyboat.skyblockpv.mixin.compat.skyblocker;
+package tech.thatgravyboat.skyblockpv.mixin.compat;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.moulberry.mixinconstraints.annotations.IfModLoaded;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Pseudo
+@IfModLoaded("skyblocker")
 @Mixin(targets = "de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen")
 public class ProfileViewerScreenMixin {
     @WrapWithCondition(
