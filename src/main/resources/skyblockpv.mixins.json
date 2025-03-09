@@ -8,5 +8,6 @@
     ],
     "injectors": {
         "defaultRequire": 1
-    }
+    },
+    "plugin": "tech.thatgravyboat.skyblockpv.utils.SkyblockPvMixinPlugin"
 }
