@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "tech.thatgravyboat.skyblockpv.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+        "compat.skyblocker.ProfileViewerScreenMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

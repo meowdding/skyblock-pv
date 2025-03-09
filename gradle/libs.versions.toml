@@ -20,6 +20,9 @@ legacydfu = "1.0.2+1.21.3"
 devauth = "1.2.1"
 modmenu = "12.0.0-beta.1"
 
+# Compatibility Dependencies
+skyblocker = "v5.0.0+1.21.4"
+
 [libraries]
 
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -36,6 +39,8 @@ legacydfu = { module = "net.azureaaron:legacy-item-dfu", version.ref = "legacydf
 
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
+
+skyblocker = { module = "maven.modrinth:skyblocker-liap", version.ref = "skyblocker" }
 
 [plugins]
 
