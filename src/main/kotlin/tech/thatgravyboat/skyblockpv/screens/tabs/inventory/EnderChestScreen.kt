@@ -17,9 +17,16 @@ class EnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     override fun createInventoryWidget() = LayoutBuild.vertical {
         val inventory = profile?.inventory ?: return@vertical
+        val enderchests = inventory.enderChestPages ?: return@vertical
         val buttonContainer = LinearLayout.horizontal().spacing(1)
 
-        repeat(inventory.enderChestPages!!.size) { index ->
+        val carousel = CarouselWidget(
+            enderchests.map { createInventory(it.items.inventory) },
+            page,
+            246,
+        )
+
+        repeat(enderchests.size) { index ->
             val enderChestItem = Items.ENDER_CHEST.defaultInstance
             enderChestItem.count = index + 1
             val itemDisplay = Displays.item(enderChestItem, showStackSize = true)
@@ -32,21 +39,13 @@ class EnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 )
                 .withCallback {
                     page = index
-                    this@EnderChestScreen.rebuildWidgets()
+                    carousel.index = index
                 }
             buttonContainer.addChild(button)
         }
 
         widget(buttonContainer.centerHorizontally(uiWidth))
-
         spacer(height = 10)
-
-        widget(
-            CarouselWidget(
-                inventory.enderChestPages.map { createInventory(it.items.inventory) },
-                page,
-                246,
-            ).centerHorizontally(uiWidth),
-        )
+        widget(carousel.centerHorizontally(uiWidth))
     }
 }

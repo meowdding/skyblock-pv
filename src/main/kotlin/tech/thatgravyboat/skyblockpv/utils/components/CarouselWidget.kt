@@ -5,13 +5,13 @@ import earth.terrarium.olympus.client.components.base.BaseWidget
 import net.minecraft.client.gui.GuiGraphics
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
-import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
+import tech.thatgravyboat.skyblockpv.utils.Utils.scissorRange
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
 class CarouselWidget(
     private val displays: List<Display>,
-    private var index: Int = 0,
+    var index: Int = 0,
     width: Int
 ) : BaseWidget() {
 
@@ -32,34 +32,38 @@ class CarouselWidget(
         val left = x + (width - curr.getWidth()) / 2
         val right = left + curr.getWidth()
 
-        graphics.scissor(x, y + 10, left - x, height - 10) {
+        val midY = y + height - curr.getHeight() + 10
+        val bottom = y + height
+        val sideHeight = bottom - midY
+
+        graphics.scissorRange(x..left, midY..bottom) {
             Displays.disableTooltips {
-                last?.render(graphics, x, y + 10, alignmentX = 0f)
+                last?.render(graphics, x, midY)
             }
 
             graphics.pushPop {
-                translate(0f, 0f, 199f)
-                graphics.fill(x, y + 10, left, y + height, 0x7F000000)
+                translate(0f, 0f, 300f)
+                graphics.fill(x, midY, left, bottom, 0x7F000000)
 
                 if (graphics.containsPointInScissor(mouseX, mouseY)) {
-                    translate(x + (left - x) / 2f, y + 10 + (height - 10) / 2f - 5f, 0f)
+                    translate(x + (left - x) / 2f, midY + sideHeight / 2f - 7.5f, 0f)
                     scale(2f, 2f, 1f)
                     graphics.drawCenteredString(McFont.self, "<", 0, 0, 0xFFFFFF)
                     cursor = CursorScreen.Cursor.POINTER
                 }
             }
         }
-        graphics.scissor(right, y + 10, x + width - right, height - 10) {
+        graphics.scissorRange(right..(x + width), midY..bottom) {
             Displays.disableTooltips {
-                next?.render(graphics, x + width, y + 10, alignmentX = 1f)
+                next?.render(graphics, x + width, midY, alignmentX = 1f)
             }
 
             graphics.pushPop {
-                translate(0f, 0f, 199f)
-                graphics.fill(right, y + 10, x + width, y + height, 0x7F000000)
+                translate(0f, 0f, 300f)
+                graphics.fill(right, midY, x + width, bottom, 0x7F000000)
 
                 if (graphics.containsPointInScissor(mouseX, mouseY)) {
-                    translate(right + (x + width - right) / 2f, y + 10 + (height - 10) / 2f - 5f, 0f)
+                    translate(right + (x + width - right) / 2f, midY + sideHeight / 2f - 7.5f, 0f)
                     scale(2f, 2f, 1f)
                     graphics.drawCenteredString(McFont.self, ">", 0, 0, 0xFFFFFF)
                     cursor = CursorScreen.Cursor.POINTER
@@ -68,17 +72,18 @@ class CarouselWidget(
         }
         graphics.pushPop {
             translate(0f, 0f, 150f)
-            curr.render(graphics, x + width / 2, y, alignmentX = 0.5f)
+            curr.render(graphics, x + width / 2, y + height, alignmentX = 0.5f, alignmentY = 1f)
         }
     }
 
     override fun onClick(mouseX: Double, mouseY: Double) {
         val left = x + (width - displays[index].getWidth()) / 2
         val right = left + displays[index].getWidth()
+        val midY = y + height - displays[index].getHeight()
 
-        if (mouseX.toInt() in x until left && mouseY.toInt() in y + 10 until y + height) {
+        if (mouseX.toInt() in x until left && mouseY.toInt() in midY + 10 until y + height) {
             index = (index - 1 + displays.size) % displays.size
-        } else if (mouseX.toInt() in right until x + width && mouseY.toInt() in y + 10 until y + height) {
+        } else if (mouseX.toInt() in right until x + width && mouseY.toInt() in midY + 10 until y + height) {
             index = (index + 1) % displays.size
         }
     }
