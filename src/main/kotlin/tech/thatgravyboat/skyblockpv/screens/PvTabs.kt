@@ -26,7 +26,7 @@ enum class PvTabs(
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(
         screen,
-        { gameProfile, profile -> screen.java.getConstructor(GameProfile::class.java, SkyBlockProfile::class.java).newInstance(gameProfile, profile) as BasePvScreen },
+        screen.java.getConstructor(GameProfile::class.java, SkyBlockProfile::class.java)::newInstance,
         icon,
     )
 
