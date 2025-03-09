@@ -26,5 +26,5 @@ class SkyblockPvMixinPlugin : IMixinConfigPlugin {
 
     override fun preApply(targetClassName: String?, targetClass: ClassNode?, mixinClassName: String?, mixinInfo: IMixinInfo?) {}
 
-    override fun postApply(targetClassName: String?,targetClass: ClassNode?, mixinClassName: String?, mixinInfo: IMixinInfo?, ) {}
+    override fun postApply(targetClassName: String?, targetClass: ClassNode?, mixinClassName: String?, mixinInfo: IMixinInfo?) {}
 }
