@@ -12,52 +12,65 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.center
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.Display
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 
-class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("INVENTORY", gameProfile, profile) {
+class EnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("INVENTORY", gameProfile, profile) {
     override fun create(bg: DisplayWidget) {
         profile ?: return
-        val inv = createMainInventoryRow()
+        val inv = createSecondaryInventory()
         FrameLayout.centerInRectangle(inv, bg.x, bg.y, uiWidth, uiHeight)
         inv.visitWidgets(this::addRenderableWidget)
 
         addCategories(bg)
     }
 
-    private fun createMainInventoryRow() = LayoutBuild.horizontal {
-        val inventory = profile?.inventory ?: return@horizontal
-        val armor = inventory.armorItems?.inventory.orEmpty(4)
-        val equipment = inventory.equipmentItems?.inventory.orEmpty(4)
+    var page = 0
 
-        spacer(10)
-        val armorAndEquipment = listOf(
-            armor.reversed().map { Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true)) }.toColumn(),
-            equipment.map { Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true)) }.toColumn(),
-        ).toRow()
+    private fun createSecondaryInventory() = LayoutBuild.vertical {
+        val inventory = profile?.inventory ?: return@vertical
+        val buttonContainer = LinearLayout.horizontal().spacing(1)
 
-        display(
-            Displays.background(
-                SkyBlockPv.id("inventory/inventory-2x4"),
-                Displays.padding(2, armorAndEquipment),
-            ).centerIn(-1, height),
+        repeat(inventory.enderChestPages!!.size) { index ->
+            val button = Button()
+                .withSize(20, 20)
+                .withTexture(ExtraConstants.BUTTON_DARK)
+                .withCallback {
+                    page = index
+                    this@EnderChestScreen.rebuildWidgets()
+                }
+            buttonContainer.addChild(button)
+        }
+
+        widget(buttonContainer.centerHorizontally(uiWidth))
+
+        spacer(height = 10)
+
+        widget(
+            CarouselWidget(
+                inventory.enderChestPages.map { createPagedInventory(it.items.inventory) },
+                page,
+                246,
+            ).centerHorizontally(uiWidth),
         )
 
-        spacer(width = 10)
-        widget(createInventory(inventory.inventoryItems?.inventory.orEmpty(36)).center(-1, height))
     }
 
-    private fun createInventory(items: List<ItemStack>): DisplayWidget {
+
+    private fun createPagedInventory(items: List<ItemStack>): Display {
         val itemDisplays = items.chunked(9).map { chunk ->
             chunk.map { item ->
                 Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
         }
-        val sortedItemDisplays = itemDisplays.drop(1) + itemDisplays.take(1)
         return Displays.background(
-            SkyBlockPv.id("inventory/inventory-9x${sortedItemDisplays.size}"),
-            Displays.padding(2, sortedItemDisplays.asTable()),
-        ).asWidget()
+            SkyBlockPv.id("inventory/inventory-9x${itemDisplays.size}"),
+            Displays.padding(2, itemDisplays.asTable()),
+        )
     }
 
     private fun addCategories(bg: DisplayWidget) {
