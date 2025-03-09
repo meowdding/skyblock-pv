@@ -17,6 +17,7 @@
         ]
     },
     "mixins": [
+        "skyblockpv.mixins.json"
     ],
     "depends": {
         "fabric": "*",
