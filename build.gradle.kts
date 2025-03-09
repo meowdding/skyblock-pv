@@ -74,8 +74,6 @@ dependencies {
     include(libs.olympus)
     include(libs.legacydfu)
 
-    modCompileOnly(libs.skyblocker)
-
     modRuntimeOnly(libs.devauth)
     modRuntimeOnly(libs.modmenu)
 }

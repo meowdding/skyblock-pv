@@ -3,11 +3,12 @@ package tech.thatgravyboat.skyblockpv.mixin.compat.skyblocker;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(ProfileViewerScreen.class)
+@Pseudo
+@Mixin(targets = "de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen")
 public class ProfileViewerScreenMixin {
     @WrapWithCondition(
         method = "lambda$initClass$15",
