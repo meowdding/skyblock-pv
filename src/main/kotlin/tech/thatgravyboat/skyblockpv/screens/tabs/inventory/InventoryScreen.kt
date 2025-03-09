@@ -86,11 +86,13 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
         spacer(height = 10)
 
-        widget(CarouselWidget(
-            inventory.enderChestPages.map { createPagedInventory(it.items.inventory) },
-            0,
-            246
-        ).centerHorizontally(uiWidth))
+        widget(
+            CarouselWidget(
+                inventory.enderChestPages.map { createPagedInventory(it.items.inventory) },
+                page,
+                246,
+            ).centerHorizontally(uiWidth),
+        )
 
     }
 
