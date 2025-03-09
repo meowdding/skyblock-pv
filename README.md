@@ -32,7 +32,6 @@ TODO: (typos are mayas fault)
 <details>
 <summary>Storage</summary>
 
-- [ ] Backpacks
 - [ ] Item Vault
 - [ ] Accessory bag
 - [ ] wardrobe

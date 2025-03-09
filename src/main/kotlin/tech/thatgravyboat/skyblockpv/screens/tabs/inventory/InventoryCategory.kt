@@ -12,9 +12,10 @@ import kotlin.reflect.full.isSubclassOf
 enum class InventoryCategory(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
     ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
+    BACKPACK(BackpackScreen::class, Items.SHULKER_BOX.defaultInstance) // todo: backpack playerhead icon
     ;
 
-    fun isSelected() = screen.isSubclassOf(McScreen.self!!::class)
+    fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
 
     fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null) = screen.constructors.first().call(gameProfile, profile)
 }
