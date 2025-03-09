@@ -32,10 +32,6 @@ TODO: (typos are mayas fault)
 <details>
 <summary>Storage</summary>
 
-- [ ] Inventory
-- [ ] Hotbar
-- [ ] Armor and Equippment
-- [ ] Ender Chest
 - [ ] Backpacks
 - [ ] Item Vault
 - [ ] Accessory bag
@@ -64,8 +60,6 @@ TODO: (typos are mayas fault)
 <summary>Mining</summary>
 
 - [ ] HOTM
-- [ ] Powders
-- [ ] Nucelus Run stuff
 - [ ] Forge
 
 </details>
