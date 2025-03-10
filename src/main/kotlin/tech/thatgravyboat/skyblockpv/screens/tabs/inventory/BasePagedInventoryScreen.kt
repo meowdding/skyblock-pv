@@ -3,8 +3,9 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.inventory
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.layouts.Layouts
+import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import earth.terrarium.olympus.client.ui.UIConstants
-import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
@@ -53,12 +54,9 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
                 }
         }
 
-        val buttonContainer = LinearLayout.vertical().spacing(1)
-        buttons.chunked(9).forEach { chunk ->
-            val row = LinearLayout.horizontal().spacing(1)
-            chunk.forEach { button -> row.addChild(button) }
-            buttonContainer.addChild(row)
-        }
+        val buttonContainer = buttons.chunked(9)
+            .map { it.fold(Layouts.row().withGap(1), LinearViewLayout::withChild) }
+            .fold(Layouts.column().withGap(1), LinearViewLayout::withChild)
 
         widget(buttonContainer.centerHorizontally(uiWidth))
         spacer(height = 10)
