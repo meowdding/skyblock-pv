@@ -24,7 +24,6 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
 
     override fun createInventoryWidget() = LayoutBuild.vertical {
         val inventories = getInventories()
-        val buttonContainer = LinearLayout.horizontal().spacing(1)
         val icons = getIcons()
 
         carousel = CarouselWidget(
@@ -33,12 +32,12 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
             246,
         )
 
-        repeat(inventories.size) { index ->
+        val buttons = List(inventories.size) { index ->
             val icon = icons[index]
             icon.count = index + 1
             val itemDisplay = Displays.item(icon, showStackSize = true)
 
-            val button = Button()
+            Button()
                 .withSize(20, 20)
                 .withRenderer(
                     WidgetRenderers.layered(
@@ -52,7 +51,13 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
                 .withCallback {
                     carousel?.index = index
                 }
-            buttonContainer.addChild(button)
+        }
+
+        val buttonContainer = LinearLayout.vertical().spacing(1)
+        buttons.chunked(9).forEach { chunk ->
+            val row = LinearLayout.horizontal().spacing(1)
+            chunk.forEach { button -> row.addChild(button) }
+            buttonContainer.addChild(row)
         }
 
         widget(buttonContainer.centerHorizontally(uiWidth))
