@@ -10,5 +10,5 @@ class BackpackScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     override fun getInventories(): List<Display> = backpacks.map { createInventory(it.items.inventory) }
 
-    override fun getIcons(): List<ItemStack> = backpacks.map { it.icon } // todo: fix backpack icon getting
+    override fun getIcons(): List<ItemStack> = backpacks.map { it.icon }
 }
