@@ -13,7 +13,7 @@ enum class InventoryCategory(val screen: KClass<out BasePvScreen>, val icon: Ite
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
     ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
     BACKPACK(BackpackScreen::class, Items.SHULKER_BOX.defaultInstance), // todo: backpack playerhead icon
-    ACCESSORY(AccessoryScreen::class, Items.DIAMOND.defaultInstance),
+    ACCESSORY(AccessoryScreen::class, Items.DIAMOND.defaultInstance), // todo: some actual icon
     ;
 
     fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
