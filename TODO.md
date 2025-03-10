@@ -32,7 +32,6 @@ TODO:
 <summary>Storage</summary>
 
 - [ ] Item Vault
-- [ ] Accessory bag
 - [ ] wardrobe
 - [ ] Fishing Bag
 - [ ] Potion bag
