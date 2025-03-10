@@ -14,7 +14,8 @@ import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
 abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
-    protected var page = 0
+
+    protected var carousel: CarouselWidget? = null
 
     abstract fun getInventories(): List<Display>
     abstract fun getIcons(): List<ItemStack>
@@ -25,9 +26,9 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
         val buttonContainer = LinearLayout.horizontal().spacing(1)
         val icons = getIcons()
 
-        var carousel = CarouselWidget(
+        carousel = CarouselWidget(
             inventories,
-            page,
+            carousel?.index ?: 0,
             246,
         )
 
@@ -43,14 +44,13 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
                     WidgetRenderers.center(16, 16) { gr, ctx, _ -> itemDisplay.render(gr, ctx.x, ctx.y) },
                 )
                 .withCallback {
-                    page = index
-                    carousel.index = index
+                    carousel?.index = index
                 }
             buttonContainer.addChild(button)
         }
 
         widget(buttonContainer.centerHorizontally(uiWidth))
         spacer(height = 10)
-        widget(carousel.centerHorizontally(uiWidth))
+        widget(carousel!!.centerHorizontally(uiWidth))
     }
 }
