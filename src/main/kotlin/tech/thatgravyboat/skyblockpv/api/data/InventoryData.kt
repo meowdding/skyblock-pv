@@ -4,7 +4,6 @@ import com.google.gson.JsonObject
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockpv.utils.getNbt
 import tech.thatgravyboat.skyblockpv.utils.getNbtJson
-import tech.thatgravyboat.skyblockpv.utils.itemStack
 import tech.thatgravyboat.skyblockpv.utils.legacyStack
 
 data class InventoryData(
@@ -58,14 +57,14 @@ data class InventoryData(
         companion object {
             fun icons(json: JsonObject): Map<Int, ItemStack> {
                 return json.entrySet().associate { entry ->
-                    entry.key.toInt() to entry.value.asJsonObject.get("data").itemStack()
+                    entry.key.toInt() to entry.value.asJsonObject.get("data").getNbt().getList("i", 10).first().legacyStack()
                 }
             }
 
             fun fromJson(json: JsonObject): Map<Int, Inventory> {
                 return json.entrySet().associate { entry ->
                     entry.key.toInt() to Inventory.fromJson(entry.value.asJsonObject)
-                }
+                }.toList().sortedBy { it.first }.toMap()
             }
         }
     }
