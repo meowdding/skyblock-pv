@@ -31,7 +31,8 @@ abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockPr
 
     protected fun createInventory(items: List<ItemStack>): Display {
         val itemDisplays = items.chunked(9).map { chunk ->
-            chunk.map { item ->
+            val updatedChunk = chunk + List(9 - chunk.size) { ItemStack.EMPTY }
+            updatedChunk.map { item ->
                 Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
         }

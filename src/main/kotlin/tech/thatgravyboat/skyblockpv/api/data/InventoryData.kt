@@ -3,7 +3,6 @@ package tech.thatgravyboat.skyblockpv.api.data
 import com.google.gson.JsonObject
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockpv.utils.getNbt
-import tech.thatgravyboat.skyblockpv.utils.getNbtJson
 import tech.thatgravyboat.skyblockpv.utils.legacyStack
 
 data class InventoryData(
@@ -74,8 +73,8 @@ data class InventoryData(
     ) {
         companion object {
             fun fromJson(json: JsonObject): List<TalismansPage> {
-                return json.get("data").getNbtJson()?.let {
-                    Inventory.fromJson(it).inventory.chunked(45).map { TalismansPage(Inventory(it)) }
+                return json.get("data").getNbt().getList("i", 10)?.let {
+                    it.map { it.legacyStack() }.chunked(45).map { TalismansPage(Inventory(it)) }
                 } ?: listOf()
             }
         }
