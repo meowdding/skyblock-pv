@@ -77,7 +77,7 @@ data class SkyBlockProfile(
                 fairySouls = member.getAsJsonObject("fairy_soul")?.get("total_collected").asInt(0),
                 skyBlockLevel = run {
                     val level = member.getAsJsonObject("leveling")
-                    val experience = level["experience"].asInt(0)
+                    val experience = level?.get("experience").asInt(0)
 
                     experience / 100 to (experience % 100).toInt()
                 },
