@@ -45,7 +45,7 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
                         ExtraWidgetRenderers.conditional(
                             WidgetRenderers.sprite(UIConstants.PRIMARY_BUTTON),
                             WidgetRenderers.sprite(UIConstants.DARK_BUTTON),
-                        ) { index == page },
+                        ) { index == carousel?.index },
                         WidgetRenderers.center(16, 20, ExtraWidgetRenderers.display(itemDisplay)),
                     ),
                 )
