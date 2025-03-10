@@ -6,8 +6,9 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 <br/>You can switch between the tabs using the buttons on the right side of the UI.
 <br/>If a tab has multiple categories, you can switch between them using the buttons on the top of the UI.
 
-The mod is still in development, design is subject to change.
-Visit the [TODO.md](./TODO.md) for a list of features that are planned to be added.
+> [!WARNING]
+> The mod is still in development, design is subject to change.
+> Visit the [TODO.md](./TODO.md) for a list of features that are planned to be added.
 
 ### 🏠 Home Tab
 
