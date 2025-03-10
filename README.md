@@ -1,127 +1,28 @@
 # SkyBlock Profile Viewer
 
-TODO: (typos are mayas fault)
+A Profile Viewer for Hypixel SkyBlock, developed with love and passion.
 
-<details>
-<summary>Main screen</summary>
+The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <username>`` for someone else.
+<br/>You can switch between the tabs using the buttons on the right side of the UI.
+<br/>If a tab has multiple categories, you can switch between them using the buttons on the top of the UI.
 
-- [ ] Networth + Weight
-- [ ] Skills (done-ish?)
+The mod is still in development, design is subject to change.
 
-</details>
+### Home Tab
 
-<details>
-<summary>All Stats</summary>
+<img src="./.github/images/home.png" width="720" alt="" title="Home">
+Designed to be simple and to show off the main aspects of the player's profile.
+<br/>Designed with a purpose to be screenshot-able and shareable.
 
-- [ ] Guild
-- [ ] Auctions
-- [ ] Ores Mined, sea creature killed, items fished etc.
+### Inventory Tab
 
-</details>
+<img src="./.github/images/backpack.png" width="720" alt="" title="Backpacks">
+Switch between EnderChest, Backpack, ... pages using the custom build Carousel or the buttons up top.
 
-<details>
-<summary>Chocolate Factory (seperate tab in stats)</summary>
+### Collections Tab
 
-- [ ] Rabbit Family
-- [ ] modifiers
-- [ ] Stats
-- [ ] found rabbits stats
+<img src="./.github/images/collection.png" width="720" alt="" title="Collections">
 
-</details>
+### And many more tabs...
 
-<details>
-<summary>Storage</summary>
-
-- [ ] Item Vault
-- [ ] Accessory bag
-- [ ] wardrobe
-- [ ] Fishing Bag
-- [ ] Potion bag
-
-</details>
-
-<details>
-<summary>Collections</summary>
-
-- [ ] Minions
-
-</details>
-
-<details>
-<summary>Pets</summary>
-
-- [ ] all pets
-- [ ] each pet with stats
-
-</details>
-
-<details>
-<summary>Mining</summary>
-
-- [ ] HOTM
-- [ ] Forge
-
-</details>
-
-<details>
-<summary>Fishing</summary>
-
-- [ ] Trophy Fishing
-- [ ] Trophy fish milestones
-
-</details>
-
-<details>
-<summary>Beastiary</summary>
-
-- [ ] different islands with mobs and progress bars
-
-</details>
-
-<details>
-<summary>Crimson isle</summary>
-
-- [ ] Kundra stats
-- [ ] Dojo Stats
-- [ ] Faction stats
-- [ ] matriarch shit
-
-</details>
-
-<details>
-<summary>Museum</summary>
-
-- [ ] Value
-- [ ] dontations and raririties and such
-- [ ] Preview of the museum items
-
-</details>
-
-<details>
-<summary>Rift</summary>
-
-- [ ] Montezuna
-- [ ] Armor
-- [ ] Equippment
-- [ ] Inventory
-- [ ] Ender Chest
-- [ ] Timecharms
-- [ ] Vampire
-- [ ] Burger
-- [ ] Enigma Souls
-
-</details>
-
-<details>
-<summary>Garden</summary>
-
-- [ ] Crop milestones
-- [ ] crop upgrades
-- [ ] Garden level
-- [ ] Copper
-- [ ] weight
-- [ ] plots
-- [ ] visitor stats
-- [ ] Composters
-
-</details>
+...we just didn't put in the ReadMe. Look at them when pv'ing yourself!
