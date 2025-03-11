@@ -30,8 +30,7 @@ data class InventoryData(
 
         companion object {
             fun fromJson(json: JsonObject): WardrobeArmor {
-
-                return WardrobeArmor(Inventory.fromJson(json.get("armor").asJsonObject))
+                return WardrobeArmor(Inventory.fromJson(json))
             }
         }
     }
