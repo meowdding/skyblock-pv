@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.SkillData
 import tech.thatgravyboat.skyblockpv.utils.asInt
 import tech.thatgravyboat.skyblockpv.utils.asLong
@@ -18,11 +19,11 @@ object SkillAPI {
     var skillLevels: Map<Int, Long> = emptyMap()
         private set
 
-    fun getProgressToNextLevel(skill: String, exp: Long): Float {
+    fun getProgressToNextLevel(skill: String, exp: Long, profile: SkyBlockProfile): Float {
         val maxLevel = skillData.firstNotNullOfOrNull { (name, data) ->
             if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
         } ?: return 0f
-        val currentLevel = getSkillLevel(skill, exp)
+        val currentLevel = getSkillLevel(skill, exp, profile)
         val nextLevel = (currentLevel + 1).coerceAtMost(maxLevel)
         if (currentLevel == maxLevel) return 1f
         val currentExp = skillLevels[currentLevel] ?: return 0f
@@ -30,10 +31,17 @@ object SkillAPI {
         return (exp - currentExp).toFloat() / (nextExp - currentExp)
     }
 
-    fun getSkillLevel(skill: String, exp: Long): Int {
-        val maxLevel = skillData.firstNotNullOfOrNull { (name, data) ->
-            if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
-        }
+    fun getMaxTamingLevel(profile: SkyBlockProfile): Int = profile.tamingLevelPetsDonated.size + 50
+
+    fun getSkillLevel(skill: String, exp: Long, profile: SkyBlockProfile): Int {
+        val maxLevel =
+            if (skill != "SKILL_TAMING") {
+                skillData.firstNotNullOfOrNull { (name, data) ->
+                    if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
+                }
+            } else {
+                getMaxTamingLevel(profile)
+            }
         if (maxLevel == null) return 0
         return (skillLevels.entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
     }
