@@ -18,6 +18,7 @@ enum class InventoryCategory(val screen: KClass<out BasePvScreen>, val icon: Ite
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
     ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
     BACKPACK(BackpackScreen::class, backpackIcon),
+    WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.defaultInstance),
     ACCESSORY(AccessoryScreen::class, accessoryIcon),
     PERSONAL_VAULT(ItemVaultScreen::class, personalVaultIcon)
     ;

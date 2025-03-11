@@ -211,7 +211,7 @@ data class SkyBlockProfile(
                         InventoryData.Backpack(items = inv, icon = backpackIcons[id] ?: ItemStack.EMPTY)
                     }
                 },
-                wardrobe = this.getAsJsonObject("wardrobe_contents")?.getAsJsonObject("armor")?.let {
+                wardrobe = this.getAsJsonObject("wardrobe_contents")?.let {
                     InventoryData.Wardrobe(
                         equippedArmor = this.get("wardrobe_equipped_slot").asInt,
                         armor = InventoryData.Wardrobe.fromJson(it),
