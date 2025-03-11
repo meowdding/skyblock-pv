@@ -35,7 +35,6 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
-import tech.thatgravyboat.skyblockpv.utils.createSkull
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 
@@ -238,7 +237,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     "ICE" -> SkullTextures.ICE_ESSENCE
                     "CRIMSON" -> SkullTextures.CRIMSON_ESSENCE
                     else -> error("Invalid essence type")
-                }.texture.let(::createSkull)
+                }.createSkull()
             },
         ) { _, amount -> amount.shorten() }
     }
