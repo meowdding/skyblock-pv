@@ -19,6 +19,7 @@ import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
@@ -62,15 +63,20 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         loading.withCenterAlignment()
         FrameLayout.centerInRectangle(loading, 0, 0, screen.width, screen.height)
 
-        val tabs = createTabs().setPos(bg.x + bg.width, bg.y + 5)
-
         bg.visitWidgets(screen::addRenderableOnly)
-        tabs.visitWidgets(screen::addRenderableWidget)
         loading.visitWidgets(screen::addRenderableOnly)
 
         if (profile == null) return
         initedWithProfile = true
-        create(bg)
+
+        try {
+            create(bg)
+        } catch (e: Exception) {
+            Text.of("An error occurred while rendering the screen: ${e.message}").send()
+        }
+
+        val tabs = createTabs().setPos(bg.x + bg.width - 9, bg.y + 5)
+        tabs.visitWidgets(screen::addRenderableWidget)
 
         val username = createSearch(bg)
         username.visitWidgets(screen::addRenderableWidget)
@@ -101,7 +107,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         // as you can see, maya has no idea what she is doing
         PvTabs.entries.forEach { tab ->
             val button = Button()
-            button.setSize(22, 20)
+            button.setSize(31, 20)
             if (tab.isSelected()) {
                 button.withTexture(ExtraConstants.TAB_RIGHT_SELECTED)
             } else {
@@ -111,7 +117,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             // Don't bother actually aligning the icon yet, design will change anyway :3
             button.withRenderer(
                 WidgetRenderers.padded(
-                    0, 3 - if (tab.isSelected()) 1 else 0, 0, 0,
+                    0, 3 - if (tab.isSelected()) 1 else 0, 0, 9,
                     WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
                 ),
             )

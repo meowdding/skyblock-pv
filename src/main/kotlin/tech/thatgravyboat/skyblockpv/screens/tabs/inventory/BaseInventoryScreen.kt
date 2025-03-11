@@ -42,12 +42,13 @@ abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockPr
         )
     }
 
+    // todo: dedupe with collection categories
     private fun addCategories(bg: DisplayWidget) {
         val categories = InventoryCategory.entries
         val buttonRow = LinearLayout.horizontal().spacing(2)
         categories.forEach { category ->
             val button = Button()
-            button.setSize(20, 22)
+            button.setSize(20, 31)
             if (category.isSelected()) {
                 button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
             } else {
@@ -56,14 +57,15 @@ abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockPr
             }
             button.withRenderer(
                 WidgetRenderers.padded(
-                    4, 0, 0, 0,
+                    4, 0, 9, 0,
                     WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
                 ),
             )
+            // todo: hover text
             buttonRow.addChild(button)
         }
         buttonRow.arrangeElements()
-        buttonRow.setPosition(bg.x + 20, bg.y - buttonRow.height)
+        buttonRow.setPosition(bg.x + 20, bg.y - buttonRow.height + 9)
         buttonRow.visitWidgets(this::addRenderableWidget)
     }
 
