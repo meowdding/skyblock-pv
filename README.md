@@ -31,8 +31,8 @@ Switch between EnderChest, Backpack, ... pages using the custom build Carousel o
 
 ### Mod Compatibility
 
-- Using [SkyBlockMod](https://github.com/kevinthegreat1/SkyblockMod-Fabric) is completely unsupported, they add their own command shortcuts, which you cant
-  disable. They shorten ``/party leave`` to ``pv``, which is the same as our command.
+- Using [SkyBlockMod](https://github.com/kevinthegreat1/SkyblockMod-Fabric) is unsupported, they add own command shortcuts, which you can
+  disable, but that disables all the shortcuts. They shorten ``/party leave`` to ``pv``, which is the same as our command.
 - [SkyBlocker](https://github.com/SkyblockerMod/Skyblocker) add their own Profile Viewer. We override their ``/pv`` command with ours, if you wish to use
   theirs, you can use ``/skyblocker pv``. We don't have an option to disable this behavior since because you're already this mod, its unlikely you want to
   prefer SkyBlocker's Profile Viewer. 
