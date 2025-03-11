@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens
 
 import com.mojang.authlib.GameProfile
-import com.moulberry.mixinconstraints.annotations.IfDevEnvironment
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
@@ -81,7 +80,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         loading.visible = false
 
 
-        addRenderableWidget(createRefreshButton())
+        if (McClient.isDev) addRenderableWidget(createRefreshButton())
 
 
         addRenderableOnly(
@@ -92,7 +91,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         )
     }
 
-    @IfDevEnvironment
     private fun createRefreshButton() = Button()
         .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
         .withSize(40, 20)
