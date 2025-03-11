@@ -301,7 +301,7 @@ object Displays {
         }
     }
 
-    fun item(item: ItemStack, width: Int = 16, height: Int = 16, showTooltip: Boolean = false, showStackSize: Boolean = false): Display {
+    fun item(item: ItemStack, width: Int = 16, height: Int = 16, showTooltip: Boolean = false, showStackSize: Boolean = false, customStackText: String? = null): Display {
         return object : Display {
             override fun getWidth() = width
             override fun getHeight() = height
@@ -318,9 +318,9 @@ object Displays {
                     graphics.renderItem(item, 0, 0)
 
                     val stackSize = item.count
-                    if (showStackSize && stackSize > 1) {
+                    if ((showStackSize && stackSize > 1) || customStackText != null) {
                         translate(1, 2, 200)
-                        val component = Text.of(stackSize.toString())
+                        val component = Text.of(customStackText?: stackSize.toString())
                         graphics.drawString(
                             McFont.self,
                             component,
