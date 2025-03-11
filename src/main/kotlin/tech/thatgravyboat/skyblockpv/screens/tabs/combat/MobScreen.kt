@@ -1,20 +1,19 @@
-package tech.thatgravyboat.skyblockpv.screens.tabs
+package tech.thatgravyboat.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.base.ListWidget
-import net.minecraft.client.gui.layouts.FrameLayout
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.MobData
-import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 
-class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MOB", gameProfile, profile) {
-    override fun create(bg: DisplayWidget) {
+class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
+
+    override fun getLayout(): Layout {
         val columnWidth = uiWidth / 2 - 20
         val columnHeight = uiHeight - 20
 
@@ -30,11 +29,7 @@ class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
         row.addChild(killsColumn)
         row.addChild(deathsColumn)
 
-        row.arrangeElements()
-
-        FrameLayout.centerInRectangle(row, bg.x, bg.y, bg.width, bg.height)
-
-        row.visitWidgets(this::addRenderableWidget)
+        return row
     }
 
     private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int) = LayoutBuild.vertical(5) {

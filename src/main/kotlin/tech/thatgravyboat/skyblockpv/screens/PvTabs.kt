@@ -5,7 +5,11 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.screens.tabs.*
+import tech.thatgravyboat.skyblockpv.screens.tabs.CollectionScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.MainScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.MiningScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.combat.BaseCombatScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.combat.DungeonScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.InventoryScreen
 import tech.thatgravyboat.skyblockpv.utils.createSkull
@@ -18,10 +22,9 @@ enum class PvTabs(
     private val icon: (GameProfile?) -> ItemStack
 ) {
     MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
-    DUNGEON(DungeonScreen::class, Items.DIAMOND_SWORD.defaultInstance),
+    COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
     COLLECTION(CollectionScreen::class, Items.ITEM_FRAME.defaultInstance),
-    MOB(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance),
     MINING(MiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
     ;
 

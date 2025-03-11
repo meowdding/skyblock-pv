@@ -1,21 +1,19 @@
-package tech.thatgravyboat.skyblockpv.screens.tabs
+package tech.thatgravyboat.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
-import net.minecraft.client.gui.layouts.FrameLayout
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.DungeonData
-import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
-class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("DUNGEON", gameProfile, profile) {
+class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     val classToLevel by lazy {
         profile?.dungeonData?.classExperience?.map { (name, xp) ->
             name to (levelXpMap.entries.findLast { it.value < xp }?.key ?: 50)
@@ -32,17 +30,13 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }?.toMap()
     }
 
-    override fun create(bg: DisplayWidget) {
+    override fun getLayout(): Layout {
         val dungeonData = profile?.dungeonData!!
-        val row = LayoutBuild.horizontal(5) {
+        return LayoutBuild.horizontal(5) {
             widget(createInfoBoxDisplay(dungeonData))
             widget(createLevelingDisplay(dungeonData))
             widget(createRunsDisplay(dungeonData))
         }
-
-        FrameLayout.centerInRectangle(row, bg.x, bg.y, bg.width, bg.height)
-
-        row.visitWidgets(this::addRenderableWidget)
     }
 
     private fun countRuns(completions: Map<String, Long>?) = completions?.filterKeys { it != "total" }?.values?.sum() ?: 0
@@ -179,4 +173,3 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
 
 }
-
