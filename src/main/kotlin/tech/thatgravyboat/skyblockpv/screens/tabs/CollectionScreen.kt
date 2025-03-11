@@ -49,13 +49,14 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         addCategories(bg)
     }
 
+    // todo: dedupe with inventory categories
     private fun addCategories(bg: DisplayWidget) {
         val categories = profile!!.collections.map { it.category }.distinct().sortToCollectionCategoryOrder()
         val buttonRow = LinearLayout.horizontal().spacing(2)
         categories.forEach { category ->
             val selected = category == currentCategory
             val button = Button()
-            button.setSize(20, 22)
+            button.setSize(20, 31)
             if (selected) {
                 button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
             } else {
@@ -67,7 +68,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             }
             button.withRenderer(
                 WidgetRenderers.padded(
-                    4, 0, 0, 0,
+                    4, 0, 9, 0,
                     WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(getIconFromCollectionType(category), ctx.x, ctx.y) },
                 ),
             )
@@ -75,7 +76,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             buttonRow.addChild(button)
         }
         buttonRow.arrangeElements()
-        buttonRow.setPosition(bg.x + 20, bg.y - buttonRow.height)
+        buttonRow.setPosition(bg.x + 20, bg.y - buttonRow.height + 9)
         buttonRow.visitWidgets(this::addRenderableWidget)
     }
 
