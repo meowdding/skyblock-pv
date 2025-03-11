@@ -65,7 +65,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val skillAvg = profile.skill
             .filterNot { it.key in irrelevantSkills }
-            .map { getSkillLevel(it.key, it.value) }
+            .map { getSkillLevel(it.key, it.value, profile) }
             .average()
 
         widget(getTitleWidget("Info", width))
@@ -95,8 +95,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     .withTooltip(SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)),
             )
             display(
-                grayText("Skill Avg: ${skillAvg.round()}")
-                    .withTooltip("HypixelAPI doesn't provide your actual max Taming Level,", "so we just assumes that it's 60."),
+                grayText("Skill Avg: ${skillAvg.round()}"),
             )
 
             display(
@@ -206,12 +205,16 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         addSection<Long>(
             "Skills", profile.skill.asSequence().map { it.toPair() },
             { name, num ->
-                SkillAPI.getProgressToNextLevel(name, num).let { progress ->
+                SkillAPI.getProgressToNextLevel(name, num, profile).let { progress ->
                     if (progress == 1f) Text.of("§cMaxed!")
-                    else Text.of("§a${(progress * 100).round()}% to next level")
+                    else if (name.equals("SKILL_TAMING") && getSkillLevel(name, num, profile) == SkillAPI.getMaxTamingLevel(profile)) {
+                        Text.of("§5Reached max skill cap!")
+                    } else Text.of("§a${(progress * 100).round()}% to next level")
                 }
             },
-            ::getIconFromSkillName, ::getSkillLevel,
+            ::getIconFromSkillName, { name, num ->
+                getSkillLevel(name, num, profile)
+            },
         )
 
         spacer(height = 10)
