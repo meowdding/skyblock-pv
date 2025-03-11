@@ -32,6 +32,7 @@ data class SkyBlockProfile(
     val slayer: Map<String, SlayerTypeData>,
     val dungeonData: DungeonData?,
     val mining: MiningCore?,
+    val tamingLevelPetsDonated: List<String>
 ) {
     companion object {
 
@@ -89,6 +90,13 @@ data class SkyBlockProfile(
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
                 dungeonData = member.getAsJsonObject("dungeons")?.parseDungeonData(),
                 mining = member.getAsJsonObject("mining_core")?.parseMiningData(),
+                tamingLevelPetsDonated = run {
+                    val petsData = member.getAsJsonObject("pets_data")
+                    val petCare = petsData?.getAsJsonObject("pet_care")
+                    val donatedPets = petCare?.getAsJsonArray("pet_types_sacrificed")
+
+                    donatedPets?.toList()?.map { it.asString("") }?.filter { it.isNotBlank() }?: emptyList()
+                },
             )
         }
 
