@@ -37,6 +37,7 @@ data class SkyBlockProfile(
     val tamingLevelPetsDonated: List<String>,
     val pets: List<Pet>,
     val trophyFish: TrophyFishData,
+    val miscFishData: FishData,
 ) {
     companion object {
 
@@ -129,6 +130,26 @@ data class SkyBlockProfile(
                         },
                         totalCatches = trophyFishData.remove("total_caught").asInt(0),
                         rewards = trophyFishData.remove("rewards").asJsonArray.map { it.asInt(0) }.filterNot { it == 0 },
+                    )
+                },
+                miscFishData = run {
+                    val itemsFished = playerStats?.getAsJsonObject("items_fished")
+                    val leveling = member.getAsJsonObject("leveling")?: null
+                    val perks = playerData?.getAsJsonObject("perks")
+                    FishData(
+                        treasuresCaught = playerData?.get("fishing_treasure_caught").asInt(0),
+                        festivalSharksKilled = leveling?.get("fishing_festival_sharks_killed").asInt(0),
+                        itemsFished = ItemsFished(
+                            total = itemsFished?.get("total").asInt(0),
+                            normal = itemsFished?.get("normal").asInt(0),
+                            treasure = itemsFished?.get("treasure").asInt(0),
+                            largeTreasure = itemsFished?.get("large_treasure").asInt(0),
+                            trophyFish = itemsFished?.get("trophy_fish").asInt(0),
+                        ),
+                        seaCreatureKills = playerStats?.get("sea_creature_kills").asInt(0),
+                        drakePiper = perks?.get("drake_piper").asInt(0),
+                        midasLure = perks?.get("midas_lure").asInt(0),
+                        radiantFisher = perks?.get("radiant_fisher").asInt(0),
                     )
                 },
             )

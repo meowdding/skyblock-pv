@@ -13,6 +13,24 @@ data class TrophyFishData(
     val rewards: List<Int>,
 )
 
+data class FishData(
+    val treasuresCaught: Int,
+    val festivalSharksKilled: Int,
+    val itemsFished: ItemsFished,
+    val seaCreatureKills: Int,
+    val drakePiper: Int,
+    val midasLure: Int,
+    val radiantFisher: Int,
+)
+
+data class ItemsFished(
+    val total: Int,
+    val normal: Int,
+    val treasure: Int,
+    val largeTreasure: Int,
+    val trophyFish: Int,
+)
+
 enum class FishingEquipment(vararg ids: String) {
 
     RODS(
@@ -109,14 +127,14 @@ enum class FishingEquipment(vararg ids: String) {
         "CLOWNFISH_CLOAK",
     ),
     NECKLACES(
-        "THUNDERBOLT_NECKLACE"
+        "THUNDERBOLT_NECKLACE",
     ),
     GLOVES(
         "MAGMA_LORD_GAUNTLET",
         "ICHTHYIC_GLOVES",
         "FINWAVE_GLOVES",
         "GILLSPLASH_GLOVES",
-        "LUMINOUS_BRACELET"
+        "LUMINOUS_BRACELET",
     );
 
     val list = ids.toList()

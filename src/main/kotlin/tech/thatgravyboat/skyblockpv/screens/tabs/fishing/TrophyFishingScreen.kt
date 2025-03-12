@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.fishing
 
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
@@ -29,7 +30,6 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
 
     private val numberFormatInstance = DecimalFormat.getCompactNumberInstance().apply {
         this.roundingMode = RoundingMode.FLOOR
-        this.maximumFractionDigits = 1
     }
 
     override fun create(bg: DisplayWidget) {
@@ -44,7 +44,7 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
             widget(
                 LayoutBuild.horizontal {
                     spacer(height = (uiHeight * 0.5).toInt())
-                    widget(getInfoElement(profile, (uiWidth * 0.2).toInt()))
+                    widget(getInfoElement(profile, (uiWidth * 0.3).toInt()))
                     widget(getGearWidget(profile, (uiWidth * 0.2).toInt()))
                 },
             )
@@ -76,20 +76,33 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
             ItemApi.anySkyblockId(FishingEquipment.trophyArmor),
         ) ?: emptyList()
 
-        val displayArmor = getDisplayArmor(trophyArmor).map { Displays.padding(2, Displays.item(it, showTooltip = true)) }.toColumn()
+        val displayArmor = getDisplayArmor(trophyArmor).toColumn()
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-1x4"),
-            Displays.padding(2, displayArmor)
+            Displays.padding(2, displayArmor),
         ).asWidget()
     }
 
-    private fun getDisplayArmor(list: List<ItemStack>) = buildList<ItemStack> {
+    private fun getDisplayArmor(list: List<ItemStack>) = buildList {
         fun addArmor(type: String) {
-            add(list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) ?: false } ?: ItemStack.EMPTY)
+            val itemStack = list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) ?: false } ?: ItemStack.EMPTY
+            add(
+                Displays.padding(
+                    2,
+                    Displays.item(itemStack, showTooltip = true)
+                        .let {
+                            if (itemStack.isEmpty) {
+                                return@let Displays.background(ResourceLocation.parse("container/slot/${type.lowercase()}"), it).centerIn(-1, -1)
+                            } else {
+                                return@let it
+                            }
+                        },
+                ),
+            )
         }
 
         addArmor("HELMET")
-        addArmor("CHEST")
+        addArmor("CHESTPLATE")
         addArmor("LEGGINGS")
         addArmor("BOOTS")
     }
@@ -102,15 +115,19 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
 
         val displayArmor = getDisplayArmor(armorAndEquipment)
 
-        val displayEquipment = buildList<ItemStack> {
+        val displayEquipment = buildList {
             fun addEquipment(type: FishingEquipment) {
-                add(
-                    armorAndEquipment.firstOrNull() {
-                        it.getData(DataTypes.ID)?.let { id ->
-                            type.list.contains(id)
-                        } ?: false
-                    } ?: ItemStack.EMPTY,
-                )
+                val item = armorAndEquipment.firstOrNull { it.getData(DataTypes.ID)?.let { id -> type.list.contains(id) } ?: false } ?: ItemStack.EMPTY
+
+                Displays.item(item = item, showTooltip = true)
+                    .let {
+                        if (item.isEmpty) {
+                            return@let Displays.background(SkyBlockPv.id("icon/slot/${type.name.lowercase().dropLast(1)}"), it)
+                        }
+
+                        it
+                    }.let { Displays.padding(2, it) }
+                    .let { add(it) }
             }
 
             addEquipment(FishingEquipment.NECKLACES)
@@ -120,8 +137,8 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
         }
 
         val armorEquipment = listOf(
-            displayArmor.map { Displays.padding(2, Displays.item(it, showTooltip = true)) }.toColumn(),
-            displayEquipment.map { Displays.padding(2, Displays.item(it, showTooltip = true)) }.toColumn(),
+            displayArmor.toColumn(),
+            displayEquipment.toColumn(),
         ).toRow()
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-2x4"),
@@ -136,12 +153,21 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
         )?.sortedBy(::calculateItemScore)?.reversed()?.take(4)?.toMutableList() ?: mutableListOf()
 
         if (fishingRods.size != 4) {
-            for (i in (fishingRods.size - 1)..3) {
+            for (i in (fishingRods.size - 1).coerceAtLeast(0)..3) {
                 fishingRods.add(i, Items.AIR.defaultInstance)
             }
         }
 
-        val column = fishingRods.map { Displays.padding(2, Displays.item(it, showTooltip = true)) }.toColumn()
+        val column = fishingRods.map {
+            Displays.item(it, showTooltip = true)
+                .let { display ->
+                    if (it.isEmpty) {
+                        return@let Displays.background(SkyBlockPv.id("icon/slot/rod"), display)
+                    }
+
+                    display
+                }.let { Displays.padding(2, it) }
+        }.toColumn()
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-1x4"),
             Displays.padding(2, column),
@@ -159,7 +185,7 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
 
         // take the actual level of ultimate enchants since those are worth smth
         itemStack.getData(DataTypes.ENCHANTMENTS)?.let {
-            score += it.keys.filter { key -> key.startsWith("ultimate") }.firstOrNull()?.let { key -> it[key] } ?: 0
+            score += it.keys.firstOrNull { key -> key.startsWith("ultimate") }?.let { key -> it[key] } ?: 0
         }
 
         // only counting t5 and t6 enchants as everything else is kinda useless
@@ -179,9 +205,10 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
         widget(
             getMainContentWidget(
                 LayoutBuild.vertical {
-                    fun grayText(text: String) = display(Displays.text(text, color = { 0x555555u }, shadow = false))
+                    fun grayText(text: Any) = display(Displays.text(text.toString(), color = { 0x555555u }, shadow = false))
 
-                    grayText("Total Caught: ${profile.trophyFish.totalCatches}")
+                    grayText("Trophy Fish Caught: ${profile.trophyFish.totalCatches}")
+                    grayText(profile.miscFishData.drakePiper)
                 },
                 width,
             ),
@@ -194,7 +221,7 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
             it.tier to profile.trophyFish.obtainedTypes.getOrDefault(it.apiName, 0)
         }
 
-        val caughtTooltip = TrophyFishTiers.entries.map { tiers ->
+        val caughtTooltip = TrophyFishTiers.entries.reversed().map { tiers ->
             Text.of(tiers.displayName).append(": ").append("${caught[tiers] ?: 0}")
         }
 
