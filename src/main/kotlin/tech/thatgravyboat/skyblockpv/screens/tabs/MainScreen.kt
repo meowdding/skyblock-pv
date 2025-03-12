@@ -118,8 +118,11 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             gr.pushPop {
                 translate(0f, 0f, 100f)
                 val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
+                val skyblockLvl = profile.skyBlockLevel.first
+                val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
+                val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
                 Displays.entity(
-                    FakePlayer(gameProfile, Text.join("[", profile.skyBlockLevel.first.toString(), "] ", gameProfile.name), armor),
+                    FakePlayer(gameProfile, name, armor),
                     width, height,
                     (width / 2.5).toInt(),
                     eyesX, eyesY,
