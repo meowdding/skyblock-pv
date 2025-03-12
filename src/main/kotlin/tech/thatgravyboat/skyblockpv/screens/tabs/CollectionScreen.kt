@@ -6,8 +6,8 @@ import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getIconFromCollectionType
@@ -18,27 +18,34 @@ import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollection
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
+import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("COLLECTION", gameProfile, profile) {
 
+    override val tabTitle: Component get() = Text.join(super.tabTitle, " - ", currentCategory)
     private var currentCategory = "FARMING"
 
     override fun create(bg: DisplayWidget) {
+        val width = uiWidth - 20
         val columnHeight = uiHeight - 20
 
         val profile = profile ?: return
-        val scrollable = ListWidget(uiWidth, columnHeight)
+        val scrollable = ListWidget(width, columnHeight)
         val filteredCollections = profile.collections.filter { it.category == currentCategory }
         val table = buildList {
-            filteredCollections.chunked(2).forEach { chunk ->
-                val row = buildList {
-                    chunk.getOrNull(0)?.let { add(getElement(it)) }
-                    chunk.getOrNull(1)?.let { add(getElement(it)) }
+            if (bg.width < 375) {
+                filteredCollections.map(::getElement).map(::listOf).forEach(::add)
+            } else {
+                filteredCollections.chunked(2).forEach { chunk ->
+                    val row = buildList {
+                        chunk.getOrNull(0)?.let { add(getElement(it)) }
+                        chunk.getOrNull(1)?.let { add(getElement(it)) }
+                    }
+                    add(row)
                 }
-                add(row)
             }
-        }.asTable(5).centerIn(uiWidth, -1).asWidget()
+        }.asTable(5).centerIn(width, -1).asWidget()
 
         scrollable.add(table)
 
@@ -93,7 +100,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val display = Displays.row(
             Displays.item(col.itemStack ?: ItemStack.EMPTY),
             listOf(
-                Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.toFormattedString()}")),
+                Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.shorten()}")),
                 listOf(Displays.progress(prog.second), progressText).toRow(3),
             ).toColumn(1),
             spacing = 5,
