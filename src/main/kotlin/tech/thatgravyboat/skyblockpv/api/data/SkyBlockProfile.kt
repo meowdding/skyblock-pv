@@ -32,7 +32,8 @@ data class SkyBlockProfile(
     val slayer: Map<String, SlayerTypeData>,
     val dungeonData: DungeonData?,
     val mining: MiningCore?,
-    val tamingLevelPetsDonated: List<String>
+    val forge: Forge?,
+    val tamingLevelPetsDonated: List<String>,
 ) {
     companion object {
 
@@ -90,6 +91,7 @@ data class SkyBlockProfile(
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
                 dungeonData = member.getAsJsonObject("dungeons")?.parseDungeonData(),
                 mining = member.getAsJsonObject("mining_core")?.parseMiningData(),
+                forge = member.getAsJsonObject("forge")?.parseForgeData(),
                 tamingLevelPetsDonated = run {
                     val petsData = member.getAsJsonObject("pets_data")
                     val petCare = petsData?.getAsJsonObject("pet_care")
@@ -122,6 +124,23 @@ data class SkyBlockProfile(
                 powderGlacite = this["powder_glacite"].asInt(0),
                 powderSpentGlacite = this["powder_spent_glacite"].asInt(0),
             )
+        }
+
+        private fun JsonObject.parseForgeData(): Forge {
+            val slots = this.getAsJsonObject("forge_processes")?.getAsJsonObject("forge_1") ?: JsonObject()
+
+            return slots.asMap { key, value ->
+                val obj = value.asJsonObject
+                val slot = ForgeSlot(
+                    type = obj["type"].asString(""),
+                    id = obj["id"].asString(""),
+                    startTime = obj["start_time"].asLong(0),
+                    notified = obj["notified"].asBoolean(false),
+                    oldItem = obj["old_item"],
+                )
+
+                key.toInt() to slot
+            }.let { Forge(it) }
         }
 
         private fun JsonObject.parseDungeonData(): DungeonData {

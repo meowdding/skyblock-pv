@@ -17,3 +17,15 @@ data class Crystal(
     val totalPlaced: Int,
     val totalFound: Int,
 )
+
+data class Forge(
+    val slots: Map<Int, ForgeSlot>,
+)
+
+data class ForgeSlot(
+    val type: String,
+    val id: String,
+    val startTime: Long,
+    val notified: Boolean,
+    val oldItem: Any?, // No clue what this is, in my forge it's always null. Maybe ItemStack or just id? Probably id
+)
