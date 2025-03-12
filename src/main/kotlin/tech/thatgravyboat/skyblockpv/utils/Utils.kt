@@ -90,6 +90,8 @@ object Utils {
             }
     }
 
+    fun String.toTitleCase() = lowercase().split("_").joinToString(" ") { it.replaceFirstChar { it.uppercase() } }
+
     fun Number.shorten(): String {
         val number = this.toLong()
         return when {

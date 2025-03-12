@@ -1,22 +1,25 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
+import net.minecraft.client.gui.layouts.LinearLayout
+import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.MiningCore
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 
 // TODO:
 //  add forge
 //  separate page for hotm tree (@Sophie you promised :3)
-//  maybe on crystals hover collected amount
-//  also fix empty state counting as collected (hypixel i hate you so much)
 
 class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MINING", gameProfile, profile) {
     val levelToExp = mapOf(
@@ -34,17 +37,18 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
     override fun create(bg: DisplayWidget) {
         val mining = profile?.mining ?: return
-        val columnWidth = (bg.width - 10) / 2
+        val columnWidth = bg.width / 2
 
         val columns = LayoutBuild.horizontal(5) {
-            widget(createInfoColumn(mining, columnWidth))
+            widget(createLeftColumn(mining, columnWidth))
+            widget(createRightColumn(mining, columnWidth))
         }
 
-        columns.setPosition(bg.x + 5, bg.y + 5)
+        columns.setPosition(bg.x, bg.y)
         columns.visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createInfoColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
+    private fun createLeftColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
         spacer(width, 5)
 
         val info = LayoutBuild.vertical(5) {
@@ -69,25 +73,47 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
         val powderTable = listOf(
             listOf("", "Current", "Total"),
-            listOf("§2Mithril Powder", mining.powderMithril.shorten(), (mining.powderSpentMithril + mining.powderMithril).shorten()),
-            listOf("§dGemstone Powder", mining.powderGemstone.shorten(), (mining.powderSpentGemstone + mining.powderGemstone).shorten()),
-            listOf("§bGlacite Powder", mining.powderGlacite.shorten(), (mining.powderSpentGlacite + mining.powderGlacite).shorten()),
+            listOf("§2Mithril", mining.powderMithril.shorten(), (mining.powderSpentMithril + mining.powderMithril).shorten()),
+            listOf("§dGemstone", mining.powderGemstone.shorten(), (mining.powderSpentGemstone + mining.powderGemstone).shorten()),
+            listOf("§bGlacite", mining.powderGlacite.shorten(), (mining.powderSpentGlacite + mining.powderGlacite).shorten()),
         ).asTable(5).asWidget()
         widget(getTitleWidget("Powder", width - 5))
         widget(getMainContentWidget(powderTable, width - 5))
+    }
 
-        spacer(height = 5)
+    private fun createRightColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
+        spacer(width, 5)
 
-        mining.crystals.map { (name, crystal) ->
-            val formattedName = name.split("_").first().lowercase().replaceFirstChar { it.uppercase() }
-            val state = ("§4❌".takeIf { crystal.state == "NOT_FOUND" } ?: "§2✔").let {
-                val state = crystal.state.split("_").joinToString(" ") { it.lowercase().replaceFirstChar { it.uppercase() } }
-                Displays.text("§l$it").withTooltip("State: $state")
+        val mainContent = LayoutBuild.vertical(5) {
+            val convertedElements = mining.crystals.map { (name, crystal) ->
+                val icon = SkyBlockItems.getItemById(name.uppercase())?.let { Displays.item(it, 12, 12) } ?: Displays.text("§cFailed to load")
+                val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
+                    Displays.text("§l$it")
+                }
+
+                val widget = listOf(icon, state).toRow(1).asWidget()
+                widget.withTooltip(
+                    Text.join(
+                        "§l${name.toTitleCase()}\n",
+                        "§7State: ${crystal.state.toTitleCase()}\n",
+                        "§7Found: ${crystal.totalFound.toFormattedString()}\n",
+                        "§7Placed: ${crystal.totalPlaced.toFormattedString()}",
+                    ),
+                )
             }
-            listOf(formattedName, state, "")
-        }.chunked(2).map { it.flatten() }.asTable(5).asWidget().let {
-            widget(getTitleWidget("Placed Crystals", width - 5))
-            widget(getMainContentWidget(it, width - 5))
+
+            val elementsPerRow = width / (convertedElements.first().width + 15)
+            if (elementsPerRow < 1) return@vertical
+
+            convertedElements.chunked(elementsPerRow).forEach { chunk ->
+                val element = LinearLayout.horizontal().spacing(5)
+                chunk.forEach { element.addChild(it) }
+                widget(element.centerHorizontally(width))
+            }
         }
+
+        // TODO: fix the hardcoded .centerHori which is only needed here and nowhere else??
+        widget(getTitleWidget("Placed Crystals", width - 5).centerHorizontally(width))
+        widget(getMainContentWidget(mainContent, width - 5).centerHorizontally(width))
     }
 }
