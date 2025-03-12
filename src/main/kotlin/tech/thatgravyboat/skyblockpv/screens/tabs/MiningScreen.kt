@@ -11,6 +11,13 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
+
+// TODO:
+//  add forge
+//  separate page for hotm tree (@Sophie you promised :3)
+//  maybe on crystals hover collected amount
+//  also fix empty state counting as collected (hypixel i hate you so much)
+
 class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MINING", gameProfile, profile) {
     val levelToExp = mapOf(
         1 to 0,
@@ -31,7 +38,6 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
         val columns = LayoutBuild.horizontal(5) {
             widget(createInfoColumn(mining, columnWidth))
-            // TODO: hi sophie pls nodes graph here
         }
 
         columns.setPosition(bg.x + 5, bg.y + 5)
