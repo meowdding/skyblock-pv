@@ -14,6 +14,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
 
@@ -21,6 +22,7 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
 
     abstract fun getInventories(): List<Display>
     abstract fun getIcons(): List<ItemStack>
+    open fun getExtraLine(): Display? = null
 
 
     override fun createInventoryWidget() = LayoutBuild.vertical {
@@ -61,5 +63,10 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
         widget(buttonContainer.centerHorizontally(uiWidth))
         spacer(height = 10)
         widget(carousel!!.centerHorizontally(uiWidth))
+
+        getExtraLine()?.let {
+            spacer(height = 5)
+            widget(it.asWidget().centerHorizontally(uiWidth))
+        }
     }
 }
