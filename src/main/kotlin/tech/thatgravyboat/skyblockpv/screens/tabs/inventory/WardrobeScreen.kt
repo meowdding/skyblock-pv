@@ -14,7 +14,7 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private val armor get() = wardrobe?.armor?.armor?.inventory?.chunked(36) ?: emptyList()
 
     override fun getInventories(): List<Display> = armor.mapIndexed { index, inventory ->
-        createInventory(if (selected != -1 && selected / 9 == index) {
+        if (selected != -1 && selected / 9 == index) {
             inventory.chunked(9).mapIndexed { index, row ->
                 var row = row.toMutableList()
                 row[selected % 9] = activeArmor[index]
@@ -22,7 +22,7 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             }.flatten()
         } else {
             inventory
-        })
+        }.let { createInventory(it) }
     }
 
     override fun getIcons() = List(armor.size) { Items.LEATHER_CHESTPLATE.defaultInstance }
