@@ -45,3 +45,10 @@ Switch between EnderChest, Backpack, ... pages using the custom build Carousel o
 - [SkyBlocker](https://github.com/SkyblockerMod/Skyblocker) add their own Profile Viewer. We override their ``/pv`` command with ours, if you wish to use
   theirs, you can use ``/skyblocker pv``. We don't have an option to disable this behavior since because you're already this mod, its unlikely you want to
   prefer SkyBlocker's Profile Viewer. 
+
+### Contributing
+
+Since Hypixel is very awesome they keep rejecting our permanent API-Key requests, so we have to use their temporary daily keys.
+<br/>(If any admins read this, please give us a perm key, please. Or at least state why you keep rejecting it literally doesn't show any reason)
+<br/>If the gui keeps loading and a chat message "Something went wrong :3" appears, it's likely an expired key.
+<br/>You can get a new key from the [Developer Dashboard](https://developer.hypixel.net/dashboard) and replace it in HypixelAPI.kt.
