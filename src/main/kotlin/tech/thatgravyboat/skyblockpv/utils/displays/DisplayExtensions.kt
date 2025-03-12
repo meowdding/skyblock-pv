@@ -48,6 +48,19 @@ fun List<Any>.asLayer(): Display {
     )
 }
 
+fun <T> List<List<T>>.swapAxis(): List<List<T>> {
+    val list = mutableListOf<MutableList<T>>()
+    for (x in indices) {
+        for (y in this[x].indices) {
+            if (x == 0) {
+                list.add(mutableListOf())
+            }
+            list[y].add(this[x][y])
+        }
+    }
+    return list
+}
+
 fun List<List<Any>>.asTable(spacing: Int = 0): Display =
     Displays.table(
         this.map {

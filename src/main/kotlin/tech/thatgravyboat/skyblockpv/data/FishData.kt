@@ -11,7 +11,126 @@ data class TrophyFishData(
     val lastCatch: TrophyFish?,
     val totalCatches: Int,
     val rewards: List<Int>,
-) {
+)
+
+enum class FishingEquipment(vararg ids: String) {
+
+    RODS(
+        // Water fishing rods
+        "FISHING_ROD",
+        "PRISMARINE_ROD",
+        "ICE_ROD",
+        "SPONGE_ROD",
+        "CHUM_ROD",
+        "SPEEDSTER_ROD",
+        "FARMER_ROD",
+        "WINTER_ROD",
+        "CHALLENGE_ROD",
+        "CHAMP_ROD",
+        "LEGEND_ROD",
+        "ROD_OF_THE_SEA",
+        "YETI_ROD",
+        "AUGER_ROD",
+        "DIRT_ROD",
+        "GIANT_FISHING_ROD",
+
+        // Fishing weapons
+        "THE_SHREDDER",
+        "PHANTOM_ROD",
+
+        // Lava fishing rods
+        "POLISHED_TOPAZ_ROD",
+        "STARTER_LAVA_ROD",
+        "MAGMA_ROD",
+        "INFERNO_ROD",
+        "HELLFIRE_ROD",
+    ),
+    ARMOR(
+        "ANGLER_HELMET",
+        "ANGLER_LEGGINGS",
+        "ANGLER_BOOTS",
+        "ANGLER_CHESTPLATE",
+        "SALMON_HELMET_NEW",
+        "SALMON_LEGGINGS_NEW",
+        "SALMON_CHESTPLATE_NEW",
+        "SALMON_BOOTS_NEW",
+        "DIVER_BOOTS",
+        "DIVER_HELMET",
+        "DIVER_LEGGINGS",
+        "DIVER_CHESTPLATE",
+        "SPONGE_HELMET",
+        "SPONGE_BOOTS",
+        "SPONGE_LEGGINGS",
+        "SPONGE_CHESTPLATE",
+        "SHARK_SCALE_HELMET",
+        "SHARK_SCALE_BOOTS",
+        "SHARK_SCALE_LEGGINGS",
+        "SHARK_SCALE_CHESTPLATE",
+        "SLUG_BOOTS",
+        "FLAMING_CHESTPLATE",
+        "TAURUS_HELMET",
+        "MOOGMA_LEGGINGS",
+        "THUNDER_CHESTPLATE",
+        "THUNDER_HELMET",
+        "THUNDER_LEGGINGS",
+        "THUNDER_BOOTS",
+        "MAGMA_LORD_BOOTS",
+        "MAGMA_LORD_HELMET",
+        "MAGMA_LORD_CHESTPLATE",
+        "MAGMA_LORD_LEGGINGS",
+    ),
+    TROPHY_ARMOR(
+        "BRONZE_HUNTER_LEGGINGS",
+        "BRONZE_HUNTER_BOOTS",
+        "BRONZE_HUNTER_CHESTPLATE",
+        "BRONZE_HUNTER_HELMET",
+        "SILVER_HUNTER_HELMET",
+        "SILVER_HUNTER_LEGGINGS",
+        "SILVER_HUNTER_CHESTPLATE",
+        "SILVER_HUNTER_BOOTS",
+        "GOLD_HUNTER_LEGGINGS",
+        "GOLD_HUNTER_CHESTPLATE",
+        "GOLD_HUNTER_HELMET",
+        "GOLD_HUNTER_BOOTS",
+        "DIAMOND_HUNTER_LEGGINGS",
+        "DIAMOND_HUNTER_HELMET",
+        "DIAMOND_HUNTER_BOOTS",
+        "DIAMOND_HUNTER_CHESTPLATE",
+    ),
+    BELTS(
+        "ICHTHYIC_BELT",
+        "FINWAVE_BELT",
+        "GILLSPLASH_BELT",
+    ),
+    CLOAKS(
+        "ICHTHYIC_CLOAK",
+        "FINWAVE_CLOAK",
+        "GILLSPLASH_CLOAK",
+        "CLOWNFISH_CLOAK",
+    ),
+    NECKLACES(
+        "THUNDERBOLT_NECKLACE"
+    ),
+    GLOVES(
+        "MAGMA_LORD_GAUNTLET",
+        "ICHTHYIC_GLOVES",
+        "FINWAVE_GLOVES",
+        "GILLSPLASH_GLOVES",
+        "LUMINOUS_BRACELET"
+    );
+
+    val list = ids.toList()
+
+    companion object {
+        val cloaks = CLOAKS.list
+        val gloves = GLOVES.list
+        val necklaces = NECKLACES.list
+        val belts = BELTS.list
+        val equipment = listOf(cloaks, gloves, necklaces, belts).flatten()
+        val rods = RODS.list
+        val armor = ARMOR.list
+        val trophyArmor = TROPHY_ARMOR.list
+    }
 }
 
 data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
@@ -37,8 +156,8 @@ data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
             if (fish.contains("/")) {
                 return fish.split("/").let {
                     TrophyFish(
-                        TrophyFishTypes.getByInternalName(it[0])?: return null,
-                        TrophyFishTiers.getByName(it[1])
+                        TrophyFishTypes.getByInternalName(it[0]) ?: return null,
+                        TrophyFishTiers.getByName(it[1]),
                     )
                 }
             }
@@ -248,32 +367,39 @@ enum class TrophyFishTypes(
     }
 }
 
-enum class TrophyFishTiers(val nameSuffix: Component) {
-    NONE(Component.empty()),
+enum class TrophyFishTiers(val nameSuffix: Component, val displayName: String) {
+    NONE(
+        nameSuffix = Component.empty(),
+        displayName = "Total",
+    ),
     BRONZE(
         nameSuffix = Text.of("BRONZE") {
             withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.BOLD)
         },
+        displayName = "§8Bronze",
     ),
     SILVER(
         nameSuffix = Text.of("SILVER") {
             withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD)
         },
+        displayName = "§7Silver",
     ),
     GOLD(
         nameSuffix = Text.of("GOLD") {
             withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)
         },
+        displayName = "§6Gold",
     ),
     DIAMOND(
         nameSuffix = Text.of("DIAMOND") {
             withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
         },
+        displayName = "§bDiamond",
     );
 
     companion object {
         fun getByName(name: String): TrophyFishTiers {
-            return entries.firstOrNull { it.name.equals(name, ignoreCase = true) }?: NONE
+            return entries.firstOrNull { it.name.equals(name, ignoreCase = true) } ?: NONE
         }
     }
 }
