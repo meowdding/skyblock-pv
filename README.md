@@ -5,7 +5,7 @@
 <div align="center">
 
 [![Discord](https://img.shields.io/discord/1296157888343179264?color=8c03fc&label=Discord&logo=discord&logoColor=white)](https://discord.gg/FsRc2GUwZR)
-[![Modrinth](https://img.shields.io/modrinth/dt/skyblock-profile-viewer?color=%23007EA7&label=Modrinth Downloads&style=for-the-badge)](https://modrinth.com/mod/skyblock-profile-viewer)
+<!--[![Modrinth](https://img.shields.io/modrinth/dt/skyblock-profile-viewer?color=%23007EA7&label=Modrinth Downloads&style=for-the-badge)](https://modrinth.com/mod/skyblock-profile-viewer)-->
 
 </div>
 
