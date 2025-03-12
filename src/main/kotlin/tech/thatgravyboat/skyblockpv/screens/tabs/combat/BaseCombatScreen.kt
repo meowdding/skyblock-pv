@@ -6,10 +6,13 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.data.SkullTextures
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.Category
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
+
+val dungeonsIcon by lazy { SkullTextures.DUNGEONS.createSkull() }
 
 abstract class BaseCombatScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("COMBAT", gameProfile, profile) {
 
@@ -17,7 +20,7 @@ abstract class BaseCombatScreen(gameProfile: GameProfile, profile: SkyBlockProfi
 }
 
 enum class CombatCategory(val screen: KClass<out BaseCombatScreen>, override val icon: ItemStack) : Category {
-    DUNGEONS(DungeonScreen::class, Items.VAULT.defaultInstance),
+    DUNGEONS(DungeonScreen::class, dungeonsIcon),
     MOBS(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance),
     ;
 
