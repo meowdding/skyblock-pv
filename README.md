@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![Discord](https://img.shields.io/discord/1296157888343179264?color=8c03fc&label=Discord&logo=discord)](https://discord.gg/FsRc2GUwZR)
+[![Discord](https://img.shields.io/discord/1296157888343179264?color=8c03fc&label=Discord&logo=discord&logoColor=white)](https://discord.gg/FsRc2GUwZR)
 
 </div>
 
