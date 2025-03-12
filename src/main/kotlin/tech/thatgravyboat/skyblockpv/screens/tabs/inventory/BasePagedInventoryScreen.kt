@@ -25,7 +25,7 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
     open fun getExtraLine(): Display? = null
 
 
-    override fun createInventoryWidget() = LayoutBuild.vertical {
+    override fun getLayout() = LayoutBuild.vertical {
         val inventories = getInventories()
         val icons = getIcons()
 

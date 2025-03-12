@@ -7,7 +7,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.center
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 class ItemVaultScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
-    override fun createInventoryWidget() = LayoutBuild.horizontal {
+    override fun getLayout() = LayoutBuild.horizontal {
         val inventoryItems = profile?.inventory?.personalVault?.inventory.orEmpty(36)
         widget(createInventory(inventoryItems).asWidget().center(-1, height))
     }

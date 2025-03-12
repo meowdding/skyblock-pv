@@ -43,7 +43,7 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
 
             button.active = !category.isSelected
             layout.withChild(button)
-        }.withPosition(bg.x + 20, bg.y - 31).build(this::addRenderableWidget)
+        }.withPosition(bg.x + 20, bg.y - 22).build(this::addRenderableWidget)
     }
 
 }
