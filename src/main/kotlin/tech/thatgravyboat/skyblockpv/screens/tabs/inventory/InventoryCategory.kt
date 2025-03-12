@@ -7,6 +7,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.SkullTextures
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.base.Category
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -14,7 +15,7 @@ val backpackIcon by lazy { SkullTextures.BACKPACK.createSkull() }
 val accessoryIcon by lazy { SkullTextures.ACCESSORY_BAG.createSkull() }
 val personalVaultIcon by lazy { SkullTextures.PERSONAL_VAULT.createSkull() }
 
-enum class InventoryCategory(val screen: KClass<out BasePvScreen>, val icon: ItemStack) {
+enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val icon: ItemStack) : Category {
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
     ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
     BACKPACK(BackpackScreen::class, backpackIcon),
@@ -23,7 +24,6 @@ enum class InventoryCategory(val screen: KClass<out BasePvScreen>, val icon: Ite
     PERSONAL_VAULT(ItemVaultScreen::class, personalVaultIcon)
     ;
 
-    fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
-
-    fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null) = screen.constructors.first().call(gameProfile, profile)
+    override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
+    override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?) = screen.constructors.first().call(gameProfile, profile)
 }
