@@ -29,14 +29,6 @@ TODO:
 </details>
 
 <details>
-<summary>Storage</summary>
-
-- [ ] Fishing Bag
-- [ ] Potion bag
-
-</details>
-
-<details>
 <summary>Collections</summary>
 
 - [ ] Minions
@@ -54,7 +46,7 @@ TODO:
 <details>
 <summary>Mining</summary>
 
-- [ ] HOTM
+- [ ] HOTM tree
 - [ ] Forge
 
 </details>
