@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
 class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
 
@@ -12,6 +13,8 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private val wardrobe get() = inventory?.wardrobe
     private val selected get() = wardrobe?.equippedArmor?.minus(1) ?: -1
     private val armor get() = wardrobe?.armor?.armor?.inventory?.chunked(36) ?: emptyList()
+
+    override fun getExtraLine() = Displays.text("Selected Armor: ${selected + 1}", color = { 0x555555u }, shadow = false)
 
     override fun getInventories(): List<Display> = armor.mapIndexed { index, inventory ->
         if (selected != -1 && selected / 9 == index) {
