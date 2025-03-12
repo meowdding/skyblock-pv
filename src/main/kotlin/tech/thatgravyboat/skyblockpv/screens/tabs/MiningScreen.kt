@@ -86,9 +86,9 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
         val mainContent = LayoutBuild.vertical(5) {
             val convertedElements = mining.crystals.map { (name, crystal) ->
-                val icon = SkyBlockItems.getItemById(name.uppercase())?.let { Displays.item(it, 12, 12) } ?: Displays.text("§cFailed to load")
+                val icon = SkyBlockItems.getItemById(name.uppercase())?.let { Displays.item(it) } ?: Displays.text("§cFailed to load")
                 val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
-                    Displays.text("§l$it")
+                    Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
                 }
 
                 val widget = listOf(icon, state).toRow(1).asWidget()
