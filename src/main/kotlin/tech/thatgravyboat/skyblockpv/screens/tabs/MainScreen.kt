@@ -185,7 +185,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 }
                 val widget = listOf(
                     icon,
-                    Displays.text(level, color = { 0x555555u }, shadow = false),
+                    Displays.padding(0, 0, 2, 0, Displays.text(level, color = { 0x555555u }, shadow = false)),
                 ).toRow(1).asWidget()
                 getToolTip(name, data)?.let { widget.withTooltip(it) }
                 widget
