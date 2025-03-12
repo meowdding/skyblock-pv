@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
@@ -40,6 +41,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
 
     var initedWithProfile = false
+
+    open val tabTitle: Component get() = Text.translatable("skyblockpv.tab.${name.lowercase()}")
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -90,10 +93,10 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
 
         addRenderableOnly(
-            Widgets.text(Text.join("${gameProfile.name} (${profile?.id?.name}) - ", Text.translatable("skyblockpv.tab.${name.lowercase()}")))
+            Widgets.text(this.tabTitle)
                 .withCenterAlignment()
                 .withSize(this.uiWidth, 20)
-                .withPosition(bg.x, 5),
+                .withPosition(bg.x, bg.bottom + 2),
         )
     }
 
