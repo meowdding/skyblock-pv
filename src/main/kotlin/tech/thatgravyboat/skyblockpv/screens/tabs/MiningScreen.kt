@@ -5,16 +5,22 @@ import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.MiningCore
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.displays.*
+import java.text.SimpleDateFormat
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 
 // TODO:
@@ -84,7 +90,7 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     private fun createRightColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
         spacer(width, 5)
 
-        val mainContent = LayoutBuild.vertical(5) {
+        val crystalContent = LayoutBuild.vertical(5) {
             val convertedElements = mining.crystals.map { (name, crystal) ->
                 val icon = SkyBlockItems.getItemById(name.uppercase())?.let { Displays.item(it) } ?: Displays.text("§cFailed to load")
                 val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
@@ -114,6 +120,43 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
         // TODO: fix the hardcoded .centerHori which is only needed here and nowhere else??
         widget(getTitleWidget("Placed Crystals", width - 5).centerHorizontally(width))
-        widget(getMainContentWidget(mainContent, width - 5).centerHorizontally(width))
+        widget(getMainContentWidget(crystalContent, width - 5).centerHorizontally(width))
+
+
+        val forgeSlots = profile?.forge?.slots ?: return@vertical
+        if (forgeSlots.isEmpty()) return@vertical
+        val quickForgeLevel = profile?.mining?.nodes?.entries?.find { it.key == "forge_time" }?.value ?: 0
+
+        spacer(height = 5)
+
+        val forgeContent = LayoutBuild.vertical(5) {
+            forgeSlots.forEach { (index, slot) ->
+                val item = SkyBlockItems.getItemById(slot.id)
+                val itemDisplay = item?.let { Displays.item(it) } ?: Displays.text("§cFailed to load")
+                val timeRemaining = (slot.startTime + ForgeTimeData.getForgeTime(slot.id, quickForgeLevel) - System.currentTimeMillis())
+                    .toDuration(DurationUnit.MILLISECONDS)
+                val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) {
+                    "§aReady"
+                } else {
+                    "§8${timeRemaining.formatReadableTime(DurationUnit.DAYS, 2)}"
+                }
+                val widget = listOf(
+                    Displays.text("§8§lSlot $index", shadow = false),
+                    Displays.padding(0, 0, -4, 0, itemDisplay),
+                    Displays.text("§8${timeDisplay}", shadow = false),
+                ).toRow(1).asWidget()
+                widget.withTooltip(
+                    Text.join(
+                        "§l${item?.hoverName?.stripped}\n",
+                        "§7Time Remaining: ${timeDisplay}\n",
+                        "§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}",
+                    ),
+                )
+                widget(widget)
+            }
+        }
+
+        widget(getTitleWidget("Forge", width - 5).centerHorizontally(width))
+        widget(getMainContentWidget(forgeContent, width - 5).centerHorizontally(width))
     }
 }

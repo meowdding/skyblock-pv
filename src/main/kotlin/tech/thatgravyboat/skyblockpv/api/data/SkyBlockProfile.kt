@@ -134,9 +134,9 @@ data class SkyBlockProfile(
                 val slot = ForgeSlot(
                     type = obj["type"].asString(""),
                     id = obj["id"].asString(""),
-                    startTime = obj["start_time"].asLong(0),
+                    startTime = obj["startTime"].asLong(0),
                     notified = obj["notified"].asBoolean(false),
-                    oldItem = obj["old_item"],
+                    oldItem = obj["oldItem"],
                 )
 
                 key.toInt() to slot

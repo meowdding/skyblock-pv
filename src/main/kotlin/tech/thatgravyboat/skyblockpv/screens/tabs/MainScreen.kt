@@ -210,7 +210,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             { name, num ->
                 SkillAPI.getProgressToNextLevel(name, num, profile).let { progress ->
                     if (progress == 1f) Text.of("§cMaxed!")
-                    else if (name.equals("SKILL_TAMING") && getSkillLevel(name, num, profile) == SkillAPI.getMaxTamingLevel(profile)) {
+                    else if (name == "SKILL_TAMING" && getSkillLevel(name, num, profile) == SkillAPI.getMaxTamingLevel(profile)) {
                         Text.of("§5Reached max skill cap!")
                     } else Text.of("§a${(progress * 100).round()}% to next level")
                 }
