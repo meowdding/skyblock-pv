@@ -79,7 +79,7 @@ data class InventoryData(
         }
     }
 
-    class Inventory(
+    data class Inventory(
         val inventory: List<ItemStack>,
     ) {
         companion object {
