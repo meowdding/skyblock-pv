@@ -112,3 +112,11 @@ TODO:
 - [ ] Composters
 
 </details>
+
+<details>
+<summary>Bingo</summary>
+
+- [ ] points
+- [ ] completed goals
+
+</details>
