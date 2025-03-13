@@ -12,6 +12,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
+import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.screens.PvTabs
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
@@ -21,6 +22,7 @@ object SkyBlockPv : ModInitializer {
             this,
             SkillAPI,
             CollectionAPI,
+            ForgeTimeData,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }

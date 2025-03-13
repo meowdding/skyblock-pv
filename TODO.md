@@ -47,7 +47,6 @@ TODO:
 <summary>Mining</summary>
 
 - [ ] HOTM tree
-- [ ] Forge
 
 </details>
 

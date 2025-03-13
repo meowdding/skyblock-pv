@@ -12,6 +12,8 @@ import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import java.text.DecimalFormat
 import kotlin.jvm.optionals.getOrNull
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 object Utils {
 
@@ -101,5 +103,31 @@ object Utils {
             number >= 1_000 -> String.format("%.1fk", number / 1_000.0)
             else -> this.toString()
         }
+    }
+
+    fun Duration.formatReadableTime(biggestUnit: DurationUnit, maxUnits: Int = -1): String {
+        val units = listOf(
+            DurationUnit.DAYS to this.inWholeDays,
+            DurationUnit.HOURS to this.inWholeHours % 24,
+            DurationUnit.MINUTES to this.inWholeMinutes % 60,
+            DurationUnit.SECONDS to this.inWholeSeconds % 60,
+            DurationUnit.MILLISECONDS to this.inWholeMilliseconds % 1000,
+        )
+
+        val unitNames = mapOf(
+            DurationUnit.DAYS to "d",
+            DurationUnit.HOURS to "h",
+            DurationUnit.MINUTES to "min",
+            DurationUnit.SECONDS to "s",
+            DurationUnit.MILLISECONDS to "ms",
+        )
+
+        val filteredUnits = units.dropWhile { it.first != biggestUnit }
+            .filter { it.second > 0 }
+            .take(maxUnits)
+
+        return filteredUnits.joinToString(", ") { (unit, value) ->
+            "$value${unitNames[unit]}"
+        }.ifEmpty { "0 seconds" }
     }
 }
