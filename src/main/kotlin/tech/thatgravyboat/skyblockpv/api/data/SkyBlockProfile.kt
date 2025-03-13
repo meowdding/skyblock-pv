@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.api.data
 
+import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import net.minecraft.Util
 import net.minecraft.world.item.ItemStack
@@ -34,6 +35,7 @@ data class SkyBlockProfile(
     val mining: MiningCore?,
     val forge: Forge?,
     val tamingLevelPetsDonated: List<String>,
+    val pets: List<Pet>,
 ) {
     companion object {
 
@@ -97,7 +99,21 @@ data class SkyBlockProfile(
                     val petCare = petsData?.getAsJsonObject("pet_care")
                     val donatedPets = petCare?.getAsJsonArray("pet_types_sacrificed")
 
-                    donatedPets?.toList()?.map { it.asString("") }?.filter { it.isNotBlank() }?: emptyList()
+                    donatedPets?.toList()?.map { it.asString("") }?.filter { it.isNotBlank() } ?: emptyList()
+                },
+                pets = member.getAsJsonObject("pets_data").getAsJsonArray("pets").map {
+                    val obj = it.asJsonObject
+                    Pet(
+                        uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString,
+                        uniqueId = obj["uniqueId"].asString,
+                        type = obj["type"].asString,
+                        exp = obj["exp"].asLong(0),
+                        active = obj["active"].asBoolean(false),
+                        tier = obj["tier"].asString,
+                        heldItem = obj["heldItem"]?.takeIf { it !is JsonNull }?.asString,
+                        candyUsed = obj["candyUsed"].asInt(0),
+                        skin = obj["skin"]?.takeIf { it !is JsonNull }?.asString,
+                    )
                 },
             )
         }
