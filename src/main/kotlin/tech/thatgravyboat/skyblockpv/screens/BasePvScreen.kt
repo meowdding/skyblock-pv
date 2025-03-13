@@ -30,6 +30,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import java.io.File
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
@@ -89,7 +90,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         loading.visible = false
 
 
-        if (McClient.isDev) addRenderableWidget(createRefreshButton())
+        if (McClient.isDev /* || Config.devMode */) createDevRow(bg).visitWidgets(screen::addRenderableWidget)
 
 
         addRenderableOnly(
@@ -100,11 +101,46 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         )
     }
 
-    private fun createRefreshButton() = Button()
-        .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
-        .withSize(40, 20)
-        .withTexture(ExtraConstants.BUTTON_DARK)
-        .withCallback { this.rebuildWidgets() }
+    private fun createDevRow(bg: DisplayWidget) = LayoutBuild.horizontal(5) {
+        // Useful for hotswaps
+        val refreshButton = Button()
+            .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
+            .withSize(60, 20)
+            .withTexture(ExtraConstants.BUTTON_DARK)
+            .withCallback { this@BasePvScreen.rebuildWidgets() }
+
+        val hoverText = Text.join(
+            "Screen: ${this@BasePvScreen.width}x${this@BasePvScreen.height}\n",
+            "UI: ${uiWidth}x${uiHeight}\n",
+            "BG: ${bg.width}x${bg.height}",
+        )
+        val screenSizeText = Button()
+            .withRenderer(WidgetRenderers.text(Text.of("Screen Size")))
+            .withSize(60, 20)
+            .withTexture(ExtraConstants.BUTTON_DARK)
+            .withTooltip(hoverText)
+
+        val saveButton = Button()
+            .withRenderer(WidgetRenderers.text(Text.of("Save Profiles")))
+            .withSize(60, 20)
+            .withTexture(ExtraConstants.BUTTON_DARK)
+            .withCallback { saveProfiles() }
+
+
+        widget(refreshButton)
+        widget(screenSizeText)
+        widget(saveButton)
+    }
+
+    private fun saveProfiles() {
+        val dir = File(McClient.self.gameDirectory, "config/skyblockpv/")
+
+        if (!dir.exists()) dir.mkdirs()
+
+        val file = File(dir, "profiles-${gameProfile.id}.json")
+        file.writeText(profiles.toString())
+        Text.of("Profiles saved to .minecraft/config/skyblockpv/").send()
+    }
 
     private fun createTabs() = LayoutBuild.vertical(2) {
         // as you can see, maya has no idea what she is doing
