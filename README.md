@@ -15,6 +15,11 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 <br/>You can switch between the tabs using the buttons on the right side of the UI.
 <br/>If a tab has multiple categories, you can switch between them using the buttons on the top of the UI.
 
+> [!DANGER]
+> If you get a chat message with "Something went wrong :3", it means our temporary API Key has expired.
+> You can't update the key yourself, you need to join the server above and ping J10a1n15 or ThatGravyBoat to update it.
+> They key is now hosted separately in the proxy in the attempt of the admins to actually finally give us a permanent key.
+
 > [!WARNING]
 > The mod is still in development, design is subject to change.
 > Visit the [TODO.md](./TODO.md) for a list of features that are planned to be added.
@@ -44,11 +49,4 @@ Switch between EnderChest, Backpack, ... pages using the custom build Carousel o
   disable, but that disables all the shortcuts. They shorten ``/party leave`` to ``pv``, which is the same as our command.
 - [SkyBlocker](https://github.com/SkyblockerMod/Skyblocker) add their own Profile Viewer. We override their ``/pv`` command with ours, if you wish to use
   theirs, you can use ``/skyblocker pv``. We don't have an option to disable this behavior since because you're already this mod, its unlikely you want to
-  prefer SkyBlocker's Profile Viewer. 
-
-### Contributing
-
-Since Hypixel is very awesome they keep rejecting our permanent API-Key requests, so we have to use their temporary daily keys.
-<br/>(If any admins read this, please give us a perm key, please. Or at least state why you keep rejecting it literally doesn't show any reason)
-<br/>If the gui keeps loading and a chat message "Something went wrong :3" appears, it's likely an expired key.
-<br/>You can get a new key from the [Developer Dashboard](https://developer.hypixel.net/dashboard) and replace it in HypixelAPI.kt.
+  prefer SkyBlocker's Profile Viewer.
