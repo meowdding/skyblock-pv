@@ -79,6 +79,18 @@ object Utils {
         return FrameLayout(width, height).also { it.addChild(this) }
     }
 
+    fun <T> List<List<T>>.transpose(): List<List<T>> {
+        val list = mutableListOf<MutableList<T>>()
+        for (x in indices) {
+            for (y in this[x].indices) {
+                if (x == 0) {
+                    list.add(mutableListOf())
+                }
+                list[y].add(this[x][y])
+            }
+        }
+        return list
+    }
 
     fun getTitleWidget(title: String, width: Int) = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->

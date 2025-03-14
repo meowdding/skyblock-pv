@@ -20,6 +20,23 @@ data class InventoryData(
     val wardrobe: Wardrobe?,
 ) {
 
+    fun getAllItems() = buildList {
+        fun addAll(list: List<ItemStack>?) = list?.let { this.addAll(it) }
+
+        addAll(inventoryItems?.inventory)
+        addAll(armorItems?.inventory)
+        addAll(equipmentItems?.inventory)
+        addAll(enderChestPages?.flatMap { it.items.inventory })
+        addAll(backpacks?.flatMap { it.items.inventory })
+        addAll(potionBag?.inventory)
+        addAll(talismans?.flatMap { it.talismans.inventory })
+        addAll(fishingBag?.inventory)
+        addAll(sacks?.inventory)
+        addAll(quiver?.inventory)
+        addAll(personalVault?.inventory)
+        addAll(wardrobe?.armor?.armor?.inventory)
+    }
+
     data class Wardrobe(
         val equippedArmor: Int,
         val armor: WardrobeArmor,

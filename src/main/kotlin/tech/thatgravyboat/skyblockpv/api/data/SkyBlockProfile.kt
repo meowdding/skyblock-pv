@@ -36,6 +36,8 @@ data class SkyBlockProfile(
     val forge: Forge?,
     val tamingLevelPetsDonated: List<String>,
     val pets: List<Pet>,
+    val trophyFish: TrophyFishData,
+    val miscFishData: FishData,
 ) {
     companion object {
 
@@ -107,7 +109,7 @@ data class SkyBlockProfile(
                         uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString,
                         uniqueId = obj["uniqueId"].asString,
                         type = obj["type"].asString,
-                        exp = obj["exp"].asLong(0),
+                        exp = obj["exp"]?.asLong(0) ?: 0,
                         active = obj["active"].asBoolean(false),
                         tier = obj["tier"].asString,
                         heldItem = obj["heldItem"]?.takeIf { it !is JsonNull }?.asString,
@@ -115,6 +117,8 @@ data class SkyBlockProfile(
                         skin = obj["skin"]?.takeIf { it !is JsonNull }?.asString,
                     )
                 },
+                trophyFish = TrophyFishData.fromJson(member),
+                miscFishData = FishData.fromJson(member, playerStats, playerData),
             )
         }
 
@@ -241,11 +245,11 @@ data class SkyBlockProfile(
             return InventoryData(
                 inventoryItems = this.getAsJsonObject("inv_contents")?.let { InventoryData.Inventory.fromJson(it) },
                 enderChestPages = this.getAsJsonObject("ender_chest_contents")?.let { InventoryData.EnderChestPage.fromJson(it) },
-                potionBag = bagContents.getAsJsonObject("potion_bag")?.let { InventoryData.Inventory.fromJson(it) },
-                talismans = bagContents.getAsJsonObject("talisman_bag")?.let { InventoryData.TalismansPage.fromJson(it) },
-                fishingBag = bagContents.getAsJsonObject("fishing_bag")?.let { InventoryData.Inventory.fromJson(it) },
-                sacks = bagContents.getAsJsonObject("sacks")?.let { InventoryData.Inventory.fromJson(it) },
-                quiver = bagContents.getAsJsonObject("quiver")?.let { InventoryData.Inventory.fromJson(it) },
+                potionBag = bagContents?.getAsJsonObject("potion_bag")?.let { InventoryData.Inventory.fromJson(it) },
+                talismans = bagContents?.getAsJsonObject("talisman_bag")?.let { InventoryData.TalismansPage.fromJson(it) },
+                fishingBag = bagContents?.getAsJsonObject("fishing_bag")?.let { InventoryData.Inventory.fromJson(it) },
+                sacks = bagContents?.getAsJsonObject("sacks")?.let { InventoryData.Inventory.fromJson(it) },
+                quiver = bagContents?.getAsJsonObject("quiver")?.let { InventoryData.Inventory.fromJson(it) },
                 armorItems = this.getAsJsonObject("inv_armor")?.let { InventoryData.Inventory.fromJson(it) },
                 equipmentItems = this.getAsJsonObject("equipment_contents")?.let { InventoryData.Inventory.fromJson(it) },
                 personalVault = this.getAsJsonObject("personal_vault_contents")?.let { InventoryData.Inventory.fromJson(it) },

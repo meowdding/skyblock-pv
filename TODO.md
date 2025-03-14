@@ -51,14 +51,6 @@ TODO:
 </details>
 
 <details>
-<summary>Fishing</summary>
-
-- [ ] Trophy Fishing
-- [ ] Trophy fish milestones
-
-</details>
-
-<details>
 <summary>Beastiary</summary>
 
 - [ ] different islands with mobs and progress bars
