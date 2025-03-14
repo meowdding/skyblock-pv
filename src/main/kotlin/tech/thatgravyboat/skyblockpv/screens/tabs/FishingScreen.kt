@@ -74,38 +74,32 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         addWidget(
             "Information",
             LayoutBuild.vertical {
-                display(
-                    Displays.text(
-                        text {
-                            if (profile.trophyFish.lastCatch == null) {
-                                append(Text.of("Never caught a trophy fish!") { withStyle(ChatFormatting.RED) })
-                                return@text
-                            }
+                string(
+                    text {
+                        if (profile.trophyFish.lastCatch == null) {
+                            append(Text.of("Never caught a trophy fish!") { withStyle(ChatFormatting.RED) })
+                            return@text
+                        }
 
-                            append(
-                                text("Last Catch: ") {
-                                    append(profile.trophyFish.lastCatch.displayName)
-                                },
-                            )
-                        },
-                        shadow = false,
-                    ),
+                        append(
+                            text("Last Catch: ") {
+                                append(profile.trophyFish.lastCatch.displayName)
+                            },
+                        )
+                    },
                 )
 
-                display(
-                    Displays.text(
-                        text("Trophy Rank: ") {
-                            val rank = TrophyFishRanks.getById((profile.trophyFish.rewards.maxOrNull() ?: 0) - 1)
+                string(
+                    text("Trophy Rank: ") {
+                        val rank = TrophyFishRanks.getById((profile.trophyFish.rewards.maxOrNull() ?: 0) - 1)
 
-                            if (rank == null) {
-                                append(text("None") { withStyle(ChatFormatting.RED) })
-                                return@text
-                            }
+                        if (rank == null) {
+                            append(text("None") { withStyle(ChatFormatting.RED) })
+                            return@text
+                        }
 
-                            append(rank.displayName)
-                        },
-                        shadow = false,
-                    ),
+                        append(rank.displayName)
+                    },
                 )
 
                 fun addPerk(perkName: String, perkLevel: Int, maxLevel: Int, config: Display.() -> Display = { this }) {
@@ -265,15 +259,12 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
                             append(
                                 text(sharksKilled.coerceAtMost(5000).toFormattedString()) {
-                                    if (sharksKilled > 5000) {
-                                        withStyle(ChatFormatting.GREEN)
-                                    } else if (sharksKilled >= 2500) {
-                                        withStyle(ChatFormatting.YELLOW)
-                                    } else if (sharksKilled > 0) {
-                                        withStyle(ChatFormatting.RED)
-                                    } else {
-                                        withStyle(ChatFormatting.DARK_RED)
-                                    }
+                                    when (sharksKilled) {
+                                        in 5000..Int.MAX_VALUE -> ChatFormatting.GREEN
+                                        in 2500..<5000 -> ChatFormatting.YELLOW
+                                        in 1..<2500 -> ChatFormatting.RED
+                                        else -> ChatFormatting.DARK_RED
+                                    }.let { withStyle(it) }
                                 },
                             )
                             append("/")
@@ -309,13 +300,10 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     ),
                 )
 
-                display(
-                    Displays.text(
-                        text("Sea creatures killed: ") {
-                            append(profile.miscFishData.seaCreatureKills.toFormattedString())
-                        },
-                        shadow = false,
-                    ),
+                string(
+                    text("Sea creatures killed: ") {
+                        append(profile.miscFishData.seaCreatureKills.toFormattedString())
+                    }
                 )
 
                 fun addStat(statName: String, amount: Int, config: Display.() -> Display = { this }) {
@@ -344,12 +332,12 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                             return@mapNotNull fishTiers to it.value
                         }.groupBy { it.first }.map { it.key to it.value.sumOf { it.second } }
                             .sortedBy { it.first.ordinal }.map {
-                            whiteText("Total ") {
-                                append(text(it.first.displayName))
-                                append(" Caught: ")
-                                append("${it.second}")
-                            }
-                        }.toList(),
+                                whiteText("Total ") {
+                                    append(text(it.first.displayName))
+                                    append(" Caught: ")
+                                    append("${it.second}")
+                                }
+                            }.toList(),
 
                         )
                 }
@@ -419,7 +407,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         val displayEquipment = buildList {
             fun addEquipment(type: FishingEquipment) {
-                val item = armorAndEquipment.firstOrNull { it.getData(DataTypes.ID)?.let { id -> type.list.contains(id) } ?: false } ?: ItemStack.EMPTY
+                val item = armorAndEquipment.firstOrNull {
+                    it.getData(DataTypes.ID)?.let { id -> type.list.contains(id) } ?: false
+                } ?: ItemStack.EMPTY
 
                 Displays.item(item = item, showTooltip = true)
                     .let {
@@ -483,12 +473,12 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
 
-
-
     private fun getSmallTrophyTable(profile: SkyBlockProfile): LayoutElement {
         val trophyFishItems = TrophyFishTypes.entries.map { type ->
-            val fishies = TrophyFishTiers.entries.map { tier -> TrophyFish(type, tier) }.sortedBy { it.tier.ordinal }.reversed()
-            val highestObtainedType = fishies.firstOrNull { profile.trophyFish.obtainedTypes.containsKey(it.apiName) || it.tier == TrophyFishTiers.NONE }
+            val fishies =
+                TrophyFishTiers.entries.map { tier -> TrophyFish(type, tier) }.sortedBy { it.tier.ordinal }.reversed()
+            val highestObtainedType =
+                fishies.firstOrNull { profile.trophyFish.obtainedTypes.containsKey(it.apiName) || it.tier == TrophyFishTiers.NONE }
             val caught = getCaughtInformation(fishies, profile)
             val tooltip = getCaughtInformationTooltip(fishies, profile, caught)
 
@@ -498,9 +488,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 highestObtainedType?.item ?: Items.GRAY_DYE.defaultInstance
             }
 
-            val stackText = if (caught[TrophyFishTiers.NONE] == 0) "" else numberFormatInstance.format(caught[TrophyFishTiers.NONE])
+            val stackText =
+                if (caught[TrophyFishTiers.NONE] == 0) "" else numberFormatInstance.format(caught[TrophyFishTiers.NONE])
 
-            Displays.item(item, customStackText = stackText).withTooltip(highestObtainedType?.displayName, tooltip as List<*>)
+            Displays.item(item, customStackText = stackText)
+                .withTooltip(highestObtainedType?.displayName, tooltip as List<*>)
         }
 
         val chunked = trophyFishItems.chunked(6)
@@ -568,7 +560,6 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
 
-
     /**
      * Creates a score for a rod to determine which ones to display
      */
@@ -602,7 +593,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private val SkyBlockRarity.displayname: String
         get() = name.lowercase().replaceFirstChar { it.uppercase() }
 
-    private fun text(text: String = "", color: UInt = 0x555555u, init: MutableComponent.() -> Unit = {}): MutableComponent {
+    private fun text(
+        text: String = "",
+        color: UInt = 0x555555u,
+        init: MutableComponent.() -> Unit = {}
+    ): MutableComponent {
         return Text.of(text) {
             withColor(color.toInt())
             init(this)

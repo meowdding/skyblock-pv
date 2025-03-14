@@ -49,10 +49,6 @@ fun Tag.legacyStack(): ItemStack {
             val extraAttributes = customData?.getCompound("ExtraAttributes")
             extraAttributes?.allKeys?.associate { it to extraAttributes.get(it) }?.filterValues { it != null }?.forEach { (key, tag) ->
                 customData.put(key, tag!!) // can't be null because of previous filter
-                if (key == "enchantments") {
-                    // TODO remove when skyblockApi #55 is merged
-                    customData.put("enchantment", tag)
-                }
             }
         }
         return@map it

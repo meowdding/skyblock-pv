@@ -109,7 +109,7 @@ data class SkyBlockProfile(
                         uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString,
                         uniqueId = obj["uniqueId"].asString,
                         type = obj["type"].asString,
-                        exp = obj["exp"].asLong(0),
+                        exp = obj["exp"]?.asLong(0) ?: 0,
                         active = obj["active"].asBoolean(false),
                         tier = obj["tier"].asString,
                         heldItem = obj["heldItem"]?.takeIf { it !is JsonNull }?.asString,
@@ -117,41 +117,8 @@ data class SkyBlockProfile(
                         skin = obj["skin"]?.takeIf { it !is JsonNull }?.asString,
                     )
                 },
-                trophyFish = run {
-                    val trophyFishData = member.getAsJsonObject("trophy_fish") ?: return@run TrophyFishData(mapOf(), null, 0, listOf())
-
-                    TrophyFishData(
-                        obtainedTypes = trophyFishData.entrySet().mapNotNull {
-                            if (!it.value.isJsonPrimitive) return@mapNotNull null
-                            return@mapNotNull it.key to it.value.asInt(0)
-                        }.toMap(),
-                        lastCatch = trophyFishData.remove("last_caught").asString("").let {
-                            TrophyFish.fromString(it)
-                        },
-                        totalCatches = trophyFishData.remove("total_caught").asInt(0),
-                        rewards = trophyFishData.remove("rewards")?.asJsonArray?.map { it.asInt(0) }?.filterNot { it == 0 }?: emptyList(),
-                    )
-                },
-                miscFishData = run {
-                    val itemsFished = playerStats?.getAsJsonObject("items_fished")
-                    val leveling = member.getAsJsonObject("leveling")?: null
-                    val perks = playerData?.getAsJsonObject("perks")
-                    FishData(
-                        treasuresCaught = playerData?.get("fishing_treasure_caught").asInt(0),
-                        festivalSharksKilled = leveling?.get("fishing_festival_sharks_killed").asInt(0),
-                        itemsFished = ItemsFished(
-                            total = itemsFished?.get("total").asInt(0),
-                            normal = itemsFished?.get("normal").asInt(0),
-                            treasure = itemsFished?.get("treasure").asInt(0),
-                            largeTreasure = itemsFished?.get("large_treasure").asInt(0),
-                            trophyFish = itemsFished?.get("trophy_fish").asInt(0),
-                        ),
-                        seaCreatureKills = playerStats?.get("sea_creature_kills").asInt(0),
-                        drakePiper = perks?.get("drake_piper").asInt(0),
-                        midasLure = perks?.get("midas_lure").asInt(0),
-                        radiantFisher = perks?.get("radiant_fisher").asInt(0),
-                    )
-                },
+                trophyFish = TrophyFishData.fromJson(member),
+                miscFishData = FishData.fromJson(member, playerStats, playerData),
             )
         }
 
