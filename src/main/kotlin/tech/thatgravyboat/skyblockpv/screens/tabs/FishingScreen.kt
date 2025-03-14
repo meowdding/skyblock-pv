@@ -1,7 +1,10 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.components.base.ListWidget
+import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import net.minecraft.ChatFormatting
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
@@ -19,6 +22,7 @@ import tech.thatgravyboat.skyblockpv.api.or
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.swapAxis
@@ -36,37 +40,132 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     override fun create(bg: DisplayWidget) {
         val profile = profile ?: return
 
-        val useSmallTable = (bg.width < 480)
 
-        LayoutBuild.frame {
-            spacer(bg.width, bg.height)
+        val infoWidget = getInfoWidget(profile)
+        val statWidget = getStatWidget(profile)
+        val gearWidget = getGearWidget(profile)
+        var trophyWidth = 0
+        val trophyWidget by lazy {
+            LayoutBuild.vertical {
+                val useSmallTable = (trophyWidth < 480)
+                widget(Utils.getTitleWidget("Trophy Fish", trophyWidth))
+                if (useSmallTable) {
+                    widget(Utils.getMainContentWidget(getSmallTrophyTable(profile), trophyWidth))
+                } else {
+                    widget(Utils.getMainContentWidget(getTrophyTable(profile), trophyWidth))
+                }
+                spacer(height = 5)
+            }
+        }
+
+        fun LayoutBuilder.addBottomRow(first: LayoutElement, second: LayoutElement) {
             LayoutBuild.vertical {
                 spacer(height = 5)
                 horizontal {
-                    widget(getInfoWidget(profile))
-                    widget(getStatWidget(profile))
-                    widget(getGearWidget(profile))
-                }
-            }.let {
-                widget(it) {
-                    alignVerticallyTop()
-                    alignHorizontallyLeft()
-                }
-            }
-            LayoutBuild.vertical {
-                widget(Utils.getTitleWidget("Trophy Fish", uiWidth))
-                if (useSmallTable) {
-                    widget(Utils.getMainContentWidget(getSmallTrophyTable(profile), uiWidth))
-                } else {
-                    widget(Utils.getMainContentWidget(getTrophyTable(profile), uiWidth))
+                    widget(first)
+                    widget(second) {
+                        alignVerticallyBottom()
+                    }
                 }
                 spacer(height = 5)
             }.let {
                 widget(it) {
                     alignVerticallyBottom()
+                    alignHorizontallyLeft()
                 }
             }
-        }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
+        }
+
+        fun Layout.applyLayout() {
+            this.setPos(bg.x, bg.y).visitWidgets(this@FishingScreen::addRenderableWidget)
+        }
+
+        if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + 165 /* Height of trophy table */ < bg.height) {
+            trophyWidth = bg.width
+            LayoutBuild.frame {
+                spacer(bg.width, bg.height)
+                LayoutBuild.vertical {
+                    spacer(height = 5)
+                    horizontal {
+                        widget(infoWidget)
+                        widget(statWidget)
+                        widget(gearWidget)
+                    }
+                }.let {
+                    widget(it) {
+                        alignVerticallyTop()
+                        alignHorizontallyLeft()
+                    }
+                }
+                widget(trophyWidget) {
+                    alignVerticallyBottom()
+                    alignHorizontallyLeft()
+                }
+            }.applyLayout()
+        } else if (infoWidget.width + statWidget.width < bg.width && gearWidget.height + 10 + infoWidget.height < bg.height) {
+            trophyWidth = bg.width - gearWidget.width
+            LayoutBuild.frame {
+                spacer(bg.width, bg.height)
+                LayoutBuild.vertical {
+                    spacer(height = 5)
+                    horizontal {
+                        widget(infoWidget)
+                        widget(statWidget)
+                    }
+                }.let {
+                    widget(it) {
+                        alignVerticallyTop()
+                        alignHorizontallyLeft()
+                    }
+                }
+                addBottomRow(gearWidget, trophyWidget)
+            }.applyLayout()
+        } else if (gearWidget.width + statWidget.width < bg.width && gearWidget.height + 10 + infoWidget.height < bg.height) {
+            trophyWidth = bg.width - infoWidget.width
+            LayoutBuild.frame {
+                spacer(bg.width, bg.height)
+                LayoutBuild.vertical {
+                    spacer(height = 5)
+                    horizontal {
+                        widget(infoWidget)
+                        widget(trophyWidget) {
+                            alignVerticallyTop()
+                        }
+                    }
+                }.let {
+                    widget(it) {
+                        alignVerticallyTop()
+                        alignHorizontallyLeft()
+                    }
+                }
+                addBottomRow(gearWidget, statWidget)
+            }.applyLayout()
+        } else {
+            val scrollable = ListWidget(bg.width - 20, bg.height - 20)
+            trophyWidth = scrollable.width - 40
+            fun ListWidget.add(layout: Layout) {
+                add(LayoutWidget(layout).also { it.visible = true }.withStretchToContentSize())
+            }
+
+            scrollable.add(LayoutBuild.vertical {
+                fun add(element: LayoutElement)  {
+                    spacer(height = 5, width = element.width + 20)
+                    widget(element) {
+                        alignHorizontallyCenter()
+                    }
+                    spacer(height = 5)
+                }
+
+                add(infoWidget)
+                add(statWidget)
+                add(gearWidget)
+                add(trophyWidget)
+            })
+
+            scrollable.setPosition(bg.x + 10, bg.y + 10)
+
+            scrollable.visitWidgets(this::addRenderableWidget)
+        }
     }
 
 
