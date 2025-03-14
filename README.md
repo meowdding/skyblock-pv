@@ -15,7 +15,7 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 <br/>You can switch between the tabs using the buttons on the right side of the UI.
 <br/>If a tab has multiple categories, you can switch between them using the buttons on the top of the UI.
 
-> [!DANGER]
+> [!CAUTION]
 > If you get a chat message with "Something went wrong :3", it means our temporary API Key has expired.
 > You can't update the key yourself, you need to join the server above and ping J10a1n15 or ThatGravyBoat to update it.
 > They key is now hosted separately in the proxy in the attempt of the admins to actually finally give us a permanent key.
