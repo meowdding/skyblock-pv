@@ -79,7 +79,7 @@ object Utils {
         return FrameLayout(width, height).also { it.addChild(this) }
     }
 
-    fun <T> List<List<T>>.swapAxis(): List<List<T>> {
+    fun <T> List<List<T>>.transpose(): List<List<T>> {
         val list = mutableListOf<MutableList<T>>()
         for (x in indices) {
             for (y in this[x].indices) {

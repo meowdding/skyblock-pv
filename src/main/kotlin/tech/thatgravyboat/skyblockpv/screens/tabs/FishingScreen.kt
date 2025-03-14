@@ -25,7 +25,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockpv.utils.Utils.swapAxis
+import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -590,7 +590,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getTrophyTable(profile: SkyBlockProfile): LayoutElement {
         return TrophyFishTypes.entries.map { type ->
             getTrophyTableColumn(type, profile)
-        }.swapAxis().asTable(4).centerIn(uiWidth, -1).asWidget()
+        }.transpose().asTable(4).centerIn(uiWidth, -1).asWidget()
     }
 
     private fun getCaughtInformation(fishies: List<TrophyFish>, profile: SkyBlockProfile): Map<TrophyFishTiers, Int> {

@@ -28,11 +28,11 @@ data class TrophyFishData(
                     if (!it.value.isJsonPrimitive) return@mapNotNull null
                     return@mapNotNull it.key to it.value.asInt(0)
                 }.toMap(),
-                lastCatch = trophyFishData.remove("last_caught").asString("").let {
+                lastCatch = trophyFishData.get("last_caught").asString("").let {
                     TrophyFish.fromString(it)
                 },
-                totalCatches = trophyFishData.remove("total_caught").asInt(0),
-                rewards = trophyFishData.remove("rewards")?.asJsonArray?.map { it.asInt(0) }?.filterNot { it == 0 }
+                totalCatches = trophyFishData.get("total_caught").asInt(0),
+                rewards = trophyFishData.get("rewards")?.asJsonArray?.map { it.asInt(0) }?.filterNot { it == 0 }
                     ?: emptyList(),
             )
         }
