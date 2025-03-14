@@ -1,7 +1,9 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.fishing
 
 import com.mojang.authlib.GameProfile
+import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -12,10 +14,7 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemApi
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.or
-import tech.thatgravyboat.skyblockpv.data.FishingEquipment
-import tech.thatgravyboat.skyblockpv.data.TrophyFish
-import tech.thatgravyboat.skyblockpv.data.TrophyFishTiers
-import tech.thatgravyboat.skyblockpv.data.TrophyFishTypes
+import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
@@ -35,27 +34,62 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
     override fun create(bg: DisplayWidget) {
         val profile = profile ?: return
 
-        val trophyTable = TrophyFishTypes.entries.map { type ->
-            getElement(type, profile)
-        }.swapAxis().asTable(4).centerIn(uiWidth, -1).asWidget()
+        val useSmallTable = (bg.width < 480)
 
-        LayoutBuild.vertical {
-            spacer(height = 5)
-            widget(
+        LayoutBuild.frame {
+            spacer(bg.width, bg.height)
+            LayoutBuild.vertical {
+                spacer(height = 5)
                 LayoutBuild.horizontal {
-                    spacer(height = (uiHeight * 0.5).toInt())
-                    widget(getInfoElement(profile, (uiWidth * 0.3).toInt()))
-                    widget(getGearWidget(profile, (uiWidth * 0.2).toInt()))
-                },
-            )
+                    widget(getInfoWidget(profile))
+                    widget(getGearWidget(profile, 122))
+                }.let { widget(it) }
+            }.let {
+                widget(it) {
+                    alignVerticallyTop()
+                    alignHorizontallyLeft()
+                }
+            }
             widget(
                 LayoutBuild.vertical {
-                    spacer(height = 5)
                     widget(getTitleWidget("Trophy Fish", uiWidth))
-                    widget(getMainContentWidget(trophyTable, uiWidth))
+                    if (useSmallTable) {
+                        widget(getMainContentWidget(getSmallTrophyTable(profile), uiWidth))
+                    } else {
+                        widget(getMainContentWidget(getTrophyTable(profile), uiWidth))
+                    }
+                    spacer(height = 5)
                 },
-            )
+            ) {
+                alignVerticallyBottom()
+            }
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
+    }
+
+    private fun getSmallTrophyTable(profile: SkyBlockProfile): LayoutElement {
+        val trophyFishItems = TrophyFishTypes.entries.map { type ->
+            val fishies = TrophyFishTiers.entries.map { tier -> TrophyFish(type, tier) }.sortedBy { it.tier.ordinal }.reversed()
+            val highestObtainedType = fishies.firstOrNull { profile.trophyFish.obtainedTypes.containsKey(it.apiName) || it.tier == TrophyFishTiers.NONE }
+            val caught = getCaughtInformation(fishies, profile)
+            val tooltip = getCaughtInformationTooltip(fishies, profile, caught)
+
+            val item = if (highestObtainedType?.tier == TrophyFishTiers.NONE) {
+                Items.GRAY_DYE.defaultInstance
+            } else {
+                highestObtainedType?.item ?: Items.GRAY_DYE.defaultInstance
+            }
+
+            val stackText = if (caught[TrophyFishTiers.NONE] == 0) "" else numberFormatInstance.format(caught[TrophyFishTiers.NONE])
+
+            Displays.item(item, customStackText = stackText).withTooltip(highestObtainedType?.displayName, tooltip as List<*>)
+        }
+
+        val chunked = trophyFishItems.chunked(6)
+
+        return Displays.background(
+            SkyBlockPv.id("inventory/inventory-6x3"),
+            Displays.padding(2, chunked.map { row -> row.map { Displays.padding(2, it) }.toRow() }.toColumn()),
+        ).asWidget()
     }
 
     private fun getGearWidget(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
@@ -199,42 +233,137 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
         return score
     }
 
+    private fun getInfoWidget(profile: SkyBlockProfile) = LayoutBuild.vertical {
+        fun addWidget(title: String, element: LayoutElement, padding: Int = 0) {
+            widget(getTitleWidget(title, element.width + padding))
+            widget(getMainContentWidget(element, element.width + padding))
+        }
 
-    private fun getInfoElement(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
-        widget(getTitleWidget("Information", width))
-        widget(
-            getMainContentWidget(
-                LayoutBuild.vertical {
-                    fun grayText(text: Any) = display(Displays.text(text.toString(), color = { 0x555555u }, shadow = false))
+        addWidget(
+            "Information",
+            LayoutBuild.vertical {
+                fun text(text: String = "", init: MutableComponent.() -> Unit = {}): MutableComponent {
+                    return Text.of(text) {
+                        withColor(0x555555)
+                        init(this)
+                    }
+                }
 
-                    grayText("Trophy Fish Caught: ${profile.trophyFish.totalCatches}")
-                    grayText(profile.miscFishData.drakePiper)
-                },
-                width,
-            ),
+                fun grayText(text: Any) = display(Displays.text(text.toString(), color = { 0x555555u }, shadow = false))
+
+                // Todo add remaining info stuff
+                display(
+                    Displays.text(
+                        text {
+                            if (profile.trophyFish.lastCatch == null) {
+                                append(Text.of("Never caught a trophy fish!") { withStyle(ChatFormatting.RED) })
+                                return@text
+                            }
+
+                            grayText("Trophy Fishes Caught: ${profile.trophyFish.totalCatches}")
+
+                            append(text("Last Catch: "))
+                            append(profile.trophyFish.lastCatch.displayName)
+                        },
+                        shadow = false,
+                    ),
+                )
+
+                display(
+                    Displays.text(
+                        text("Trophy Rank: ") {
+                            val rank = TrophyFishRanks.getById((profile.trophyFish.rewards.maxOrNull() ?: 0) - 1)
+
+                            if (rank == null) {
+                                append(text("None") { withStyle(ChatFormatting.RED) })
+                                return@text
+                            }
+
+                            append(rank.displayName)
+                        },
+                        shadow = false,
+                    ),
+                )
+
+                fun addPerk(perkName: String, perkLevel: Int, maxLevel: Int) {
+                    display(
+                        Displays.text(
+                            text {
+                                append("$perkName: ")
+
+                                append(
+                                    text("$perkLevel") {
+                                        if (perkLevel == maxLevel) {
+                                            withStyle(ChatFormatting.GREEN)
+                                        } else {
+                                            withStyle(ChatFormatting.RED)
+                                        }
+                                    }
+                                )
+                                append("/$maxLevel")
+                            },
+                            shadow = false
+                        )
+                    )
+                }
+
+                addPerk("Drake Piper", profile.miscFishData.drakePiper, 1)
+                addPerk("Midas Lure", profile.miscFishData.midasLure, 10)
+                addPerk("Radiant Fisher", profile.miscFishData.radiantFisher, 10)
+
+                display(Displays.text(text("Dolphin Pet: ") {
+                    val dolphin = DolphinBrackets.getByKills(profile.miscFishData.seaCreatureKills)
+
+                    if (dolphin == null) {
+                        append(text("None") { withStyle(ChatFormatting.RED) })
+                        return@text
+                    }
+
+                    append(text(dolphin.rarity.name.lowercase().replaceFirstChar { it.uppercase() }) {
+                        withColor(dolphin.rarity.color)
+                    })
+                }, shadow = false))
+            },
+            padding = 30,
         )
     }
 
-    private fun getElement(types: TrophyFishTypes, profile: SkyBlockProfile): List<Display> {
-        val fishies = TrophyFishTiers.entries.reversed().map { tiers -> TrophyFish(types, tiers) }
-        val caught = fishies.associate {
+    private fun getTrophyTable(profile: SkyBlockProfile): LayoutElement {
+        return TrophyFishTypes.entries.map { type ->
+            getTrophyTableColumn(type, profile)
+        }.swapAxis().asTable(4).centerIn(uiWidth, -1).asWidget()
+    }
+
+    private fun getCaughtInformation(fishies: List<TrophyFish>, profile: SkyBlockProfile): Map<TrophyFishTiers, Int> {
+        return fishies.associate {
             it.tier to profile.trophyFish.obtainedTypes.getOrDefault(it.apiName, 0)
         }
+    }
 
-        val caughtTooltip = TrophyFishTiers.entries.reversed().map { tiers ->
+    private fun getCaughtInformationTooltip(
+        fishies: List<TrophyFish>,
+        profile: SkyBlockProfile,
+        caught: Map<TrophyFishTiers, Int> = getCaughtInformation(fishies, profile),
+    ): List<MutableComponent> {
+        return TrophyFishTiers.entries.reversed().map { tiers ->
             Text.of(tiers.displayName).append(": ").append("${caught[tiers] ?: 0}")
         }
+    }
+
+    private fun getTrophyTableColumn(types: TrophyFishTypes, profile: SkyBlockProfile): List<Display> {
+        val fishies = TrophyFishTiers.entries.reversed().map { tiers -> TrophyFish(types, tiers) }
+        val caught = getCaughtInformation(fishies, profile)
+        val caughtTooltip = getCaughtInformationTooltip(fishies, profile, caught)
 
         return fishies.map {
-            getElement(it, profile, caught[it.tier] ?: 0).withTooltip(
+            getTrophyTableEntry(it, profile, caught[it.tier] ?: 0).withTooltip(
                 it.displayName,
                 caughtTooltip,
             )
         }
     }
 
-    private fun getElement(trophyFish: TrophyFish, profile: SkyBlockProfile, amountCaught: Int): Display {
-
+    private fun getTrophyTableEntry(trophyFish: TrophyFish, profile: SkyBlockProfile, amountCaught: Int): Display {
         val item = if (!profile.trophyFish.obtainedTypes.containsKey(trophyFish.apiName)) {
             Displays.item(Items.GRAY_DYE.defaultInstance)
         } else {
@@ -244,10 +373,15 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
             )
         }
 
-
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-1x1"),
             Displays.padding(3, item),
-        ).centerIn(-1, -1)
+        ).centerIn(-1, -1).let {
+            if (trophyFish.tier == TrophyFishTiers.NONE) {
+                return@let Displays.padding(0, 0, 0, 0, it)
+            }
+            return it
+        }
     }
 }
+

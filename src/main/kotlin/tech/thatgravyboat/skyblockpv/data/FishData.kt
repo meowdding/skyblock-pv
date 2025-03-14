@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.data
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 
@@ -30,6 +31,39 @@ data class ItemsFished(
     val largeTreasure: Int,
     val trophyFish: Int,
 )
+
+data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
+    val item: ItemStack by lazy { createSkull(type.getTexture(tier)) }
+    val displayName: Component by lazy {
+        if (tier == TrophyFishTiers.NONE) {
+            return@lazy Component.empty().append(type.displayName)
+        }
+
+        Component.empty().append(type.displayName).append(" ").append(tier.nameSuffix)
+    }
+
+    val apiName by lazy {
+        if (tier == TrophyFishTiers.NONE) {
+            return@lazy type.internalName
+        }
+
+        "${type.internalName}_${tier.name.lowercase()}"
+    }
+
+    companion object {
+        fun fromString(fish: String): TrophyFish? {
+            if (fish.contains("/")) {
+                return fish.split("/").let {
+                    TrophyFish(
+                        TrophyFishTypes.getByInternalName(it[0]) ?: return null,
+                        TrophyFishTiers.getByName(it[1]),
+                    )
+                }
+            }
+            return null
+        }
+    }
+}
 
 enum class FishingEquipment(vararg ids: String) {
 
@@ -151,35 +185,29 @@ enum class FishingEquipment(vararg ids: String) {
     }
 }
 
-data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
-    val item: ItemStack by lazy { createSkull(type.getTexture(tier)) }
-    val displayName: Component by lazy {
-        if (tier == TrophyFishTiers.NONE) {
-            return@lazy Component.empty().append(type.displayName)
-        }
-
-        Component.empty().append(type.displayName).append(" ").append(tier.nameSuffix)
-    }
-
-    val apiName by lazy {
-        if (tier == TrophyFishTiers.NONE) {
-            return@lazy type.internalName
-        }
-
-        "${type.internalName}_${tier.name.lowercase()}"
-    }
+enum class DolphinBrackets(val killsRequired: Int, val rarity: SkyBlockRarity) {
+    COMMON(250, SkyBlockRarity.COMMON),
+    UNCOMMON(1000, SkyBlockRarity.UNCOMMON),
+    RARE(2500, SkyBlockRarity.RARE),
+    EPIC(5000, SkyBlockRarity.EPIC),
+    LEGENDARY(10000, SkyBlockRarity.LEGENDARY);
 
     companion object {
-        fun fromString(fish: String): TrophyFish? {
-            if (fish.contains("/")) {
-                return fish.split("/").let {
-                    TrophyFish(
-                        TrophyFishTypes.getByInternalName(it[0]) ?: return null,
-                        TrophyFishTiers.getByName(it[1]),
-                    )
-                }
-            }
-            return null
+        fun getByKills(kills: Int): DolphinBrackets? {
+            return DolphinBrackets.entries.reversed().firstOrNull { it.killsRequired <= kills }
+        }
+    }
+}
+
+enum class TrophyFishRanks(val displayName: Component) {
+    NOVICE(displayName = Text.of("Novice") { withStyle(ChatFormatting.DARK_GRAY) }),
+    ADEPT(displayName = Text.of("Adept") { withStyle(ChatFormatting.GRAY) }),
+    EXPERT(displayName = Text.of("Expert") { withStyle(ChatFormatting.GOLD) }),
+    MASTER(displayName = Text.of("Master") { withStyle(ChatFormatting.AQUA) });
+
+    companion object {
+        fun getById(id: Int): TrophyFishRanks? {
+            return entries.firstOrNull { it.ordinal == id }
         }
     }
 }
@@ -372,7 +400,7 @@ enum class TrophyFishTypes(
 
     companion object {
         fun getByInternalName(internalName: String): TrophyFishTypes? {
-            return entries.firstOrNull { internalName.equals(internalName, ignoreCase = true) }
+            return entries.firstOrNull { internalName.equals(it.internalName, ignoreCase = true) }
         }
     }
 

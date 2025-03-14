@@ -1,9 +1,7 @@
 package tech.thatgravyboat.skyblockpv.utils
 
 import earth.terrarium.olympus.client.components.Widgets
-import net.minecraft.client.gui.layouts.LayoutElement
-import net.minecraft.client.gui.layouts.LinearLayout
-import net.minecraft.client.gui.layouts.SpacerElement
+import net.minecraft.client.gui.layouts.*
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -20,13 +18,29 @@ object LayoutBuild {
         builder.builder()
         return builder.build(spacing, alignment)
     }
+
+    fun frame(width: Int = 0, height: Int = 0, builder: FrameLayoutBuilder.() -> Unit): FrameLayout {
+        val builder = FrameLayoutBuilder(width, height)
+        builder.builder()
+        return builder.build()
+    }
 }
 
+data class LayoutElements(val element: LayoutElement, val settings: LayoutSettings.() -> Unit)
+
 abstract class LayoutBuilder {
-    protected val widgets = mutableListOf<LayoutElement>()
+    protected val widgets = mutableListOf<LayoutElements>()
+
+    private fun MutableList<LayoutElements>.add(element: LayoutElement) {
+        add(LayoutElements(element) {})
+    }
 
     fun widget(widget: LayoutElement) {
         widgets.add(widget)
+    }
+
+    fun widget(widget: LayoutElement, settings: LayoutSettings.() -> Unit) {
+        widgets.add(LayoutElements(widget, settings))
     }
 
     fun string(text: String) {
@@ -60,17 +74,26 @@ abstract class LayoutBuilder {
     abstract fun build(spacing: Int = 0, alignment: Float): LinearLayout
 
     companion object {
-        fun LinearLayout.setPos(x: Int, y: Int): LinearLayout {
+        fun Layout.setPos(x: Int, y: Int): Layout {
             this.setPosition(x, y)
             return this
         }
     }
 }
 
+class FrameLayoutBuilder(val width: Int, val height: Int) : LayoutBuilder() {
+    override fun build(spacing: Int): FrameLayout {
+        val layout = FrameLayout(width, height)
+        widgets.forEach { layout.addChild(it.element, it.settings) }
+        layout.arrangeElements()
+        return layout
+    }
+}
+
 class VerticalLayoutBuilder : LayoutBuilder() {
     override fun build(spacing: Int, alignment: Float): LinearLayout {
         val layout = LinearLayout.vertical().spacing(spacing)
-        widgets.forEach { layout.addChild(it, layout.newCellSettings().alignHorizontally(alignment)) }
+        widgets.forEach { layout.addChild(it.element, layout.newCellSettings().alignHorizontally(alignment)) }
         layout.arrangeElements()
         return layout
     }
@@ -79,7 +102,7 @@ class VerticalLayoutBuilder : LayoutBuilder() {
 class HorizontalLayoutBuilder : LayoutBuilder() {
     override fun build(spacing: Int, alignment: Float): LinearLayout {
         val layout = LinearLayout.horizontal().spacing(spacing)
-        widgets.forEach { layout.addChild(it, layout.newCellSettings().alignVertically(alignment)) }
+        widgets.forEach { layout.addChild(it.element, layout.newCellSettings().alignVertically(alignment)) }
         layout.arrangeElements()
         return layout
     }
