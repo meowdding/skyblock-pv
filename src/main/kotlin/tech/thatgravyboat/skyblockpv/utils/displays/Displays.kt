@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.ARGB
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.ItemStack
@@ -23,7 +24,6 @@ import org.joml.Vector3f
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.width
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -502,25 +502,38 @@ object Displays {
         }
     }
 
-    fun loading(width: Int = 50, height: Int = 50, loadingText: String = "Loading..."): Display {
+    fun loading(width: Int = 50, height: Int = 50, speed: Int = 4): Display {
+        val SIZE = 5
         return object : Display {
-            override fun getWidth() = width
-            override fun getHeight() = height
+            private var ticks = 0
+
+            override fun getWidth(): Int = width
+            override fun getHeight(): Int = height
+
             override fun render(graphics: GuiGraphics) {
-                val segments = 12
+                ticks++
+                ticks %= 360
 
                 graphics.pushPop {
-                    translate(width / 2, height / 2, 0)
-                    for (i in 0 until segments) {
-                        val angle = i * (360 / segments)
-                        val x = (width / 2 * 0.8) * cos(Math.toRadians(angle.toDouble()))
-                        val y = (height / 2 * 0.8) * sin(Math.toRadians(angle.toDouble()))
+
+                    val time = ticks * speed
+
+                    for (degree in 0 until 360 step 30) {
+
+                        val x = width / 2f + cos(Math.toRadians(degree.toDouble())) * width / 2.5f
+                        val y = height / 2f + sin(Math.toRadians(degree.toDouble())) * height / 2.5f
+
+                        val alpha = (sin(Math.toRadians(degree.toDouble() + time.toDouble() * -1)) * 128 + 128).toInt()
+
                         graphics.drawRoundedRec(
-                            x.toInt(), y.toInt(), 50, 50,
-                            0xFF000000.toInt(), radius = 5,
+                            x = (x - SIZE / 2f).toInt(),
+                            y = (y - SIZE / 2f).toInt(),
+                            width = SIZE.toInt(),
+                            height = SIZE.toInt(),
+                            backgroundColor = ARGB.color(255.coerceAtMost(alpha), 0x80FFFFFF.toInt()),
+                            radius = 60
                         )
                     }
-                    graphics.drawCenteredString(McFont.self, Text.of(loadingText), 0, height, TextColor.DARK_GRAY)
                 }
             }
         }

@@ -26,13 +26,15 @@ object Utils {
         backgroundColor: Int, borderColor: Int = backgroundColor,
         borderSize: Int = 0, radius: Int = 0,
     ) {
+        this.flush()
+
         val xOffset = this.pose().last().pose().m30()
         val yOffset = this.pose().last().pose().m31()
         pushPop {
             translate(-xOffset, -yOffset, 0f)
             RoundedRectShader.fill(
                 this@drawRoundedRec, (x + xOffset).toInt(), (y + yOffset).toInt(), width, height,
-                backgroundColor, borderColor, radius.toFloat(), borderSize,
+                backgroundColor, borderColor, width.coerceAtMost(height) * (radius / 100f), borderSize,
             )
         }
     }
