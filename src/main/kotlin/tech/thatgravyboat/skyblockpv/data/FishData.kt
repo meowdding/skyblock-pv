@@ -50,8 +50,8 @@ data class FishData(
 ) {
     companion object {
         fun fromJson(member: JsonObject, playerStats: JsonObject?, playerData: JsonObject?): FishData {
-            val itemsFished = playerStats?.getAsJsonObject("items_fished")
-            val leveling = member.getAsJsonObject("leveling") ?: null
+            val itemsFished = playerStats?.get("items_fished") as JsonObject?
+            val leveling = member.get("leveling") as JsonObject?
             val perks = playerData?.getAsJsonObject("perks")
             return FishData(
                 treasuresCaught = playerData?.get("fishing_treasure_caught").asInt(0),
@@ -87,7 +87,7 @@ data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
             return@lazy Component.empty().append(type.displayName)
         }
 
-        Component.empty().append(type.displayName).append(" ").append(tier.nameSuffix)
+        Text.join(type.displayName, " ", tier.nameSuffix)
     }
 
     val apiName by lazy {
@@ -112,6 +112,13 @@ data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
         }
     }
 }
+
+private fun toArmorSet(baseId: String) = listOf(
+    "${baseId}_HELMET",
+    "${baseId}_LEGGINGS",
+    "${baseId}_BOOTS",
+    "${baseId}_CHESTPLATE"
+)
 
 enum class FishingEquipment(vararg ids: String) {
 
@@ -146,70 +153,53 @@ enum class FishingEquipment(vararg ids: String) {
         "HELLFIRE_ROD",
     ),
     ARMOR(
-        "ANGLER_HELMET",
-        "ANGLER_LEGGINGS",
-        "ANGLER_BOOTS",
-        "ANGLER_CHESTPLATE",
+        *listOf(
+            "ANGLER",
+            "DIVER",
+            "SPONGE",
+            "SHARK_SCALE",
+            "THUNDER",
+            "MAGMA_LORD"
+        ).flatMap { toArmorSet(it) }.toTypedArray(),
         "SALMON_HELMET_NEW",
         "SALMON_LEGGINGS_NEW",
         "SALMON_CHESTPLATE_NEW",
         "SALMON_BOOTS_NEW",
-        "DIVER_BOOTS",
-        "DIVER_HELMET",
-        "DIVER_LEGGINGS",
-        "DIVER_CHESTPLATE",
-        "SPONGE_HELMET",
-        "SPONGE_BOOTS",
-        "SPONGE_LEGGINGS",
-        "SPONGE_CHESTPLATE",
-        "SHARK_SCALE_HELMET",
-        "SHARK_SCALE_BOOTS",
-        "SHARK_SCALE_LEGGINGS",
-        "SHARK_SCALE_CHESTPLATE",
         "SLUG_BOOTS",
         "FLAMING_CHESTPLATE",
         "TAURUS_HELMET",
         "MOOGMA_LEGGINGS",
-        "THUNDER_CHESTPLATE",
-        "THUNDER_HELMET",
-        "THUNDER_LEGGINGS",
-        "THUNDER_BOOTS",
-        "MAGMA_LORD_BOOTS",
-        "MAGMA_LORD_HELMET",
-        "MAGMA_LORD_CHESTPLATE",
-        "MAGMA_LORD_LEGGINGS",
     ),
     TROPHY_ARMOR(
-        "BRONZE_HUNTER_LEGGINGS",
-        "BRONZE_HUNTER_BOOTS",
-        "BRONZE_HUNTER_CHESTPLATE",
-        "BRONZE_HUNTER_HELMET",
-        "SILVER_HUNTER_HELMET",
-        "SILVER_HUNTER_LEGGINGS",
-        "SILVER_HUNTER_CHESTPLATE",
-        "SILVER_HUNTER_BOOTS",
-        "GOLD_HUNTER_LEGGINGS",
-        "GOLD_HUNTER_CHESTPLATE",
-        "GOLD_HUNTER_HELMET",
-        "GOLD_HUNTER_BOOTS",
-        "DIAMOND_HUNTER_LEGGINGS",
-        "DIAMOND_HUNTER_HELMET",
-        "DIAMOND_HUNTER_BOOTS",
-        "DIAMOND_HUNTER_CHESTPLATE",
+        *listOf(
+            "BRONZE_HUNTER",
+            "SILVER_HUNTER",
+            "GOLD_HUNTER",
+            "DIAMOND_HUNTER"
+        ).flatMap { toArmorSet(it) }.toTypedArray()
     ),
     BELTS(
         "ICHTHYIC_BELT",
         "FINWAVE_BELT",
         "GILLSPLASH_BELT",
+        "ANGLER_BELT",
+        "BACKWATER_BELT",
+        "SPONGE_BELT"
     ),
     CLOAKS(
         "ICHTHYIC_CLOAK",
         "FINWAVE_CLOAK",
         "GILLSPLASH_CLOAK",
         "CLOWNFISH_CLOAK",
+        "ANGLER_CLOAK",
+        "BACKWATER_CLOAK"
     ),
     NECKLACES(
         "THUNDERBOLT_NECKLACE",
+        "ANGLER_NECKLACE",
+        "BACKWATER_NECKLACE",
+        "PRISMARINE_NECKLACE",
+        "TERA_SHELL_NECKLACE"
     ),
     GLOVES(
         "MAGMA_LORD_GAUNTLET",
@@ -217,6 +207,9 @@ enum class FishingEquipment(vararg ids: String) {
         "FINWAVE_GLOVES",
         "GILLSPLASH_GLOVES",
         "LUMINOUS_BRACELET",
+        "BACKWATER_GLOVES",
+        "ANGLER_BRACELET",
+        "CLAY_BRACELET"
     );
 
     val list = ids.toList()

@@ -34,25 +34,7 @@ object ItemApi {
      */
     fun getItemsMatching(profile: SkyBlockProfile, predicate: ItemPredicate): List<ItemStack>? {
         val inventory = profile.inventory ?: return null
-
-        val mutableListOf = mutableListOf<ItemStack>()
-
-        fun add(list: List<ItemStack>?) = list?.let { mutableListOf.addAll(it.filter(predicate)) }
-
-        add(inventory.inventoryItems?.inventory)
-        add(inventory.armorItems?.inventory)
-        add(inventory.equipmentItems?.inventory)
-        add(inventory.enderChestPages?.flatMap { it.items.inventory })
-        add(inventory.backpacks?.flatMap { it.items.inventory })
-        add(inventory.potionBag?.inventory)
-        add(inventory.talismans?.flatMap { it.talismans.inventory })
-        add(inventory.fishingBag?.inventory)
-        add(inventory.sacks?.inventory)
-        add(inventory.quiver?.inventory)
-        add(inventory.personalVault?.inventory)
-        add(inventory.wardrobe?.armor?.armor?.inventory)
-
-        return mutableListOf
+        return inventory.getAllItems().filter(predicate)
     }
 
 }
