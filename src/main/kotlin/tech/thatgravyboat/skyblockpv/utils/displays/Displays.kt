@@ -24,6 +24,7 @@ import org.joml.Vector3f
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.width
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -505,18 +506,17 @@ object Displays {
     fun loading(width: Int = 50, height: Int = 50, speed: Int = 4): Display {
         val SIZE = 5
         return object : Display {
-            private var ticks = 0
+            private var ticks = 0L
 
             override fun getWidth(): Int = width
             override fun getHeight(): Int = height
 
             override fun render(graphics: GuiGraphics) {
                 ticks++
-                ticks %= 360
 
                 graphics.pushPop {
 
-                    val time = ticks * speed
+                    val time = (ticks % 360) * speed
 
                     for (degree in 0 until 360 step 30) {
 
@@ -530,9 +530,23 @@ object Displays {
                             y = (y - SIZE / 2f).toInt(),
                             width = SIZE.toInt(),
                             height = SIZE.toInt(),
-                            backgroundColor = ARGB.color(255.coerceAtMost(alpha), 0x80FFFFFF.toInt()),
-                            radius = 60
+                            backgroundColor = ARGB.color(255.coerceAtMost(alpha), 0x80000000.toInt()),
+                            radius = 60,
                         )
+
+                        if (ticks >= 20 * 10) { // 10 seconds
+                            fun string(text: String, offset: Int = 0) {
+                                val comp = Text.of(text)
+                                val textWidth = McFont.width(comp)
+                                graphics.drawString(McFont.self, comp, width / 2 - textWidth / 2, height + offset, TextColor.DARK_GRAY, false)
+                            }
+
+                            string("Is the API down?")
+                            string("Did data parsing fail?", 10)
+                            string("Or is the API Key expired?", 20)// todo: remove once perm api key
+                            string("Report this on the discord with your /logs/latest.log", 30)
+                            // todo: button to open logs folder
+                        }
                     }
                 }
             }
