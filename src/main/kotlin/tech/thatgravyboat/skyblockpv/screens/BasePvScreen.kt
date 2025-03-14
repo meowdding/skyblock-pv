@@ -33,7 +33,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
-import java.io.File
+import java.nio.file.Files
 import kotlin.time.Duration.Companion.seconds
 
 private const val ASPECT_RATIO = 9.0 / 16.0
@@ -191,12 +191,13 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     }
 
     private fun saveProfiles() {
-        val dir = File(McClient.self.gameDirectory, "config/skyblockpv/")
+        val file = FabricLoader.getInstance().configDir
+            .resolve("skyblockpv")
+            .resolve("profiles-${gameProfile.id}.json")
 
-        if (!dir.exists()) dir.mkdirs()
+        Files.createDirectories(file.parent)
+        Files.writeString(file, profiles.toString())
 
-        val file = File(dir, "profiles-${gameProfile.id}.json")
-        file.writeText(profiles.toString())
         Text.of("Profiles saved to .minecraft/config/skyblockpv/").send()
     }
 
