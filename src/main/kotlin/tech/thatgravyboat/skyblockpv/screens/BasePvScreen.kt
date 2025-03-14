@@ -12,12 +12,15 @@ import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
@@ -31,11 +34,13 @@ import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import java.io.File
+import kotlin.time.Duration.Companion.seconds
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
 abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var profile: SkyBlockProfile? = null) : BaseCursorScreen(CommonText.EMPTY) {
 
+    val starttime = System.currentTimeMillis()
     var profiles: List<SkyBlockProfile> = emptyList()
 
     val uiWidth get() = (this.width * 0.65).toInt()
@@ -53,20 +58,24 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
                 McClient.tell { rebuildWidgets() }
             }
         }
+
+        Scheduling.schedule(10.seconds) {
+            if (profile == null) {
+                McClient.tell { rebuildWidgets() }
+            }
+        }
     }
 
     abstract fun create(bg: DisplayWidget)
 
     override fun init() {
-        val screen = this@BasePvScreen
         val bg = Displays.background(UIConstants.BUTTON.enabled, uiWidth, uiHeight).asWidget()
-        val loading = Displays.loading().asWidget()
 
-        FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
-        FrameLayout.centerInRectangle(loading, 0, 0, screen.width, screen.height)
+        FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
+        bg.visitWidgets(this::addRenderableOnly)
 
-        bg.visitWidgets(screen::addRenderableOnly)
-        loading.visitWidgets(screen::addRenderableOnly)
+        addLoader()
+
 
         val profile = profile ?: return
         initedWithProfile = true
@@ -94,22 +103,20 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
                     widget(Widgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
                 }
             }
-            FrameLayout.centerInRectangle(errorWidget, 0, 0, screen.width, screen.height)
-            errorWidget.visitWidgets(screen::addRenderableWidget)
+            FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
+            errorWidget.visitWidgets(this::addRenderableWidget)
         }
 
         val tabs = createTabs().setPos(bg.x + bg.width - 9, bg.y + 5)
-        tabs.visitWidgets(screen::addRenderableWidget)
+        tabs.visitWidgets(this::addRenderableWidget)
 
         val username = createSearch(bg)
-        username.visitWidgets(screen::addRenderableWidget)
+        username.visitWidgets(this::addRenderableWidget)
         val dropdown = createProfileDropdown(bg)
-        dropdown.visitWidgets(screen::addRenderableWidget)
-
-        loading.visible = false
+        dropdown.visitWidgets(this::addRenderableWidget)
 
 
-        if (McClient.isDev /* || Config.devMode */) createDevRow(bg).visitWidgets(screen::addRenderableWidget)
+        if (McClient.isDev /* || Config.devMode */) createDevRow(bg).visitWidgets(this::addRenderableWidget)
 
 
         addRenderableOnly(
@@ -118,6 +125,38 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
                 .withSize(this.uiWidth, 20)
                 .withPosition(bg.x, bg.bottom + 2),
         )
+    }
+
+    private fun addLoader() {
+        if (this.profile != null) return
+
+        val loading = Displays.loading().asWidget()
+        FrameLayout.centerInRectangle(loading, 0, 0, this.width, this.height)
+
+        if (starttime + 8000 > System.currentTimeMillis()) return loading.visitWidgets(this::addRenderableOnly)
+
+        val errorWidget = LayoutBuild.vertical(alignment = 0.5f) {
+            widget(loading)
+            spacer(height = 20)
+
+            widget(Widgets.text("Is the API down?"))
+            widget(Widgets.text("Did data parsing fail?"))
+            widget(Widgets.text("Or is the API Key expired?"))
+            widget(Widgets.text("Report this on the discord with your /logs/latest.log"))
+
+            spacer(height = 20)
+
+            widget(Widgets.button()
+                .withRenderer(WidgetRenderers.text(Text.of("Open Logs")))
+                .withSize(100, 20)
+                .withCallback {
+                    Util.getPlatform().openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
+                }
+            )
+        }
+
+        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
+        errorWidget.visitWidgets(this::addRenderableWidget)
     }
 
     private fun createDevRow(bg: DisplayWidget) = LayoutBuild.horizontal(5) {
