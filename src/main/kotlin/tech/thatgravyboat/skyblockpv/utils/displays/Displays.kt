@@ -23,13 +23,17 @@ import org.joml.Vector3f
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.width
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.utils.Utils.drawRoundedRec
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
 import tech.thatgravyboat.skyblockpv.utils.Utils.translate
 import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.sin
 
 private const val NO_SPLIT = -1
 
@@ -493,6 +497,30 @@ object Displays {
 
                 if (isMouseOver(display, graphics)) {
                     ScreenUtils.setTooltip(component.splitLines())
+                }
+            }
+        }
+    }
+
+    fun loading(width: Int = 50, height: Int = 50, loadingText: String = "Loading..."): Display {
+        return object : Display {
+            override fun getWidth() = width
+            override fun getHeight() = height
+            override fun render(graphics: GuiGraphics) {
+                val segments = 12
+
+                graphics.pushPop {
+                    translate(width / 2, height / 2, 0)
+                    for (i in 0 until segments) {
+                        val angle = i * (360 / segments)
+                        val x = (width / 2 * 0.8) * cos(Math.toRadians(angle.toDouble()))
+                        val y = (height / 2 * 0.8) * sin(Math.toRadians(angle.toDouble()))
+                        graphics.drawRoundedRec(
+                            x.toInt(), y.toInt(), 50, 50,
+                            0xFF000000.toInt(), radius = 5,
+                        )
+                    }
+                    graphics.drawCenteredString(McFont.self, Text.of(loadingText), 0, height, TextColor.DARK_GRAY)
                 }
             }
         }

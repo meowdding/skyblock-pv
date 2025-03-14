@@ -60,11 +60,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     override fun init() {
         val screen = this@BasePvScreen
         val bg = Displays.background(UIConstants.BUTTON.enabled, uiWidth, uiHeight).asWidget()
-        val loading = Widgets.text("Loading...")
+        val loading = Displays.loading().asWidget()
 
         FrameLayout.centerInRectangle(bg, 0, 0, screen.width, screen.height)
-
-        loading.withCenterAlignment()
         FrameLayout.centerInRectangle(loading, 0, 0, screen.width, screen.height)
 
         bg.visitWidgets(screen::addRenderableOnly)

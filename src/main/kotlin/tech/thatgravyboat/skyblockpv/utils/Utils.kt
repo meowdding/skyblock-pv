@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.utils
 import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.vertex.PoseStack
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.shader.builtin.RoundedRectShader
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -19,6 +20,22 @@ object Utils {
 
     var isFetchingGameProfile = false
         private set
+
+    fun GuiGraphics.drawRoundedRec(
+        x: Int, y: Int, width: Int, height: Int,
+        backgroundColor: Int, borderColor: Int = backgroundColor,
+        borderSize: Int = 0, radius: Int = 0,
+    ) {
+        val xOffset = this.pose().last().pose().m30()
+        val yOffset = this.pose().last().pose().m31()
+        pushPop {
+            translate(-xOffset, -yOffset, 0f)
+            RoundedRectShader.fill(
+                this@drawRoundedRec, (x + xOffset).toInt(), (y + yOffset).toInt(), width, height,
+                backgroundColor, borderColor, radius.toFloat(), borderSize,
+            )
+        }
+    }
 
     fun PoseStack.translate(x: Int, y: Int, z: Int) {
         this.translate(x.toFloat(), y.toFloat(), z.toFloat())
