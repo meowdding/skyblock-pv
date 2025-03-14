@@ -9,16 +9,16 @@ import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
 object LayoutBuild {
-    fun vertical(spacing: Int = 0, builder: VerticalLayoutBuilder.() -> Unit): LinearLayout {
+    fun vertical(spacing: Int = 0, alignment: Float = 0f, builder: VerticalLayoutBuilder.() -> Unit): LinearLayout {
         val builder = VerticalLayoutBuilder()
         builder.builder()
-        return builder.build(spacing)
+        return builder.build(spacing, alignment)
     }
 
-    fun horizontal(spacing: Int = 0, builder: HorizontalLayoutBuilder.() -> Unit): LinearLayout {
+    fun horizontal(spacing: Int = 0, alignment: Float = 0f, builder: HorizontalLayoutBuilder.() -> Unit): LinearLayout {
         val builder = HorizontalLayoutBuilder()
         builder.builder()
-        return builder.build(spacing)
+        return builder.build(spacing, alignment)
     }
 }
 
@@ -45,19 +45,19 @@ abstract class LayoutBuilder {
         widgets.add(SpacerElement(width, height))
     }
 
-    fun vertical(spacing: Int = 0, builder: VerticalLayoutBuilder.() -> Unit) {
+    fun vertical(spacing: Int = 0, alignment: Float = 0f, builder: VerticalLayoutBuilder.() -> Unit) {
         val builder = VerticalLayoutBuilder()
         builder.builder()
-        widgets.add(builder.build(spacing))
+        widgets.add(builder.build(spacing, alignment))
     }
 
-    fun horizontal(spacing: Int = 0, builder: HorizontalLayoutBuilder.() -> Unit) {
+    fun horizontal(spacing: Int = 0, alignment: Float = 0f, builder: HorizontalLayoutBuilder.() -> Unit) {
         val builder = HorizontalLayoutBuilder()
         builder.builder()
-        widgets.add(builder.build(spacing))
+        widgets.add(builder.build(spacing, alignment))
     }
 
-    abstract fun build(spacing: Int = 0): LinearLayout
+    abstract fun build(spacing: Int = 0, alignment: Float): LinearLayout
 
     companion object {
         fun LinearLayout.setPos(x: Int, y: Int): LinearLayout {
@@ -68,18 +68,18 @@ abstract class LayoutBuilder {
 }
 
 class VerticalLayoutBuilder : LayoutBuilder() {
-    override fun build(spacing: Int): LinearLayout {
+    override fun build(spacing: Int, alignment: Float): LinearLayout {
         val layout = LinearLayout.vertical().spacing(spacing)
-        widgets.forEach { layout.addChild(it) }
+        widgets.forEach { layout.addChild(it, layout.newCellSettings().alignHorizontally(alignment)) }
         layout.arrangeElements()
         return layout
     }
 }
 
 class HorizontalLayoutBuilder : LayoutBuilder() {
-    override fun build(spacing: Int): LinearLayout {
+    override fun build(spacing: Int, alignment: Float): LinearLayout {
         val layout = LinearLayout.horizontal().spacing(spacing)
-        widgets.forEach { layout.addChild(it) }
+        widgets.forEach { layout.addChild(it, layout.newCellSettings().alignVertically(alignment)) }
         layout.arrangeElements()
         return layout
     }
