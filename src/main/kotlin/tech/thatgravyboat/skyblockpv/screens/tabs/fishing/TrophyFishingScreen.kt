@@ -7,8 +7,10 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemApi
@@ -17,12 +19,16 @@ import tech.thatgravyboat.skyblockpv.api.or
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
+
+private val SkyBlockRarity.displayname: String
+    get() = name.lowercase().replaceFirstChar { it.uppercase() }
 
 class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     BasePvScreen("Fishing", gameProfile, profile) {
@@ -42,6 +48,7 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
                 spacer(height = 5)
                 LayoutBuild.horizontal {
                     widget(getInfoWidget(profile))
+                    widget(getStatWidget(profile))
                     widget(getGearWidget(profile, 122))
                 }.let { widget(it) }
             }.let {
@@ -64,6 +71,109 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
                 alignVerticallyBottom()
             }
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
+    }
+
+    private fun getStatWidget(profile: SkyBlockProfile) = LayoutBuild.vertical {
+        addWidget(
+            "Stats",
+            LayoutBuild.vertical {
+                val sharksKilled = profile.miscFishData.festivalSharksKilled
+                display(
+                    Displays.text(
+                        text("Festival sharks killed: ") {
+
+                            append(
+                                text(sharksKilled.coerceAtMost(5000).toFormattedString()) {
+                                    if (sharksKilled > 5000) {
+                                        withStyle(ChatFormatting.GREEN)
+                                    } else if (sharksKilled >= 2500) {
+                                        withStyle(ChatFormatting.YELLOW)
+                                    } else if (sharksKilled > 0) {
+                                        withStyle(ChatFormatting.RED)
+                                    } else {
+                                        withStyle(ChatFormatting.DARK_RED)
+                                    }
+                                },
+                            )
+                            append("/")
+                            append(5000.toFormattedString())
+                        },
+                        shadow = false,
+                    ).withTooltip(
+                        whiteText {
+                            append(
+                                text("+1 Sbxp ") {
+                                    withStyle(ChatFormatting.AQUA)
+                                },
+                            )
+                            append("per 50 sharks killed!")
+                        },
+                        "",
+                        buildList {
+                            add(
+                                whiteText("Total sharks killed: ") {
+                                    append(sharksKilled.toFormattedString())
+                                },
+                            )
+                            whiteText {
+                                append("Total Progress: ")
+                                val progress = (sharksKilled / 5000.toFloat())
+                                append(
+                                    text("${(progress * 100).toFormattedString()}%") {
+                                        withStyle(ChatFormatting.DARK_AQUA)
+                                    },
+                                )
+                            }.also { if (sharksKilled < 5000) add(it) }
+                        },
+                    ),
+                )
+
+                display(
+                    Displays.text(
+                        text("Sea creatures killed: ") {
+                            append(profile.miscFishData.seaCreatureKills.toFormattedString())
+                        },
+                        shadow = false,
+                    ),
+                )
+
+                fun addStat(statName: String, amount: Int, config: Display.() -> Display = { this }) {
+                    display(
+                        Displays.text(
+                            text {
+                                append("$statName: ")
+                                append(amount.toFormattedString())
+                            },
+                            shadow = false,
+                        ).let(config),
+                    )
+                }
+
+                val itemsFished = profile.miscFishData.itemsFished
+
+                addStat("Total Catches", itemsFished.total)
+                addStat("Normal Catches", itemsFished.normal)
+                addStat("Treasures Found", itemsFished.treasure + itemsFished.largeTreasure)
+                addStat("Trophy Fishes Caught", profile.trophyFish.totalCatches) {
+                    withTooltip(
+                        profile.trophyFish.obtainedTypes.asSequence().mapNotNull {
+                            val fishTiers = TrophyFishTiers.entries.firstOrNull { tier ->
+                                it.key.endsWith(tier.name.lowercase())
+                            } ?: return@mapNotNull null
+                            return@mapNotNull fishTiers to it.value
+                        }.groupBy { it.first }.map { it.key to it.value.sumOf { it.second } }.sortedBy { it.first.ordinal }.map {
+                            whiteText("Total ") {
+                                append(text(it.first.displayName))
+                                append(" Caught: ")
+                                append("${it.second}")
+                            }
+                        }.toList(),
+
+                        )
+                }
+            },
+            padding = 30,
+        )
     }
 
     private fun getSmallTrophyTable(profile: SkyBlockProfile): LayoutElement {
@@ -233,25 +343,24 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
         return score
     }
 
-    private fun getInfoWidget(profile: SkyBlockProfile) = LayoutBuild.vertical {
-        fun addWidget(title: String, element: LayoutElement, padding: Int = 0) {
-            widget(getTitleWidget(title, element.width + padding))
-            widget(getMainContentWidget(element, element.width + padding))
-        }
+    private fun LayoutBuilder.addWidget(title: String, element: LayoutElement, padding: Int = 0) {
+        widget(getTitleWidget(title, element.width + padding))
+        widget(getMainContentWidget(element, element.width + padding))
+    }
 
+    private fun text(text: String = "", color: UInt = 0x555555u, init: MutableComponent.() -> Unit = {}): MutableComponent {
+        return Text.of(text) {
+            withColor(color.toInt())
+            init(this)
+        }
+    }
+
+    private fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
+
+    private fun getInfoWidget(profile: SkyBlockProfile) = LayoutBuild.vertical {
         addWidget(
             "Information",
             LayoutBuild.vertical {
-                fun text(text: String = "", init: MutableComponent.() -> Unit = {}): MutableComponent {
-                    return Text.of(text) {
-                        withColor(0x555555)
-                        init(this)
-                    }
-                }
-
-                fun grayText(text: Any) = display(Displays.text(text.toString(), color = { 0x555555u }, shadow = false))
-
-                // Todo add remaining info stuff
                 display(
                     Displays.text(
                         text {
@@ -260,10 +369,11 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
                                 return@text
                             }
 
-                            grayText("Trophy Fishes Caught: ${profile.trophyFish.totalCatches}")
-
-                            append(text("Last Catch: "))
-                            append(profile.trophyFish.lastCatch.displayName)
+                            append(
+                                text("Last Catch: ") {
+                                    append(profile.trophyFish.lastCatch.displayName)
+                                },
+                            )
                         },
                         shadow = false,
                     ),
@@ -285,12 +395,11 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
                     ),
                 )
 
-                fun addPerk(perkName: String, perkLevel: Int, maxLevel: Int) {
+                fun addPerk(perkName: String, perkLevel: Int, maxLevel: Int, config: Display.() -> Display = { this }) {
                     display(
                         Displays.text(
                             text {
                                 append("$perkName: ")
-
                                 append(
                                     text("$perkLevel") {
                                         if (perkLevel == maxLevel) {
@@ -298,31 +407,134 @@ class TrophyFishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
                                         } else {
                                             withStyle(ChatFormatting.RED)
                                         }
-                                    }
+                                    },
                                 )
                                 append("/$maxLevel")
                             },
-                            shadow = false
-                        )
+                            shadow = false,
+                        ).let(config),
                     )
                 }
 
-                addPerk("Drake Piper", profile.miscFishData.drakePiper, 1)
-                addPerk("Midas Lure", profile.miscFishData.midasLure, 10)
-                addPerk("Radiant Fisher", profile.miscFishData.radiantFisher, 10)
+                addPerk("Drake Piper", profile.miscFishData.drakePiper, 1) {
+                    withTooltip(
+                        whiteText("Can be upgraded at the ") {
+                            append(text("Ice Essence Shop") { withStyle(ChatFormatting.LIGHT_PURPLE) })
+                        },
+                        whiteText("on ") {
+                            append(whiteText("Jerry's Workshop") { withStyle(ChatFormatting.RED) })
+                        },
+                        "",
+                        whiteText("Increase the chance to spawn a ") {
+                            append(whiteText("Reindrake") { withStyle(ChatFormatting.GOLD) })
+                        },
+                        whiteText("by ") {
+                            append(text("10%") { withStyle(ChatFormatting.GREEN) })
+                            append(" while on ")
+                            append(text("Jerry's Workshop") { withStyle(ChatFormatting.RED) })
+                            append(".")
+                        },
+                    )
+                }
+                addPerk("Midas Lure", profile.miscFishData.midasLure, 10) {
+                    withTooltip(
+                        whiteText("Can be upgraded at the ") {
+                            append(text("Gold Essence Shop") { withStyle(ChatFormatting.LIGHT_PURPLE) })
+                        },
+                        whiteText("in the ") {
+                            append(text("Royal Mines") { withStyle(ChatFormatting.GOLD) })
+                            append(" in the ")
+                            append(text("Dwarven Mines") { withStyle(ChatFormatting.DARK_GREEN) })
+                        },
+                        "",
+                        whiteText("Increases your chances of fishing up a ") {
+                        },
+                        whiteText {
+                            append(text("Gold Trophy Fish") { withStyle(ChatFormatting.GOLD) })
+                            append(" in the ")
+                            append(text("Crimson Isle") { withStyle(ChatFormatting.RED) })
+                            append(" by ")
+                            append(text("2-20%") { withStyle(ChatFormatting.GREEN) })
+                            append(".")
+                        },
+                    )
+                }
+                addPerk("Radiant Fisher", profile.miscFishData.radiantFisher, 10) {
+                    withTooltip(
+                        whiteText("Can be upgraded at the ") {
+                            append(text("Diamond Essence Shop") { withStyle(ChatFormatting.LIGHT_PURPLE) })
+                        },
+                        whiteText("in the ") {
+                            append(text("Crystal Nucleus") { withStyle(ChatFormatting.DARK_PURPLE) })
+                            append(" in the ")
+                            append(text("Crystal Hollows") { withStyle(ChatFormatting.DARK_PURPLE) })
+                        },
+                        "",
+                        whiteText("Increases your chances of fishing up a ") {
+                        },
+                        whiteText {
+                            append(text("Diamond Trophy Fish") { withStyle(ChatFormatting.AQUA) })
+                            append(" in the ")
+                            append(text("Crimson Isle") { withStyle(ChatFormatting.RED) })
+                            append(" by ")
+                            append(text("2-20%") { withStyle(ChatFormatting.GREEN) })
+                            append(".")
+                        },
+                    )
+                }
 
-                display(Displays.text(text("Dolphin Pet: ") {
-                    val dolphin = DolphinBrackets.getByKills(profile.miscFishData.seaCreatureKills)
+                val seaCreatureKills = profile.miscFishData.seaCreatureKills
+                display(
+                    Displays.text(
+                        text("Dolphin Pet: ") {
+                            val dolphin = DolphinBrackets.getByKills(seaCreatureKills)
 
-                    if (dolphin == null) {
-                        append(text("None") { withStyle(ChatFormatting.RED) })
-                        return@text
-                    }
+                            if (dolphin == null) {
+                                append(text("None") { withStyle(ChatFormatting.RED) })
+                                return@text
+                            }
 
-                    append(text(dolphin.rarity.name.lowercase().replaceFirstChar { it.uppercase() }) {
-                        withColor(dolphin.rarity.color)
-                    })
-                }, shadow = false))
+                            append(
+                                text(dolphin.rarity.displayname) {
+                                    withColor(dolphin.rarity.color)
+                                },
+                            )
+                        },
+                        shadow = false,
+                    ).withTooltip(
+                        whiteText("Sea Creatures Killed: ") {
+                            append(
+                                text(DecimalFormat.getIntegerInstance().format(seaCreatureKills)) {
+                                    withStyle(ChatFormatting.AQUA)
+                                },
+                            )
+                        },
+                        "",
+                        DolphinBrackets.entries.map {
+                            whiteText {
+                                val hasObtained = it.killsRequired <= seaCreatureKills
+                                if (!hasObtained) {
+                                    withStyle(ChatFormatting.STRIKETHROUGH)
+                                    withStyle(ChatFormatting.DARK_GRAY)
+                                }
+                                append(
+                                    text(DecimalFormat.getIntegerInstance().format(it.killsRequired)) {
+                                        withStyle(if (hasObtained) ChatFormatting.AQUA else ChatFormatting.RED)
+                                    },
+                                )
+                                append(" for a" + (if (it.rarity == SkyBlockRarity.UNCOMMON || it.rarity == SkyBlockRarity.EPIC) "n" else "") + " ")
+                                append(
+                                    text("${it.rarity.displayname} Dolphin") {
+                                        if (hasObtained) {
+                                            withColor((it.rarity.color))
+                                        }
+                                    },
+                                )
+                                append("!")
+                            }
+                        },
+                    ),
+                )
             },
             padding = 30,
         )

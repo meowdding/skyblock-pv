@@ -129,7 +129,7 @@ data class SkyBlockProfile(
                             TrophyFish.fromString(it)
                         },
                         totalCatches = trophyFishData.remove("total_caught").asInt(0),
-                        rewards = trophyFishData.remove("rewards").asJsonArray.map { it.asInt(0) }.filterNot { it == 0 },
+                        rewards = trophyFishData.remove("rewards")?.asJsonArray?.map { it.asInt(0) }?.filterNot { it == 0 }?: emptyList(),
                     )
                 },
                 miscFishData = run {

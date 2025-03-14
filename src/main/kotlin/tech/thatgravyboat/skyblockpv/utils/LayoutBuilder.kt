@@ -71,7 +71,7 @@ abstract class LayoutBuilder {
         widgets.add(builder.build(spacing, alignment))
     }
 
-    abstract fun build(spacing: Int = 0, alignment: Float): LinearLayout
+    abstract fun build(spacing: Int = 0, alignment: Float = 0.0f): Layout
 
     companion object {
         fun Layout.setPos(x: Int, y: Int): Layout {
@@ -82,7 +82,7 @@ abstract class LayoutBuilder {
 }
 
 class FrameLayoutBuilder(val width: Int, val height: Int) : LayoutBuilder() {
-    override fun build(spacing: Int): FrameLayout {
+    override fun build(spacing: Int, alignment: Float): FrameLayout {
         val layout = FrameLayout(width, height)
         widgets.forEach { layout.addChild(it.element, it.settings) }
         layout.arrangeElements()
@@ -93,7 +93,7 @@ class FrameLayoutBuilder(val width: Int, val height: Int) : LayoutBuilder() {
 class VerticalLayoutBuilder : LayoutBuilder() {
     override fun build(spacing: Int, alignment: Float): LinearLayout {
         val layout = LinearLayout.vertical().spacing(spacing)
-        widgets.forEach { layout.addChild(it.element, layout.newCellSettings().alignHorizontally(alignment)) }
+        widgets.forEach { layout.addChild(it.element, layout.newCellSettings().alignHorizontally(alignment).apply(it.settings)) }
         layout.arrangeElements()
         return layout
     }
@@ -102,7 +102,7 @@ class VerticalLayoutBuilder : LayoutBuilder() {
 class HorizontalLayoutBuilder : LayoutBuilder() {
     override fun build(spacing: Int, alignment: Float): LinearLayout {
         val layout = LinearLayout.horizontal().spacing(spacing)
-        widgets.forEach { layout.addChild(it.element, layout.newCellSettings().alignVertically(alignment)) }
+        widgets.forEach { layout.addChild(it.element, layout.newCellSettings().alignVertically(alignment).apply(it.settings)) }
         layout.arrangeElements()
         return layout
     }
