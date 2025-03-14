@@ -68,13 +68,34 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         bg.visitWidgets(screen::addRenderableOnly)
         loading.visitWidgets(screen::addRenderableOnly)
 
-        if (profile == null) return
+        val profile = profile ?: return
         initedWithProfile = true
 
         try {
             create(bg)
         } catch (e: Exception) {
-            Text.of("An error occurred while rendering the screen: ${e.message}").send()
+            e.printStackTrace()
+
+            val errorWidget = LayoutBuild.vertical {
+                val text = mutableListOf(
+                    "Failed building screen $name",
+                    "Report this in the discord",
+                    "",
+                    "User: ${gameProfile.name} - ${gameProfile.id}",
+                    "Profile: ${profile.id.name}",
+                    "",
+                    "Exception: ${e.message}",
+                    "Stacktrace:",
+                )
+
+                text += e.stackTrace.take(7).map { it.toString().replace("knot//tech.thatgravyboat.skyblockpv", "PV") }
+
+                text.forEach {
+                    widget(Widgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
+                }
+            }
+            FrameLayout.centerInRectangle(errorWidget, 0, 0, screen.width, screen.height)
+            errorWidget.visitWidgets(screen::addRenderableWidget)
         }
 
         val tabs = createTabs().setPos(bg.x + bg.width - 9, bg.y + 5)
