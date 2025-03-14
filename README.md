@@ -39,6 +39,11 @@ Switch between EnderChest, Backpack, ... pages using the custom build Carousel o
 
 <img src="./.github/images/collection.png" width="720" alt="" title="Collections">
 
+### 🎣 Fishing Tab
+
+<img src="./.github/images/fishing.png" width="720" alt="" title="Fishing">
+All fishing related information, so Essence Upgrades, Trophy Fish, Gear, Stats, ... in one beautiful tab.
+
 ### 🔍 And many more tabs...
 
 ...we just didn't put them in the ReadMe. Look at them when pv'ing yourself or someone else!

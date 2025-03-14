@@ -24,7 +24,7 @@ import kotlin.time.toDuration
 
 
 // TODO:
-//  add forge
+//  rock pet
 //  separate page for hotm tree (@Sophie you promised :3)
 
 class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MINING", gameProfile, profile) {

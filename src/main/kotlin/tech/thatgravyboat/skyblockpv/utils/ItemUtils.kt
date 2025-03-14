@@ -8,6 +8,7 @@ import com.mojang.serialization.Dynamic
 import net.azureaaron.legacyitemdfu.LegacyItemStackFixer
 import net.azureaaron.legacyitemdfu.TypeReferences
 import net.minecraft.core.component.DataComponents
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
@@ -41,7 +42,17 @@ fun Tag.legacyStack(): ItemStack {
         TypeReferences.LEGACY_ITEM_STACK, Dynamic<Tag>(ops, this),
         LegacyItemStackFixer.getFirstVersion(),
         LegacyItemStackFixer.getLatestVersion(),
-    )
+    ).map {
+        // move data out of extra attributes so it's equal to the modern hypixel format
+        if (it is CompoundTag) {
+            val customData = it.getCompound("components").getCompound("minecraft:custom_data")
+            val extraAttributes = customData?.getCompound("ExtraAttributes")
+            extraAttributes?.allKeys?.associate { it to extraAttributes.get(it) }?.filterValues { it != null }?.forEach { (key, tag) ->
+                customData.put(key, tag!!) // can't be null because of previous filter
+            }
+        }
+        return@map it
+    }
     val stack = ItemStack.CODEC.parse<Tag>(fixed)
         .setPartial(ItemStack.EMPTY)
         .resultOrPartial()

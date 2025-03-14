@@ -10,6 +10,7 @@ import tech.thatgravyboat.skyblockpv.screens.tabs.MainScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.MiningScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.combat.BaseCombatScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.combat.DungeonScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.FishingScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.InventoryScreen
 import tech.thatgravyboat.skyblockpv.utils.createSkull
@@ -26,6 +27,7 @@ enum class PvTabs(
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
     COLLECTION(CollectionScreen::class, Items.ITEM_FRAME.defaultInstance),
     MINING(MiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
+    FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(
