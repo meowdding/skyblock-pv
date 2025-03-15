@@ -191,7 +191,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 widget
             }.toList()
 
-            val elementsPerRow = width / (convertedElements.first().width + 10)
+            val elementsPerRow = width / (convertedElements.firstOrNull()?.width?.plus(10) ?: return)
             if (elementsPerRow < 1) return
 
             convertedElements.chunked(elementsPerRow).forEach { chunk ->
@@ -228,9 +228,11 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         spacer(height = 10)
 
+        val essence = profile.currency.essence.asSequence().map { it.toPair() }
+        if (essence.sumOf { it.second } == 0L) return@vertical
         addSection<Long>(
             "Essence",
-            profile.currency.essence.asSequence().map { it.toPair() },
+            essence,
             { a, b -> null },
             {
                 when (it) {
@@ -242,8 +244,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     "DIAMOND" -> SkullTextures.DIAMOND_ESSENCE
                     "ICE" -> SkullTextures.ICE_ESSENCE
                     "CRIMSON" -> SkullTextures.CRIMSON_ESSENCE
-                    else -> error("Invalid essence type")
-                }.createSkull()
+                    else -> null
+                }?.createSkull() ?: ItemStack.EMPTY
             },
         ) { _, amount -> amount.shorten() }
     }
