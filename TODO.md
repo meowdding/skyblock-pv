@@ -14,7 +14,6 @@ TODO:
 
 - [ ] Guild
 - [ ] Auctions
-- [ ] Ores Mined, sea creature killed, items fished etc.
 
 </details>
 
@@ -47,6 +46,8 @@ TODO:
 <summary>Mining</summary>
 
 - [ ] HOTM tree
+- [ ] Ores Mined
+- [ ] mining essence shops
 
 </details>
 
