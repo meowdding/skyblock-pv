@@ -4,10 +4,12 @@ import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.vertex.PoseStack
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.shader.builtin.RoundedRectShader
+import kotlinx.coroutines.runBlocking
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.world.level.block.entity.SkullBlockEntity
+import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -160,5 +162,14 @@ object Utils {
         return filteredUnits.joinToString(", ") { (unit, value) ->
             "$value${unitNames[unit]}"
         }.ifEmpty { "0 seconds" }
+    }
+
+    inline fun <reified T : Any> loadFromRepo(file: String) = runBlocking {
+        try {
+            this.javaClass.getResourceAsStream("/repo/$file.json")?.readJson<T>() ?: return@runBlocking null
+        } catch (e: Exception) {
+            println(e)
+            null
+        }
     }
 }
