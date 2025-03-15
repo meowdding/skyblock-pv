@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.data
 
-import kotlinx.coroutines.runBlocking
-import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
+import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object ForgeTimeData {
     var forgeTimes: Map<String, Long> = emptyMap()
@@ -30,16 +29,8 @@ object ForgeTimeData {
         20 to 0.7,
     )
 
-
     init {
-        runBlocking {
-            try {
-                forgeTimes = this.javaClass.getResourceAsStream("/repo/forge_times.json")?.readJson<Map<String, Long>>() ?: return@runBlocking
-                println(forgeTimes)
-            } catch (e: Exception) {
-                println(e)
-            }
-        }
+        forgeTimes = Utils.loadFromRepo<Map<String, Long>>("forge_times") ?: emptyMap()
     }
 
     fun getForgeTime(id: String, quickForgeLevel: Int = 0) = (forgeTimes[id] ?: 0L) * (quickForgeMultiplier[quickForgeLevel] ?: 1.0)

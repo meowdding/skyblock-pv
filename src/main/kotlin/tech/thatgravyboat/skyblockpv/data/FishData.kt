@@ -1,13 +1,12 @@
 package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonObject
-import kotlinx.coroutines.runBlocking
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.asInt
 import tech.thatgravyboat.skyblockpv.utils.asString
 import tech.thatgravyboat.skyblockpv.utils.createSkull
@@ -379,19 +378,13 @@ enum class TrophyFishTypes(
 
     companion object {
         init {
-            runBlocking {
-                try {
-                    val textures = this.javaClass.getResourceAsStream("/repo/trophy_fish_skins.json")
-                        ?.readJson<Map<String, Map<String, String>>>() ?: return@runBlocking
-                    textures.entries.forEach { (key, tiers) ->
-                        val type = TrophyFishTypes.valueOf(key.uppercase())
+            val textures = Utils.loadFromRepo<Map<String, Map<String, String>>>("trophy_fish_skins") ?: emptyMap()
 
-                        tiers.entries.forEach { (tier, skin) ->
-                            type.setTexture(TrophyFishTiers.valueOf(tier.uppercase()), skin)
-                        }
-                    }
-                } catch (e: Exception) {
-                    println(e)
+            textures.entries.forEach { (key, tiers) ->
+                val type = TrophyFishTypes.valueOf(key.uppercase())
+
+                tiers.entries.forEach { (tier, skin) ->
+                    type.setTexture(TrophyFishTiers.valueOf(tier.uppercase()), skin)
                 }
             }
         }

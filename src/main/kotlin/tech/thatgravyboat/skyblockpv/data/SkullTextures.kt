@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.data
 
-import kotlinx.coroutines.runBlocking
-import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
+import tech.thatgravyboat.skyblockpv.utils.Utils
 
 enum class SkullTextures(var texture: String = "") {
     WITHER_ESSENCE,
@@ -22,15 +21,8 @@ enum class SkullTextures(var texture: String = "") {
 
     companion object {
         init {
-            // todo: utils method to load this stuff
-            runBlocking {
-                try {
-                    val textures = this.javaClass.getResourceAsStream("/repo/skull_textures.json")?.readJson<Map<String, String>>() ?: return@runBlocking
-                    textures.entries.forEach { (key, texture) -> valueOf(key.uppercase()).texture = texture }
-                } catch (e: Exception) {
-                    println(e)
-                }
-            }
+            val textures = Utils.loadFromRepo<Map<String, String>>("skull_textures") ?: emptyMap()
+            textures.entries.forEach { (key, texture) -> valueOf(key.uppercase()).texture = texture }
         }
     }
 }
