@@ -3,8 +3,7 @@ package tech.thatgravyboat.skyblockpv.data
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object ForgeTimeData {
-    var forgeTimes: Map<String, Long> = emptyMap()
-        private set
+    val forgeTimes: Map<String, Long> = Utils.loadFromRepo<Map<String, Long>>("forge_times") ?: emptyMap()
 
     private val quickForgeMultiplier = mapOf(
         1 to 0.895,
@@ -28,10 +27,6 @@ object ForgeTimeData {
         19 to 0.805,
         20 to 0.7,
     )
-
-    init {
-        forgeTimes = Utils.loadFromRepo<Map<String, Long>>("forge_times") ?: emptyMap()
-    }
 
     fun getForgeTime(id: String, quickForgeLevel: Int = 0) = (forgeTimes[id] ?: 0L) * (quickForgeMultiplier[quickForgeLevel] ?: 1.0)
 }
