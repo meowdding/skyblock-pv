@@ -4,10 +4,14 @@
     "package": "tech.thatgravyboat.skyblockpv.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
+        "I18nAccessor",
         "compat.ProfileViewerScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1
     },
-    "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin"
+    "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin",
+    "mixins": [
+        "LanguageMixin"
+    ]
 }
