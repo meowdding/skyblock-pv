@@ -1,0 +1,12 @@
+{
+    "type": "perk",
+    "id": "metal_head",
+    "max_level": 20,
+    "powder_type": "GLACITE",
+    "cost_formula": "floor((nextLevel + 1)^4)",
+    "reward_formula": "level * 5",
+    "name": "Metal Head",
+    "tooltip": [
+        "<gray>Grants <gold>+%reward%☘ Dwarven Metal Fortune<gr"
+    ]
+}

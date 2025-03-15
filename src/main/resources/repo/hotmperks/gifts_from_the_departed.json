@@ -1,0 +1,13 @@
+{
+    "type": "perk",
+    "id": "gifts_from_the_departed",
+    "max_level": 100,
+    "powder_type": "GLACITE",
+    "cost_formula": "floor((nextLevel + 1)^2.45)",
+    "reward_formula": "level * 0.2",
+    "name": "Gifts from the Departed",
+    "tooltip": [
+        "<gray>Gain a <green>%reward%% <gray>chance to get an extra",
+        "<gray>item when looting a <aqua>Frozen Corpse<gray>."
+    ]
+}
