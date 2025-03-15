@@ -43,15 +43,11 @@ data class FishData(
     val festivalSharksKilled: Int,
     val itemsFished: ItemsFished,
     val seaCreatureKills: Int,
-    val drakePiper: Int,
-    val midasLure: Int,
-    val radiantFisher: Int,
 ) {
     companion object {
         fun fromJson(member: JsonObject, playerStats: JsonObject?, playerData: JsonObject?): FishData {
             val itemsFished = playerStats?.get("items_fished") as JsonObject?
             val leveling = member.get("leveling") as JsonObject?
-            val perks = playerData?.getAsJsonObject("perks")
             return FishData(
                 treasuresCaught = playerData?.get("fishing_treasure_caught").asInt(0),
                 festivalSharksKilled = leveling?.get("fishing_festival_sharks_killed").asInt(0),
@@ -63,9 +59,6 @@ data class FishData(
                     trophyFish = itemsFished?.get("trophy_fish").asInt(0),
                 ),
                 seaCreatureKills = playerStats?.get("sea_creature_kills").asInt(0),
-                drakePiper = perks?.get("drake_piper").asInt(0),
-                midasLure = perks?.get("midas_lure").asInt(0),
-                radiantFisher = perks?.get("radiant_fisher").asInt(0),
             )
         }
     }

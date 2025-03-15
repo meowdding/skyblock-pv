@@ -14,5 +14,5 @@ data class RepoEssencePerk(
 
 object EssenceData {
     val repoEssenceData = Utils.loadFromRepo<RepoEssenceData>("essence_perks") ?: RepoEssenceData(emptyMap())
-    val allPerks = repoEssenceData.shops.values.toList()
+    val allPerks = repoEssenceData.shops.flatMap { it.value.entries }.associate { it.key to it.value }
 }

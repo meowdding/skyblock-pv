@@ -183,12 +183,17 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             val rank = TrophyFishRanks.getById((profile.trophyFish.rewards.maxOrNull() ?: 0) - 1)
 
-            string(Text.join(
-                Text.of("Trophy Rank: ") { this.color = TextColor.DARK_GRAY },
-                rank?.displayName ?: Text.of("None") { this.color = TextColor.RED }
-            ))
+            string(
+                Text.join(
+                    Text.of("Trophy Rank: ") { this.color = TextColor.DARK_GRAY },
+                    rank?.displayName ?: Text.of("None") { this.color = TextColor.RED }
+                ),
+            )
 
-            fun addPerk(id: String, perkLevel: Int, maxLevel: Int) {
+            fun addPerk(id: String) {
+                val perkLevel = profile.essenceUpgrades[id] ?: 0
+                val maxLevel = EssenceData.allPerks.entries.find { it.key == id }?.value?.maxLevel ?: 0
+
                 val display = Displays.text(
                     Text.join(
                         Text.translatable("gui.skyblockpv.tab.fishing.information.$id.title"),
@@ -202,9 +207,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 display(display.withTranslatedTooltip("gui.skyblockpv.tab.fishing.information.$id.desc"))
             }
 
-            addPerk("drake_piper", profile.miscFishData.drakePiper, 1)
-            addPerk("midas_lure", profile.miscFishData.midasLure, 10)
-            addPerk("radiant_fisher", profile.miscFishData.radiantFisher, 10)
+            addPerk("drake_piper")
+            addPerk("midas_lure")
+            addPerk("radiant_fisher")
 
             val seaCreatureKills = profile.miscFishData.seaCreatureKills
             val dolphin = DolphinBrackets.getByKills(seaCreatureKills)
