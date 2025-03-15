@@ -1,0 +1,13 @@
+{
+    "type": "perk",
+    "id": "steady_hand",
+    "max_level": 100,
+    "powder_type": "GLACITE",
+    "cost_formula": "floor((nextLevel + 1)^2.6)",
+    "reward_formula": "level * 0.1",
+    "name": "Steady Hand",
+    "tooltip": [
+        "<gray>Grants <yellow>+%reward%▚ Gemstone Spread <gray>while",
+        "in the <aqua>Glacite Mineshafts<gray>."
+    ]
+}
