@@ -1,0 +1,17 @@
+{
+    "type": "perk",
+    "id": "subterranean_fisher",
+    "max_level": 40,
+    "powder_type": "GEMSTONE",
+    "cost_formula": "floor((nextLevel + 1)^3.07)",
+    "rewards": {
+        "fishing_speed": "5 + (level * 0.5)",
+        "sea_creature_chance": "1 + (level*0.1)"
+    },
+    "name": "Subterranean Fisher",
+    "tooltip": [
+        "<gray>Grants <aqua>+%fishing_speed% ☂ Fishing Speed and",
+        "<dark_aqua>+%sea_creature_chance% α Sea Creature Chance <gray>while on",
+        "<aqua>Mining Islands<gray>."
+    ]
+}

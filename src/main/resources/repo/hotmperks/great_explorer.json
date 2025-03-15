@@ -1,0 +1,18 @@
+{
+    "type": "perk",
+    "id": "great_explorer",
+    "max_level": 20,
+    "powder_type": "GEMSTONE",
+    "cost_formula": "floor((nextLevel + 1)^4)",
+    "rewards": {
+        "chance": "20 + (4 * (level - 1))",
+        "locks_removed": "1 + (level/5)"
+    },
+    "name": "Great Explorer",
+    "tooltip": [
+        "<gray>Boosts the chance to find treasure",
+        "<gray>chests while mining in the <purple>Crystal",
+        "<purple>Hollows <gray>by <green>+%chance%% <gray>and reduces the",
+        "<gray>amount of locks on the chest by <green>%locks_removed%<gray>."
+    ]
+}

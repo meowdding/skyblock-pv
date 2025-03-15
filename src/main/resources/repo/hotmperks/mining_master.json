@@ -1,0 +1,12 @@
+{
+    "type": "perk",
+    "id": "mining_master",
+    "max_level": 10,
+    "powder_type": "GLACITE",
+    "cost_formula": "floor((nextLevel + 7)^5)",
+    "reward_formula": "level * 0.1",
+    "name": "Mining Master",
+    "tooltip": [
+        "<gray>Grants <purple>+%reward%✧ Pristine<gray>."
+    ]
+}
