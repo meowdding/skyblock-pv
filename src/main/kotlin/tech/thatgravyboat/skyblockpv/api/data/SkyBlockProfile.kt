@@ -107,8 +107,8 @@ data class SkyBlockProfile(
                 pets = member.getAsJsonObject("pets_data").getAsJsonArray("pets").map {
                     val obj = it.asJsonObject
                     Pet(
-                        uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString,
-                        uniqueId = obj["uuid"]?.takeIf { it !is JsonNull }?.asString,
+                        uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },
+                        uniqueId = obj["uuid"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },
                         type = obj["type"].asString,
                         exp = obj["exp"]?.asLong(0) ?: 0,
                         active = obj["active"].asBoolean(false),
