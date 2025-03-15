@@ -275,7 +275,7 @@ data class SkyBlockProfile(
             val perks = this?.asMap { id, amount -> id to amount.asInt(0) } ?: emptyMap()
 
             // perks that are unlocked but not in the repo:
-            val unknownPerks = perks.keys - EssenceData.allPerks.map { it.keys }.flatten()
+            val unknownPerks = perks.keys - EssenceData.allPerks.keys
 
             if (unknownPerks.isNotEmpty()) {
                 println("Unknown essence perks: $unknownPerks")
