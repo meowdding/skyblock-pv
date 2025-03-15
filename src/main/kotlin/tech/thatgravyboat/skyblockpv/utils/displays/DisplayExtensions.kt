@@ -1,9 +1,11 @@
 package tech.thatgravyboat.skyblockpv.utils.displays
 
+import eu.pb4.placeholders.api.ParserContext
+import eu.pb4.placeholders.api.parsers.TagParser
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-
+import tech.thatgravyboat.skyblockpv.mixin.I18nAccessor
 
 fun List<Any>.toColumn(spacing: Int = 0, alignment: Alignment = Alignment.START): Display {
     return Displays.column(
@@ -69,3 +71,12 @@ fun Display.withBackground(color: UInt): Display = Displays.background(color, th
 fun Display.asWidget(): DisplayWidget = DisplayWidget(this)
 
 fun Display.withTooltip(vararg tooltip: Any?): Display = Displays.tooltip(this, Text.multiline(*tooltip))
+fun Display.withTranslatedTooltip(key: String, vararg args: Any?): Display {
+    var raw = I18nAccessor.getLanguage().getOrDefault(key)
+    args.forEachIndexed { index, any ->
+        raw = raw.replace("<$index>", any.toString())
+    }
+
+    val text = TagParser.QUICK_TEXT_SAFE.parseText(raw, ParserContext.of())
+    return Displays.tooltip(this, text)
+}

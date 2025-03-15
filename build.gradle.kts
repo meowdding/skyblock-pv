@@ -45,6 +45,7 @@ repositories {
     maven(url = "https://api.modrinth.com/maven")
     maven(url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
     maven(url = "https://maven.azureaaron.net/releases")
+    maven(url = "https://maven.nucleoid.xyz")
     mavenCentral()
     mavenLocal()
 }
@@ -67,6 +68,7 @@ dependencies {
     modImplementation(libs.olympus)
     modImplementation(libs.legacydfu)
     modImplementation(libs.mixinconstraints)
+    modImplementation(libs.placeholders)
 
     include(libs.hypixelapi)
     include(libs.skyblockapi)
@@ -76,6 +78,7 @@ dependencies {
     include(libs.olympus)
     include(libs.legacydfu)
     include(libs.mixinconstraints)
+    include(libs.placeholders)
 
     modRuntimeOnly(libs.devauth)
     modRuntimeOnly(libs.modmenu)

@@ -1,8 +1,43 @@
 {
+    "@metadata": {
+        "allowArrays": true
+    },
+
     "skyblockpv.tab.main": "General",
     "skyblockpv.tab.combat": "Combat",
     "skyblockpv.tab.collection": "Collections",
     "skyblockpv.tab.mining": "Mining",
     "skyblockpv.tab.inventory": "Inventory",
-    "skyblockpv.tab.fishing": "Fishing"
+    "skyblockpv.tab.fishing": "Fishing",
+
+
+    "//comment/fishing": "",
+
+    "gui.skyblockpv.tab.fishing.information.drake_piper.title": "Drake Piper",
+    "gui.skyblockpv.tab.fishing.information.drake_piper.desc": [
+        "<white>Can be upgraded at the <light_purple>Ice Essence Shop</light_purple></white>",
+        "<white>on <red>Jerry's Workshop</red></white>",
+        "",
+        "<white>Increase the chance to spawn a <gold>Reindrake</gold></white>",
+        "<white>by <green>10%</green> while on <red>Jerry's Workshop</red>.</white>"
+    ],
+
+
+    "gui.skyblockpv.tab.fishing.information.midas_lure.title": "Midas Lure",
+    "gui.skyblockpv.tab.fishing.information.midas_lure.desc": [
+        "<white>Can be upgraded at the <light_purple>Gold Essence Shop</light_purple></white>",
+        "<white>in the <gold>Royal Mines</gold> in the <dark_green>Dwarven Mines</dark_green></white>",
+        "",
+        "<white>Increases your chances of fishing up a </white>",
+        "<white><gold>Gold Trophy Fish</gold> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+    ],
+
+    "gui.skyblockpv.tab.fishing.information.radiant_fisher.title": "Radiant Fisher",
+    "gui.skyblockpv.tab.fishing.information.radiant_fisher.desc": [
+        "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
+        "<white>in the <dark_purple>Crystal Nucleus</dark_purple> in the <dark_purple>Crystal Hollows</dark_purple></white>",
+        "",
+        "<white>Increases your chances of fishing up a</white>",
+        "<white><aqua>Diamond Trophy Fish</aqua> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+    ]
 }
