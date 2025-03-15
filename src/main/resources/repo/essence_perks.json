@@ -1,0 +1,238 @@
+{
+    "shops": {
+        "undead": {
+            "catacombs_boss_luck": {
+                "name": "Boss Luck",
+                "max_level": 4
+            },
+            "catacombs_looting": {
+                "name": "Looting",
+                "max_level": 5
+            },
+            "revive_stone": {
+                "name": "Help of the Fairies",
+                "max_level": 1
+            },
+            "catacombs_health": {
+                "name": "Health Essence",
+                "max_level": 5
+            },
+            "catacombs_defense": {
+                "name": "Defense Essence",
+                "max_level": 5
+            },
+            "catacombs_strength": {
+                "name": "Strength Essence",
+                "max_level": 5
+            },
+            "catacombs_intelligence": {
+                "name": "Intelligence Essence",
+                "max_level": 5
+            },
+            "catacombs_crit_damage": {
+                "name": "Critical Essence",
+                "max_level": 5
+            }
+        },
+        "wither": {
+            "permanent_health": {
+                "name": "Forbidden Health",
+                "max_level": 5
+            },
+            "permanent_defense": {
+                "name": "Forbidden Defense",
+                "max_level": 5
+            },
+            "permanent_speed": {
+                "name": "Forbidden Speed",
+                "max_level": 2
+            },
+            "permanent_intelligence": {
+                "name": "Forbidden Intelligence",
+                "max_level": 5
+            },
+            "permanent_strength": {
+                "name": "Forbidden Strength",
+                "max_level": 5
+            },
+            "forbidden_blessing": {
+                "name": "Forbidden Blessing",
+                "max_level": 10
+            }
+        },
+        "dragon": {
+            "flat_damage_vs_ender": {
+                "name": "One Punch",
+                "max_level": 5
+            },
+            "mana_after_ender_kill": {
+                "name": "Recharge",
+                "max_level": 10
+            },
+            "fero_vs_dragons": {
+                "name": "Rageborn",
+                "max_level": 5
+            },
+            "inc_zealots_odds": {
+                "name": "Zealuck",
+                "max_level": 5
+            },
+            "combat_wisdom_in_end": {
+                "name": "Ender Training",
+                "max_level": 3
+            },
+            "edrag_cd": {
+                "name": "Infused Dragon",
+                "max_level": 5
+            },
+            "unbridled_rage": {
+                "name": "Unbridled Rage",
+                "max_level": 5
+            },
+            "dragon_reforges_buff": {
+                "name": "Two-Headed Strike",
+                "max_level": 5
+            },
+            "increased_sup_chances": {
+                "name": "Dragon Piper",
+                "max_level": 1
+            }
+        },
+        "spider": {
+            "empowered_agility": {
+                "name": "Empowered Agility",
+                "max_level": 10
+            },
+            "vermin_control": {
+                "name": "Vermin Control",
+                "max_level": 5
+            },
+            "bane": {
+                "name": "Bane",
+                "max_level": 5
+            },
+            "spider_training": {
+                "name": "Spider Training",
+                "max_level": 3
+            },
+            "toxophilite": {
+                "name": "Toxophilite",
+                "max_level": 5
+            }
+        },
+        "crimson": {
+            "strongarm_kuudra": {
+                "name": "Strongarm",
+                "max_level": 2
+            },
+            "fresh_tools_kuudra": {
+                "name": "Fresh Tools",
+                "max_level": 5
+            },
+            "headstart_kuudra": {
+                "name": "Headstart",
+                "max_level": 5
+            },
+            "master_kuudra": {
+                "name": "Kuudra Master",
+                "max_level": 1
+            },
+            "fungus_fortuna": {
+                "name": "Fungus Fortuna",
+                "max_level": 10
+            },
+            "harena_fortuna": {
+                "name": "Harena Fortuna",
+                "max_level": 10
+            },
+            "crimson_training": {
+                "name": "Crimson Training",
+                "max_level": 3
+            },
+            "wither_piper": {
+                "name": "Wither Piper",
+                "max_level": 5
+            }
+        },
+        "ice": {
+            "cold_efficiency": {
+                "name": "Cold Efficiency",
+                "max_level": 5
+            },
+            "cooled_forges": {
+                "name": "Cooled Forges",
+                "max_level": 5
+            },
+            "frozen_skin": {
+                "name": "Frozen Skin",
+                "max_level": 5
+            },
+            "season_of_joy": {
+                "name": "Season of Joy",
+                "max_level": 10
+            },
+            "drake_piper": {
+                "name": "Drake Piper",
+                "max_level": 1
+            }
+        },
+        "gold": {
+            "heart_of_gold": {
+                "name": "Heart of Gold",
+                "max_level": 5
+            },
+            "treasures_of_the_earth": {
+                "name": "Treasure of Earth",
+                "max_level": 5
+            },
+            "dwarven_training": {
+                "name": "Dwarven Training",
+                "max_level": 3
+            },
+            "unbreaking": {
+                "name": "Unbreaking",
+                "max_level": 5
+            },
+            "eager_miner": {
+                "name": "Eager Miner",
+                "max_level": 10
+            },
+            "midas_lure": {
+                "name": "Midas Lure",
+                "max_level": 10
+            }
+        },
+        "diamond": {
+            "radiant_fisher": {
+                "name": "Radiant Fisher",
+                "max_level": 10
+            },
+            "diamond_in_the_rough": {
+                "name": "Diamond in the Rough",
+                "max_level": 5
+            },
+            "rhinestone_infusion": {
+                "name": "Rhinestone Infusion",
+                "max_level": 10
+            },
+            "under_pressure": {
+                "name": "Under Pressure",
+                "max_level": 5
+            },
+            "high_roller": {
+                "name": "High Roller",
+                "max_level": 1
+            },
+            "return_to_sender": {
+                "name": "Return to Sender",
+                "max_level": 10
+            }
+        },
+        "rift": {
+            "blessing_of_time": {
+                "name": "Blessing of Time",
+                "max_level": 3
+            }
+        }
+    }
+}

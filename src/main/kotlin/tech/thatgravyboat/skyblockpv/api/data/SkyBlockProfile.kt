@@ -6,6 +6,8 @@ import net.minecraft.Util
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
@@ -38,6 +40,7 @@ data class SkyBlockProfile(
     val pets: List<Pet>,
     val trophyFish: TrophyFishData,
     val miscFishData: FishData,
+    val essenceUpgrades: Map<String, Int>,
 ) {
     companion object {
 
@@ -119,6 +122,7 @@ data class SkyBlockProfile(
                 },
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
+                essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
             )
         }
 
@@ -265,6 +269,20 @@ data class SkyBlockProfile(
                     )
                 },
             )
+        }
+
+        private fun JsonObject?.parseEssencePerks(): Map<String, Int> {
+            val perks = this?.asMap { id, amount -> id to amount.asInt(0) } ?: emptyMap()
+
+            // perks that are unlocked but not in the repo:
+            val unknownPerks = perks.keys - EssenceData.allPerks.map { it.keys }.flatten()
+
+            if (unknownPerks.isNotEmpty()) {
+                println("Unknown essence perks: $unknownPerks")
+                Text.of("[SbPv] ${unknownPerks.size} Unknown essence perks. Please report this in the discord or the github").send()
+            }
+
+            return perks
         }
     }
 }
