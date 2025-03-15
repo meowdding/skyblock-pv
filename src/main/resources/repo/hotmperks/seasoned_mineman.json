@@ -1,6 +1,6 @@
 {
     "type": "perk",
-    "id": "seasoned_mineman",
+    "id": "mining_experience",
     "max_level": 100,
     "powder_type": "GEMSTONE",
     "cost_formula": "floor((nextLevel + 1)^2.3)",

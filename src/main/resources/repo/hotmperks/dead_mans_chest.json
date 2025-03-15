@@ -1,6 +1,6 @@
 {
     "type": "perk",
-    "id": "dead_mans_chest",
+    "id": "hungry_for_more",
     "max_level": 50,
     "powder_type": "GLACITE",
     "cost_formula": "floor((nextLevel + 1)^3.2)",
