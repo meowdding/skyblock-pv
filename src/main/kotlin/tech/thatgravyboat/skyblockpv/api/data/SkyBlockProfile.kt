@@ -6,8 +6,6 @@ import net.minecraft.Util
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
-import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
@@ -279,7 +277,7 @@ data class SkyBlockProfile(
 
             if (unknownPerks.isNotEmpty()) {
                 println("Unknown essence perks: $unknownPerks")
-                Text.of("[SbPv] ${unknownPerks.size} Unknown essence perks. Please report this in the discord or the github").send()
+                ChatUtils.chat("${unknownPerks.size} Unknown essence perks. Please report this in the discord or the github")
             }
 
             return perks
