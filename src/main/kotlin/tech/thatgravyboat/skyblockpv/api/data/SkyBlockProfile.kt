@@ -108,7 +108,7 @@ data class SkyBlockProfile(
                     val obj = it.asJsonObject
                     Pet(
                         uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString,
-                        uniqueId = obj["uniqueId"].asString,
+                        uniqueId = obj["uuid"]?.takeIf { it !is JsonNull }?.asString,
                         type = obj["type"].asString,
                         exp = obj["exp"]?.asLong(0) ?: 0,
                         active = obj["active"].asBoolean(false),
