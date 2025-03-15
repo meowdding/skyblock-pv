@@ -1,0 +1,9 @@
+{
+    "type": "unlevelable",
+    "id": "miners_blessing",
+    "name": "Miner's Blessing",
+    "tooltip": [
+        "<gray>Grants <aqua>+30✯ Magic Find <gray>on all <aqua>Mining",
+        "<aqua>Islands<gray>."
+    ]
+}

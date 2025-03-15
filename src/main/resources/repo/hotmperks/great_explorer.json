@@ -4,7 +4,7 @@
     "max_level": 20,
     "powder_type": "GEMSTONE",
     "cost_formula": "floor((nextLevel + 1)^4)",
-    "rewards": {
+    "reward_formula": {
         "chance": "20 + (4 * (level - 1))",
         "locks_removed": "1 + (level/5)"
     },

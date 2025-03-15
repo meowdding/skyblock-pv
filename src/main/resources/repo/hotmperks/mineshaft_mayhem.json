@@ -1,0 +1,16 @@
+{
+    "type": "unlevelable",
+    "id": "mineshaft_mayhem",
+    "name": "Mineshaft Mayhem",
+    "tooltip": [
+        "<gray>Every time you enter a <aqua>Glacite",
+        "<aqua>Mineshaft<gray>, <gray>you receive a random buff.",
+        "",
+        "<gray>Possible Buffs",
+        "<dark_gray> ■ <green>+5% <gray>chance to find a <blue>Suspicious Scrap<gray>.",
+        "<dark_gray> ■ <gray>Gain <gold>+100 ☘ Mining Fortune<gray>.",
+        "<dark_gray> ■ <gray>Gain <gold>+200 ⸕ Mining Speed<gray>.",
+        "<dark_gray> ■ <gray>Gain <aqua>+10❄ Cold Resistance<gray>.",
+        "<dark_gray> ■ <gray>Reduce Pickaxe Ability cooldowns by <green>-25%<gray>"
+    ]
+}

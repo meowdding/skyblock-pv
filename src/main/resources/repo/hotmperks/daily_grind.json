@@ -1,0 +1,15 @@
+{
+    "type": "unlevelable",
+    "id": "daily_grind",
+    "name": "Daily Grind",
+    "reward_formula": "hotmLevel * 500",
+    "tooltip": [
+        "<gray>Your first daily commission on each",
+        "<aqua>Mining Island <gray>grants <blue>+500 Powder<gray>,",
+        "<gray>multiplied by your <purple>HOTM <gray>level.",
+        "",
+        "<dark_green>Dwarven Mines<gray>: <green>%reward% <dark_green>Mithril Powder",
+        "<dark_purple>Crystal Hollows<gray>: <green>%reward% <light_purple>Gemstone Powder",
+        "<aqua>Glacite Mines<gray>: <green>%reward% <dark_green>Glacite Powder"
+    ]
+}
