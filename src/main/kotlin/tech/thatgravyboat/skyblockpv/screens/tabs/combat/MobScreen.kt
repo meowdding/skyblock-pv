@@ -19,7 +19,7 @@ class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
         val row = LinearLayout.horizontal().spacing(5)
 
-        val mobData = profile?.mobData ?: emptyList()
+        val mobData = profile?.mobData?.combineMobs() ?: emptyList()
         val sortedByKills = mobData.filter { it.kills != 0L }.sortedByDescending { it.kills }
         val sortedByDeaths = mobData.filter { it.deaths != 0L }.sortedByDescending { it.deaths }
 
@@ -31,6 +31,16 @@ class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
         return row
     }
+
+    private fun List<MobData>.combineMobs() = groupBy { mob ->
+        val parts = mob.mobId.split("_")
+        if (parts.last().all { it.isDigit() } && parts.size > 1) {
+            parts.dropLast(1).joinToString("_")
+        } else mob.mobId
+    }.map { (id, data) ->
+        MobData(id, data.sumOf { it.kills }, data.sumOf { it.deaths })
+    }
+
 
     private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int) = LayoutBuild.vertical(5) {
         widget(Widgets.text(name).centerHorizontally(width))
