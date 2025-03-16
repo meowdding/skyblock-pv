@@ -1,22 +1,28 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
+import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.MiningCore
+import tech.thatgravyboat.skyblockpv.data.RockBrackets
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
+import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 import kotlin.time.DurationUnit
@@ -30,16 +36,19 @@ import kotlin.time.toDuration
 class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(): Layout {
-        val mining = profile?.mining ?: return LayoutBuild.horizontal {  }
+        val profile = profile ?: return LayoutBuild.horizontal { }
+        val mining = profile.mining ?: return LayoutBuild.horizontal { }
         val columnWidth = uiWidth / 2
 
         return LayoutBuild.horizontal(5) {
             spacer(height = uiHeight)
-            widget(createLeftColumn(mining, columnWidth))
+            widget(createLeftColumn(profile, columnWidth))
             widget(createRightColumn(mining, columnWidth))
         }
     }
-    private fun createLeftColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
+
+    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+        val mining = profile.mining ?: return@vertical
         spacer(width, 5)
 
         val info = LayoutBuild.vertical(5) {
@@ -54,9 +63,46 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
             val hotmLevel = mining.getHotmLevel()
 
+            val oresMined = profile.petMilestones["ores_mined"] ?: 0
+            val rockPet = RockBrackets.getByOres(oresMined)
+
             grayText("HotM: $hotmLevel")
             grayText("Total Runs: ${totalRuns.toFormattedString()}")
+
+            display(
+                Displays.text(
+                    Text.join(
+                        Text.of("Rock Pet: ") { this.color = TextColor.DARK_GRAY },
+                        rockPet?.rarity?.displayText ?: Text.of("None") { this.color = TextColor.RED },
+                    ),
+                    shadow = false,
+                ).withTooltip(
+                    Text.join(
+                        Text.of("Ores Mined: ") { this.color = TextColor.WHITE },
+                        Text.of(oresMined.toFormattedString()) { this.color = TextColor.AQUA },
+                    ),
+                    "",
+                    RockBrackets.entries.map {
+                        whiteText {
+                            val hasObtained = it.oresRequired <= oresMined
+                            if (!hasObtained) {
+                                withStyle(ChatFormatting.STRIKETHROUGH)
+                                withStyle(ChatFormatting.DARK_GRAY)
+                            }
+                            append(
+                                text("${it.rarity.displayName} Rock") {
+                                    if (hasObtained) {
+                                        withColor((it.rarity.color))
+                                    }
+                                },
+                            )
+                            append("!")
+                        }
+                    },
+                ),
+            )
         }
+
         widget(getTitleWidget("Info", width - 5))
         widget(getMainContentWidget(info, width - 5))
 

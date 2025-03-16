@@ -8,8 +8,10 @@ import kotlinx.coroutines.runBlocking
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -172,4 +174,17 @@ object Utils {
             null
         }
     }
+
+    fun text(
+        text: String = "",
+        color: UInt = 0x555555u,
+        init: MutableComponent.() -> Unit = {},
+    ): MutableComponent {
+        return Text.of(text) {
+            withColor(color.toInt())
+            init(this)
+        }
+    }
+
+    fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
 }
