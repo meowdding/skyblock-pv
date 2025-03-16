@@ -1,10 +1,10 @@
 {
     "type": "tier",
-    "id": "tier_10",
-    "location": [-2, 9],
-    "name": "Tier 10",
+    "location": [-2, 1],
+    "name": "Tier 2",
     "rewards": [
         "<dark_gray>+<purple>2 Token of the Mountain",
+        "<gold>Access to the Forge",
         "<dark_gray>+<gold>New Forgeable Items"
     ]
 }

@@ -1,6 +1,5 @@
 {
     "type": "tier",
-    "id": "tier_4",
     "location": [-2, 3],
     "name": "Tier 4",
     "rewards": [

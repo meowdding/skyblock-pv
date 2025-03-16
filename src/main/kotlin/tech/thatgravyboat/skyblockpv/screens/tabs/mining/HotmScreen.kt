@@ -9,11 +9,17 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -23,15 +29,21 @@ import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
-    private val decimalFormat = DecimalFormat("#.##")
 
     override fun getLayout(): Layout {
         val mining = profile?.mining ?: return LayoutBuild.horizontal { }
         val gridLayout = GridLayout()
 
-        gridLayout.addChild(SpacerElement(5, 5), 1, 1)
-
         MiningNodes.miningNodes.forEach { node ->
+            if (node is SpacerNode) {
+                gridLayout.addChild(
+                    SpacerElement(node.size.x, node.size.y),
+                    9 - node.location.y,
+                    node.location.x + 2,
+                )
+                return@forEach
+            }
+
             val level = (mining.nodes[node.id] ?: -1).let {
                 if (node is AbilityMiningNode && it != -1) {
                     return@let mining.getAbilityLevel()
@@ -66,26 +78,30 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     private fun getNode(miningNode: MiningNode, level: Int, disabled: Boolean, miningCore: MiningCore): Display {
         val item = when (miningNode) {
-            is TierNode if miningNode.isMaxed(level) -> Items.GREEN_STAINED_GLASS_PANE
-            is TierNode if miningNode.isMaxed(level + 1) -> Items.YELLOW_STAINED_GLASS_PANE
-            is TierNode -> Items.RED_STAINED_GLASS_PANE
-            is CoreMiningNode if level == 10 -> Items.DIAMOND_BLOCK
-            is CoreMiningNode if level < 0 -> Items.COAL_BLOCK
-            is CoreMiningNode if level == 1 -> Items.IRON_BLOCK
-            is CoreMiningNode -> Items.REDSTONE_BLOCK
-            is AbilityMiningNode if miningCore.miningAbility == miningNode.id -> Items.EMERALD_BLOCK
-            is AbilityMiningNode if level > 0 -> Items.REDSTONE_BLOCK
-            is AbilityMiningNode -> Items.COAL_BLOCK
-            else -> {
-                if (disabled) {
-                    Items.REDSTONE
-                } else if (!miningNode.isMaxed(level) && level != -1) {
-                    Items.EMERALD
-                } else if (miningNode.isMaxed(level)) {
-                    Items.DIAMOND
-                } else {
-                    Items.COAL
-                }
+            is TierNode -> when {
+                miningNode.isMaxed(level) -> Items.GREEN_STAINED_GLASS_PANE
+                miningNode.isMaxed(level + 1) -> Items.YELLOW_STAINED_GLASS_PANE
+                else -> Items.RED_STAINED_GLASS_PANE
+            }
+
+            is CoreMiningNode -> when {
+                level == 10 -> Items.DIAMOND_BLOCK
+                level < 0 -> Items.BEDROCK
+                level == 1 -> Items.IRON_BLOCK
+                else -> Items.REDSTONE_BLOCK
+            }
+
+            is AbilityMiningNode -> when {
+                miningCore.miningAbility == miningNode.id -> Items.EMERALD_BLOCK
+                level > 0 -> Items.REDSTONE_BLOCK
+                else -> Items.COAL_BLOCK
+            }
+
+            else -> when {
+                disabled -> Items.REDSTONE
+                !miningNode.isMaxed(level) && level != -1 -> Items.EMERALD
+                miningNode.isMaxed(level) -> Items.DIAMOND
+                else -> Items.COAL
             }
         }
 
@@ -98,81 +114,66 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val hasUnlocked = node.isMaxed(level)
         val isCurrentlyUnlocking = node.isMaxed(level + 1)
 
-        add(
-            grayText(node.name) {
-                if (hasUnlocked) {
-                    withStyle(ChatFormatting.GREEN)
-                } else if (isCurrentlyUnlocking) {
-                    withStyle(ChatFormatting.YELLOW)
-                } else {
-                    withStyle(ChatFormatting.RED)
-                }
-            },
-        )
+        add(node.name) {
+            if (hasUnlocked) {
+                this.color = TextColor.GREEN
+            } else if (isCurrentlyUnlocking) {
+                this.color = TextColor.YELLOW
+            } else {
+                this.color = TextColor.RED
+            }
+        }
 
         if (!hasUnlocked && isCurrentlyUnlocking) {
             val xpToNextLevel = miningCore.getXpToNextLevel()
             val xpRequiredForNextLevel = miningCore.getXpRequiredForNextLevel()
 
-            add(grayText())
+            addEmpty()
             val progress = (xpToNextLevel.toFloat() / xpRequiredForNextLevel)
-            add(
-                grayText("Progress: ") {
-                    append(
-                        Text.of(decimalFormat.format(progress * 100)) {
-                            append("%")
-                            withStyle(ChatFormatting.YELLOW)
-                        },
-                    )
-                },
-            )
+            addGray("Progress: ") {
+                append((progress * 100).round()) {
+                    this.append("%")
+                    this.color = TextColor.YELLOW
+                }
+            }
 
             val amountGreen = (25 * progress).roundToInt()
             val amountWhite = 25 - amountGreen
 
-            add(
-                grayText {
-                    append(
-                        Text.of(" ".repeat(amountGreen)) {
-                            withStyle(ChatFormatting.GREEN, ChatFormatting.STRIKETHROUGH)
-                        },
-                    )
-                    append(
-                        Text.of(" ".repeat(amountWhite)) {
-                            withStyle(ChatFormatting.WHITE, ChatFormatting.STRIKETHROUGH)
-                        },
-                    )
-                    append(" ")
-                    append(
-                        Text.of(xpToNextLevel.toFormattedString()) {
-                            withStyle(ChatFormatting.YELLOW)
-                        },
-                    )
-                    append(
-                        Text.of("/") {
-                            withStyle(ChatFormatting.GOLD)
-                        },
-                    )
-                    append(
-                        Text.of(DecimalFormat.getCompactNumberInstance().format(xpRequiredForNextLevel)) {
-                            withStyle(ChatFormatting.YELLOW)
-                        },
-                    )
-                },
-            )
+            add {
+                append(" ".repeat(amountGreen)) {
+                    this.color = TextColor.DARK_GREEN
+                    this.strikethrough = true
+                }
+                append(" ".repeat(amountWhite)) {
+                    this.color = TextColor.WHITE
+                    this.strikethrough = true
+                }
+                append(" ")
+                append(xpToNextLevel.toFormattedString()) { this.color = TextColor.YELLOW }
+
+                append("/") { this.color = TextColor.GOLD }
+                append(DecimalFormat.getCompactNumberInstance().format(xpRequiredForNextLevel)) { this.color = TextColor.YELLOW }
+            }
         }
 
-        add(grayText())
-        add(grayText("Rewards"))
+        addEmpty()
+        addGray("Rewards")
         addAll(node.tooltip(Context()))
 
-        add(grayText())
+        addEmpty()
         if (hasUnlocked) {
-            add(Text.of("UNLOCKED").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD))
+            add("UNLOCKED") {
+                this.color = TextColor.GREEN
+                this.bold = true
+            }
         } else if (isCurrentlyUnlocking) {
-            add(Text.of("LOCKED").withStyle(ChatFormatting.RED, ChatFormatting.BOLD))
+            add("LOCKED") {
+                this.color = TextColor.RED
+                this.bold = true
+            }
         } else {
-            add(grayText("Requires Tier ${node.location.y}").withStyle(ChatFormatting.RED))
+            add("Requires Tier ${node.location.y}") { this.color = TextColor.RED }
         }
     }
 
@@ -182,64 +183,59 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             return@buildList
         }
 
-        add(
-            Text.of(miningNode.name) {
-                if (disabled || level == -1) {
-                    withStyle(ChatFormatting.RED)
-                } else {
-                    withStyle(ChatFormatting.GREEN)
-                }
-            },
-        )
+        add(miningNode.name) {
+            if (disabled || level == -1) {
+                this.color = TextColor.RED
+            } else {
+                this.color = TextColor.GREEN
+            }
+        }
 
         if (miningNode is LevelableMiningNode) {
             if (level == miningNode.maxLevel) {
-                add(grayText("Level $level"))
+                addGray("Level $level")
             } else {
-                add(
-                    grayText("Level ${level.absoluteValue}/") {
-                        append(
-                            grayText("${miningNode.maxLevel}") {
-                                withStyle(ChatFormatting.DARK_GRAY)
-                            },
-                        )
-                    },
-                )
+                addGray("Level ${level.absoluteValue}/") {
+                    append("${miningNode.maxLevel}") {
+                        this.color = TextColor.DARK_GRAY
+                    }
+                }
             }
-            add(grayText(""))
+            addEmpty()
         }
 
         addAll(miningNode.tooltip(Context(miningCore.getHotmLevel(), level)))
         when (miningNode) {
             is AbilityMiningNode -> {
                 if (!disabled) {
-                    add(grayText(""))
-                    add(
-                        grayText("SELECTED") {
-                            withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD)
-                        },
-                    )
+                    addEmpty()
+                    addGray("SELECTED") {
+                        this.color = TextColor.GREEN
+                        this.bold = true
+                    }
                 }
             }
 
-            else if level > 0 -> {
-                add(grayText(""))
+            !is CoreMiningNode -> {
+                if (level <= 0) {
+                    return@buildList
+                }
+
+                addEmpty()
                 if (miningNode is LevelableMiningNode) {
                     addAll(getPowderSpent(miningNode, level))
                 }
 
                 if (disabled) {
-                    add(
-                        grayText("DISABLED") {
-                            withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
-                        },
-                    )
+                    add("DISABLED") {
+                        this.color = TextColor.RED
+                        this.bold = true
+                    }
                 } else {
-                    add(
-                        grayText("ENABLED") {
-                            withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD)
-                        },
-                    )
+                    add("ENABLED") {
+                        this.color = TextColor.GREEN
+                        this.bold = true
+                    }
                 }
             }
         }
@@ -258,44 +254,47 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
 
-        add(grayText("Powder Spent"))
+        addGray("Powder Spent")
         totalAmountRequired.forEach { (type, amountRequired) ->
-            add(
-                grayText {
-                    val amountSpent = amountSpend[type] ?: 0
+            addGray {
+                val amountSpent = amountSpend[type] ?: 0
 
-                    withStyle(type.formatting)
-                    append(type.name.lowercase().replaceFirstChar(Char::uppercase))
-                    append(grayText(": "))
-                    append(
-                        grayText(amountSpent.toFormattedString()) {
-                            withStyle(ChatFormatting.GRAY)
-                        },
-                    )
-                    append(grayText("/"))
-                    append(
-                        grayText(amountRequired.toFormattedString()) {
-                            withStyle(ChatFormatting.DARK_GRAY)
-                        },
-                    )
-                    if (amountSpent < amountRequired) {
-
-                        val percentage = (amountSpent.toDouble() / amountRequired) * 100
-                        append(" ")
-                        append(
-                            grayText("(${decimalFormat.format(percentage)}%)") {
-                                withStyle(ChatFormatting.YELLOW)
-                            },
-                        )
+                withStyle(type.formatting)
+                append(type.name.lowercase().replaceFirstChar(Char::uppercase))
+                appendGray(": ")
+                appendGray(amountSpent.toFormattedString())
+                appendGray("/")
+                append(amountRequired.toFormattedString()) {
+                    withStyle(ChatFormatting.DARK_GRAY)
+                }
+                if (amountSpent < amountRequired) {
+                    val percentage = (amountSpent.toDouble() / amountRequired) * 100
+                    append(" ")
+                    appendGray("(${(percentage).round()}%)") {
+                        this.color = TextColor.YELLOW
                     }
-                },
-            )
+                }
+            }
         }
-        add(grayText())
+        addEmpty()
     }
 
-    private fun grayText(text: String = "", init: MutableComponent.() -> Unit = {}) = Text.of(text) {
-        withStyle(ChatFormatting.GRAY)
-        init(this)
+    private fun (MutableComponent.() -> Unit).withColor(color: Int): (MutableComponent.() -> Unit) {
+        val init = this
+        return {
+            this.color = color
+            init(this)
+        }
+    }
+
+    private fun MutableComponent.append(text: String = "", init: MutableComponent.() -> Unit = {}) = this.append(Text.of(text, init))
+    private fun MutableComponent.appendGray(text: String = "", init: MutableComponent.() -> Unit = {}) =
+        this.append(Text.of(text, init.withColor(TextColor.GRAY)))
+
+    private fun MutableList<Component>.add(text: String = "", init: MutableComponent.() -> Unit = {}) = add(Text.of(text, init))
+    private fun MutableList<Component>.addGray(text: String = "", init: MutableComponent.() -> Unit = {}) = add(text, init.withColor(TextColor.GRAY))
+
+    private fun MutableList<Component>.addEmpty() {
+        this.add(CommonText.EMPTY)
     }
 }

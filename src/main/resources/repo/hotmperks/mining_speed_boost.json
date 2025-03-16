@@ -9,8 +9,7 @@
     },
     "tooltip": [
         "<gold>Pickaxe Ability: Mining Speed Boost <yellow><bold>RIGHT CLICK",
-        "<gray>Grants <green>+%effect%%<gold> ⸕ Mining Speed",
-        "<gray>for <green>%duration%s<gray>.",
+        "<gray>Grants <green>+%effect%%<gold> ⸕ Mining Speed <gray>for <green>%duration%s<gray>.",
         "<dark_gray>Cooldown: <green>120s"
     ]
 }

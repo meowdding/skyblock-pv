@@ -135,10 +135,15 @@ tasks.withType<ProcessResources>().configureEach {
             throw UnsupportedOperationException("${file.name} must only contain a json object!")
         }
 
-        if (idsUsed.contains(it.get("id").asString)) {
-            throw UnsupportedOperationException("Duplicate id found in ${file.name}!")
+        val type = it.get("type").asString
+        val requiresId = !listOf("spacer", "tier").contains(type)
+
+        if (requiresId) {
+            if (idsUsed.contains(it.get("id").asString)) {
+                throw UnsupportedOperationException("Duplicate id found in ${file.name}!")
+            }
+            idsUsed.add(it.get("id").asString)
         }
-        idsUsed.add(it.get("id").asString)
     }
 
     sourceSets.main.get().resources.srcDirs.map { it.toPath() }.forEach {

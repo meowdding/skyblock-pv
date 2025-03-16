@@ -8,6 +8,6 @@
     "reward_formula": "level * 3",
     "name": "Efficient Miner",
     "tooltip": [
-        "Grants <yellow>+%reward%▚ Mining Spread<gray>."
+        "<gray>Grants <yellow>+%reward%▚ Mining Spread<gray>."
     ]
 }

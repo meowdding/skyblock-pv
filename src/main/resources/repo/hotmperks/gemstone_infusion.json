@@ -3,7 +3,7 @@
     "id": "gemstone_infusion",
     "name": "Gemstone Infusion",
     "location": [0, 9],
-    "reward_formula": "20 * effectiveLevel * 5",
+    "reward_formula": "20 + effectiveLevel * 5",
     "tooltip": [
         "<gold>Pickaxe Ability: Gemstone Infusion <yellow><bold>RIGHT CLICK",
         "<gray>Increases the effectiveness of",

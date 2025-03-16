@@ -6,7 +6,7 @@
     "reward_formula": "hotmLevel * 500",
     "tooltip": [
         "<gray>The first ore you mine each day",
-        "grants <blue>+500 Powder<gray>, multiplied by",
+        "<gray>grants <blue>+500 Powder<gray>, multiplied by",
         "<gray>your <purple>HOTM <gray>level.",
         "",
         "<dark_green>Mithril<gray>: <green>%reward% <dark_green>Mithril Powder",

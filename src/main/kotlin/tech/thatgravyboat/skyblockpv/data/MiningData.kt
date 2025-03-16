@@ -54,14 +54,7 @@ data class MiningCore(
         return (levelToExp[level] ?: 0) - (levelToExp[level - 1] ?: 0)
     }
 
-    fun getAbilityLevel(): Int {
-        val cotmLevel = nodes["special_0"] ?: 0
-        return if (cotmLevel < 1) {
-            1
-        } else {
-            2
-        }
-    }
+    fun getAbilityLevel() = 1.takeIf { (nodes["special_0"] ?: 0) < 1 } ?: 2
 }
 
 data class Crystal(
@@ -123,6 +116,7 @@ object MiningNodes {
         ID_MAPPER.put("ability", AbilityMiningNode.CODEC)
         ID_MAPPER.put("core", CoreMiningNode.CODEC)
         ID_MAPPER.put("tier", TierNode.CODEC)
+        ID_MAPPER.put("spacer", SpacerNode.CODEC)
 
         val hotm = Utils.loadFromRepo<JsonArray>("hotm")
 
@@ -409,23 +403,39 @@ class CoreMiningNode(
     override fun getPowderType(level: Int) = this.level[level - 1].cost.type
 }
 
-class TierNode(override val name: String, override val id: String, override val location: Vector2i, val rewards: List<String>) : MiningNode {
+class TierNode(override val name: String, override val location: Vector2i, val rewards: List<String>) : MiningNode {
     companion object {
         val CODEC: MapCodec<TierNode> = RecordCodecBuilder.mapCodec {
             it.group(
                 Codec.STRING.fieldOf("name").forGetter(TierNode::name),
-                Codec.STRING.fieldOf("id").forGetter(TierNode::id),
                 vectorCodec.fieldOf("location").forGetter(TierNode::location),
                 Codec.STRING.listOf().fieldOf("rewards").forGetter(TierNode::rewards),
             ).apply(it, ::TierNode)
         }
     }
 
+    override val id: String = ""
     override fun type() = CODEC
-
     override fun tooltip(context: Context) = rewards.map {
         TagParser.QUICK_TEXT_SAFE.parseText(it, ParserContext.of())
     }
-
     override fun isMaxed(level: Int) = level >= (location.y + 1)
+}
+
+class SpacerNode(override val location: Vector2i, val size: Vector2i): MiningNode {
+    companion object {
+        val CODEC: MapCodec<SpacerNode> = RecordCodecBuilder.mapCodec {
+            it.group(
+                vectorCodec.fieldOf("location").forGetter(SpacerNode::location),
+                vectorCodec.fieldOf("size").forGetter(SpacerNode::size)
+            ).apply(it, ::SpacerNode)
+        }
+    }
+
+    override val name: String = ""
+    override val id: String = ""
+
+    override fun type(): MapCodec<SpacerNode> = CODEC
+    override fun tooltip(context: Context) = emptyList<Component>()
+    override fun isMaxed(level: Int) = false
 }
