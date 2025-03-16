@@ -55,6 +55,38 @@ data class MiningCore(
     }
 
     fun getAbilityLevel() = 1.takeIf { (nodes["special_0"] ?: 0) < 1 } ?: 2
+
+    companion object {
+        fun fromJson(json: JsonObject): MiningCore {
+            val nodes = json.getAsJsonObject("nodes").asMap { id, amount -> id to amount.asInt(0) }.filterKeys { !it.startsWith("toggle_") }
+            val toggledNodes = json.getAsJsonObject("nodes").entrySet().filter { it.key.startsWith("toggle") }
+                .map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
+                .filterNot { it.second }
+                .map { it.first }
+            val crystals = json.getAsJsonObject("crystals").asMap { id, data ->
+                val obj = data.asJsonObject
+                id to Crystal(
+                    state = obj["state"].asString(""),
+                    totalPlaced = obj["total_placed"].asInt(0),
+                    totalFound = obj["total_found"].asInt(0),
+                )
+            }
+
+            return MiningCore(
+                nodes = nodes,
+                toggledNodes = toggledNodes,
+                crystals = crystals,
+                experience = json["experience"].asLong(0),
+                powderMithril = json["powder_mithril"].asInt(0),
+                powderSpentMithril = json["powder_spent_mithril"].asInt(0),
+                powderGemstone = json["powder_gemstone"].asInt(0),
+                powderSpentGemstone = json["powder_spent_gemstone"].asInt(0),
+                powderGlacite = json["powder_glacite"].asInt(0),
+                powderSpentGlacite = json["powder_spent_glacite"].asInt(0),
+                miningAbility = json["selected_pickaxe_ability"].asString(""),
+            )
+        }
+    }
 }
 
 data class Crystal(
