@@ -1,8 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
-import earth.terrarium.olympus.client.components.base.ListWidget
-import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -27,6 +25,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.math.RoundingMode
@@ -140,13 +139,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 addBottomRow(gearWidget, statWidget)
             }.applyLayout()
         } else {
-            val scrollable = ListWidget(bg.width - 20, bg.height - 20)
-            trophyWidth = scrollable.width - 40
-            fun ListWidget.add(layout: Layout) {
-                add(LayoutWidget(layout).also { it.visible = true }.withStretchToContentSize())
-            }
+            trophyWidth = bg.width - 60
 
-            scrollable.add(LayoutBuild.vertical {
+            LayoutBuild.vertical {
                 fun add(element: LayoutElement)  {
                     spacer(height = 5, width = element.width + 20)
                     widget(element) {
@@ -159,11 +154,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 add(statWidget)
                 add(gearWidget)
                 add(trophyWidget)
-            })
-
-            scrollable.setPosition(bg.x + 10, bg.y + 10)
-
-            scrollable.visitWidgets(this::addRenderableWidget)
+            }.asScrollable(width = bg.width, height = bg.height).applyLayout()
         }
     }
 
