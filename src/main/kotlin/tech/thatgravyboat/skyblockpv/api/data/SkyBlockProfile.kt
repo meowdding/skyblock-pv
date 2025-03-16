@@ -33,6 +33,7 @@ data class SkyBlockProfile(
     val forge: Forge?,
     val tamingLevelPetsDonated: List<String>,
     val pets: List<Pet>,
+    val petMilestones: Map<String, Int>,
     val trophyFish: TrophyFishData,
     val miscFishData: FishData,
     val essenceUpgrades: Map<String, Int>,
@@ -91,6 +92,7 @@ data class SkyBlockProfile(
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
                 essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
+                petMilestones = playerStats?.getAsJsonObject("pets")?.getAsJsonObject("milestone").asMap { id, amount -> id to amount.asInt(0) },
             )
         }
 

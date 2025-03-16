@@ -210,7 +210,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addPerk("midas_lure")
             addPerk("radiant_fisher")
 
-            val seaCreatureKills = profile.miscFishData.seaCreatureKills
+            val seaCreatureKills = profile.petMilestones["sea_creatures_killed"] ?: 0
             val dolphin = DolphinBrackets.getByKills(seaCreatureKills)
 
             display(
@@ -302,8 +302,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             string(
                 text("Sea creatures killed: ") {
-                    append(profile.miscFishData.seaCreatureKills.toFormattedString())
-                }
+                    append((profile.petMilestones["sea_creatures_killed"] ?: 0).toFormattedString())
+                },
             )
 
             fun addStat(statName: String, amount: Int, config: Display.() -> Display = { this }) {
