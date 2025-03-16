@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.util.ExtraCodecs.LateBoundIdMapper
 import net.minecraft.util.StringRepresentable
 import org.joml.Vector2i
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.utils.*
@@ -123,6 +124,20 @@ data class ForgeSlot(
     val startTime: Long,
     val notified: Boolean,
 )
+
+enum class RockBrackets(val oresRequired: Int, val rarity: SkyBlockRarity) {
+    COMMON(2500, SkyBlockRarity.COMMON),
+    UNCOMMON(7500, SkyBlockRarity.UNCOMMON),
+    RARE(20000, SkyBlockRarity.RARE),
+    EPIC(100000, SkyBlockRarity.EPIC),
+    LEGENDARY(250000, SkyBlockRarity.LEGENDARY);
+
+    companion object {
+        fun getByOres(kills: Int): RockBrackets? {
+            return RockBrackets.entries.reversed().firstOrNull { it.oresRequired <= kills }
+        }
+    }
+}
 
 enum class PowderType(val formatting: ChatFormatting) : StringRepresentable {
     MITHRIL(ChatFormatting.DARK_GREEN),
