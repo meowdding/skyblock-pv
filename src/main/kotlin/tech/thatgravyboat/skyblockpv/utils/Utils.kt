@@ -84,7 +84,7 @@ object Utils {
         return FrameLayout(width, height).also { it.addChild(this) }
     }
 
-    fun Layout.asScrollable(width: Int = Int.MAX_VALUE, height: Int = Int.MAX_VALUE, init: ListWidget.() -> Unit = {}): Layout {
+    fun Layout.asScrollable(width: Int, height: Int, init: ListWidget.() -> Unit = {}): Layout {
         this.arrangeElements()
         val widget = LayoutWidget(this).also { it.visible = true }.withStretchToContentSize()
         val scrollable = ListWidget((widget.width + 20).coerceAtMost(width), widget.height.coerceAtMost(height - 20))
@@ -92,7 +92,7 @@ object Utils {
         scrollable.add(widget)
         scrollable.init()
 
-        return LayoutBuild.frame(width, height) {
+        return LayoutBuild.frame(width - 20, height) {
             widget(scrollable)
         }
     }

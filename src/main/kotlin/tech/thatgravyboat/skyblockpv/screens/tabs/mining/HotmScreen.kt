@@ -75,7 +75,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             )
         }
 
-        return gridLayout.asScrollable(height = uiHeight) {
+        return gridLayout.asScrollable(uiWidth, uiHeight) {
             withScrollToBottom()
         }
     }
