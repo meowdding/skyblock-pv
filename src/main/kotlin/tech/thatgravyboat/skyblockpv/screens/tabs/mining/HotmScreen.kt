@@ -1,6 +1,8 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.components.base.ListWidget
+import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.GridLayout
 import net.minecraft.client.gui.layouts.Layout
@@ -73,7 +75,15 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             )
         }
 
-        return gridLayout
+        gridLayout.arrangeElements()
+        val widget = LayoutWidget(gridLayout).also { it.visible = true }.withStretchToContentSize()
+        val scrollable = ListWidget(widget.width + 20, widget.height.coerceAtMost(uiHeight - 20))
+
+        scrollable.add(widget)
+
+        return LayoutBuild.frame(uiWidth, uiHeight) {
+            widget(scrollable)
+        }
     }
 
     private fun getNode(miningNode: MiningNode, level: Int, disabled: Boolean, miningCore: MiningCore): Display {
