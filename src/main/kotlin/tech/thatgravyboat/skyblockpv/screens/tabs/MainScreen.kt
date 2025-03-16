@@ -55,7 +55,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
         spacer(height = 5)
 
         val irrelevantSkills = listOf(
@@ -107,7 +107,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             string("Fairy Souls: ${profile.fairySouls}")
         }
 
-        widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
+        widget(getMainContentWidget(infoColumn, width))
     }
 
     private fun createMiddleColumn(profile: SkyBlockProfile, width: Int): LinearLayout {
@@ -162,7 +162,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         return layout
     }
 
-    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
         spacer(height = 5)
 
         fun <T> addSection(
