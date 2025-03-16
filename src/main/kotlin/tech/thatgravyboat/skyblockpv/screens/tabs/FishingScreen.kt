@@ -154,7 +154,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 add(statWidget)
                 add(gearWidget)
                 add(trophyWidget)
-            }.asScrollable(width = bg.width, height = bg.height).applyLayout()
+            }.asScrollable(bg.width, bg.height).applyLayout()
         }
     }
 
