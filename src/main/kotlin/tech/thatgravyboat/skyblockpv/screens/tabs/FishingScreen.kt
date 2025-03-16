@@ -27,7 +27,9 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
+import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -191,14 +193,15 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             fun addPerk(id: String) {
                 val perkLevel = profile.essenceUpgrades[id] ?: 0
-                val maxLevel = EssenceData.allPerks.entries.find { it.key == id }?.value?.maxLevel ?: 0
+                val perk = EssenceData.allPerks.entries.find { it.key == id }?.value
+                val maxLevel = perk?.maxLevel ?: 0
 
                 val display = Displays.text(
                     Text.join(
-                        Text.translatable("gui.skyblockpv.tab.fishing.information.$id.title"),
+                        perk?.name,
                         ": ",
                         Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) TextColor.GREEN else TextColor.RED },
-                        "/$maxLevel"
+                        "/$maxLevel",
                     ),
                     { TextColor.DARK_GRAY.toUInt() },
                     false,
@@ -556,17 +559,4 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         widget(Utils.getTitleWidget(title, element.width + padding))
         widget(Utils.getMainContentWidget(element, element.width + padding))
     }
-
-    private fun text(
-        text: String = "",
-        color: UInt = 0x555555u,
-        init: MutableComponent.() -> Unit = {}
-    ): MutableComponent {
-        return Text.of(text) {
-            withColor(color.toInt())
-            init(this)
-        }
-    }
-
-    private fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
 }
