@@ -1,0 +1,16 @@
+{
+    "type": "unlevelable",
+    "id": "front_loaded",
+    "name": "Front Loaded",
+    "location": [6, 3],
+    "tooltip": [
+        "<gray>Grants the following buffs for the",
+        "<gray>first <green>2,500 <light_purple>Gemstones <gray> you mine each",
+        "<gray>day.",
+        "",
+        "<dark_gray> ■ <light_purple>3x Gemstone Powder",
+        "<dark_gray> ■ <gold>+150☘ Gemstone Fortune",
+        "<dark_gray> ■ <gold>+250⸕ Mining Speed"
+        //todo maybe add time remaining
+    ]
+}
