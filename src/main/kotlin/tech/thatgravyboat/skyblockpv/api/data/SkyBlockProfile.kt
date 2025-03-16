@@ -38,6 +38,7 @@ data class SkyBlockProfile(
     val pets: List<Pet>,
     val trophyFish: TrophyFishData,
     val miscFishData: FishData,
+    val essenceUpgrades: Map<String, Int>,
 ) {
     companion object {
 
@@ -106,8 +107,8 @@ data class SkyBlockProfile(
                 pets = member.getAsJsonObject("pets_data").getAsJsonArray("pets").map {
                     val obj = it.asJsonObject
                     Pet(
-                        uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString,
-                        uniqueId = obj["uniqueId"].asString,
+                        uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },
+                        uniqueId = obj["uuid"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },
                         type = obj["type"].asString,
                         exp = obj["exp"]?.asLong(0) ?: 0,
                         active = obj["active"].asBoolean(false),
@@ -119,6 +120,7 @@ data class SkyBlockProfile(
                 },
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
+                essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
             )
         }
 
@@ -265,6 +267,20 @@ data class SkyBlockProfile(
                     )
                 },
             )
+        }
+
+        private fun JsonObject?.parseEssencePerks(): Map<String, Int> {
+            val perks = this?.asMap { id, amount -> id to amount.asInt(0) } ?: emptyMap()
+
+            // perks that are unlocked but not in the repo:
+            val unknownPerks = perks.keys - EssenceData.allPerks.keys
+
+            if (unknownPerks.isNotEmpty()) {
+                println("Unknown essence perks: $unknownPerks")
+                ChatUtils.chat("${unknownPerks.size} Unknown essence perks. Please report this in the discord or the github")
+            }
+
+            return perks
         }
     }
 }

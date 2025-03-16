@@ -7,13 +7,13 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
+import tech.thatgravyboat.skyblockpv.data.EssenceData
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.screens.PvTabs
+import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object SkyBlockPv : ModInitializer {
@@ -23,6 +23,7 @@ object SkyBlockPv : ModInitializer {
             SkillAPI,
             CollectionAPI,
             ForgeTimeData,
+            EssenceData,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }
@@ -41,7 +42,7 @@ object SkyBlockPv : ModInitializer {
                     val player = this.getArgument("player", String::class.java)
                     Utils.fetchGameProfile(player) { profile ->
                         if (profile == null) {
-                            Text.of("§cPlayer could not be found").send()
+                            ChatUtils.chat("§cPlayer could not be found")
                         } else {
                             McClient.tell {
                                 McClient.setScreen(PvTabs.MAIN.create(profile))
