@@ -5,12 +5,9 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.screens.tabs.CollectionScreen
-import tech.thatgravyboat.skyblockpv.screens.tabs.MainScreen
-import tech.thatgravyboat.skyblockpv.screens.tabs.MiningScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.*
 import tech.thatgravyboat.skyblockpv.screens.tabs.combat.BaseCombatScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.combat.DungeonScreen
-import tech.thatgravyboat.skyblockpv.screens.tabs.FishingScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.InventoryScreen
 import tech.thatgravyboat.skyblockpv.utils.createSkull
@@ -28,6 +25,7 @@ enum class PvTabs(
     COLLECTION(CollectionScreen::class, Items.ITEM_FRAME.defaultInstance),
     MINING(MiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
+    PET(PetScreen::class, Items.BONE.defaultInstance)
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(

@@ -39,6 +39,10 @@ abstract class LayoutBuilder {
         widgets.add(widget)
     }
 
+    fun widget(widget: List<LayoutElement>) {
+        widget.forEach(this::widget)
+    }
+
     fun widget(widget: LayoutElement, settings: LayoutSettings.() -> Unit) {
         widgets.add(LayoutElements(widget, settings))
     }
