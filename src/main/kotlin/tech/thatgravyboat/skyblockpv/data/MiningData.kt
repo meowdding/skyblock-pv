@@ -1,6 +1,8 @@
 package tech.thatgravyboat.skyblockpv.data
 
+
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
@@ -17,14 +19,7 @@ import net.minecraft.util.StringRepresentable
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
-import tech.thatgravyboat.skyblockpv.utils.Utils
-
-
-import com.google.gson.JsonObject
-import tech.thatgravyboat.skyblockpv.utils.asBoolean
-import tech.thatgravyboat.skyblockpv.utils.asLong
-import tech.thatgravyboat.skyblockpv.utils.asMap
-import tech.thatgravyboat.skyblockpv.utils.asString
+import tech.thatgravyboat.skyblockpv.utils.*
 
 data class MiningCore(
     val nodes: Map<String, Int>,
@@ -54,7 +49,10 @@ data class MiningCore(
 
     fun getHotmLevel(): Int = levelToExp.entries.findLast { it.value <= experience }?.key ?: 0
     fun getXpToNextLevel() = experience - (levelToExp[getHotmLevel()] ?: 0)
-    fun getXpRequiredForNextLevel() = levelToExp[(getHotmLevel() + 1).coerceAtMost(10)]?: 0
+    fun getXpRequiredForNextLevel(): Int {
+        val level = (getHotmLevel() + 1).coerceAtMost(10)
+        return (levelToExp[level] ?: 0) - (levelToExp[level - 1] ?: 0)
+    }
 
     fun getAbilityLevel(): Int {
         val cotmLevel = nodes["special_0"] ?: 0
@@ -393,7 +391,7 @@ class CoreMiningNode(
     }
 
     fun getLevel(level: Int): CotmLevel {
-        return this.level[level - 1]
+        return this.level[(level - 1).coerceAtLeast(0)]
     }
 
     override fun type(): MapCodec<CoreMiningNode> = CODEC
@@ -411,14 +409,14 @@ class CoreMiningNode(
     override fun getPowderType(level: Int) = this.level[level - 1].cost.type
 }
 
-class TierNode(override val name: String, override val id: String, override val location: Vector2i, val rewards: List<String>): MiningNode {
+class TierNode(override val name: String, override val id: String, override val location: Vector2i, val rewards: List<String>) : MiningNode {
     companion object {
         val CODEC: MapCodec<TierNode> = RecordCodecBuilder.mapCodec {
             it.group(
                 Codec.STRING.fieldOf("name").forGetter(TierNode::name),
                 Codec.STRING.fieldOf("id").forGetter(TierNode::id),
                 vectorCodec.fieldOf("location").forGetter(TierNode::location),
-                Codec.STRING.listOf().fieldOf("rewards").forGetter(TierNode::rewards)
+                Codec.STRING.listOf().fieldOf("rewards").forGetter(TierNode::rewards),
             ).apply(it, ::TierNode)
         }
     }
@@ -428,5 +426,6 @@ class TierNode(override val name: String, override val id: String, override val 
     override fun tooltip(context: Context) = rewards.map {
         TagParser.QUICK_TEXT_SAFE.parseText(it, ParserContext.of())
     }
+
     override fun isMaxed(level: Int) = level >= (location.y + 1)
 }
