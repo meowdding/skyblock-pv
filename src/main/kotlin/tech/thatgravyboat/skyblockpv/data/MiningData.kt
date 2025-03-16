@@ -1,5 +1,7 @@
 package tech.thatgravyboat.skyblockpv.data
 
+import net.minecraft.world.item.ItemStack
+
 data class MiningCore(
     val nodes: Map<String, Int>,
     val crystals: Map<String, Crystal>,
@@ -27,5 +29,5 @@ data class ForgeSlot(
     val id: String,
     val startTime: Long,
     val notified: Boolean,
-    val oldItem: Any?, // No clue what this is, in my forge it's always null. Maybe ItemStack or just id? Probably id
+    val oldItem: ItemStack?,
 )
