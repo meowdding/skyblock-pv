@@ -1,6 +1,11 @@
 package tech.thatgravyboat.skyblockpv.screens
 
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
 import com.mojang.authlib.GameProfile
+import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
@@ -18,6 +23,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
@@ -33,6 +39,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import java.lang.reflect.Type
 import java.nio.file.Files
 import kotlin.time.Duration.Companion.seconds
 
@@ -199,7 +206,23 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             .resolve("profiles-${gameProfile.id}.json")
 
         Files.createDirectories(file.parent)
-        Files.writeString(file, profiles.toString())
+        Files.writeString(
+            file,
+            GsonBuilder()
+                .registerTypeAdapter(ItemStack::class.java, object: JsonSerializer<ItemStack> {
+                    override fun serialize(src: ItemStack?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+                        if (src == null) {
+                            return com.google.gson.JsonNull.INSTANCE
+                        }
+
+                        val encodeStart = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, src)
+                        if (encodeStart.isError) {
+                            return com.google.gson.JsonPrimitive(encodeStart.error().get().messageSupplier.get())
+                        }
+                        return encodeStart.getOrThrow()
+                    }
+                }).create().toJson(profiles),
+        )
 
         ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
     }

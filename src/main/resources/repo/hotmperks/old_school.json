@@ -1,0 +1,13 @@
+{
+    "type": "perk",
+    "id": "old_school",
+    "location": [1, 3],
+    "max_level": 20,
+    "powder_type": "GEMSTONE",
+    "cost_formula": "floor((nextLevel + 1)^4)",
+    "reward_formula": "level * 5",
+    "name": "Old-School",
+    "tooltip": [
+        "<gray>Grants <gold>+%reward%☘ Ore Fortune<gray>."
+    ]
+}
