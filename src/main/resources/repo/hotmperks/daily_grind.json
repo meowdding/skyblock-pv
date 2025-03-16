@@ -2,6 +2,7 @@
     "type": "unlevelable",
     "id": "daily_grind",
     "name": "Daily Grind",
+    "location": [1, 4],
     "reward_formula": "hotmLevel * 500",
     "tooltip": [
         "<gray>Your first daily commission on each",

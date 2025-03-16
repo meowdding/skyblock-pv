@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "surveyor",
+    "location": [5, 7],
     "max_level": 20,
     "powder_type": "GLACITE",
     "cost_formula": "floor((nextLevel + 1)^4)",

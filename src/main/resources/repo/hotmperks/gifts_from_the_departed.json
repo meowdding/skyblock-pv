@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "gifts_from_the_departed",
+    "location": [2, 9],
     "max_level": 100,
     "powder_type": "GLACITE",
     "cost_formula": "floor((nextLevel + 1)^2.45)",

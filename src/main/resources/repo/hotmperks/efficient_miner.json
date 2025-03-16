@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "efficient_miner",
+    "location": [3, 2],
     "max_level": 100,
     "powder_type": "MITHRIL",
     "cost_formula": "floor((nextLevel + 1)^2.6)",

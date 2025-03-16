@@ -1,12 +1,13 @@
 {
     "type": "perk",
     "id": "mining_speed",
+    "location": [3, 0],
     "max_level": 50,
     "powder_type": "MITHRIL",
     "cost_formula": "floor((nextLevel + 1)^3)",
     "reward_formula": "level * 20",
     "name": "Mining Speed",
     "tooltip": [
-        "<gray>Grants <gold>+%reward% ⸕ Mining Speed<gray>."
+        "<gray>Grants <gold>+%reward%⸕ Mining Speed<gray>."
     ]
 }

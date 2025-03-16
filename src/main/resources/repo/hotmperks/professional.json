@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "professional",
+    "location": [2, 3],
     "max_level": 140,
     "powder_type": "GEMSTONE",
     "cost_formula": "floor((nextLevel + 1)^2.3)",

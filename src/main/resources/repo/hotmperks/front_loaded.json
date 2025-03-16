@@ -2,6 +2,7 @@
     "type": "unlevelable",
     "id": "front_loaded",
     "name": "Front Loaded",
+    "location": [6, 3],
     "tooltip": [
         "<gray>Grants the following buffs for the",
         "first <green>2,500 <light_purple>Gemstones <gray> you mine each",

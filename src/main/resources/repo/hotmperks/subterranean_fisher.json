@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "subterranean_fisher",
+    "location": [2, 5],
     "max_level": 40,
     "powder_type": "GEMSTONE",
     "cost_formula": "floor((nextLevel + 1)^3.07)",

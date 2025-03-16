@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "fortunate",
+    "location": [4, 3],
     "max_level": 20,
     "powder_type": "GEMSTONE",
     "cost_formula": "floor((nextLevel + 1)^4)",

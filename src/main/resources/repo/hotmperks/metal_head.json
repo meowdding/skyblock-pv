@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "metal_head",
+    "location": [1, 8],
     "max_level": 20,
     "powder_type": "GLACITE",
     "cost_formula": "floor((nextLevel + 1)^4)",

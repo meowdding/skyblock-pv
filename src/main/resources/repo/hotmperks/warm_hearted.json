@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "warm_hearted",
+    "location": [4, 7],
     "max_level": 50,
     "powder_type": "GLACITE",
     "cost_formula": "floor((nextLevel + 1)^3.1)",

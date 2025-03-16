@@ -2,6 +2,7 @@
     "type": "unlevelable",
     "id": "daily_powder",
     "name": "Daily Powder",
+    "location": [5, 4],
     "reward_formula": "hotmLevel * 500",
     "tooltip": [
         "<gray>The first ore you mine each day",

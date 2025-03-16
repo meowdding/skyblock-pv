@@ -2,6 +2,7 @@
     "type": "unlevelable",
     "id": "precision_mining",
     "name": "Precision Mining",
+    "location": [2, 1],
     "tooltip": [
         "<gray>When Mining <gold>Ores <gray>or <dark_gray>Dwarven Metals<gray>,",
         "<gray>a particle target appears on the",

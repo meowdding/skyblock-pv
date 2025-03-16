@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "mole",
+    "location": [3, 3],
     "max_level": 200,
     "powder_type": "GEMSTONE",
     "cost_formula": "floor((nextLevel + 1)^2.17883)",

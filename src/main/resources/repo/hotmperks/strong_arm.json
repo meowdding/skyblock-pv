@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "strong_arm",
+    "location": [2, 7],
     "max_level": 100,
     "powder_type": "GLACITE",
     "cost_formula": "floor((nextLevel + 1)^2.3)",
@@ -8,6 +9,6 @@
     "name": "Strong Arm",
     "tooltip": [
         "<gray>Gain <gold>+%reward%⸕ Mining Speed <gray>when mining",
-        "<gold>Dwarven Metals <gray>."
+        "<gold>Dwarven Metals<gray>."
     ]
 }

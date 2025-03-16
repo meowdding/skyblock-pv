@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "eager_adventurer",
+    "location": [5, 8],
     "max_level": 100,
     "powder_type": "GLACITE",
     "cost_formula": "floor((nextLevel + 1)^2.3)",

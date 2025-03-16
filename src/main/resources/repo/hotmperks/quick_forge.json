@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "forge_time",
+    "location": [5, 2],
     "max_level": 20,
     "powder_type": "MITHRIL",
     "cost_formula": "floor((nextLevel + 1)^3.2)",

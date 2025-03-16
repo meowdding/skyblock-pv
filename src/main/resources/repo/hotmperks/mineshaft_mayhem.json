@@ -2,6 +2,7 @@
     "type": "unlevelable",
     "id": "mineshaft_mayhem",
     "name": "Mineshaft Mayhem",
+    "location": [6, 7],
     "tooltip": [
         "<gray>Every time you enter a <aqua>Glacite",
         "<aqua>Mineshaft<gray>, <gray>you receive a random buff.",

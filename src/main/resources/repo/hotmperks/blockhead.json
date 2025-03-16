@@ -1,6 +1,7 @@
 {
     "type": "perk",
     "id": "blockhead",
+    "location": [1, 5],
     "max_level": 20,
     "powder_type": "GEMSTONE",
     "cost_formula": "floor((nextLevel + 1)^4)",
