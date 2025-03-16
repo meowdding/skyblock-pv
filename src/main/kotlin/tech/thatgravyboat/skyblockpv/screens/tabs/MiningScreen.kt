@@ -99,10 +99,10 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
                 val widget = listOf(icon, state).toRow(1).asWidget()
                 widget.withTooltip(
-                    Text.join(
-                        "§l${name.toTitleCase()}\n",
-                        "§7State: ${crystal.state.toTitleCase()}\n",
-                        "§7Found: ${crystal.totalFound.toFormattedString()}\n",
+                    Text.multiline(
+                        "§l${name.toTitleCase()}",
+                        "§7State: ${crystal.state.toTitleCase()}",
+                        "§7Found: ${crystal.totalFound.toFormattedString()}",
                         "§7Placed: ${crystal.totalPlaced.toFormattedString()}",
                     ),
                 )
@@ -145,9 +145,9 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
                     Displays.text("§8${timeDisplay}", shadow = false),
                 ).toRow(1).asWidget()
                 widget.withTooltip(
-                    Text.join(
-                        "§l${item?.hoverName?.stripped}\n",
-                        "§7Time Remaining: ${timeDisplay}\n",
+                    Text.multiline(
+                        "§l${item?.hoverName?.stripped}",
+                        "§7Time Remaining: $timeDisplay",
                         "§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}",
                     ),
                 )

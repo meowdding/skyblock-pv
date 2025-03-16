@@ -170,9 +170,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             .withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback { this@BasePvScreen.rebuildWidgets() }
 
-        val hoverText = Text.join(
-            "Screen: ${this@BasePvScreen.width}x${this@BasePvScreen.height}\n",
-            "UI: ${uiWidth}x${uiHeight}\n",
+        val hoverText = Text.multiline(
+            "Screen: ${this@BasePvScreen.width}x${this@BasePvScreen.height}",
+            "UI: ${uiWidth}x${uiHeight}",
             "BG: ${bg.width}x${bg.height}",
         )
         val screenSizeText = Button()
