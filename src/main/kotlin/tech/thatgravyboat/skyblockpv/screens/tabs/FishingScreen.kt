@@ -324,22 +324,18 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addStat("Normal Catches", itemsFished.normal)
             addStat("Treasures Found", itemsFished.treasure + itemsFished.largeTreasure)
             addStat("Trophy Fishes Caught", profile.trophyFish.totalCatches) {
-                withTooltip(
-                    profile.trophyFish.obtainedTypes.asSequence().mapNotNull {
-                        val fishTiers = TrophyFishTiers.entries.firstOrNull { tier ->
-                            it.key.endsWith(tier.name.lowercase())
-                        } ?: return@mapNotNull null
-                        return@mapNotNull fishTiers to it.value
-                    }.groupBy { it.first }.map { it.key to it.value.sumOf { it.second } }
-                        .sortedBy { it.first.ordinal }.map {
-                            whiteText("Total ") {
-                                append(text(it.first.displayName))
-                                append(" Caught: ")
-                                append("${it.second}")
-                            }
-                        }.toList(),
-
-                    )
+                profile.trophyFish.obtainedTypes.asSequence().mapNotNull {
+                    val fishTiers = TrophyFishTiers.entries.firstOrNull { tier ->
+                        it.key.endsWith(tier.name.lowercase())
+                    } ?: return@mapNotNull null
+                    return@mapNotNull fishTiers to it.value
+                }.groupBy { it.first }.map { it.key to it.value.sumOf { it.second } }.sortedBy { it.first.ordinal }.map {
+                    whiteText("Total ") {
+                        append(text(it.first.displayName))
+                        append(" Caught: ")
+                        append("${it.second}")
+                    }
+                }.toList().takeUnless { it.isEmpty() }?.let { withTooltip(it) }?: this
             }
         },
         padding = 30,
