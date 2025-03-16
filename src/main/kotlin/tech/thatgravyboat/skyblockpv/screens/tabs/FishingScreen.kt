@@ -42,7 +42,6 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     override fun create(bg: DisplayWidget) {
         val profile = profile ?: return
 
-
         val infoWidget = getInfoWidget(profile)
         val statWidget = getStatWidget(profile)
         val gearWidget = getGearWidget(profile)
@@ -433,10 +432,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             predicate = ItemApi.anySkyblockId(FishingEquipment.rods),
         )?.sortedBy(::calculateItemScore)?.reversed()?.take(4)?.toMutableList() ?: mutableListOf()
 
-        if (fishingRods.size != 4) {
-            for (i in (fishingRods.size - 1).coerceAtLeast(0)..3) {
-                fishingRods.add(i, Items.AIR.defaultInstance)
-            }
+        while (fishingRods.size < 4) {
+            fishingRods.add(Items.AIR.defaultInstance)
         }
 
         val column = fishingRods.map {
