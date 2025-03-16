@@ -78,7 +78,7 @@ data class SkyBlockProfile(
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
                 dungeonData = member.getAsJsonObject("dungeons")?.let { DungeonData.fromJson(it) },
-                mining = member.getAsJsonObject("mining_core")?.parseMiningData(),
+                mining = member.getAsJsonObject("mining_core")?.let { MiningCore.fromJson(it) },
                 forge = member.getAsJsonObject("forge")?.let { Forge.fromJson(it) },
                 tamingLevelPetsDonated = run {
                     val petsData = member.getAsJsonObject("pets_data")
@@ -91,37 +91,6 @@ data class SkyBlockProfile(
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
                 essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
-            )
-        }
-
-        // TODO: move into miningcore class
-        private fun JsonObject.parseMiningData(): MiningCore {
-            val nodes = this.getAsJsonObject("nodes").asMap { id, amount -> id to amount.asInt(0) }.filterKeys { !it.startsWith("toggle_") }
-            val toggledNodes = this.getAsJsonObject("nodes").entrySet().filter { it.key.startsWith("toggle") }
-                .map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
-                .filterNot { it.second }
-                .map { it.first }
-            val crystals = this.getAsJsonObject("crystals").asMap { id, data ->
-                val obj = data.asJsonObject
-                id to Crystal(
-                    state = obj["state"].asString(""),
-                    totalPlaced = obj["total_placed"].asInt(0),
-                    totalFound = obj["total_found"].asInt(0),
-                )
-            }
-
-            return MiningCore(
-                nodes = nodes,
-                toggledNodes = toggledNodes,
-                crystals = crystals,
-                experience = this["experience"].asLong(0),
-                powderMithril = this["powder_mithril"].asInt(0),
-                powderSpentMithril = this["powder_spent_mithril"].asInt(0),
-                powderGemstone = this["powder_gemstone"].asInt(0),
-                powderSpentGemstone = this["powder_spent_gemstone"].asInt(0),
-                powderGlacite = this["powder_glacite"].asInt(0),
-                powderSpentGlacite = this["powder_spent_glacite"].asInt(0),
-                miningAbility = this["selected_pickaxe_ability"].asString("")
             )
         }
 
