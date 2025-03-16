@@ -27,5 +27,4 @@ data class ForgeSlot(
     val id: String,
     val startTime: Long,
     val notified: Boolean,
-    //val oldItem: ItemStack?,
 )
