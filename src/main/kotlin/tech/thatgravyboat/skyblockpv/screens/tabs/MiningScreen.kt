@@ -87,7 +87,7 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
         widget(getMainContentWidget(powderTable, width - 5))
     }
 
-    private fun createRightColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
+    private fun createRightColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
         spacer(width, 5)
 
         val crystalContent = LayoutBuild.vertical(5) {
@@ -118,9 +118,8 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             }
         }
 
-        // TODO: fix the hardcoded .centerHori which is only needed here and nowhere else??
-        widget(getTitleWidget("Placed Crystals", width - 5).centerHorizontally(width))
-        widget(getMainContentWidget(crystalContent, width - 5).centerHorizontally(width))
+        widget(getTitleWidget("Placed Crystals", width - 5))
+        widget(getMainContentWidget(crystalContent, width - 5))
 
 
         val forgeSlots = profile?.forge?.slots ?: return@vertical
@@ -156,7 +155,7 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             }
         }
 
-        widget(getTitleWidget("Forge", width - 5).centerHorizontally(width))
-        widget(getMainContentWidget(forgeContent, width - 5).centerHorizontally(width))
+        widget(getTitleWidget("Forge", width - 5))
+        widget(getMainContentWidget(forgeContent, width - 5))
     }
 }
