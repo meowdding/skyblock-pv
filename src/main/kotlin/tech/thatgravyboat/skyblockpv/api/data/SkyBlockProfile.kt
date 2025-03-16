@@ -158,7 +158,7 @@ data class SkyBlockProfile(
                     id = obj["id"].asString(""),
                     startTime = obj["startTime"].asLong(0),
                     notified = obj["notified"].asBoolean(false),
-                    oldItem = InventoryData.Inventory.fromJson(obj.getAsJsonObject("oldItem")).inventory.firstOrNull(),
+                    //oldItem = InventoryData.Inventory.fromJson(obj.getAsJsonObject("oldItem")).inventory.firstOrNull(),
                 )
 
                 key.toInt() to slot
