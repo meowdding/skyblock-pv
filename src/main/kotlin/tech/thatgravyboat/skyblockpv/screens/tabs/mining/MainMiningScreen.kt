@@ -11,6 +11,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.data.EssenceData
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.MiningCore
 import tech.thatgravyboat.skyblockpv.data.RockBrackets
@@ -101,6 +102,34 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     },
                 ),
             )
+
+            fun addPerk(id: String) {
+                val perkLevel = profile.essenceUpgrades[id] ?: 0
+                val perk = EssenceData.allPerks.entries.find { it.key == id }?.value
+                val maxLevel = perk?.maxLevel ?: 0
+
+                val display = Displays.text(
+                    Text.join(
+                        perk?.name,
+                        ": ",
+                        Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) TextColor.GREEN else TextColor.RED },
+                        "/$maxLevel",
+                    ),
+                    { TextColor.DARK_GRAY.toUInt() },
+                    false,
+                )
+                display(display.withTranslatedTooltip("gui.skyblockpv.tab.mining.information.$id.desc"))
+            }
+
+            addPerk("fungus_fortuna")
+            addPerk("harena_fortuna")
+            addPerk("frozen_skin")
+            addPerk("treasures_of_the_earth")
+            addPerk("dwarven_training")
+            addPerk("eager_miner")
+            addPerk("rhinestone_infusion")
+            addPerk("high_roller")
+            addPerk("return_to_sender")
         }
 
         widget(getTitleWidget("Info", width - 5))
