@@ -1,8 +1,10 @@
 package tech.thatgravyboat.skyblockpv.data
 
+import java.util.*
+
 data class Pet(
-    val uuid: String?,
-    val uniqueId: String, // TODO: whats the difference? why can one be null? what the fuck hypixel
+    val uuid: UUID?,
+    val uniqueId: UUID?, // TODO: whats the difference? why can one be null? what the fuck hypixel
     val type: String,
     val exp: Long,
     val active: Boolean,

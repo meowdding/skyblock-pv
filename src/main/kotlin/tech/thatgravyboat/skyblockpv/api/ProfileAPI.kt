@@ -1,8 +1,7 @@
 package tech.thatgravyboat.skyblockpv.api
 
-import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import java.util.*
 
 private const val PATH = "v2/skyblock/profiles"
@@ -14,7 +13,7 @@ object ProfileAPI {
 
     suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = cache.getOrPut(uuid) {
         val result = HypixelAPI.get(PATH, mapOf("uuid" to uuid.toString())) ?: run {
-            Text.of("Something went wrong :3").send()
+            ChatUtils.chat("Something went wrong :3")
             return emptyList()
         }
 

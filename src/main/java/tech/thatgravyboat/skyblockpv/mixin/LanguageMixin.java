@@ -24,7 +24,8 @@ public class LanguageMixin {
 
     @Inject(
         method = "loadFromJson",
-        at = @At(value = "INVOKE", target = "Lcom/google/gson/JsonObject;entrySet()Ljava/util/Set;")
+        at = @At(value = "INVOKE", target = "Lcom/google/gson/JsonObject;entrySet()Ljava/util/Set;"),
+        cancellable = true
     )
     private static void loadFromJsonInject(
         InputStream ignored,
@@ -52,6 +53,7 @@ public class LanguageMixin {
                     output.accept(key, skyblockpv$fixString(value.getAsString()));
                 }
             }
+            ci.cancel();
         }
     }
 

@@ -23,10 +23,10 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
+import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
@@ -146,13 +146,16 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
             spacer(height = 20)
 
-            widget(Widgets.button()
-                .withRenderer(WidgetRenderers.text(Text.of("Open Logs")))
-                .withSize(100, 20)
-                .withCallback {
-                    Util.getPlatform().openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
-                }
+            widget(
+                Widgets.button()
+                    .withRenderer(WidgetRenderers.text(Text.of("Open Logs")))
+                    .withSize(100, 20)
+                    .withCallback {
+                        Util.getPlatform().openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
+                    },
             )
+
+            // todo: button to remove name entry from usercache.json
         }
 
         FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
@@ -198,7 +201,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         Files.createDirectories(file.parent)
         Files.writeString(file, profiles.toString())
 
-        Text.of("Profiles saved to .minecraft/config/skyblockpv/").send()
+        ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
     }
 
     private fun createTabs() = LayoutBuild.vertical(2) {
