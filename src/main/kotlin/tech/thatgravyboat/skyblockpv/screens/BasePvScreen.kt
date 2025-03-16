@@ -194,10 +194,17 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             .withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback { saveProfiles() }
 
+        val clearCache = Button()
+            .withRenderer(WidgetRenderers.text(Text.of("Clear Cache")))
+            .withSize(60, 20)
+            .withTexture(ExtraConstants.BUTTON_DARK)
+            .withCallback { ProfileAPI.clearCache() }
+
 
         widget(refreshButton)
         widget(screenSizeText)
         widget(saveButton)
+        widget(clearCache)
     }
 
     private fun saveProfiles() {
