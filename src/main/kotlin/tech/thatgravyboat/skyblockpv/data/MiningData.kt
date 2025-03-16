@@ -10,6 +10,7 @@ import com.notkamui.keval.KevalBuilder
 import com.notkamui.keval.keval
 import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
+import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.util.ExtraCodecs.LateBoundIdMapper
 import net.minecraft.util.StringRepresentable
@@ -36,6 +37,7 @@ data class MiningCore(
     val powderGlacite: Int,
     val powderSpentGlacite: Int,
     val toggledNodes: List<String>,
+    val miningAbility: String,
 ) {
     val levelToExp = mapOf(
         1 to 0,
@@ -51,7 +53,17 @@ data class MiningCore(
     )
 
     fun getHotmLevel(): Int = levelToExp.entries.findLast { it.value <= experience }?.key ?: 0
+    fun getXpToNextLevel() = experience - (levelToExp[getHotmLevel()] ?: 0)
+    fun getXpRequiredForNextLevel() = levelToExp[(getHotmLevel() + 1).coerceAtMost(10)]?: 0
 
+    fun getAbilityLevel(): Int {
+        val cotmLevel = nodes["special_0"] ?: 0
+        return if (cotmLevel < 1) {
+            1
+        } else {
+            2
+        }
+    }
 }
 
 data class Crystal(
@@ -89,15 +101,15 @@ data class ForgeSlot(
     val notified: Boolean,
 )
 
-enum class PowderType : StringRepresentable {
-    MITHRIL,
-    GEMSTONE,
-    GLACITE;
+enum class PowderType(val formatting: ChatFormatting) : StringRepresentable {
+    MITHRIL(ChatFormatting.DARK_GREEN),
+    GEMSTONE(ChatFormatting.LIGHT_PURPLE),
+    GLACITE(ChatFormatting.AQUA);
 
     override fun getSerializedName() = name
 
     companion object {
-        val CODEC = StringRepresentable.fromEnum { entries.toTypedArray() }
+        val CODEC: Codec<PowderType> = StringRepresentable.fromEnum { entries.toTypedArray() }
     }
 }
 
@@ -110,6 +122,9 @@ object MiningNodes {
     init {
         ID_MAPPER.put("perk", LevelingMiningNode.CODEC)
         ID_MAPPER.put("unlevelable", UnlevelableMiningNode.CODEC)
+        ID_MAPPER.put("ability", AbilityMiningNode.CODEC)
+        ID_MAPPER.put("core", CoreMiningNode.CODEC)
+        ID_MAPPER.put("tier", TierNode.CODEC)
 
         val hotm = Utils.loadFromRepo<JsonArray>("hotm")
 
@@ -140,6 +155,10 @@ data class Context(val hotmLevel: Int = -1, val perkLevel: Int = -1) {
             name = "hotmLevel"
             value = hotmLevel.coerceAtLeast(1).toDouble()
         }
+        constant {
+            name = "effectiveLevel"
+            value = (perkLevel - 1).coerceAtLeast(0).toDouble()
+        }
     }
 }
 
@@ -152,6 +171,38 @@ interface MiningNode {
     fun tooltip(context: Context): List<Component>
     fun isMaxed(level: Int): Boolean
 }
+
+interface LevelableTooltipNode : MiningNode {
+    val rewards: Map<String, String>
+    val tooltip: List<String>
+
+    fun evaluate(context: Context): Map<String, String> {
+        return rewards.mapValues {
+            it.value.keval {
+                includeDefault()
+                context.configure(this)
+            }.toFormattedString()
+        }
+    }
+
+    override fun tooltip(context: Context): List<Component> {
+        val replacement = evaluate(context)
+
+        return tooltip.map {
+            TagParser.QUICK_TEXT_SAFE.parseText(
+                it.let {
+                    var text = it
+                    replacement.forEach { entry ->
+                        text = text.replace("%${entry.key}%", entry.value)
+                    }
+                    text
+                },
+                ParserContext.of(),
+            )
+        }
+    }
+}
+
 
 interface LevelableMiningNode : MiningNode {
     val maxLevel: Int
@@ -219,9 +270,9 @@ class LevelingMiningNode(
     override val maxLevel: Int,
     val powderType: PowderType,
     val costFormula: String,
-    val rewards: Map<String, String>,
-    val tooltip: List<String>,
-) : LevelableMiningNode {
+    override val rewards: Map<String, String>,
+    override val tooltip: List<String>,
+) : LevelableMiningNode, LevelableTooltipNode {
     companion object {
         val CODEC = RecordCodecBuilder.mapCodec {
             it.group(
@@ -255,28 +306,127 @@ class LevelingMiningNode(
 
     override fun type(): MapCodec<LevelingMiningNode> = CODEC
 
-    private fun evaluate(context: Context): Map<String, String> {
-        return rewards.mapValues {
-            it.value.keval {
-                includeDefault()
-                context.configure(this)
-            }.toFormattedString()
+    override fun isMaxed(level: Int) = level >= maxLevel
+}
+
+class AbilityMiningNode(
+    override val id: String,
+    override val name: String,
+    override val location: Vector2i,
+    override val rewards: Map<String, String>,
+    override val tooltip: List<String>,
+) : LevelableTooltipNode {
+    companion object {
+        val CODEC: MapCodec<AbilityMiningNode> = RecordCodecBuilder.mapCodec {
+            it.group(
+                Codec.STRING.fieldOf("id").forGetter(AbilityMiningNode::id),
+                Codec.STRING.fieldOf("name").forGetter(AbilityMiningNode::name),
+                vectorCodec.fieldOf("location").forGetter(AbilityMiningNode::location),
+                rewardFormulaCodec.fieldOf("reward_formula").forGetter(AbilityMiningNode::rewards),
+                Codec.STRING.listOf().fieldOf("tooltip").forGetter(AbilityMiningNode::tooltip),
+            ).apply(it, ::AbilityMiningNode)
         }
     }
+
+    override fun type(): MapCodec<AbilityMiningNode> = CODEC
+
+    override fun isMaxed(level: Int) = level == 3
+}
+
+class CoreMiningNode(
+    override val id: String,
+    override val name: String,
+    override val location: Vector2i,
+    val level: List<CotmLevel>,
+) : LevelableMiningNode {
+    companion object {
+        val CODEC: MapCodec<CoreMiningNode> = RecordCodecBuilder.mapCodec {
+            it.group(
+                Codec.STRING.fieldOf("id").forGetter(CoreMiningNode::id),
+                Codec.STRING.fieldOf("name").forGetter(CoreMiningNode::name),
+                vectorCodec.fieldOf("location").forGetter(CoreMiningNode::location),
+                CotmLevel.CODEC.listOf().fieldOf("level").forGetter(CoreMiningNode::level),
+            ).apply(it, ::CoreMiningNode)
+        }
+    }
+
+    data class CotmCost(val type: PowderType, val amount: Int) {
+        fun toPair() = type to amount
+
+        companion object {
+            val CODEC: Codec<CotmCost> = RecordCodecBuilder.create {
+                it.group(
+                    PowderType.CODEC.optionalFieldOf("type", PowderType.MITHRIL).forGetter(CotmCost::type),
+                    Codec.INT.optionalFieldOf("amount", 0).forGetter(CotmCost::amount),
+                ).apply(it, ::CotmCost)
+            }
+        }
+    }
+
+    data class CotmLevel(val cost: CotmCost, val include: List<Int>, val reward: List<String>) {
+        companion object {
+            private val rewardCodec = Codec.either(
+                Codec.STRING.listOf(),
+                Codec.STRING.xmap({ listOf(it) }, { it.first() }),
+            ).xmap(
+                { Either.unwrap(it) },
+                { if (it.size > 1) Either.left(it) else Either.right(it) },
+            )
+
+            val CODEC: Codec<CotmLevel> = RecordCodecBuilder.create {
+                it.group(
+                    CotmCost.CODEC.fieldOf("cost").forGetter(CotmLevel::cost),
+                    Codec.INT.listOf().optionalFieldOf("include", emptyList()).forGetter(CotmLevel::include),
+                    rewardCodec.fieldOf("reward").forGetter(CotmLevel::reward),
+                ).apply(it, ::CotmLevel)
+            }
+        }
+
+        fun tooltip(miningNode: CoreMiningNode): List<String> {
+            val tooltip = mutableListOf<String>()
+
+            include.map { miningNode.getLevel(it) }.flatMap { it.reward }.forEach { tooltip.add(it) }
+            tooltip.addAll(reward)
+
+            return tooltip
+        }
+    }
+
+    fun getLevel(level: Int): CotmLevel {
+        return this.level[level - 1]
+    }
+
+    override fun type(): MapCodec<CoreMiningNode> = CODEC
 
     override fun tooltip(context: Context): List<Component> {
-        val replacement = evaluate(context)
 
-        return tooltip.map {
-            TagParser.QUICK_TEXT_SAFE.parseText(it.let {
-                var text = it
-                replacement.forEach { entry ->
-                    text = text.replace("%${entry.key}%", entry.value)
-                }
-                text
-            }, ParserContext.of())
+        return getLevel(context.perkLevel).tooltip(this).map {
+            TagParser.QUICK_TEXT_SAFE.parseText(it, ParserContext.of())
         }
     }
 
-    override fun isMaxed(level: Int) = level >= maxLevel
+    override fun isMaxed(level: Int) = level == maxLevel
+    override val maxLevel: Int = level.size
+    override fun costForLevel(level: Int) = this.level[level - 1].cost.toPair()
+    override fun getPowderType(level: Int) = this.level[level - 1].cost.type
+}
+
+class TierNode(override val name: String, override val id: String, override val location: Vector2i, val rewards: List<String>): MiningNode {
+    companion object {
+        val CODEC: MapCodec<TierNode> = RecordCodecBuilder.mapCodec {
+            it.group(
+                Codec.STRING.fieldOf("name").forGetter(TierNode::name),
+                Codec.STRING.fieldOf("id").forGetter(TierNode::id),
+                vectorCodec.fieldOf("location").forGetter(TierNode::location),
+                Codec.STRING.listOf().fieldOf("rewards").forGetter(TierNode::rewards)
+            ).apply(it, ::TierNode)
+        }
+    }
+
+    override fun type() = CODEC
+
+    override fun tooltip(context: Context) = rewards.map {
+        TagParser.QUICK_TEXT_SAFE.parseText(it, ParserContext.of())
+    }
+    override fun isMaxed(level: Int) = level >= (location.y + 1)
 }

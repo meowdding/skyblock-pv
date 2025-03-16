@@ -1,0 +1,10 @@
+{
+    "type": "tier",
+    "id": "tier_8",
+    "location": [-2, 7],
+    "name": "Tier 8",
+    "rewards": [
+        "<dark_gray>+<purple>2 Token of the Mountain",
+        "<dark_gray>+<gold>New Forgeable Items"
+    ]
+}

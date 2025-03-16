@@ -1,0 +1,11 @@
+{
+    "type": "tier",
+    "id": "tier_7",
+    "location": [-2, 6],
+    "name": "Tier 7",
+    "rewards": [
+        "<dark_gray>+<purple>2 Token of the Mountain",
+        "<dark_gray>+<green>1 Forge Slot",
+        "<dark_gray>+<gold>New Forgeable Items"
+    ]
+}

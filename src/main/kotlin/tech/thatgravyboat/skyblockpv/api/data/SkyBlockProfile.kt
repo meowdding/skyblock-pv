@@ -96,10 +96,10 @@ data class SkyBlockProfile(
 
         // TODO: move into miningcore class
         private fun JsonObject.parseMiningData(): MiningCore {
-            val nodes = this.getAsJsonObject("nodes").asMap { id, amount -> id to amount.asInt(0) }
-            val toggledNodes = this.getAsJsonObject("nodes").entrySet().filter { it.key.startsWith("toggled") }
-                .map { it.key.removePrefix("toggled") to it.value.asBoolean(false) }
-                .filter { it.second }
+            val nodes = this.getAsJsonObject("nodes").asMap { id, amount -> id to amount.asInt(0) }.filterKeys { !it.startsWith("toggle_") }
+            val toggledNodes = this.getAsJsonObject("nodes").entrySet().filter { it.key.startsWith("toggle") }
+                .map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
+                .filterNot { it.second }
                 .map { it.first }
             val crystals = this.getAsJsonObject("crystals").asMap { id, data ->
                 val obj = data.asJsonObject
@@ -121,6 +121,7 @@ data class SkyBlockProfile(
                 powderSpentGemstone = this["powder_spent_gemstone"].asInt(0),
                 powderGlacite = this["powder_glacite"].asInt(0),
                 powderSpentGlacite = this["powder_spent_glacite"].asInt(0),
+                miningAbility = this["selected_pickaxe_ability"].asString("")
             )
         }
 

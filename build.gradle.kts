@@ -105,6 +105,12 @@ tasks.withType<JavaCompile>().configureEach {
     options.release.set(21)
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xwhen-guards")
+    }
+}
+
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
 }

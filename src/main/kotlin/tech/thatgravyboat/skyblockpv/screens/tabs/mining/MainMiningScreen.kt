@@ -34,6 +34,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val columnWidth = uiWidth / 2
 
         return LayoutBuild.horizontal(5) {
+            spacer(height = uiHeight)
             widget(createLeftColumn(mining, columnWidth))
             widget(createRightColumn(mining, columnWidth))
         }
