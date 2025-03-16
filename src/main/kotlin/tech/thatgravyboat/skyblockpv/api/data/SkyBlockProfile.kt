@@ -97,6 +97,10 @@ data class SkyBlockProfile(
         // TODO: move into miningcore class
         private fun JsonObject.parseMiningData(): MiningCore {
             val nodes = this.getAsJsonObject("nodes").asMap { id, amount -> id to amount.asInt(0) }
+            val toggledNodes = this.getAsJsonObject("nodes").entrySet().filter { it.key.startsWith("toggled") }
+                .map { it.key.removePrefix("toggled") to it.value.asBoolean(false) }
+                .filter { it.second }
+                .map { it.first }
             val crystals = this.getAsJsonObject("crystals").asMap { id, data ->
                 val obj = data.asJsonObject
                 id to Crystal(
@@ -108,6 +112,7 @@ data class SkyBlockProfile(
 
             return MiningCore(
                 nodes = nodes,
+                toggledNodes = toggledNodes,
                 crystals = crystals,
                 experience = this["experience"].asLong(0),
                 powderMithril = this["powder_mithril"].asInt(0),

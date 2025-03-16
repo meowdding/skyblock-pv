@@ -1,6 +1,7 @@
-package tech.thatgravyboat.skyblockpv.screens.tabs
+package tech.thatgravyboat.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -9,7 +10,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.MiningCore
-import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
@@ -27,33 +27,17 @@ import kotlin.time.toDuration
 //  rock pet
 //  separate page for hotm tree (@Sophie you promised :3)
 
-class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MINING", gameProfile, profile) {
-    val levelToExp = mapOf(
-        1 to 0,
-        2 to 3_000,
-        3 to 12_000,
-        4 to 37_000,
-        5 to 97_000,
-        6 to 197_000,
-        7 to 347_000,
-        8 to 557_000,
-        9 to 847_000,
-        10 to 1_247_000,
-    )
+class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
-    override fun create(bg: DisplayWidget) {
-        val mining = profile?.mining ?: return
-        val columnWidth = bg.width / 2
+    override fun getLayout(): Layout {
+        val mining = profile?.mining ?: return LayoutBuild.horizontal {  }
+        val columnWidth = uiWidth / 2
 
-        val columns = LayoutBuild.horizontal(5) {
+        return LayoutBuild.horizontal(5) {
             widget(createLeftColumn(mining, columnWidth))
             widget(createRightColumn(mining, columnWidth))
         }
-
-        columns.setPosition(bg.x, bg.y)
-        columns.visitWidgets(this::addRenderableWidget)
     }
-
     private fun createLeftColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
         spacer(width, 5)
 
@@ -67,7 +51,7 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
                 "amber_crystal",
             )
             val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
-            val hotmLevel = levelToExp.entries.findLast { it.value <= (profile?.mining?.experience ?: 0) }?.key ?: 0
+            val hotmLevel = mining.getHotmLevel()
 
             grayText("HotM: $hotmLevel")
             grayText("Total Runs: ${totalRuns.toFormattedString()}")

@@ -7,7 +7,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.tabs.CollectionScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.MainScreen
-import tech.thatgravyboat.skyblockpv.screens.tabs.MiningScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.mining.MainMiningScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.combat.BaseCombatScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.combat.DungeonScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.FishingScreen
@@ -26,7 +26,7 @@ enum class PvTabs(
     COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
     COLLECTION(CollectionScreen::class, Items.ITEM_FRAME.defaultInstance),
-    MINING(MiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
+    MINING(MainMiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     ;
 
