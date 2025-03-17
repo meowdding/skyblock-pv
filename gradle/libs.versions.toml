@@ -17,6 +17,7 @@ rlib = "3.4.0"
 legacydfu = "1.0.2+1.21.3"
 mixinconstraints = "1.0.7"
 placeholders = "2.5.2+1.21.3"
+repo = "1.0.0"
 
 # Dev Dependencies
 devauth = "1.2.1"
@@ -37,6 +38,7 @@ rlib = { module = "com.teamresourceful.resourcefullib:resourcefullib-fabric-1.21
 legacydfu = { module = "net.azureaaron:legacy-item-dfu", version.ref = "legacydfu" }
 mixinconstraints = { module = "com.moulberry:mixinconstraints", version.ref = "mixinconstraints" }
 placeholders = { module = "eu.pb4:placeholder-api", version.ref = "placeholders" }
+repo = { module = "tech.thatgravyboat.repo-lib:repo-lib", version.ref = "repo" }
 
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
