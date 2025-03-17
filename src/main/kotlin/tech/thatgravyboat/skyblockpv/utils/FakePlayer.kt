@@ -6,6 +6,7 @@ import net.minecraft.client.player.RemotePlayer
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.PlayerModelPart
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.phys.Vec3
 import net.minecraft.world.scores.Scoreboard
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 
@@ -26,4 +27,6 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
     override fun getDisplayName(): Component? = customDisplayName
 
     override fun isModelPartShown(part: PlayerModelPart) = part != PlayerModelPart.CAPE
+
+    override fun position(): Vec3? = Minecraft.getInstance().cameraEntity?.position()
 }

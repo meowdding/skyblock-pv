@@ -55,7 +55,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
         spacer(height = 5)
 
         val irrelevantSkills = listOf(
@@ -73,19 +73,19 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val infoColumn = LayoutBuild.vertical(2) {
             fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
 
-            string("Purse: ${profile.currency.purse.toFormattedString()}")
-            string("Motes: ${profile.currency.motes.toFormattedString()}")
+            string("Purse: ${profile.currency?.purse?.toFormattedString()}")
+            string("Motes: ${profile.currency?.motes?.toFormattedString()}")
             string(
                 buildString {
                     append("Bank: ")
-                    val soloBank = profile.currency.soloBank.takeIf { it != 0L }?.toFormattedString()
-                    val mainBank = profile.currency.mainBank.takeIf { it != 0L }?.toFormattedString()
+                    val soloBank = profile.currency?.soloBank.takeIf { it != 0L }?.toFormattedString()
+                    val mainBank = profile.currency?.mainBank.takeIf { it != 0L }?.toFormattedString()
 
                     if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
                     else append(soloBank ?: mainBank ?: "0")
                 },
             )
-            string("Cookie Buff: ${"§aActive".takeIf { profile.currency.cookieBuffActive } ?: "§cInactive"}")
+            string("Cookie Buff: ${"§aActive".takeIf { profile.currency?.cookieBuffActive == true } ?: "§cInactive"}")
             display(
                 grayText("SkyBlock Level: ${profile.skyBlockLevel.first}")
                     .withTooltip("Progress: ${profile.skyBlockLevel.second}/100"),
@@ -107,7 +107,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             string("Fairy Souls: ${profile.fairySouls}")
         }
 
-        widget(getMainContentWidget(infoColumn, width).centerHorizontally(width))
+        widget(getMainContentWidget(infoColumn, width))
     }
 
     private fun createMiddleColumn(profile: SkyBlockProfile, width: Int): LinearLayout {
@@ -162,7 +162,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         return layout
     }
 
-    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
         spacer(height = 5)
 
         fun <T> addSection(
@@ -228,7 +228,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         spacer(height = 10)
 
-        val essence = profile.currency.essence.asSequence().map { it.toPair() }
+        val essence = profile.currency?.essence?.asSequence()?.map { it.toPair() } ?: emptySequence()
         if (essence.sumOf { it.second } == 0L) return@vertical
         addSection<Long>(
             "Essence",

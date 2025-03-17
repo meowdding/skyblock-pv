@@ -43,15 +43,6 @@ TODO:
 </details>
 
 <details>
-<summary>Mining</summary>
-
-- [ ] HOTM tree
-- [ ] Ores Mined
-- [ ] mining essence shops
-
-</details>
-
-<details>
 <summary>Beastiary</summary>
 
 - [ ] different islands with mobs and progress bars

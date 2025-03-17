@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.data
 
+import tech.thatgravyboat.skyblockapi.api.data.Perk
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object ForgeTimeData {
@@ -28,5 +29,11 @@ object ForgeTimeData {
         20 to 0.7,
     )
 
-    fun getForgeTime(id: String, quickForgeLevel: Int = 0) = (forgeTimes[id] ?: 0L) * (quickForgeMultiplier[quickForgeLevel] ?: 1.0)
+    private fun coleActive() = Perk.MOLTEN_FORGE.active
+
+    fun getForgeTime(id: String, quickForgeLevel: Int = 0): Double {
+        val rawTime = forgeTimes[id] ?: 0L
+        val quickForgeMultiplier = quickForgeMultiplier[quickForgeLevel] ?: 1.0
+        return rawTime * quickForgeMultiplier * if (coleActive()) 0.75 else 1.0
+    }
 }

@@ -1,0 +1,13 @@
+{
+    "type": "perk",
+    "id": "mining_speed_2",
+    "location": [1, 6],
+    "max_level": 50,
+    "powder_type": "GLACITE",
+    "cost_formula": "floor((nextLevel + 1)^3.2)",
+    "reward_formula": "level * 40",
+    "name": "Speedy Mineman",
+    "tooltip": [
+        "<gray>Grants <gold>+%reward%⸕ Mining Speed<gray>."
+    ]
+}
