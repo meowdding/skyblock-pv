@@ -7,6 +7,7 @@ import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
@@ -51,6 +52,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
     private fun createPetLayout(pet: Pet): AbstractWidget {
         val rarity = SkyBlockRarity.entries.find { it.name == pet.tier } ?: SkyBlockRarity.COMMON
         val itemStack = ItemAPI.getPet(pet.type, rarity, pet.level, pet.skin)
+        pet.itemStack = itemStack
 
         val itemDisplay = Displays.item(itemStack, showTooltip = true, customStackText = "${pet.level}")
         val display = Displays.background(SkyBlockPv.id("inventory/inventory-1x1"), Displays.padding(3, itemDisplay))
@@ -66,7 +68,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createInfoRow(width: Int) = LayoutBuild.vertical {
         val petInfo = LayoutBuild.vertical {
-            string("Name: ${activePet?.type ?: "None"}")
+            string(Text.join("Name: ", activePet?.itemStack?.hoverName ?: "None"))
         }
 
         widget(Utils.getTitleWidget("Pet Info", width))

@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
+import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockpv.utils.asBoolean
 import tech.thatgravyboat.skyblockpv.utils.asInt
 import tech.thatgravyboat.skyblockpv.utils.asLong
@@ -17,6 +18,7 @@ data class Pet(
     val heldItem: String?,
     val candyUsed: Int,
     val skin: String?,
+    var itemStack: ItemStack? = null, // Coming from PetScreen opening
 ) {
     val level: Int
         get() = petLevels.drop(petRarityOffset[tier]!!).take(99).runningFold(0L) { a, b -> a + b }.let { lvls ->
