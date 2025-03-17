@@ -40,7 +40,7 @@ loom {
 }
 
 repositories {
-    maven(url = "https://nexus.resourcefulbees.com/repository/maven-public/")
+    maven(url = "https://maven.teamresourceful.com/repository/maven-public/")
     maven(url = "https://repo.hypixel.net/repository/Hypixel/")
     maven(url = "https://api.modrinth.com/maven")
     maven(url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
@@ -70,6 +70,8 @@ dependencies {
     modImplementation(libs.mixinconstraints)
     modImplementation(libs.placeholders)
 
+    implementation(libs.repo)
+
     include(libs.hypixelapi)
     include(libs.skyblockapi)
     include(libs.rconfig)
@@ -79,6 +81,7 @@ dependencies {
     include(libs.legacydfu)
     include(libs.mixinconstraints)
     include(libs.placeholders)
+    include(libs.repo)
 
     modRuntimeOnly(libs.devauth)
     modRuntimeOnly(libs.modmenu)

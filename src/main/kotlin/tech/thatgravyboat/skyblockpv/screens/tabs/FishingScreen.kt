@@ -18,9 +18,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
-import tech.thatgravyboat.skyblockpv.api.ItemApi
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.api.or
+import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
+import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -382,7 +382,10 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     private fun getTrophyArmor(profile: SkyBlockProfile): LayoutElement {
-        val trophyArmor = ItemApi.getItemsMatching(profile, ItemApi.anySkyblockId(FishingEquipment.trophyArmor)) ?: emptyList()
+        val trophyArmor = ItemPredicateHelper.getItemsMatching(
+            profile,
+            ItemPredicates.AnySkyblockID(FishingEquipment.trophyArmor)
+        ) ?: emptyList()
 
         val displayArmor = getDisplayArmor(trophyArmor).toColumn()
         return Displays.background(
@@ -392,9 +395,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     private fun getArmorAndEquipment(profile: SkyBlockProfile): LayoutElement {
-        val armorAndEquipment = ItemApi.getItemsMatching(
+        val armorAndEquipment = ItemPredicateHelper.getItemsMatching(
             profile,
-            ItemApi.anySkyblockId(FishingEquipment.armor).or(ItemApi.anySkyblockId(FishingEquipment.equipment)),
+            ItemPredicates.AnySkyblockID(FishingEquipment.armor).or(ItemPredicates.AnySkyblockID(FishingEquipment.equipment)),
         )?.sortedBy(::calculateItemScore)?.reversed() ?: emptyList()
 
         val displayArmor = getDisplayArmor(armorAndEquipment)
@@ -428,9 +431,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     private fun getRods(profile: SkyBlockProfile): LayoutElement {
-        val fishingRods = ItemApi.getItemsMatching(
+        val fishingRods = ItemPredicateHelper.getItemsMatching(
             profile = profile,
-            predicate = ItemApi.anySkyblockId(FishingEquipment.rods),
+            predicate = ItemPredicates.AnySkyblockID(FishingEquipment.rods),
         )?.sortedBy(::calculateItemScore)?.reversed()?.take(4)?.toMutableList() ?: mutableListOf()
 
         if (fishingRods.size != 4) {
