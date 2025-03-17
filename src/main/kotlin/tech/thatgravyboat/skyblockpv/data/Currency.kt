@@ -1,5 +1,11 @@
 package tech.thatgravyboat.skyblockpv.data
 
+import com.google.gson.JsonObject
+import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToEssenceOrder
+import tech.thatgravyboat.skyblockpv.utils.asBoolean
+import tech.thatgravyboat.skyblockpv.utils.asLong
+import tech.thatgravyboat.skyblockpv.utils.asMap
+
 data class Currency(
     val purse: Long,
     val mainBank: Long,
@@ -7,4 +13,16 @@ data class Currency(
     val motes: Long,
     val cookieBuffActive: Boolean,
     val essence: Map<String, Long>,
-)
+) {
+    companion object {
+        fun fromJson(json: JsonObject) = Currency(
+            purse = json["coin_purse"].asLong(0),
+            motes = json["motes_purse"].asLong(0),
+            mainBank = json["banking"].asLong(0),
+            soloBank = json.getAsJsonObject("banking")?.get("balance").asLong(0),
+            cookieBuffActive = json["cookie_buff_active"].asBoolean(false),
+            // todo: add missing essences if not unlocked
+            essence = json["essence"].asMap { id, obj -> id to obj.asJsonObject["current"].asLong(0) }.sortToEssenceOrder(),
+        )
+    }
+}

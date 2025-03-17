@@ -42,7 +42,6 @@ data class FishData(
     val treasuresCaught: Int,
     val festivalSharksKilled: Int,
     val itemsFished: ItemsFished,
-    val seaCreatureKills: Int,
 ) {
     companion object {
         fun fromJson(member: JsonObject, playerStats: JsonObject?, playerData: JsonObject?): FishData {
@@ -58,7 +57,6 @@ data class FishData(
                     largeTreasure = itemsFished?.get("large_treasure").asInt(0),
                     trophyFish = itemsFished?.get("trophy_fish").asInt(0),
                 ),
-                seaCreatureKills = playerStats?.get("sea_creature_kills").asInt(0),
             )
         }
     }

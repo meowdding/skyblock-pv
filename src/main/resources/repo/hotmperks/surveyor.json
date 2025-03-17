@@ -1,0 +1,15 @@
+{
+    "type": "perk",
+    "id": "surveyor",
+    "location": [5, 7],
+    "max_level": 20,
+    "powder_type": "GLACITE",
+    "cost_formula": "floor((nextLevel + 1)^4)",
+    "reward_formula": "level * 0.75",
+    "name": "Surveyor",
+    "tooltip": [
+        "<gray>Increases your chances of finding a",
+        "<aqua>Glacite Mineshaft <gray>when mining in the",
+        "<aqua>Glacite Tunnels <gray>by <green>%reward%%<gray>."
+    ]
+}

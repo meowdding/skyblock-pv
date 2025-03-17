@@ -1,0 +1,13 @@
+{
+    "type": "perk",
+    "id": "keep_it_cool",
+    "location": [3, 5],
+    "max_level": 50,
+    "powder_type": "GEMSTONE",
+    "cost_formula": "floor((nextLevel + 1)^3.07)",
+    "reward_formula": "level * 0.4",
+    "name": "Keep It Cool",
+    "tooltip": [
+        "<gray>Grants <red>+%reward%♨ Heat Resistance<gray>."
+    ]
+}

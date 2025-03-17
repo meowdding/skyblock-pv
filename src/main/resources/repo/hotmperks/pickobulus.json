@@ -1,0 +1,14 @@
+{
+    "type": "ability",
+    "id": "pickaxe_toss",
+    "name": "Pickobulus",
+    "location": [5, 1],
+    "reward_formula": "60 - effectiveLevel * 10",
+    "tooltip": [
+        "<gold>Pickaxe Ability: Pickobulus <yellow><bold>RIGHT CLICK",
+        "<gray>Throw your pickaxe to create an",
+        "<gray>explosion mining all ores in a <green>3 <gray>block",
+        "<gray>radius.",
+        "<dark_gray>Cooldown: <green>%reward%s"
+    ]
+}

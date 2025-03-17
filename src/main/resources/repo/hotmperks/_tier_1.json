@@ -1,0 +1,8 @@
+{
+    "type": "tier",
+    "location": [-2, 0],
+    "name": "Tier 1",
+    "rewards": [
+        "<dark_gray>+<purple>1 Token of the Mountain"
+    ]
+}

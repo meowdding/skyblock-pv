@@ -1,22 +1,29 @@
-package tech.thatgravyboat.skyblockpv.screens.tabs
+package tech.thatgravyboat.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
+import net.minecraft.ChatFormatting
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.data.EssenceData
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.MiningCore
-import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
+import tech.thatgravyboat.skyblockpv.data.RockBrackets
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
+import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 import kotlin.time.DurationUnit
@@ -27,34 +34,22 @@ import kotlin.time.toDuration
 //  rock pet
 //  separate page for hotm tree (@Sophie you promised :3)
 
-class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MINING", gameProfile, profile) {
-    val levelToExp = mapOf(
-        1 to 0,
-        2 to 3_000,
-        3 to 12_000,
-        4 to 37_000,
-        5 to 97_000,
-        6 to 197_000,
-        7 to 347_000,
-        8 to 557_000,
-        9 to 847_000,
-        10 to 1_247_000,
-    )
+class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
-    override fun create(bg: DisplayWidget) {
-        val mining = profile?.mining ?: return
-        val columnWidth = bg.width / 2
+    override fun getLayout(): Layout {
+        val profile = profile ?: return LayoutBuild.horizontal { }
+        val mining = profile.mining ?: return LayoutBuild.horizontal { }
+        val columnWidth = uiWidth / 2
 
-        val columns = LayoutBuild.horizontal(5) {
-            widget(createLeftColumn(mining, columnWidth))
+        return LayoutBuild.horizontal(5) {
+            spacer(height = uiHeight)
+            widget(createLeftColumn(profile, columnWidth))
             widget(createRightColumn(mining, columnWidth))
         }
-
-        columns.setPosition(bg.x, bg.y)
-        columns.visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createLeftColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
+    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+        val mining = profile.mining ?: return@vertical
         spacer(width, 5)
 
         val info = LayoutBuild.vertical(5) {
@@ -67,11 +62,76 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
                 "amber_crystal",
             )
             val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
-            val hotmLevel = levelToExp.entries.findLast { it.value <= (profile?.mining?.experience ?: 0) }?.key ?: 0
+            val hotmLevel = mining.getHotmLevel()
+
+            val oresMined = profile.petMilestones["ores_mined"] ?: 0
+            val rockPet = RockBrackets.getByOres(oresMined)
 
             grayText("HotM: $hotmLevel")
             grayText("Total Runs: ${totalRuns.toFormattedString()}")
+
+            display(
+                Displays.text(
+                    Text.join(
+                        Text.of("Rock Pet: ") { this.color = TextColor.DARK_GRAY },
+                        rockPet?.rarity?.displayText ?: Text.of("None") { this.color = TextColor.RED },
+                    ),
+                    shadow = false,
+                ).withTooltip(
+                    Text.join(
+                        Text.of("Ores Mined: ") { this.color = TextColor.WHITE },
+                        Text.of(oresMined.toFormattedString()) { this.color = TextColor.AQUA },
+                    ),
+                    "",
+                    RockBrackets.entries.map {
+                        whiteText {
+                            val hasObtained = it.oresRequired <= oresMined
+                            if (!hasObtained) {
+                                withStyle(ChatFormatting.STRIKETHROUGH)
+                                withStyle(ChatFormatting.DARK_GRAY)
+                            }
+                            append(
+                                text("${it.rarity.displayName} Rock") {
+                                    if (hasObtained) {
+                                        withColor((it.rarity.color))
+                                    }
+                                },
+                            )
+                            append("!")
+                        }
+                    },
+                ),
+            )
+
+            fun addPerk(id: String) {
+                val perkLevel = profile.essenceUpgrades[id] ?: 0
+                val perk = EssenceData.allPerks.entries.find { it.key == id }?.value
+                val maxLevel = perk?.maxLevel ?: 0
+
+                val display = Displays.text(
+                    Text.join(
+                        perk?.name,
+                        ": ",
+                        Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) TextColor.GREEN else TextColor.RED },
+                        "/$maxLevel",
+                    ),
+                    { TextColor.DARK_GRAY.toUInt() },
+                    false,
+                )
+                display(display.withTranslatedTooltip("gui.skyblockpv.tab.mining.information.$id.desc"))
+            }
+
+            addPerk("fungus_fortuna")
+            addPerk("harena_fortuna")
+            addPerk("frozen_skin")
+            addPerk("treasures_of_the_earth")
+            addPerk("dwarven_training")
+            addPerk("eager_miner")
+            addPerk("rhinestone_infusion")
+            addPerk("high_roller")
+            addPerk("return_to_sender")
         }
+
         widget(getTitleWidget("Info", width - 5))
         widget(getMainContentWidget(info, width - 5))
 
@@ -87,7 +147,7 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
         widget(getMainContentWidget(powderTable, width - 5))
     }
 
-    private fun createRightColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical {
+    private fun createRightColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
         spacer(width, 5)
 
         val crystalContent = LayoutBuild.vertical(5) {
@@ -99,10 +159,10 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
                 val widget = listOf(icon, state).toRow(1).asWidget()
                 widget.withTooltip(
-                    Text.join(
-                        "§l${name.toTitleCase()}\n",
-                        "§7State: ${crystal.state.toTitleCase()}\n",
-                        "§7Found: ${crystal.totalFound.toFormattedString()}\n",
+                    Text.multiline(
+                        "§l${name.toTitleCase()}",
+                        "§7State: ${crystal.state.toTitleCase()}",
+                        "§7Found: ${crystal.totalFound.toFormattedString()}",
                         "§7Placed: ${crystal.totalPlaced.toFormattedString()}",
                     ),
                 )
@@ -118,9 +178,8 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             }
         }
 
-        // TODO: fix the hardcoded .centerHori which is only needed here and nowhere else??
-        widget(getTitleWidget("Placed Crystals", width - 5).centerHorizontally(width))
-        widget(getMainContentWidget(crystalContent, width - 5).centerHorizontally(width))
+        widget(getTitleWidget("Placed Crystals", width - 5))
+        widget(getMainContentWidget(crystalContent, width - 5))
 
 
         val forgeSlots = profile?.forge?.slots ?: return@vertical
@@ -146,9 +205,9 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
                     Displays.text("§8${timeDisplay}", shadow = false),
                 ).toRow(1).asWidget()
                 widget.withTooltip(
-                    Text.join(
-                        "§l${item?.hoverName?.stripped}\n",
-                        "§7Time Remaining: ${timeDisplay}\n",
+                    Text.multiline(
+                        "§l${item?.hoverName?.stripped}",
+                        "§7Time Remaining: $timeDisplay",
                         "§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}",
                     ),
                 )
@@ -156,7 +215,7 @@ class MiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             }
         }
 
-        widget(getTitleWidget("Forge", width - 5).centerHorizontally(width))
-        widget(getMainContentWidget(forgeContent, width - 5).centerHorizontally(width))
+        widget(getTitleWidget("Forge", width - 5))
+        widget(getMainContentWidget(forgeContent, width - 5))
     }
 }

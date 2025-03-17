@@ -1,0 +1,14 @@
+{
+    "type": "perk",
+    "id": "rags_to_riches",
+    "location": [3, 8],
+    "max_level": 50,
+    "powder_type": "GLACITE",
+    "cost_formula": "floor((nextLevel + 1)^3.05)",
+    "reward_formula": "level * 4",
+    "name": "Rags to Riches",
+    "tooltip": [
+        "<gray>Grants <gold>+%reward%☘ Mining Fortune<gray> while in a",
+        "<aqua>Glacite Mineshaft<gray>."
+    ]
+}
