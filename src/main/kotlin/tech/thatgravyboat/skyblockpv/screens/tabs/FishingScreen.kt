@@ -1,8 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
-import earth.terrarium.olympus.client.components.base.ListWidget
-import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -27,7 +25,10 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.Utils.text
+import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
+import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -41,7 +42,6 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     override fun create(bg: DisplayWidget) {
         val profile = profile ?: return
-
 
         val infoWidget = getInfoWidget(profile)
         val statWidget = getStatWidget(profile)
@@ -141,13 +141,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 addBottomRow(gearWidget, statWidget)
             }.applyLayout()
         } else {
-            val scrollable = ListWidget(bg.width - 20, bg.height - 20)
-            trophyWidth = scrollable.width - 40
-            fun ListWidget.add(layout: Layout) {
-                add(LayoutWidget(layout).also { it.visible = true }.withStretchToContentSize())
-            }
+            trophyWidth = bg.width - 60
 
-            scrollable.add(LayoutBuild.vertical {
+            LayoutBuild.vertical {
                 fun add(element: LayoutElement)  {
                     spacer(height = 5, width = element.width + 20)
                     widget(element) {
@@ -160,11 +156,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 add(statWidget)
                 add(gearWidget)
                 add(trophyWidget)
-            })
-
-            scrollable.setPosition(bg.x + 10, bg.y + 10)
-
-            scrollable.visitWidgets(this::addRenderableWidget)
+            }.asScrollable(bg.width, bg.height).applyLayout()
         }
     }
 
@@ -192,14 +184,15 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             fun addPerk(id: String) {
                 val perkLevel = profile.essenceUpgrades[id] ?: 0
-                val maxLevel = EssenceData.allPerks.entries.find { it.key == id }?.value?.maxLevel ?: 0
+                val perk = EssenceData.allPerks.entries.find { it.key == id }?.value
+                val maxLevel = perk?.maxLevel ?: 0
 
                 val display = Displays.text(
                     Text.join(
-                        Text.translatable("gui.skyblockpv.tab.fishing.information.$id.title"),
+                        perk?.name,
                         ": ",
                         Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) TextColor.GREEN else TextColor.RED },
-                        "/$maxLevel"
+                        "/$maxLevel",
                     ),
                     { TextColor.DARK_GRAY.toUInt() },
                     false,
@@ -211,7 +204,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addPerk("midas_lure")
             addPerk("radiant_fisher")
 
-            val seaCreatureKills = profile.miscFishData.seaCreatureKills
+            val seaCreatureKills = profile.petMilestones["sea_creatures_killed"] ?: 0
             val dolphin = DolphinBrackets.getByKills(seaCreatureKills)
 
             display(
@@ -303,8 +296,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             string(
                 text("Sea creatures killed: ") {
-                    append(profile.miscFishData.seaCreatureKills.toFormattedString())
-                }
+                    append((profile.petMilestones["sea_creatures_killed"] ?: 0).toFormattedString())
+                },
             )
 
             fun addStat(statName: String, amount: Int, config: Display.() -> Display = { this }) {
@@ -325,22 +318,18 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addStat("Normal Catches", itemsFished.normal)
             addStat("Treasures Found", itemsFished.treasure + itemsFished.largeTreasure)
             addStat("Trophy Fishes Caught", profile.trophyFish.totalCatches) {
-                withTooltip(
-                    profile.trophyFish.obtainedTypes.asSequence().mapNotNull {
-                        val fishTiers = TrophyFishTiers.entries.firstOrNull { tier ->
-                            it.key.endsWith(tier.name.lowercase())
-                        } ?: return@mapNotNull null
-                        return@mapNotNull fishTiers to it.value
-                    }.groupBy { it.first }.map { it.key to it.value.sumOf { it.second } }
-                        .sortedBy { it.first.ordinal }.map {
-                            whiteText("Total ") {
-                                append(text(it.first.displayName))
-                                append(" Caught: ")
-                                append("${it.second}")
-                            }
-                        }.toList(),
-
-                    )
+                profile.trophyFish.obtainedTypes.asSequence().mapNotNull {
+                    val fishTiers = TrophyFishTiers.entries.firstOrNull { tier ->
+                        it.key.endsWith(tier.name.lowercase())
+                    } ?: return@mapNotNull null
+                    return@mapNotNull fishTiers to it.value
+                }.groupBy { it.first }.map { it.key to it.value.sumOf { it.second } }.sortedBy { it.first.ordinal }.map {
+                    whiteText("Total ") {
+                        append(text(it.first.displayName))
+                        append(" Caught: ")
+                        append("${it.second}")
+                    }
+                }.toList().takeUnless { it.isEmpty() }?.let { withTooltip(it) }?: this
             }
         },
         padding = 30,
@@ -436,10 +425,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             predicate = ItemPredicates.AnySkyblockID(FishingEquipment.rods),
         )?.sortedBy(::calculateItemScore)?.reversed()?.take(4)?.toMutableList() ?: mutableListOf()
 
-        if (fishingRods.size != 4) {
-            for (i in (fishingRods.size - 1).coerceAtLeast(0)..3) {
-                fishingRods.add(i, Items.AIR.defaultInstance)
-            }
+        while (fishingRods.size < 4) {
+            fishingRods.add(Items.AIR.defaultInstance)
         }
 
         val column = fishingRods.map {
@@ -566,17 +553,4 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         widget(Utils.getTitleWidget(title, element.width + padding))
         widget(Utils.getMainContentWidget(element, element.width + padding))
     }
-
-    private fun text(
-        text: String = "",
-        color: UInt = 0x555555u,
-        init: MutableComponent.() -> Unit = {}
-    ): MutableComponent {
-        return Text.of(text) {
-            withColor(color.toInt())
-            init(this)
-        }
-    }
-
-    private fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
 }

@@ -1,0 +1,18 @@
+{
+    "type": "ability",
+    "id": "maniac_miner",
+    "name": "Maniac Miner",
+    "location": [6, 5],
+    "reward_formula": {
+        "fortune": "level * 5",
+        "duration": "25 + effectiveLevel * 5"
+    },
+    "tooltip": [
+        "<gold>Pickaxe Ability: Maniac Miner <yellow><bold>RIGHT CLICK",
+        "<gray>Grants <dark_green>+1Ⓟ Breaking Powder <gray>and a",
+        "<gray>stack of <gold>+%fortune%☘ Mining Fortune <dark_gray>(caps",
+        "<dark_gray>at 1000) <gray>per block broken for <green>%duration%s<gray>.",
+        "<gray>Each block broken consumes <aqua>20 Mana<gray>.",
+        "<dark_gray>Cooldown: <green>120s"
+    ]
+}

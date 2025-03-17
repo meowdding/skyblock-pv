@@ -38,6 +38,11 @@ object CollectionAPI {
         return nextTier.key.toInt() to progress
     }
 
+    fun CollectionEntry.getProgressToMax(amount: Long): Float {
+        val maxAmount = tiers.entries.maxOf { it.value }
+        return (amount.toFloat() / maxAmount).coerceAtMost(1.0f)
+    }
+
     init {
         runBlocking {
             val collections = get()?.getAsJsonObject("collections") ?: return@runBlocking

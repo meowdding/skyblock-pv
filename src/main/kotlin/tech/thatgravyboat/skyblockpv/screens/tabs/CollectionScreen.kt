@@ -8,9 +8,11 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getIconFromCollectionType
+import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToMax
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToNextLevel
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
@@ -56,7 +58,6 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         addCategories(bg)
     }
 
-    // todo: dedupe with inventory categories
     private fun addCategories(bg: DisplayWidget) {
         val categories = profile!!.collections.map { it.category }.distinct().sortToCollectionCategoryOrder()
         val buttonRow = LinearLayout.horizontal().spacing(2)
@@ -89,23 +90,31 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     private fun getElement(col: CollectionItem): Display {
         val collectionEntry = CollectionAPI.getCollectionEntry(col.itemId) ?: return Displays.text("Unknown Item")
-        val prog = collectionEntry.getProgressToNextLevel(col.amount)
+        val progNext = collectionEntry.getProgressToNextLevel(col.amount)
+        val progMaxed = collectionEntry.getProgressToMax(col.amount)
+        val isMaxed = progNext.first == collectionEntry.maxTiers && progNext.second == 1.0f
 
-        val progressText = if (prog.first == collectionEntry.maxTiers && prog.second == 1.0f) {
+        val progressText = if (isMaxed) {
             Displays.text("§2Maxed")
         } else {
-            Displays.text("${(prog.second * 100).round()}% to ${prog.first}")
+            Displays.text("${(progNext.second * 100).round()}% to ${progNext.first}")
         }
 
-        val display = Displays.row(
+        val hover = Text.multiline(
+            "§l${col.itemStack?.hoverName?.string ?: col.itemId}",
+            "§7Collected: ${col.amount.toFormattedString()}",
+            if (!isMaxed) "§7Progress to ${progNext.first}: ${(progNext.second * 100).round()}%" else null,
+            "§7Progress to Max: ${if (isMaxed) "§2Maxed" else "${(progMaxed * 100).round()}%"}",
+        )
+
+        return Displays.row(
             Displays.item(col.itemStack ?: ItemStack.EMPTY),
             listOf(
                 Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.shorten()}")),
-                listOf(Displays.progress(prog.second), progressText).toRow(3),
+                listOf(Displays.progress(progNext.second), progressText).toRow(3),
             ).toColumn(1),
             spacing = 5,
             alignment = Alignment.CENTER,
-        )
-        return display
+        ).withTooltip(hover)
     }
 }

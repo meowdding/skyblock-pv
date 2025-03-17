@@ -26,6 +26,10 @@ object ProfileAPI {
         cache.remove(uuid)
         getProfiles(uuid)
     }
+
+    fun clearCache() {
+        cache.clear()
+    }
 }
 
 private class CacheEntry(

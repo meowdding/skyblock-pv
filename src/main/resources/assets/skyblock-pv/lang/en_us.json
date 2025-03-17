@@ -13,7 +13,6 @@
 
     "//comment/fishing": "",
 
-    "gui.skyblockpv.tab.fishing.information.drake_piper.title": "Drake Piper",
     "gui.skyblockpv.tab.fishing.information.drake_piper.desc": [
         "<white>Can be upgraded at the <light_purple>Ice Essence Shop</light_purple></white>",
         "<white>on <red>Jerry's Workshop</red></white>",
@@ -22,8 +21,6 @@
         "<white>by <green>10%</green> while on <red>Jerry's Workshop</red>.</white>"
     ],
 
-
-    "gui.skyblockpv.tab.fishing.information.midas_lure.title": "Midas Lure",
     "gui.skyblockpv.tab.fishing.information.midas_lure.desc": [
         "<white>Can be upgraded at the <light_purple>Gold Essence Shop</light_purple></white>",
         "<white>in the <gold>Royal Mines</gold> in the <dark_green>Dwarven Mines</dark_green></white>",
@@ -32,12 +29,66 @@
         "<white><gold>Gold Trophy Fish</gold> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
     ],
 
-    "gui.skyblockpv.tab.fishing.information.radiant_fisher.title": "Radiant Fisher",
     "gui.skyblockpv.tab.fishing.information.radiant_fisher.desc": [
         "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
         "<white>in the <dark_purple>Crystal Nucleus</dark_purple> in the <dark_purple>Crystal Hollows</dark_purple></white>",
         "",
         "<white>Increases your chances of fishing up a</white>",
         "<white><aqua>Diamond Trophy Fish</aqua> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+    ],
+    "//comment/mining": "",
+    "gui.skyblockpv.tab.mining.information.fungus_fortuna.desc": [
+        "<white>Can be upgraded at the <light_purple>Crimson Essence Shop</light_purple></white>",
+        "<white>in the <red>Crimson Isle</red></white>",
+        "",
+        "<white>Gain <gold>☘ Mining Fortune</gold> <white>when mining Mycelium</white>"
+    ],
+    "gui.skyblockpv.tab.mining.information.harena_fortuna.desc": [
+        "<white>Can be upgraded at the <light_purple>Crimson Essence Shop</light_purple></white>",
+        "<white>in the <red>Crimson Isle</red></white>",
+        "",
+        "<white>Gain <gold>☘ Mining Fortune</gold> <white>when mining Red Sand</white>"
+    ],
+    "gui.skyblockpv.tab.mining.information.frozen_skin.desc": [
+        "<white>Can be upgraded at the <light_purple>Ice Essence Shop</light_purple></white>",
+        "<white>on <red>Jerry's Workshop</red></white>",
+        "",
+        "<white>Increases your </white><aqua>❄ Cold Resistance</aqua>"
+    ],
+    "gui.skyblockpv.tab.mining.information.treasures_of_the_earth.desc": [
+        "<white>Can be upgraded at the <light_purple>Gold Essence Shop</light_purple></white>",
+        "<white>in the <gold>Royal Mines</gold> in the <dark_green>Dwarven Mines</dark_green></white>",
+        "",
+        "<white>Increases your chances of spawning a Worm or Scatha when mining Hard Stone</white>"
+    ],
+    "gui.skyblockpv.tab.mining.information.dwarven_training.desc": [
+        "<white>Can be upgraded at the <light_purple>Gold Essence Shop</light_purple></white>",
+        "<white>in the <gold>Royal Mines</gold> in the <dark_green>Dwarven Mines</dark_green></white>",
+        "",
+        "<white>Increases your <dark_aqua>☯ Mining Wisdom</dark_aqua> while on Mining Islands</white>"
+    ],
+    "gui.skyblockpv.tab.mining.information.eager_miner.desc": [
+        "<white>Can be upgraded at the <light_purple>Gold Essence Shop</light_purple></white>",
+        "<white>in the <gold>Royal Mines</gold> in the <dark_green>Dwarven Mines</dark_green></white>",
+        "",
+        "<white>Increases your <gold>⸕ Mining Speed</gold> while on Mining Islands</white>"
+    ],
+    "gui.skyblockpv.tab.mining.information.rhinestone_infusion.desc": [
+        "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
+        "<white>in the <light_purple>Crystal Nucleus</light_purple> in the <dark_green>Crystal Hollows</dark_green></white>",
+        "",
+        "<white>Increases <light_purple>Gemstone</light_purple> <gold>☘ Mining Fortune</gold> while on Mining Islands</white>"
+    ],
+    "gui.skyblockpv.tab.mining.information.high_roller.desc": [
+        "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
+        "<white>in the <light_purple>Crystal Nucleus</light_purple> in the <dark_green>Crystal Hollows</dark_green></white>",
+        "",
+        "<white>Gain <green>1</green> extra random drop when obtaining a</white> <light_purple>Crystal Nucleus Bundle</light_purple>"
+    ],
+    "gui.skyblockpv.tab.mining.information.return_to_sender.desc": [
+        "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
+        "<white>in the <light_purple>Crystal Nucleus</light_purple> in the <dark_green>Crystal Hollows</dark_green></white>",
+        "",
+        "<white>Increases the chances of a <aqua>Diamond Goblin</aqua> spawning</white>"
     ]
 }
