@@ -18,7 +18,10 @@ data class Pet(
     val candyUsed: Int,
     val skin: String?,
 ) {
-    val level: Int = petLevels.findLast { it <= exp }?.let { petLevels.indexOf(it) - petRarityOffset[tier]!! } ?: -1
+    val level: Int
+        get() = petLevels.drop(petRarityOffset[tier]!!).take(99).runningFold(0L) { a, b -> a + b }.let { lvls ->
+            lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
+        }
 
     companion object {
         fun fromJson(obj: JsonObject) = Pet(
