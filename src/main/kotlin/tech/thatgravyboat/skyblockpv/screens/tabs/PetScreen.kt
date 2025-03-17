@@ -1,11 +1,10 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
-import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.Pet
 import tech.thatgravyboat.skyblockpv.data.SortedEntry
@@ -30,9 +29,9 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createPetLayout(pet: Pet) = LayoutBuild.horizontal(3, 0.5f) {
         val rarity = SkyBlockRarity.entries.find { it.name == pet.tier } ?: SkyBlockRarity.COMMON
-        val itemStack = SkyBlockItems.getItemById(pet.type) ?: Items.BARRIER.defaultInstance
+        val itemStack = ItemAPI.getPet(pet.type, rarity, skin = pet.skin)
 
-        display(Displays.item(itemStack))
+        display(Displays.item(itemStack, showTooltip = true))
         string(Text.of(pet.type) { color = rarity.color })
     }
 }
