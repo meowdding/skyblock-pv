@@ -29,7 +29,7 @@ object ItemAPI {
         val data = RepoAPI.pets().getPet(petData.id)
         val pet = data.tiers[petData.rarity.name]
         val hasSkin = petData.skin != null
-        val skin = petData.skin?.let { getItem("PET_SKIN_$it") }
+        val skin = petData.skin?.let { getItem("PET_SKIN_$it").copy() }
 
         pet?.let {
             (skin.takeIf { hasSkin } ?: createSkull(it.texture)).apply {
