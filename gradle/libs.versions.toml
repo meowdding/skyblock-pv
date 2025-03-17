@@ -8,7 +8,7 @@ loader = "0.16.9"
 # Dependencies
 fabric = "0.114.0+1.21.4"
 fabrickotlin = "1.13.0+kotlin.2.1.0"
-skyblockapi = "1.0.0-beta.80"
+skyblockapi = "1.0.0-beta.81"
 hypixelapi = "1.0.1+build.1+mc1.21"
 rconfig = "3.4.1"
 rconfigkt = "3.3.2"
@@ -17,6 +17,7 @@ rlib = "3.4.0"
 legacydfu = "1.0.2+1.21.3"
 mixinconstraints = "1.0.7"
 placeholders = "2.5.2+1.21.3"
+keval = "1.1.1"
 repo = "1.0.0"
 
 # Dev Dependencies
@@ -38,6 +39,7 @@ rlib = { module = "com.teamresourceful.resourcefullib:resourcefullib-fabric-1.21
 legacydfu = { module = "net.azureaaron:legacy-item-dfu", version.ref = "legacydfu" }
 mixinconstraints = { module = "com.moulberry:mixinconstraints", version.ref = "mixinconstraints" }
 placeholders = { module = "eu.pb4:placeholder-api", version.ref = "placeholders" }
+keval = { module = "com.notkamui.libs:keval", version.ref = "keval" }
 repo = { module = "tech.thatgravyboat.repo-lib:repo-lib", version.ref = "repo" }
 
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }

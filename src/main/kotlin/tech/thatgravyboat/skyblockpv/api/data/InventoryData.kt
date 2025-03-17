@@ -107,4 +107,34 @@ data class InventoryData(
             }
         }
     }
+
+    companion object {
+        fun fromJson(json: JsonObject): InventoryData {
+            val backpackIcons: Map<Int, ItemStack> = json.getAsJsonObject("backpack_icons")?.let { Backpack.icons(it) } ?: emptyMap()
+            val bagContents = json.getAsJsonObject("bag_contents")
+            return InventoryData(
+                inventoryItems = json.getAsJsonObject("inv_contents")?.let { Inventory.fromJson(it) },
+                enderChestPages = json.getAsJsonObject("ender_chest_contents")?.let { EnderChestPage.fromJson(it) },
+                potionBag = bagContents?.getAsJsonObject("potion_bag")?.let { Inventory.fromJson(it) },
+                talismans = bagContents?.getAsJsonObject("talisman_bag")?.let { TalismansPage.fromJson(it) },
+                fishingBag = bagContents?.getAsJsonObject("fishing_bag")?.let { Inventory.fromJson(it) },
+                sacks = bagContents?.getAsJsonObject("sacks")?.let { Inventory.fromJson(it) },
+                quiver = bagContents?.getAsJsonObject("quiver")?.let { Inventory.fromJson(it) },
+                armorItems = json.getAsJsonObject("inv_armor")?.let { Inventory.fromJson(it) },
+                equipmentItems = json.getAsJsonObject("equipment_contents")?.let { Inventory.fromJson(it) },
+                personalVault = json.getAsJsonObject("personal_vault_contents")?.let { Inventory.fromJson(it) },
+                backpacks = json.getAsJsonObject("backpack_contents")?.let {
+                    Backpack.fromJson(it).map { (id, inv) ->
+                        Backpack(items = inv, icon = backpackIcons[id] ?: ItemStack.EMPTY)
+                    }
+                },
+                wardrobe = json.getAsJsonObject("wardrobe_contents")?.let {
+                    Wardrobe(
+                        equippedArmor = json.get("wardrobe_equipped_slot").asInt,
+                        armor = Wardrobe.fromJson(it),
+                    )
+                },
+            )
+        }
+    }
 }
