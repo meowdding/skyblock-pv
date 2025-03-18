@@ -35,14 +35,6 @@ TODO:
 </details>
 
 <details>
-<summary>Pets</summary>
-
-- [ ] all pets
-- [ ] each pet with stats
-
-</details>
-
-<details>
 <summary>Beastiary</summary>
 
 - [ ] different islands with mobs and progress bars
