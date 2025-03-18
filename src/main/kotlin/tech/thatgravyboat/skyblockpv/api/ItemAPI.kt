@@ -7,8 +7,9 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 
 object ItemAPI {
@@ -33,7 +34,12 @@ object ItemAPI {
 
         pet?.let {
             (skin.takeIf { hasSkin } ?: createSkull(it.texture)).apply {
-                val name = Text.join(data.name, if (hasSkin) " (Skin)" else CommonText.EMPTY)
+                val name = Text.join(
+                    Text.of("[Lvl ${petData.level}] ").withColor(TextColor.GRAY),
+                    Text.of(data.name).withColor(petData.rarity.color),
+                    if (hasSkin) Text.of(" ✦").withColor(TextColor.LIGHT_PURPLE) else null,
+                )
+                name.italic = false
                 set(DataComponents.CUSTOM_NAME, name)
                 set(DataComponents.LORE, ItemLore(it.lore.map(Text::of)))
             }
