@@ -330,6 +330,7 @@ object Displays {
                         val component = when (customStackText) {
                             null -> Text.of(stackSize.toString())
                             is Component -> customStackText
+                            is String -> Text.of(customStackText)
                             else -> Text.of(stackSize.toString())
                         }
                         graphics.drawString(
