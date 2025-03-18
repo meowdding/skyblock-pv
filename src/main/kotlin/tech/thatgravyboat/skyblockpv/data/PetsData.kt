@@ -29,13 +29,12 @@ data class Pet(
         lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
     }
 
-    val progressToNextLevel: Float
-        get() = run {
-            if (level == 100) return 1f
+    val progressToNextLevel: Float = run {
+        if (level == 100) return@run 1f
 
-            val currXp = cumulativeLevels[(level - 1).coerceAtLeast(0)]
-            ((exp.toFloat() - currXp) / (cumulativeLevels[level] - currXp))
-        }
+        val currXp = cumulativeLevels[(level - 1).coerceAtLeast(0)]
+        ((exp.toFloat() - currXp) / (cumulativeLevels[level] - currXp))
+    }
     val progressToMax: Float = (exp.toFloat() / cumulativeLevels.last()).coerceAtMost(1f)
 
     companion object {

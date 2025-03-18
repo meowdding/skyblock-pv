@@ -72,10 +72,10 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
             string(Text.join("Exp: ${activePet.exp.toFormattedString()}"))
 
             if (activePet.progressToMax == 1f) {
-                string(Text.join("Progress to Max: Max"))
+                string(Text.join("Progress Max: Maxed"))
             } else {
-                string(Text.join("Progress to Next: ${(activePet.progressToNextLevel * 100).round()}%"))
-                string(Text.join("Progress to Max: ${(activePet.progressToMax * 100).round()}%"))
+                string(Text.join("Progress Next: ${(activePet.progressToNextLevel * 100).round()}%"))
+                string(Text.join("Progress Max: ${(activePet.progressToMax * 100).round()}%"))
             }
         }
 
