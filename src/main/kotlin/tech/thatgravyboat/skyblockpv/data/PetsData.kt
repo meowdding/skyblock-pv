@@ -20,14 +20,14 @@ data class Pet(
     val candyUsed: Int,
     val skin: String?,
 ) {
+    val cumulativeLevels = petLevels.drop(petRarityOffset[tier]!!).take(99).runningFold(0L) { a, b -> a + b }
     val rarity = SkyBlockRarity.entries.find { it.name == tier } ?: SkyBlockRarity.COMMON
 
     val itemStack by lazy { ItemAPI.getPet(type, rarity, level, skin) }
 
-    val level: Int
-        get() = petLevels.drop(petRarityOffset[tier]!!).take(99).runningFold(0L) { a, b -> a + b }.let { lvls ->
-            lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
-        }
+    val level = cumulativeLevels.let { lvls ->
+        lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
+    }
 
     companion object {
         fun fromJson(obj: JsonObject) = Pet(
