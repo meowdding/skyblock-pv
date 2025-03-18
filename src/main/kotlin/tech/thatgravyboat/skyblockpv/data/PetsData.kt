@@ -29,6 +29,15 @@ data class Pet(
         lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
     }
 
+    val progressToNextLevel: Float
+        get() = run {
+            if (level == 100) return 1f
+
+            val currXp = cumulativeLevels[(level - 1).coerceAtLeast(0)]
+            ((exp.toFloat() - currXp) / (cumulativeLevels[level] - currXp))
+        }
+    val progressToMax: Float = (exp.toFloat() / cumulativeLevels.last()).coerceAtMost(1f)
+
     companion object {
         fun fromJson(obj: JsonObject) = Pet(
             uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },
