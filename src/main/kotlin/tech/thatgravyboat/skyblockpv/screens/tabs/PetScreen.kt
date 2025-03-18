@@ -9,6 +9,7 @@ import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.Pet
 import tech.thatgravyboat.skyblockpv.data.SortedEntry
@@ -77,6 +78,12 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
             } else {
                 string(Text.join("Progress Next: ${(activePet.progressToNextLevel * 100).round()}%"))
                 string(Text.join("Progress Max: ${(activePet.progressToMax * 100).round()}%"))
+            }
+
+            val petItemStack = activePet.heldItem?.let { ItemAPI.getItem(it) } ?: ItemAPI.fallbackItem(activePet.heldItem.toString())
+            horizontal(alignment = 0.5f) {
+                string("Held Item: ")
+                display(Displays.item(petItemStack, showTooltip = true))
             }
         }
 

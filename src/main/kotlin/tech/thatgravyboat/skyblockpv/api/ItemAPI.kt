@@ -23,7 +23,7 @@ object ItemAPI {
 
     fun getItem(id: String): ItemStack = itemCache.getOrPut(id) {
         val data = RepoAPI.items().getItem(id)
-        ItemStack.CODEC.parse(JsonOps.INSTANCE, data).result().orElse(null) ?: fallback(id)
+        ItemStack.CODEC.parse(JsonOps.INSTANCE, data).result().orElse(null) ?: fallbackItem(id)
     }
 
     fun getPet(petData: PetData): ItemStack = petCache.getOrPut(petData) {
@@ -44,12 +44,12 @@ object ItemAPI {
                 set(DataComponents.CUSTOM_NAME, name)
                 set(DataComponents.LORE, ItemLore(lore.map(Text::of)))
             }
-        } ?: fallback(petData.id)
+        } ?: fallbackItem(petData.id)
     }
 
     fun getPet(id: String, rarity: SkyBlockRarity, level: Int = 1, skin: String? = null): ItemStack = getPet(PetData(id, rarity, level, skin))
 
-    private fun fallback(id: String): ItemStack = ItemStack(Items.BARRIER).apply { this.set(DataComponents.ITEM_NAME, Text.of(id)) }
+    fun fallbackItem(id: String): ItemStack = ItemStack(Items.BARRIER).apply { this.set(DataComponents.ITEM_NAME, Text.of(id)) }
 
     data class PetData(
         val id: String,
