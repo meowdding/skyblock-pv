@@ -2,7 +2,8 @@ package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
-import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.asBoolean
 import tech.thatgravyboat.skyblockpv.utils.asInt
 import tech.thatgravyboat.skyblockpv.utils.asLong
@@ -18,8 +19,11 @@ data class Pet(
     val heldItem: String?,
     val candyUsed: Int,
     val skin: String?,
-    var itemStack: ItemStack? = null, // Coming from PetScreen opening
 ) {
+    val rarity = SkyBlockRarity.entries.find { it.name == tier } ?: SkyBlockRarity.COMMON
+
+    val itemStack by lazy { ItemAPI.getPet(type, rarity, level, skin) }
+
     val level: Int
         get() = petLevels.drop(petRarityOffset[tier]!!).take(99).runningFold(0L) { a, b -> a + b }.let { lvls ->
             lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
