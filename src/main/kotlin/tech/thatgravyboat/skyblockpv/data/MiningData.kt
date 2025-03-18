@@ -20,6 +20,7 @@ import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.*
 
 data class MiningCore(
@@ -123,7 +124,15 @@ data class ForgeSlot(
     val id: String,
     val startTime: Long,
     val notified: Boolean,
-)
+) {
+    val itemStack by lazy {
+        if (type == "PETS") {
+            ItemAPI.getPet(id, SkyBlockRarity.LEGENDARY, 100)
+        } else {
+            ItemAPI.getItem(id)
+        }
+    }
+}
 
 enum class RockBrackets(val oresRequired: Int, val rarity: SkyBlockRarity) {
     COMMON(2500, SkyBlockRarity.COMMON),

@@ -52,7 +52,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val mining = profile.mining ?: return@vertical
         spacer(width, 5)
 
-        val info = LayoutBuild.vertical(5) {
+        val info = LayoutBuild.vertical(3) {
             fun grayText(text: String) = display(Displays.text(text, color = { 0x555555u }, shadow = false))
             val nucleusRunCrystals = listOf(
                 "jade_crystal",
@@ -190,8 +190,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         val forgeContent = LayoutBuild.vertical(5) {
             forgeSlots.forEach { (index, slot) ->
-                val item = SkyBlockItems.getItemById(slot.id)
-                val itemDisplay = item?.let { Displays.item(it) } ?: Displays.text("§cFailed to load")
+                val itemDisplay = Displays.item(slot.itemStack)
                 val timeRemaining = (slot.startTime + ForgeTimeData.getForgeTime(slot.id, quickForgeLevel) - System.currentTimeMillis())
                     .toDuration(DurationUnit.MILLISECONDS)
                 val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) {
@@ -206,7 +205,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 ).toRow(1).asWidget()
                 widget.withTooltip(
                     Text.multiline(
-                        "§l${item?.hoverName?.stripped}",
+                        "§l${slot.itemStack.hoverName?.stripped}",
                         "§7Time Remaining: $timeDisplay",
                         "§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}",
                     ),
