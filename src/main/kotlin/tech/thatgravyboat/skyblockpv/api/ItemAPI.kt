@@ -40,8 +40,9 @@ object ItemAPI {
                     if (hasSkin) Text.of(" ✦").withColor(TextColor.LIGHT_PURPLE) else null,
                 )
                 name.italic = false
+                val lore = pet.getFormattedLore(petData.level)
                 set(DataComponents.CUSTOM_NAME, name)
-                set(DataComponents.LORE, ItemLore(it.lore.map(Text::of)))
+                set(DataComponents.LORE, ItemLore(lore.map(Text::of)))
             }
         } ?: fallback(petData.id)
     }
