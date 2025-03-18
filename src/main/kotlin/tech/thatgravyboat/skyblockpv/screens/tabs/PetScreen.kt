@@ -52,7 +52,8 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createPetLayout(pet: Pet): AbstractWidget {
         val itemDisplay = Displays.item(pet.itemStack, showTooltip = true, customStackText = Text.of(pet.level.toString()).withColor(pet.rarity.color))
-        val display = Displays.background(SkyBlockPv.id("inventory/inventory-1x1"), Displays.padding(3, itemDisplay))
+        val texture = "inventory/inventory-1x1-highlighted".takeIf { pet == activePet } ?: "inventory/inventory-1x1"
+        val display = Displays.background(SkyBlockPv.id(texture), Displays.padding(3, itemDisplay))
         return Button()
             .withSize(22, 22)
             .withTexture(null)

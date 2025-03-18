@@ -30,7 +30,7 @@ enum class PvTabs(
     COLLECTION(CollectionScreen::class, Items.ITEM_FRAME.defaultInstance),
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
-    PET(PetScreen::class, Items.BONE.defaultInstance)
+    PETS(PetScreen::class, Items.BONE.defaultInstance)
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(
