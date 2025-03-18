@@ -25,7 +25,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
 class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("PETS", gameProfile, profile) {
 
-    private var activePet: Pet? = null
+    private var selectedPet: Pet? = profile?.pets?.find { it.active }
 
     override fun create(bg: DisplayWidget) {
         val pets = profile?.pets ?: return
@@ -52,22 +52,22 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createPetLayout(pet: Pet): AbstractWidget {
         val itemDisplay = Displays.item(pet.itemStack, showTooltip = true, customStackText = Text.of(pet.level.toString()).withColor(pet.rarity.color))
-        val texture = "inventory/inventory-1x1-highlighted".takeIf { pet == activePet } ?: "inventory/inventory-1x1"
+        val texture = "inventory/inventory-1x1-highlighted".takeIf { pet == selectedPet } ?: "inventory/inventory-1x1"
         val display = Displays.background(SkyBlockPv.id(texture), Displays.padding(3, itemDisplay))
         return Button()
             .withSize(22, 22)
             .withTexture(null)
             .withRenderer(ExtraWidgetRenderers.display(display))
             .withCallback {
-                activePet = pet
+                selectedPet = pet
                 this.rebuildWidgets()
             }
     }
 
     private fun createInfoRow(width: Int) = LayoutBuild.vertical {
         val petInfo = LayoutBuild.vertical {
-            string(Text.join("Name: ", activePet?.type?.toTitleCase() ?: "None"))
-            val activePet = activePet ?: return@vertical
+            string(Text.join("Name: ", selectedPet?.type?.toTitleCase() ?: "None"))
+            val activePet = selectedPet ?: return@vertical
 
             string(Text.join("Level: ${activePet.level}"))
             string(Text.join("Exp: ${activePet.exp.toFormattedString()}"))
