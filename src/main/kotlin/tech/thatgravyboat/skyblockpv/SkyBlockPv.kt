@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
@@ -18,6 +19,8 @@ import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object SkyBlockPv : ModInitializer {
+    val version = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow().metadata.version
+
     override fun onInitialize() {
         val modules = listOf(
             this,
