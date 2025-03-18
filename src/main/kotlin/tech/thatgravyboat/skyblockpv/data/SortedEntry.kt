@@ -113,6 +113,15 @@ enum class SortedEntry(vararg entries: String) {
         "ICE",
         "CRIMSON",
     ),
+    RARITY(
+        "DIVINE",
+        "MYTHIC",
+        "LEGENDARY",
+        "EPIC",
+        "RARE",
+        "UNCOMMON",
+        "COMMON",
+    ),
     ;
 
     val list = entries.toList()
