@@ -6,6 +6,7 @@ import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
@@ -17,6 +18,8 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
+import tech.thatgravyboat.skyblockpv.utils.Utils.round
+import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
@@ -62,7 +65,18 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createInfoRow(width: Int) = LayoutBuild.vertical {
         val petInfo = LayoutBuild.vertical {
-            string(Text.join("Name: ", activePet?.itemStack?.hoverName ?: "None"))
+            string(Text.join("Name: ", activePet?.type?.toTitleCase() ?: "None"))
+            val activePet = activePet ?: return@vertical
+
+            string(Text.join("Level: ${activePet.level}"))
+            string(Text.join("Exp: ${activePet.exp.toFormattedString()}"))
+
+            if (activePet.progressToMax == 1f) {
+                string(Text.join("Progress to Max: Max"))
+            } else {
+                string(Text.join("Progress to Next: ${(activePet.progressToNextLevel * 100).round()}%"))
+                string(Text.join("Progress to Max: ${(activePet.progressToMax * 100).round()}%"))
+            }
         }
 
         widget(Utils.getTitleWidget("Pet Info", width))
