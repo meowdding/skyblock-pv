@@ -80,6 +80,8 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
                 string(Text.join("Progress Max: ${(activePet.progressToMax * 100).round()}%"))
             }
 
+            activePet.candyUsed.takeIf { it > 0 }?.let { string("Candy Used: $it") }
+
             val petItemStack = activePet.heldItem?.let { ItemAPI.getItem(it) } ?: return@vertical
             horizontal(alignment = 0.5f) {
                 string("Held Item: ")
