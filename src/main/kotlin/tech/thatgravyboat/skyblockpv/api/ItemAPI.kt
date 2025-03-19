@@ -40,14 +40,15 @@ object ItemAPI {
                     if (hasSkin) Text.of(" ✦").withColor(TextColor.LIGHT_PURPLE) else null,
                 )
                 name.italic = false
-                val lore = pet.getFormattedLore(petData.level)
+                val lore = pet.getFormattedLore(petData.level, petData.heldItem)
                 set(DataComponents.CUSTOM_NAME, name)
                 set(DataComponents.LORE, ItemLore(lore.map(Text::of)))
             }
         } ?: fallbackItem(petData.id)
     }
 
-    fun getPet(id: String, rarity: SkyBlockRarity, level: Int = 1, skin: String? = null): ItemStack = getPet(PetData(id, rarity, level, skin))
+    fun getPet(id: String, rarity: SkyBlockRarity, level: Int = 1, skin: String? = null, heldItem: String? = null): ItemStack =
+        getPet(PetData(id, rarity, level, skin, heldItem))
 
     fun fallbackItem(id: String): ItemStack = ItemStack(Items.BARRIER).apply { this.set(DataComponents.ITEM_NAME, Text.of(id)) }
 
@@ -56,5 +57,6 @@ object ItemAPI {
         val rarity: SkyBlockRarity,
         val level: Int,
         val skin: String?,
+        val heldItem: String?,
     )
 }

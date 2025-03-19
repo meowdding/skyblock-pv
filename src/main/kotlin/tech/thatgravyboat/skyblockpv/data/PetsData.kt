@@ -23,7 +23,7 @@ data class Pet(
     val cumulativeLevels = petLevels.drop(petRarityOffset[tier]!!).take(99).runningFold(0L) { a, b -> a + b }
     val rarity = SkyBlockRarity.entries.find { it.name == tier } ?: SkyBlockRarity.COMMON
 
-    val itemStack by lazy { ItemAPI.getPet(type, rarity, level, skin) }
+    val itemStack by lazy { ItemAPI.getPet(type, rarity, level, skin, heldItem) }
 
     val level = cumulativeLevels.let { lvls ->
         lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
