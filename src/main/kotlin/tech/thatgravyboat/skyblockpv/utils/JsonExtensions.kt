@@ -10,6 +10,7 @@ private fun <T> JsonElement?.parse(default: T, mapper: (JsonElement) -> T): T = 
 fun JsonElement?.asBoolean(default: Boolean): Boolean = parse(default) { it.asBoolean }
 fun JsonElement?.asInt(default: Int): Int = parse(default) { it.asInt }
 fun JsonElement?.asLong(default: Long): Long = parse(default) { it.asLong }
+fun JsonElement?.asDouble(default: Double): Double = parse(default) { it.asDouble }
 
 val JsonElement?.asUUID: UUID? get() = parse(null) { UUID.fromString(it.asString) }
 fun JsonElement?.asUUID(default: UUID): UUID = parse(default) { UUID.fromString(it.asString) }

@@ -1,0 +1,73 @@
+{
+    "beginner": [
+        1,
+        2,
+        4,
+        8
+    ],
+    "intermediate": [
+        16,
+        24,
+        32,
+        48
+    ],
+    "advanced": [
+        64,
+        96,
+        128,
+        {
+            "amount": 1,
+            "bundle": true
+        },
+        {
+            "amount": 1,
+            "bundle": true
+        },
+        {
+            "amount": 2,
+            "bundle": true
+        },
+        {
+            "amount": 2,
+            "bundle": true
+        },
+        {
+            "amount": 3,
+            "bundle": true
+        },
+        {
+            "amount": 3,
+            "bundle": true
+        },
+        {
+            "amount": 4,
+            "bundle": true
+        },
+        {
+            "amount": 5,
+            "bundle": true
+        },
+        {
+            "amount": 7,
+            "bundle": true
+        }
+    ],
+    "expert": [
+        {
+            "amount": 8,
+            "bundle": true
+        },
+        {
+            "amount": 10,
+            "bundle": true
+        },
+        {
+            "amount": 12,
+            "bundle": true
+        },
+        {
+            "amount": 15,
+            "bundle": true
+        }
+    ]
+}

@@ -1,0 +1,130 @@
+{
+    "default_1": {
+        "displayname": "<white>Default",
+        "item": "WOOD-5"
+    },
+    "default_2": {
+        "displayname": "<green>Red",
+        "item": "QUARTZ_BLOCK"
+    },
+    "default_3": {
+        "displayname": "<green>Medieval",
+        "item": "LOG-1"
+    },
+    "default_4": {
+        "displayname": "<green>Sunny",
+        "item": "RED_SANDSTONE"
+    },
+    "cabin": {
+        "displayname": "<blue>Cabin",
+        "item": "STAINED_CLAY-3"
+    },
+    "mansion_heights": {
+        "displayname": "<dark_purple>Mansion Heights",
+        "item": "WOOD-1"
+    },
+    "cube": {
+        "displayname": "<green>Cube",
+        "item": "CUBE_BARN_SKIN"
+    },
+    "cozy_cottage": {
+        "displayname": "<green>Cozy Cottage",
+        "item": "COZY_COTTAGE_BARN_SKIN"
+    },
+    "tavern": {
+        "displayname": "<green>Tavern",
+        "item": "TAVERN_BARN_SKIN"
+    },
+    "windmill": {
+        "displayname": "<green>Windmill",
+        "item": "WINDMILL_BARN_SKIN"
+    },
+    "melon": {
+        "displayname": "<gold>Melon",
+        "item": "MELON_BARN_SKIN"
+    },
+    "lucky": {
+        "displayname": "<gold>Lucky",
+        "item": "LUCKY_BARN_SKIN"
+    },
+    "trading_post": {
+        "displayname": "<green>Trading Post",
+        "item": "TRADING_POST_BARN_SKIN"
+    },
+    "autumn_hut": {
+        "displayname": "<green>Autumn Hut",
+        "item": "AUTUMN_HUT_BARN_SKIN"
+    },
+    "bamboo": {
+        "displayname": "<dark_purple>Bamboo",
+        "item": "BAMBOO_BARN_SKIN"
+    },
+    "hive": {
+        "displayname": "<gold>Hive",
+        "item": "HIVE_BARN_SKIN"
+    },
+    "castle": {
+        "displayname": "<dark_purple>Castle",
+        "item": "CASTLE_BARN_SKIN"
+    },
+    "frog": {
+        "displayname": "<gold>Frog",
+        "item": "FROG_BARN_SKIN"
+    },
+    "jerry": {
+        "displayname": "<gold>Jerry",
+        "item": "JERRY_BARN_SKIN"
+    },
+    "pinwheel_house": {
+        "displayname": "<gold>Pinwheel House",
+        "item": "PINWHEEL_HOUSE_BARN_SKIN"
+    },
+    "mushroom": {
+        "displayname": "<gold>Mushroom",
+        "item": "MUSHROOM_BARN_SKIN"
+    },
+    "end": {
+        "displayname": "<gold>The End",
+        "item": "END_BARN_SKIN"
+    },
+    "town_hall": {
+        "displayname": "<gold>Town Hall",
+        "item": "TOWN_HALL_BARN_SKIN"
+    },
+    "beach_ball": {
+        "displayname": "<gold>Beach Ball",
+        "item": "BEACH_BALL_BARN_SKIN"
+    },
+    "winter_homestead": {
+        "displayname": "<blue>Winter Homestead",
+        "item": "WINTER_HOMESTEAD_BARN_SKIN"
+    },
+    "sand_castle": {
+        "displayname": "<gold>Sand Castle",
+        "item": "SAND_CASTLE_BARN_SKIN"
+    },
+    "enchanted_nook": {
+        "displayname": "<blue>Enchanted Nook",
+        "item": "ENCHANTED_NOOK_BARN_SKIN"
+    },
+    "beautifall_cabin": {
+        "displayname": "Beautifall Cabin",
+        "item": "BEAUTIFALL_CABIN_BARN_SKIN"
+    },
+    "chocolate_factory": {
+        "displayname": "<gold>Chocolate Factory",
+        "item": "CHOCOLATE_FACTORY_BARN_SKIN"
+    },
+    "pesthunters_lair": {
+        "displayname": "<gold>Pesthunter's Lair",
+        "item": "PESTHUNTERS_LAIR_BARN_SKIN"
+    },
+    "winter_barn": {
+        "displayname": "<green>Winter Barn",
+        "item": "WINTER_BARN_BARN_SKIN"
+    },
+    "main_street": {
+        "displayname": "<gold>Main Street",
+        "item": "MAIN_STREET_BARN_SKIN"
+    }
+}
