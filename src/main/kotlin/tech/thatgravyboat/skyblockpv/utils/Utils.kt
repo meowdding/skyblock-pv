@@ -7,6 +7,7 @@ import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import earth.terrarium.olympus.client.shader.builtin.RoundedRectShader
 import kotlinx.coroutines.runBlocking
+import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.api.PlayerDbAPI
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import java.text.DecimalFormat
@@ -140,8 +142,11 @@ object Utils {
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
-        SkullBlockEntity.fetchGameProfile(username)
-            .thenAccept { profile ->
+        PlayerDbAPI.getUUID(username).takeIf { it != Util.NIL_UUID }?.let {
+            callback(it)
+            isFetchingGameProfile = false
+        }
+            ?: SkullBlockEntity.fetchGameProfile(username).thenAccept { profile ->
                 callback(profile.getOrNull())
                 isFetchingGameProfile = false
             }
