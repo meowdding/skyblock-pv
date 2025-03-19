@@ -39,6 +39,7 @@ data class SkyBlockProfile(
     val trophyFish: TrophyFishData,
     val miscFishData: FishData,
     val essenceUpgrades: Map<String, Int>,
+    val profileSpecificGardenData: ProfileSpecificGardenData,
 ) {
     companion object {
 
@@ -96,6 +97,14 @@ data class SkyBlockProfile(
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
                 essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
                 petMilestones = playerStats?.getAsJsonObject("pets")?.getAsJsonObject("milestone").asMap { id, amount -> id to amount.asInt(0) },
+                profileSpecificGardenData = run {
+                    val data = member.getAsJsonObject("garden_player_data") ?: return@run ProfileSpecificGardenData(0, 0)
+
+                    return@run ProfileSpecificGardenData(
+                        data.get("copper").asInt(0),
+                        data.get("larva_consumed").asInt(0)
+                    )
+                },
             )
         }
 
