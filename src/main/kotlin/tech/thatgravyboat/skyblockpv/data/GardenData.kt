@@ -6,9 +6,15 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.util.StringRepresentable
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.*
 import java.util.*
 
@@ -24,9 +30,9 @@ data class GardenData(
     val activeCommissions: List<ActiveCommission>,
     val gardenExperience: Long,
     val resourcesCollected: Map<GardenResource, Long>,
-    val selectedBarnSkin: String,
+    val selectedBarnSkin: StaticBarnSkin,
     val cropUpgradeLevels: Map<GardenResource, Short>,
-    val unlockedBarnSkins: List<String>,
+    val unlockedBarnSkins: List<StaticBarnSkin>,
 ) {
     companion object {
         private fun <T> JsonObject.asGardenResourceMap(mapper: (JsonElement?) -> T): Map<GardenResource, T> {
@@ -42,11 +48,13 @@ data class GardenData(
                 activeCommissions = ActiveCommission.parseListFromJson(result.getAsJsonObject("active_commissions")),
                 gardenExperience = result.get("garden_experience").asLong(0),
                 resourcesCollected = result.getAsJsonObject("resources_collected").asGardenResourceMap { it.asLong(0) },
-                selectedBarnSkin = result.get("selected_barn_skin").asString,
+                selectedBarnSkin = result.get("selected_barn_skin").asString.let {
+                    StaticGardenData.barnSkins[it] ?: StaticBarnSkin.UNKNOWN
+                },
                 cropUpgradeLevels = result.getAsJsonObject("crop_upgrade_levels")
                     .asGardenResourceMap { it?.asShort ?: 0 },
                 unlockedBarnSkins = result.getAsJsonArray("unlocked_barn_skins").map { it.asString("") }
-                    .filterNot(String::isNullOrEmpty),
+                    .filterNot(String::isNullOrEmpty).map { StaticGardenData.barnSkins[it] ?: StaticBarnSkin.UNKNOWN },
             )
         }
     }
@@ -79,6 +87,15 @@ data class CommissionData(
 }
 
 data class Plot(val type: PlotType, val id: Int) {
+    val data: StaticPlotData? = StaticGardenData.plots.find { it.id == "${type.name.lowercase()}_$id" }
+    val location = data?.location ?: Vector2i(0, 0)
+    val name = data?.getName()?.also { it.color = TextColor.GREEN } ?: Text.multiline(
+        "Couldn't find name!",
+        "Type: $type; id: $id",
+        "",
+        "Please report this on our discord!"
+    ) // todo add red formatting
+
     enum class PlotType {
         BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
     }
@@ -241,6 +258,8 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
 typealias VisitorId = String
 typealias SkyblockItemId = String
 
+fun SkyblockItemId.asItemStack() = ItemAPI.getItem(this)
+
 data object StaticGardenData {
     var barnSkins: Map<String, StaticBarnSkin> = emptyMap()
         private set
@@ -299,16 +318,18 @@ data object StaticGardenData {
 }
 
 data class StaticBarnSkin(
-    val displayName: String,
+    val displayName: Component,
     val item: SkyblockItemId,
 ) {
     companion object {
         val CODEC = RecordCodecBuilder.create {
             it.group(
-                Codec.STRING.fieldOf("displayname").forGetter(StaticBarnSkin::displayName),
+                CodecUtils.COMPONENT_TAG.fieldOf("displayname").forGetter(StaticBarnSkin::displayName),
                 Codec.STRING.fieldOf("item").forGetter(StaticBarnSkin::item)
             ).apply(it, ::StaticBarnSkin)
         }
+
+        val UNKNOWN = StaticBarnSkin(Text.of("Unknown") { this.color = TextColor.RED }, "barrier")
     }
 }
 
@@ -384,6 +405,12 @@ data class StaticPlotData(
                 Codec.INT.fieldOf("number").forGetter(StaticPlotData::number),
             ).apply(it, ::StaticPlotData)
         }
+    }
+
+    fun getName(): MutableComponent = Text.of("Plot") {
+        this.color = TextColor.YELLOW
+        append(Text.of(" - ") { this.color = TextColor.GRAY })
+        append(Text.of("$number") { this.color = TextColor.AQUA })
     }
 }
 

@@ -302,7 +302,7 @@ class UnlevelableMiningNode(
             it.group(
                 Codec.STRING.fieldOf("id").forGetter(UnlevelableMiningNode::id),
                 Codec.STRING.fieldOf("name").forGetter(UnlevelableMiningNode::name),
-                vectorCodec.fieldOf("location").forGetter(UnlevelableMiningNode::location),
+                CodecUtils.VECTOR_2I.fieldOf("location").forGetter(UnlevelableMiningNode::location),
                 Codec.STRING.optionalFieldOf("reward_formula", "0").forGetter(UnlevelableMiningNode::rewardFormula),
                 Codec.STRING.listOf().fieldOf("tooltip").forGetter(UnlevelableMiningNode::tooltip),
             ).apply(it, ::UnlevelableMiningNode)
@@ -340,8 +340,6 @@ private val rewardFormulaCodec = Codec.either(
     { if (it.size == 1) Either.left(it) else Either.right(it) },
 )
 
-private val vectorCodec = Codec.INT.listOf(2, 2).xmap({ Vector2i(it[0], it[1]) }, { listOf(it.x, it.y) })
-
 class LevelingMiningNode(
     override val id: String,
     override val name: String,
@@ -357,7 +355,7 @@ class LevelingMiningNode(
             it.group(
                 Codec.STRING.fieldOf("id").forGetter(LevelingMiningNode::id),
                 Codec.STRING.fieldOf("name").forGetter(LevelingMiningNode::name),
-                vectorCodec.fieldOf("location").forGetter(LevelingMiningNode::location),
+                CodecUtils.VECTOR_2I.fieldOf("location").forGetter(LevelingMiningNode::location),
                 Codec.INT.fieldOf("max_level").forGetter(LevelingMiningNode::maxLevel),
                 PowderType.CODEC.fieldOf("powder_type").forGetter(LevelingMiningNode::powderType),
                 Codec.STRING.fieldOf("cost_formula").forGetter(LevelingMiningNode::costFormula),
@@ -400,7 +398,7 @@ class AbilityMiningNode(
             it.group(
                 Codec.STRING.fieldOf("id").forGetter(AbilityMiningNode::id),
                 Codec.STRING.fieldOf("name").forGetter(AbilityMiningNode::name),
-                vectorCodec.fieldOf("location").forGetter(AbilityMiningNode::location),
+                CodecUtils.VECTOR_2I.fieldOf("location").forGetter(AbilityMiningNode::location),
                 rewardFormulaCodec.fieldOf("reward_formula").forGetter(AbilityMiningNode::rewards),
                 Codec.STRING.listOf().fieldOf("tooltip").forGetter(AbilityMiningNode::tooltip),
             ).apply(it, ::AbilityMiningNode)
@@ -423,7 +421,7 @@ class CoreMiningNode(
             it.group(
                 Codec.STRING.fieldOf("id").forGetter(CoreMiningNode::id),
                 Codec.STRING.fieldOf("name").forGetter(CoreMiningNode::name),
-                vectorCodec.fieldOf("location").forGetter(CoreMiningNode::location),
+                CodecUtils.VECTOR_2I.fieldOf("location").forGetter(CoreMiningNode::location),
                 CotmLevel.CODEC.listOf().fieldOf("level").forGetter(CoreMiningNode::level),
             ).apply(it, ::CoreMiningNode)
         }
@@ -495,7 +493,7 @@ class TierNode(override val name: String, override val location: Vector2i, val r
         val CODEC: MapCodec<TierNode> = RecordCodecBuilder.mapCodec {
             it.group(
                 Codec.STRING.fieldOf("name").forGetter(TierNode::name),
-                vectorCodec.fieldOf("location").forGetter(TierNode::location),
+                CodecUtils.VECTOR_2I.fieldOf("location").forGetter(TierNode::location),
                 Codec.STRING.listOf().fieldOf("rewards").forGetter(TierNode::rewards),
             ).apply(it, ::TierNode)
         }
@@ -513,8 +511,8 @@ class SpacerNode(override val location: Vector2i, val size: Vector2i): MiningNod
     companion object {
         val CODEC: MapCodec<SpacerNode> = RecordCodecBuilder.mapCodec {
             it.group(
-                vectorCodec.fieldOf("location").forGetter(SpacerNode::location),
-                vectorCodec.fieldOf("size").forGetter(SpacerNode::size)
+                CodecUtils.VECTOR_2I.fieldOf("location").forGetter(SpacerNode::location),
+                CodecUtils.VECTOR_2I.fieldOf("size").forGetter(SpacerNode::size)
             ).apply(it, ::SpacerNode)
         }
     }
