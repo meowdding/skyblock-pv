@@ -171,7 +171,7 @@ object Utils {
             DurationUnit.HOURS to this.inWholeHours % 24,
             DurationUnit.MINUTES to this.inWholeMinutes % 60,
             DurationUnit.SECONDS to this.inWholeSeconds % 60,
-            DurationUnit.MILLISECONDS to this.inWholeMilliseconds % 1000,
+            //DurationUnit.MILLISECONDS to this.inWholeMilliseconds % 1000,
         )
 
         val unitNames = mapOf(
@@ -179,7 +179,7 @@ object Utils {
             DurationUnit.HOURS to "h",
             DurationUnit.MINUTES to "min",
             DurationUnit.SECONDS to "s",
-            DurationUnit.MILLISECONDS to "ms",
+            //DurationUnit.MILLISECONDS to "ms",
         )
 
         val filteredUnits = units.dropWhile { it.first != biggestUnit }
