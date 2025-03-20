@@ -1,11 +1,12 @@
 package tech.thatgravyboat.skyblockpv.data
 
 import tech.thatgravyboat.skyblockapi.api.data.Perk
-import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 object ForgeTimeData {
-    val forgeTimes: Map<String, Long> = Utils.loadFromRepo<Map<String, Long>>("forge_times") ?: emptyMap()
-
     private val quickForgeMultiplier = mapOf(
         1 to 0.895,
         2 to 0.89,
@@ -31,9 +32,9 @@ object ForgeTimeData {
 
     private fun coleActive() = Perk.MOLTEN_FORGE.active
 
-    fun getForgeTime(id: String, quickForgeLevel: Int = 0): Double {
-        val rawTime = forgeTimes[id] ?: 0L
+    fun getForgeTime(id: String, quickForgeLevel: Int = 0): Duration {
+        val rawTime = ItemAPI.getForgeRecipe(id)?.time?.times(1000) ?: 0
         val quickForgeMultiplier = quickForgeMultiplier[quickForgeLevel] ?: 1.0
-        return rawTime * quickForgeMultiplier * if (coleActive()) 0.75 else 1.0
+        return (rawTime * quickForgeMultiplier * if (coleActive()) 0.75 else 1.0).toDuration(DurationUnit.MILLISECONDS)
     }
 }

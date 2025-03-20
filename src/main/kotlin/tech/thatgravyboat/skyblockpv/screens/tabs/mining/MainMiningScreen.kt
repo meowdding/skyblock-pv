@@ -191,8 +191,9 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val forgeContent = LayoutBuild.vertical(5) {
             forgeSlots.forEach { (index, slot) ->
                 val itemDisplay = Displays.item(slot.itemStack)
-                val timeRemaining = (slot.startTime + ForgeTimeData.getForgeTime(slot.id, quickForgeLevel) - System.currentTimeMillis())
-                    .toDuration(DurationUnit.MILLISECONDS)
+
+                val timeRemaining =
+                    ForgeTimeData.getForgeTime(slot.id, quickForgeLevel) + (slot.startTime - System.currentTimeMillis()).toDuration(DurationUnit.MILLISECONDS)
                 val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) {
                     "§aReady"
                 } else {
