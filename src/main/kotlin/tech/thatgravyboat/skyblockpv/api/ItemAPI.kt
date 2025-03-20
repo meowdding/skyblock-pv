@@ -6,6 +6,10 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import tech.thatgravyboat.repolib.api.RepoAPI
+import tech.thatgravyboat.repolib.api.recipes.ForgeRecipe
+import tech.thatgravyboat.repolib.api.recipes.Recipe
+import tech.thatgravyboat.repolib.api.recipes.ingredient.ItemIngredient
+import tech.thatgravyboat.repolib.api.recipes.ingredient.PetIngredient
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -16,6 +20,7 @@ object ItemAPI {
 
     private val itemCache: MutableMap<String, ItemStack> = mutableMapOf()
     private val petCache: MutableMap<PetData, ItemStack> = mutableMapOf()
+    private val forgeRecipeCache = mutableMapOf<String, ForgeRecipe?>()
 
     init {
         RepoAPI.setup()
@@ -49,6 +54,17 @@ object ItemAPI {
 
     fun getPet(id: String, rarity: SkyBlockRarity, level: Int = 1, skin: String? = null, heldItem: String? = null): ItemStack =
         getPet(PetData(id, rarity, level, skin, heldItem))
+
+    fun getForgeRecipe(id: String): ForgeRecipe? = forgeRecipeCache.getOrPut(id) {
+        RepoAPI.recipes().getRecipes(Recipe.Type.FORGE).find {
+            when (it.result) {
+                is ItemIngredient -> (it.result as ItemIngredient).id == id
+                is PetIngredient -> (it.result as PetIngredient).id == id
+                else -> false
+            }
+        }
+
+    }
 
     fun fallbackItem(id: String): ItemStack = ItemStack(Items.BARRIER).apply { this.set(DataComponents.ITEM_NAME, Text.of(id)) }
 
