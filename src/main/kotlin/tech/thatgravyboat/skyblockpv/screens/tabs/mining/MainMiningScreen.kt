@@ -30,11 +30,6 @@ import java.text.SimpleDateFormat
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-
-// TODO:
-//  rock pet
-//  separate page for hotm tree (@Sophie you promised :3)
-
 class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(): Layout {

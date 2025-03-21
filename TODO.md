@@ -60,6 +60,18 @@ TODO:
 </details>
 
 <details>
+<summary>Mining</summary>
+
+- [ ] Corpses looted
+- [ ] shaft**S** entered
+- [ ] fossils donated
+- [ ] fossil dust
+
+- [ ] mining gear
+
+</details>
+
+<details>
 <summary>Rift</summary>
 
 - [ ] Montezuna
