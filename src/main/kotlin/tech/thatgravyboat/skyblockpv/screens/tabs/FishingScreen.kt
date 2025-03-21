@@ -328,7 +328,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getDisplayArmor(list: List<ItemStack>) = buildList {
         fun addArmor(type: String) {
-            val itemStack = list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) ?: false } ?: ItemStack.EMPTY
+            val itemStack = list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) != false } ?: ItemStack.EMPTY
             add(
                 Displays.padding(
                     2,
