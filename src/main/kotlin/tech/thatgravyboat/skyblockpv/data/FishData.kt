@@ -111,29 +111,15 @@ private fun toArmorSet(baseId: String) = listOf(
 )
 
 enum class FishingEquipment(vararg ids: String) {
-
     RODS(
         // Water fishing rods
         "FISHING_ROD",
-        "PRISMARINE_ROD",
-        "ICE_ROD",
-        "SPONGE_ROD",
-        "CHUM_ROD",
-        "SPEEDSTER_ROD",
-        "FARMER_ROD",
-        "WINTER_ROD",
         "CHALLENGE_ROD",
         "CHAMP_ROD",
         "LEGEND_ROD",
         "ROD_OF_THE_SEA",
-        "YETI_ROD",
-        "AUGER_ROD",
         "DIRT_ROD",
         "GIANT_FISHING_ROD",
-
-        // Fishing weapons
-        "THE_SHREDDER",
-        "PHANTOM_ROD",
 
         // Lava fishing rods
         "POLISHED_TOPAZ_ROD",
@@ -141,6 +127,7 @@ enum class FishingEquipment(vararg ids: String) {
         "MAGMA_ROD",
         "INFERNO_ROD",
         "HELLFIRE_ROD",
+        "BINGO_LAVA_ROD",
     ),
     ARMOR(
         *listOf(
@@ -149,7 +136,8 @@ enum class FishingEquipment(vararg ids: String) {
             "SPONGE",
             "SHARK_SCALE",
             "THUNDER",
-            "MAGMA_LORD"
+            "MAGMA_LORD",
+            "BACKWATER",
         ).flatMap { toArmorSet(it) }.toTypedArray(),
         "SALMON_HELMET_NEW",
         "SALMON_LEGGINGS_NEW",
@@ -159,6 +147,7 @@ enum class FishingEquipment(vararg ids: String) {
         "FLAMING_CHESTPLATE",
         "TAURUS_HELMET",
         "MOOGMA_LEGGINGS",
+        "TIKI_MASK",
     ),
     TROPHY_ARMOR(
         *listOf(
@@ -199,8 +188,30 @@ enum class FishingEquipment(vararg ids: String) {
         "LUMINOUS_BRACELET",
         "BACKWATER_GLOVES",
         "ANGLER_BRACELET",
-        "CLAY_BRACELET"
-    );
+        "CLAY_BRACELET",
+    ),
+    HOOK(
+        "COMMON_HOOK",
+        "HOTSPOT_HOOK",
+        "PHANTOM_HOOK",
+        "TREASURE_HOOK",
+    ),
+    LINE(
+        "SHREDDED_LINE",
+        "SPEEDY_LINE",
+        "TITAN_LINE",
+    ),
+    SINKER(
+        "CHUM_SINKER",
+        "FESTIVE_SINKER",
+        "HOTSPOT_SINKER",
+        "ICY_SINKER",
+        "JUNK_SINKER",
+        "PRISMARINE_SINKER",
+        "SPONGE_SINKER",
+        "STINGY_SINKER",
+    ),
+    ;
 
     val list = ids.toList()
 
@@ -213,6 +224,10 @@ enum class FishingEquipment(vararg ids: String) {
         val rods = RODS.list
         val armor = ARMOR.list
         val trophyArmor = TROPHY_ARMOR.list
+        val hook = HOOK.list
+        val line = LINE.list
+        val sinker = SINKER.list
+        val parts = listOf(hook, line, sinker).flatten()
     }
 }
 
