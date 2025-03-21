@@ -9,6 +9,7 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -509,24 +510,28 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
      * Creates a score for a rod to determine which ones to display
      */
     private fun calculateItemScore(itemStack: ItemStack): Int {
+        fun <T> getData(type: DataType<T>): T? = itemStack.getData(type)
+
         var score = 0
 
-        score += itemStack.getData(DataTypes.RARITY_UPGRADES) ?: 0
+        score += getData(DataTypes.RARITY_UPGRADES) ?: 0
 
         // take the actual level of ultimate enchants since those are worth smth
-        itemStack.getData(DataTypes.ENCHANTMENTS)?.let {
+        getData(DataTypes.ENCHANTMENTS)?.let {
             score += it.keys.firstOrNull { key -> key.startsWith("ultimate") }?.let { key -> it[key] } ?: 0
         }
 
         // only counting t8 and above, since t7 are just 64 t1s, maybe this still has to be tweaked
-        score += itemStack.getData(DataTypes.ATTRIBUTES)?.map { it.value - 7 }?.filter { it > 0 }?.sum() ?: 0
+        score += getData(DataTypes.ATTRIBUTES)?.map { it.value - 7 }?.filter { it > 0 }?.sum() ?: 0
 
         // only counting t5 and t6 enchants as everything else is kinda useless
-        score += itemStack.getData(DataTypes.ENCHANTMENTS)?.map { it.value - 4 }?.filter { it > 0 }?.sum() ?: 0
+        score += getData(DataTypes.ENCHANTMENTS)?.map { it.value - 4 }?.filter { it > 0 }?.sum() ?: 0
 
-        score += itemStack.getData(DataTypes.MODIFIER)?.let { 1 } ?: 0
+        score += getData(DataTypes.MODIFIER)?.let { 1 } ?: 0
 
-        score += ((itemStack.getData(DataTypes.RARITY)?.ordinal ?: 0) - 2).coerceIn(0, 3)
+        score += ((getData(DataTypes.RARITY)?.ordinal ?: 0) - 2).coerceIn(0, 3)
+
+        score += listOf(getData(DataTypes.HOOK), getData(DataTypes.LINE), getData(DataTypes.SINKER)).count { it != null }
 
 
         return score
