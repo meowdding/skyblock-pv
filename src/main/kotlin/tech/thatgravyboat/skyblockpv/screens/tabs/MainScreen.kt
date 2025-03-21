@@ -167,12 +167,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         fun <T> addSection(
             title: String,
+            titleIcon: ResourceLocation? = null,
             data: Sequence<Pair<String, T>>,
-            getToolTip: (String, T) -> Component?,
+            getToolTip: (String, T) -> Component? = { _, _ -> null },
             getIcon: (String) -> Any,
             getLevel: (String, T) -> Any,
         ) {
-            widget(getTitleWidget(title, width))
+            widget(getTitleWidget(title, width, titleIcon))
             val mainContent = LinearLayout.vertical().spacing(5)
 
             val convertedElements = data.map { (name, data) ->
@@ -206,8 +207,10 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         addSection<Long>(
-            "Skills", profile.skill.asSequence().map { it.toPair() },
-            { name, num ->
+            title = "Skills",
+            titleIcon = SkyBlockPv.id("icon/item/sword"),
+            data = profile.skill.asSequence().map { it.toPair() },
+            getToolTip = { name, num ->
                 SkillAPI.getProgressToNextLevel(name, num, profile).let { progress ->
                     if (progress == 1f) Text.of("§cMaxed!")
                     else if (name == "SKILL_TAMING" && getSkillLevel(name, num, profile) == SkillAPI.getMaxTamingLevel(profile)) {
@@ -215,14 +218,19 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     } else Text.of("§a${(progress * 100).round()}% to next level")
                 }
             },
-            ::getIconFromSkillName, { name, num ->
-                getSkillLevel(name, num, profile)
-            },
-        )
+            getIcon = ::getIconFromSkillName,
+        ) { name, num ->
+            getSkillLevel(name, num, profile)
+        }
 
         spacer(height = 10)
 
-        addSection<SlayerTypeData>("Slayer", profile.slayer.asSequence().map { it.toPair() }, { a, b -> null }, ::getIconFromSlayerName) { name, data ->
+        addSection<SlayerTypeData>(
+            title = "Slayer",
+            data = profile.slayer.asSequence().map { it.toPair() },
+            getIcon = ::getIconFromSlayerName,
+        )
+        { name, data ->
             getSlayerLevel(name, data.exp)
         }
 
@@ -231,10 +239,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val essence = profile.currency?.essence?.asSequence()?.map { it.toPair() } ?: emptySequence()
         if (essence.sumOf { it.second } == 0L) return@vertical
         addSection<Long>(
-            "Essence",
-            essence,
-            { a, b -> null },
-            {
+            title = "Essence",
+            data = essence,
+            getIcon = {
                 when (it) {
                     "WITHER" -> SkullTextures.WITHER_ESSENCE
                     "SPIDER" -> SkullTextures.SPIDER_ESSENCE
