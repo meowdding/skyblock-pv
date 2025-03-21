@@ -13,6 +13,7 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -118,9 +119,10 @@ object Utils {
         return list
     }
 
-    fun getTitleWidget(title: String, width: Int) = Widgets.frame { compoundWidget ->
+    fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->
             contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
+            if (icon != null) contents.addChild(Displays.padding(0, width - 30, 0, 0, Displays.sprite(icon, 12, 12)).asWidget())
             contents.addChild(Widgets.text(title).centerHorizontally(width))
         }
         compoundWidget.withStretchToContentSize()
