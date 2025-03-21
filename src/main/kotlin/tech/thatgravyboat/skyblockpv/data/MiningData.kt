@@ -302,7 +302,7 @@ class UnlevelableMiningNode(
 }
 
 private val rewardFormulaCodec = Codec.either(
-    Codec.STRING.xmap({ mapOf("reward" to it) }, { it.get("reward") }),
+    Codec.STRING.xmap({ mapOf("reward" to it) }, { it["reward"] }),
     Codec.unboundedMap(Codec.STRING, Codec.STRING) as Codec<Map<String, String>>,
 ).xmap(
     { Either.unwrap(it) },
