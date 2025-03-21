@@ -16,18 +16,16 @@ private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/skill
 object SkillAPI {
     var skillData: Map<String, SkillData> = emptyMap()
         private set
-    var skillLevels: Map<Int, Long> = emptyMap()
-        private set
 
     fun getProgressToNextLevel(skill: String, exp: Long, profile: SkyBlockProfile): Float {
-        val maxLevel = skillData.firstNotNullOfOrNull { (name, data) ->
-            if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
+        val skillData = skillData.firstNotNullOfOrNull { (name, data) ->
+            if (convertFromPlayerApiSkillName(skill).equals(name, true)) data else null
         } ?: return 0f
         val currentLevel = getSkillLevel(skill, exp, profile)
-        val nextLevel = (currentLevel + 1).coerceAtMost(maxLevel)
-        if (currentLevel == maxLevel) return 1f
-        val currentExp = skillLevels[currentLevel] ?: return 0f
-        val nextExp = skillLevels[nextLevel] ?: return 1f
+        val nextLevel = (currentLevel + 1).coerceAtMost(skillData.maxLevel)
+        if (currentLevel == skillData.maxLevel) return 1f
+        val currentExp = skillData.skillLevels[currentLevel] ?: return 0f
+        val nextExp = skillData.skillLevels[nextLevel] ?: return 1f
         return (exp - currentExp).toFloat() / (nextExp - currentExp)
     }
 
@@ -43,7 +41,13 @@ object SkillAPI {
             }
         }
         if (maxLevel == null) return 0
-        return (skillLevels.entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
+        return (getLevelingCurveForSkill(skill).entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
+    }
+
+    private fun getLevelingCurveForSkill(skill: String): Map<Int, Long> {
+        return skillData.firstNotNullOfOrNull { (name, data) ->
+            if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.skillLevels else null
+        } ?: emptyMap()
     }
 
     fun getIconFromSkillName(name: String): ResourceLocation = SkyBlockPv.id(
@@ -71,17 +75,13 @@ object SkillAPI {
             skillData = skills.entrySet().associate { (key, value) ->
                 key to value.asJsonObject.toSkillData()
             }
-            skillLevels = skills.entrySet().first().value.asJsonObject.getAsJsonArray("levels").associate {
-                it.asJsonObject.let {
-                    it["level"].asInt(0) to it["totalExpRequired"].asLong(0)
-                }
-            }
         }
     }
 
     private fun JsonObject.toSkillData() = SkillData(
         name = this["name"].asString(""),
         maxLevel = this["maxLevel"].asInt(0),
+        skillLevels = this.getAsJsonArray("levels").associate { it.asJsonObject.let { it["level"].asInt(0) to it["totalExpRequired"].asLong(0) } },
     )
 
     private suspend fun get(): JsonObject? = Http.getResult<JsonObject>(url = API_URL).getOrNull()
