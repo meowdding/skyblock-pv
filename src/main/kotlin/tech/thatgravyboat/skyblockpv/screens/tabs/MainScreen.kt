@@ -185,10 +185,11 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     is ItemStack -> Displays.item(iconValue, 12, 12)
                     else -> error("Invalid icon type")
                 }
-                val widget = listOf(
+                val display = listOf(
                     icon,
                     Displays.padding(0, 0, 2, 0, Displays.text(level, color = { 0x555555u }, shadow = false)),
-                ).toRow(1).asWidget()
+                ).toRow(1)
+                val widget = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, display)).asWidget()
                 getToolTip(name, data)?.let { widget.withTooltip(it) }
                 widget
             }.toList()
