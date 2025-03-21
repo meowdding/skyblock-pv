@@ -35,6 +35,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 
@@ -212,10 +213,16 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             data = profile.skill.asSequence().map { it.toPair() },
             getToolTip = { name, num ->
                 SkillAPI.getProgressToNextLevel(name, num, profile).let { progress ->
-                    if (progress == 1f) Text.of("§cMaxed!")
+                    val progress = if (progress == 1f) Text.of("§cMaxed!")
                     else if (name == "SKILL_TAMING" && getSkillLevel(name, num, profile) == SkillAPI.getMaxTamingLevel(profile)) {
                         Text.of("§5Reached max skill cap!")
-                    } else Text.of("§a${(progress * 100).round()}% to next level")
+                    } else Text.of("§a${(progress * 100).round()}% to next")
+
+                    Text.multiline(
+                        Text.of("§e${name.toTitleCase()}"),
+                        Text.of("§7Exp: ${num.shorten()}"),
+                        Text.join("§7Progress: ", progress),
+                    )
                 }
             },
             getIcon = ::getIconFromSkillName,
