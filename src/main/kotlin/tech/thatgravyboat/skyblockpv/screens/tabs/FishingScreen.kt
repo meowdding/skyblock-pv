@@ -20,13 +20,14 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.*
+import tech.thatgravyboat.skyblockpv.data.EssenceData.addPerk
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
+import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
 import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
 import tech.thatgravyboat.skyblockpv.utils.displays.*
@@ -182,27 +183,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 ),
             )
 
-            fun addPerk(id: String) {
-                val perkLevel = profile.essenceUpgrades[id] ?: 0
-                val perk = EssenceData.allPerks.entries.find { it.key == id }?.value
-                val maxLevel = perk?.maxLevel ?: 0
-
-                val display = Displays.text(
-                    Text.join(
-                        perk?.name,
-                        ": ",
-                        Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) TextColor.GREEN else TextColor.RED },
-                        "/$maxLevel",
-                    ),
-                    { TextColor.DARK_GRAY.toUInt() },
-                    false,
-                )
-                display(display.withTranslatedTooltip("gui.skyblockpv.tab.fishing.information.$id.desc"))
-            }
-
-            addPerk("drake_piper")
-            addPerk("midas_lure")
-            addPerk("radiant_fisher")
+            addPerk(profile, "drake_piper")
+            addPerk(profile, "midas_lure")
+            addPerk(profile, "radiant_fisher")
 
             val seaCreatureKills = profile.petMilestones["sea_creatures_killed"] ?: 0
             val dolphin = DolphinBrackets.getByKills(seaCreatureKills)
