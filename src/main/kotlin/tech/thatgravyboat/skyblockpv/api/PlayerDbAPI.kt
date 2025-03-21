@@ -21,9 +21,10 @@ object PlayerDbAPI {
         runBlocking {
             val player = get(username)?.get("data")?.asJsonObject?.get("player")?.asJsonObject
             val uuid = player?.get("id")?.asUUID
+            val name = player?.get("username")?.asString
 
             if (uuid != null) {
-                val profile = GameProfile(uuid, username)
+                val profile = GameProfile(uuid, name)
 
                 val gson = GsonBuilder().registerTypeAdapter(PropertyMap::class.java, Serializer()).create()
                 val property = gson.fromJson<PropertyMap?>(player.get("properties"), PropertyMap::class.java)
