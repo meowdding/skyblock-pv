@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.utils
 
+import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
@@ -16,5 +17,10 @@ object CodecUtils {
         { TagParser.QUICK_TEXT_SAFE.parseText(it, ParserContext.of()) },
         { it.string }
     )
+
+    fun <T> Codec<T>.eitherList(): Codec<List<T>> = Codec.either(
+        this.xmap({listOf(it)}, {it[0]}),
+        this.listOf()
+    ).xmap({ Either.unwrap(it)},{ if (it.size == 1) Either.left(it) else Either.right(it) })
 
 }
