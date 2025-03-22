@@ -12,7 +12,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.EssenceData.addPerk
+import tech.thatgravyboat.skyblockpv.data.EssenceData.addMiningPerk
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.MiningCore
 import tech.thatgravyboat.skyblockpv.data.RockBrackets
@@ -99,14 +99,14 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 ),
             )
 
-            addPerk(profile, "fungus_fortuna", "mining")
-            addPerk(profile, "harena_fortuna", "mining")
-            addPerk(profile, "treasures_of_the_earth", "mining")
-            addPerk(profile, "dwarven_training", "mining")
-            addPerk(profile, "eager_miner", "mining")
-            addPerk(profile, "rhinestone_infusion", "mining")
-            addPerk(profile, "high_roller", "mining")
-            addPerk(profile, "return_to_sender", "mining")
+            addMiningPerk(profile, "fungus_fortuna")
+            addMiningPerk(profile, "harena_fortuna")
+            addMiningPerk(profile, "treasures_of_the_earth")
+            addMiningPerk(profile, "dwarven_training")
+            addMiningPerk(profile, "eager_miner")
+            addMiningPerk(profile, "rhinestone_infusion")
+            addMiningPerk(profile, "high_roller")
+            addMiningPerk(profile, "return_to_sender")
         }
 
         widget(getTitleWidget("Info", width - 5))
