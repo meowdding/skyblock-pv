@@ -22,6 +22,7 @@ import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.*
+import tech.thatgravyboat.skyblockpv.utils.CodecUtils.eitherList
 
 data class MiningCore(
     val nodes: Map<String, Int>,
@@ -442,19 +443,11 @@ class CoreMiningNode(
 
     data class CotmLevel(val cost: CotmCost, val include: List<Int>, val reward: List<String>) {
         companion object {
-            private val rewardCodec = Codec.either(
-                Codec.STRING.listOf(),
-                Codec.STRING.xmap({ listOf(it) }, { it.first() }),
-            ).xmap(
-                { Either.unwrap(it) },
-                { if (it.size > 1) Either.left(it) else Either.right(it) },
-            )
-
             val CODEC: Codec<CotmLevel> = RecordCodecBuilder.create {
                 it.group(
                     CotmCost.CODEC.fieldOf("cost").forGetter(CotmLevel::cost),
                     Codec.INT.listOf().optionalFieldOf("include", emptyList()).forGetter(CotmLevel::include),
-                    rewardCodec.fieldOf("reward").forGetter(CotmLevel::reward),
+                    Codec.STRING.eitherList().fieldOf("reward").forGetter(CotmLevel::reward),
                 ).apply(it, ::CotmLevel)
             }
         }

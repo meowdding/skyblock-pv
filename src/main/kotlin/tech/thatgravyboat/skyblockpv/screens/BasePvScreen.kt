@@ -307,6 +307,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             { builder ->
                 builder.withCallback { profile ->
                     this.profile = profile
+                    this.onProfileSwitch(profile)
                     this.rebuildWidgets()
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
@@ -316,6 +317,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
         return dropdown
     }
+
+    open fun onProfileSwitch(profile: SkyBlockProfile) {}
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         this.renderBlurredBackground()

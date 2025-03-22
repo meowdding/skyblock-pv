@@ -331,7 +331,7 @@ object Displays {
                             null -> Text.of(stackSize.toString())
                             is Component -> customStackText
                             is String -> Text.of(customStackText)
-                            else -> Text.of(stackSize.toString())
+                            else -> Text.of(customStackText.toString())
                         }
                         graphics.drawString(
                             McFont.self,

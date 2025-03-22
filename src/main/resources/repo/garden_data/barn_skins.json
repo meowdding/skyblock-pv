@@ -126,5 +126,13 @@
     "main_street": {
         "displayname": "<gold>Main Street",
         "item": "MAIN_STREET_BARN_SKIN"
+    },
+    "butterfly": {
+        "displayname": "<dark_purple>Butterfly",
+        "item": "BUTTERFLY_BARN_SKIN"
+    },
+    "flower_pot": {
+        "displayname": "<dark_purple>Flower Pot",
+        "item": "FLOWER_POT_BARN_SKIN"
     }
 }

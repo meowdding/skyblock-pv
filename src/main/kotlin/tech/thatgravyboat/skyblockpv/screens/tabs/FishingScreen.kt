@@ -6,7 +6,6 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LayoutSettings
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
@@ -23,11 +22,13 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.EssenceData.addFishingPerk
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
+import tech.thatgravyboat.skyblockpv.utils.GearUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
+import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
 import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
@@ -326,39 +327,22 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         LayoutBuild.horizontal {
             widget(getTrophyArmor(profile))
             spacer(width = 5)
-            widget(getArmorAndEquipment(profile))
+            widget(
+                GearUtils.getArmorAndEquipment(
+                    profile,
+                    ::calculateItemScore,
+                    FishingEquipment.necklaces,
+                    FishingEquipment.cloaks,
+                    FishingEquipment.belts,
+                    FishingEquipment.gloves,
+                    FishingEquipment.armor
+                ),
+            )
             spacer(width = 5)
             widget(getRods(profile))
         },
         padding = 20,
     )
-
-    private fun getDisplayArmor(list: List<ItemStack>) = buildList {
-        fun addArmor(type: String) {
-            val itemStack = list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) != false } ?: ItemStack.EMPTY
-            add(
-                Displays.padding(
-                    2,
-                    Displays.item(itemStack, showTooltip = true)
-                        .let {
-                            return@let if (itemStack.isEmpty) {
-                                Displays.background(
-                                    ResourceLocation.parse("container/slot/${type.lowercase()}"),
-                                    it,
-                                ).centerIn(-1, -1)
-                            } else {
-                                it
-                            }
-                        },
-                ),
-            )
-        }
-
-        addArmor("HELMET")
-        addArmor("CHESTPLATE")
-        addArmor("LEGGINGS")
-        addArmor("BOOTS")
-    }
 
     private fun getTrophyArmor(profile: SkyBlockProfile): LayoutElement {
         val trophyArmor = ItemPredicateHelper.getItemsMatching(
@@ -366,47 +350,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             ItemPredicates.AnySkyblockID(FishingGear.trophyArmor),
         ) ?: emptyList()
 
-        val displayArmor = getDisplayArmor(trophyArmor).toColumn()
+        val displayArmor = GearUtils.getDisplayArmor(trophyArmor).toColumn()
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-1x4"),
             Displays.padding(2, displayArmor),
         ).asWidget()
-    }
-
-    private fun getArmorAndEquipment(profile: SkyBlockProfile): LayoutElement {
-        val armorAndEquipment = ItemPredicateHelper.getItemsMatching(
-            profile,
-            ItemPredicates.AnySkyblockID(FishingGear.armor).or(ItemPredicates.AnySkyblockID(FishingGear.equipment)),
-        )?.sortedBy(::calculateItemScore)?.reversed() ?: emptyList()
-
-        val displayArmor = getDisplayArmor(armorAndEquipment)
-
-        val displayEquipment = buildList {
-            fun addEquipment(type: FishingGear) {
-                val item = armorAndEquipment.firstOrNull { it.getData(DataTypes.ID)?.let { id -> type.list.contains(id) } == true } ?: ItemStack.EMPTY
-                val display = if (item.isEmpty) {
-                    Displays.background(SkyBlockPv.id("icon/slot/${type.name.lowercase().dropLast(1)}"), Displays.empty(16, 16))
-                } else {
-                    Displays.item(item, showTooltip = true)
-                }
-
-                add(Displays.padding(2, display))
-            }
-
-            addEquipment(FishingGear.NECKLACES)
-            addEquipment(FishingGear.CLOAKS)
-            addEquipment(FishingGear.BELTS)
-            addEquipment(FishingGear.GLOVES)
-        }
-
-        val armorEquipment = listOf(
-            displayArmor.toColumn(),
-            displayEquipment.toColumn(),
-        ).toRow()
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-2x4"),
-            Displays.padding(2, armorEquipment),
-        ).centerIn(-1, -1).asWidget()
     }
 
     private fun getRods(profile: SkyBlockProfile): LayoutElement {
@@ -415,9 +363,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             predicate = ItemPredicates.AnySkyblockID(FishingGear.rods),
         )?.sortedBy(::calculateItemScore)?.reversed()?.take(4)?.toMutableList() ?: mutableListOf()
 
-        while (fishingRods.size < 4) {
-            fishingRods.add(Items.AIR.defaultInstance)
-        }
+
+        fishingRods.rightPad(4, ItemStack.EMPTY)
 
         val column = fishingRods.map {
             Displays.item(it, showTooltip = true)
