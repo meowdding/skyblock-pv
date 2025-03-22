@@ -11,10 +11,14 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private val inventory get() = profile?.inventory
     private val activeArmor get() = inventory?.armorItems?.inventory.orEmpty(4).asReversed()
     private val wardrobe get() = inventory?.wardrobe
-    private val selected get() = wardrobe?.equippedArmor?.minus(1) ?: -1
+    private val selected get() = wardrobe?.equippedArmor?.takeUnless { it == -1 }?.minus(1) ?: -1
     private val armor get() = wardrobe?.armor?.armor?.inventory?.chunked(36) ?: emptyList()
 
-    override fun getExtraLine() = Displays.text("Selected Armor: ${selected + 1}", color = { 0x555555u }, shadow = false)
+    override fun getExtraLine() = if (selected == -1) {
+        "No Armor Selected"
+    } else {
+        "Selected Armor: ${selected + 1}"
+    }.let { Displays.text(it, color = { 0x555555u }, shadow = false) }
 
     override fun getInventories(): List<Display> = armor.mapIndexed { index, inventory ->
         if (selected != -1 && selected / 9 == index) {
