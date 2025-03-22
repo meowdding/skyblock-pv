@@ -10,8 +10,8 @@ import tech.thatgravyboat.skyblockpv.utils.asLong
 import java.util.*
 
 data class Pet(
-    val uuid: UUID?,
-    val uniqueId: UUID,
+    val uuid: UUID?, // Item UUID (can be null if it wasn't an item before)
+    val uniqueId: UUID, // Pet UUID
     val type: String,
     val exp: Long,
     val active: Boolean,
