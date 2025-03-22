@@ -23,6 +23,14 @@ object EssenceData {
     val repoEssenceData = Utils.loadFromRepo<RepoEssenceData>("essence_perks") ?: RepoEssenceData(emptyMap())
     val allPerks = repoEssenceData.shops.flatMap { it.value.entries }.associate { it.key to it.value }
 
+    fun LayoutBuilder.addFishingPerk(profile: SkyBlockProfile, id: String) {
+        addPerk(profile, id, "fishing")
+    }
+
+    fun LayoutBuilder.addMiningPerk(profile: SkyBlockProfile, id: String) {
+        addPerk(profile, id, "mining")
+    }
+
     fun LayoutBuilder.addPerk(profile: SkyBlockProfile, id: String, category: String) {
         val perkLevel = profile.essenceUpgrades[id] ?: 0
         val perk = allPerks.entries.find { it.key == id }?.value
