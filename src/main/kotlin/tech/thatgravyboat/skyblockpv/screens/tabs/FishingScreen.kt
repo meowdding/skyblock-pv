@@ -184,9 +184,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 ),
             )
 
-            addPerk(profile, "drake_piper")
-            addPerk(profile, "midas_lure")
-            addPerk(profile, "radiant_fisher")
+            addPerk(profile, "drake_piper", "fishing")
+            addPerk(profile, "midas_lure", "fishing")
+            addPerk(profile, "radiant_fisher", "fishing")
 
             val seaCreatureKills = profile.petMilestones["sea_creatures_killed"] ?: 0
             val dolphin = DolphinBrackets.getByKills(seaCreatureKills)
@@ -417,6 +417,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             Displays.item(it, showTooltip = true)
                 .let { display ->
                     if (it.isEmpty) {
+                        // TODO: hover over empty slot
                         return@let Displays.background(SkyBlockPv.id("icon/slot/rod"), display)
                     }
 
