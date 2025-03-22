@@ -214,4 +214,19 @@ object Utils {
     }
 
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
+
+    fun <T> MutableList<T>.leftPad(size: Int, element: T): MutableList<T> {
+        while (this.size < size) {
+            this.add(0, element)
+        }
+        return this
+    }
+
+    fun <T> MutableList<T>.rightPad(size: Int, element: T): MutableList<T> {
+        while (this.size < size) {
+            this.add(this.lastIndex + 1, element)
+        }
+        return this
+    }
+
 }
