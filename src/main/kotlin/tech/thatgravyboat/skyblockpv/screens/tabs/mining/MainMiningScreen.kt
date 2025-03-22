@@ -99,15 +99,14 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 ),
             )
 
-            addPerk(profile, "fungus_fortuna")
-            addPerk(profile, "harena_fortuna")
-            addPerk(profile, "frozen_skin")
-            addPerk(profile, "treasures_of_the_earth")
-            addPerk(profile, "dwarven_training")
-            addPerk(profile, "eager_miner")
-            addPerk(profile, "rhinestone_infusion")
-            addPerk(profile, "high_roller")
-            addPerk(profile, "return_to_sender")
+            addPerk(profile, "fungus_fortuna", "mining")
+            addPerk(profile, "harena_fortuna", "mining")
+            addPerk(profile, "treasures_of_the_earth", "mining")
+            addPerk(profile, "dwarven_training", "mining")
+            addPerk(profile, "eager_miner", "mining")
+            addPerk(profile, "rhinestone_infusion", "mining")
+            addPerk(profile, "high_roller", "mining")
+            addPerk(profile, "return_to_sender", "mining")
         }
 
         widget(getTitleWidget("Info", width - 5))

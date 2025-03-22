@@ -23,7 +23,7 @@ object EssenceData {
     val repoEssenceData = Utils.loadFromRepo<RepoEssenceData>("essence_perks") ?: RepoEssenceData(emptyMap())
     val allPerks = repoEssenceData.shops.flatMap { it.value.entries }.associate { it.key to it.value }
 
-    fun LayoutBuilder.addPerk(profile: SkyBlockProfile, id: String) {
+    fun LayoutBuilder.addPerk(profile: SkyBlockProfile, id: String, category: String) {
         val perkLevel = profile.essenceUpgrades[id] ?: 0
         val perk = allPerks.entries.find { it.key == id }?.value
         val maxLevel = perk?.maxLevel ?: 0
@@ -38,6 +38,6 @@ object EssenceData {
             { TextColor.DARK_GRAY.toUInt() },
             false,
         )
-        display(display.withTranslatedTooltip("gui.skyblockpv.tab.fishing.information.$id.desc"))
+        display(display.withTranslatedTooltip("gui.skyblockpv.tab.$category.information.$id.desc"))
     }
 }
