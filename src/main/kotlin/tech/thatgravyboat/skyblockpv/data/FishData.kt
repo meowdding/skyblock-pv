@@ -103,119 +103,29 @@ data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
     }
 }
 
-private fun toArmorSet(baseId: String) = listOf(
-    "${baseId}_HELMET",
-    "${baseId}_LEGGINGS",
-    "${baseId}_BOOTS",
-    "${baseId}_CHESTPLATE"
-)
-
-enum class FishingEquipment(vararg ids: String) {
-    RODS(
-        // Water fishing rods
-        "FISHING_ROD",
-        "CHALLENGE_ROD",
-        "CHAMP_ROD",
-        "LEGEND_ROD",
-        "ROD_OF_THE_SEA",
-        "DIRT_ROD",
-        "GIANT_FISHING_ROD",
-
-        // Lava fishing rods
-        "POLISHED_TOPAZ_ROD",
-        "STARTER_LAVA_ROD",
-        "MAGMA_ROD",
-        "INFERNO_ROD",
-        "HELLFIRE_ROD",
-        "BINGO_LAVA_ROD",
-    ),
-    ARMOR(
-        *listOf(
-            "ANGLER",
-            "DIVER",
-            "SPONGE",
-            "SHARK_SCALE",
-            "THUNDER",
-            "MAGMA_LORD",
-            "BACKWATER",
-        ).flatMap { toArmorSet(it) }.toTypedArray(),
-        "SALMON_HELMET_NEW",
-        "SALMON_LEGGINGS_NEW",
-        "SALMON_CHESTPLATE_NEW",
-        "SALMON_BOOTS_NEW",
-        "SLUG_BOOTS",
-        "FLAMING_CHESTPLATE",
-        "TAURUS_HELMET",
-        "MOOGMA_LEGGINGS",
-        "TIKI_MASK",
-    ),
-    TROPHY_ARMOR(
-        *listOf(
-            "BRONZE_HUNTER",
-            "SILVER_HUNTER",
-            "GOLD_HUNTER",
-            "DIAMOND_HUNTER"
-        ).flatMap { toArmorSet(it) }.toTypedArray()
-    ),
-    BELTS(
-        "ICHTHYIC_BELT",
-        "FINWAVE_BELT",
-        "GILLSPLASH_BELT",
-        "ANGLER_BELT",
-        "BACKWATER_BELT",
-        "SPONGE_BELT"
-    ),
-    CLOAKS(
-        "ICHTHYIC_CLOAK",
-        "FINWAVE_CLOAK",
-        "GILLSPLASH_CLOAK",
-        "CLOWNFISH_CLOAK",
-        "ANGLER_CLOAK",
-        "BACKWATER_CLOAK"
-    ),
-    NECKLACES(
-        "THUNDERBOLT_NECKLACE",
-        "ANGLER_NECKLACE",
-        "BACKWATER_NECKLACE",
-        "PRISMARINE_NECKLACE",
-        "TERA_SHELL_NECKLACE"
-    ),
-    GLOVES(
-        "MAGMA_LORD_GAUNTLET",
-        "ICHTHYIC_GLOVES",
-        "FINWAVE_GLOVES",
-        "GILLSPLASH_GLOVES",
-        "LUMINOUS_BRACELET",
-        "BACKWATER_GLOVES",
-        "ANGLER_BRACELET",
-        "CLAY_BRACELET",
-    ),
-    HOOK(
-        "COMMON_HOOK",
-        "HOTSPOT_HOOK",
-        "PHANTOM_HOOK",
-        "TREASURE_HOOK",
-    ),
-    LINE(
-        "SHREDDED_LINE",
-        "SPEEDY_LINE",
-        "TITAN_LINE",
-    ),
-    SINKER(
-        "CHUM_SINKER",
-        "FESTIVE_SINKER",
-        "HOTSPOT_SINKER",
-        "ICY_SINKER",
-        "JUNK_SINKER",
-        "PRISMARINE_SINKER",
-        "SPONGE_SINKER",
-        "STINGY_SINKER",
-    ),
+enum class FishingGear {
+    RODS,
+    ARMOR,
+    TROPHY_ARMOR,
+    BELTS,
+    CLOAKS,
+    NECKLACES,
+    GLOVES,
+    HOOK,
+    LINE,
+    SINKER,
     ;
 
-    val list = ids.toList()
+    var list: List<String> = emptyList()
+        private set
 
     companion object {
+        init {
+            Utils.loadFromRepo<Map<String, List<String>>>("gear/fishing")?.forEach { (key, value) ->
+                runCatching { FishingGear.valueOf(key.uppercase()).list = value }.onFailure { println(it) }
+            }
+        }
+
         val cloaks = CLOAKS.list
         val gloves = GLOVES.list
         val necklaces = NECKLACES.list

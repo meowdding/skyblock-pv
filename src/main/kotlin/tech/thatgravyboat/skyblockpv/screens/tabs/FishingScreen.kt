@@ -363,7 +363,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getTrophyArmor(profile: SkyBlockProfile): LayoutElement {
         val trophyArmor = ItemPredicateHelper.getItemsMatching(
             profile,
-            ItemPredicates.AnySkyblockID(FishingEquipment.trophyArmor),
+            ItemPredicates.AnySkyblockID(FishingGear.trophyArmor),
         ) ?: emptyList()
 
         val displayArmor = getDisplayArmor(trophyArmor).toColumn()
@@ -376,13 +376,13 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getArmorAndEquipment(profile: SkyBlockProfile): LayoutElement {
         val armorAndEquipment = ItemPredicateHelper.getItemsMatching(
             profile,
-            ItemPredicates.AnySkyblockID(FishingEquipment.armor).or(ItemPredicates.AnySkyblockID(FishingEquipment.equipment)),
+            ItemPredicates.AnySkyblockID(FishingGear.armor).or(ItemPredicates.AnySkyblockID(FishingGear.equipment)),
         )?.sortedBy(::calculateItemScore)?.reversed() ?: emptyList()
 
         val displayArmor = getDisplayArmor(armorAndEquipment)
 
         val displayEquipment = buildList {
-            fun addEquipment(type: FishingEquipment) {
+            fun addEquipment(type: FishingGear) {
                 val item = armorAndEquipment.firstOrNull { it.getData(DataTypes.ID)?.let { id -> type.list.contains(id) } == true } ?: ItemStack.EMPTY
                 val display = if (item.isEmpty) {
                     Displays.background(SkyBlockPv.id("icon/slot/${type.name.lowercase().dropLast(1)}"), Displays.empty(16, 16))
@@ -393,10 +393,10 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 add(Displays.padding(2, display))
             }
 
-            addEquipment(FishingEquipment.NECKLACES)
-            addEquipment(FishingEquipment.CLOAKS)
-            addEquipment(FishingEquipment.BELTS)
-            addEquipment(FishingEquipment.GLOVES)
+            addEquipment(FishingGear.NECKLACES)
+            addEquipment(FishingGear.CLOAKS)
+            addEquipment(FishingGear.BELTS)
+            addEquipment(FishingGear.GLOVES)
         }
 
         val armorEquipment = listOf(
@@ -412,7 +412,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getRods(profile: SkyBlockProfile): LayoutElement {
         val fishingRods = ItemPredicateHelper.getItemsMatching(
             profile = profile,
-            predicate = ItemPredicates.AnySkyblockID(FishingEquipment.rods),
+            predicate = ItemPredicates.AnySkyblockID(FishingGear.rods),
         )?.sortedBy(::calculateItemScore)?.reversed()?.take(4)?.toMutableList() ?: mutableListOf()
 
         while (fishingRods.size < 4) {

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
+import tech.thatgravyboat.skyblockapi.api.remote.UseRepoLib
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
@@ -98,6 +99,7 @@ data class SkyBlockProfile(
             )
         }
 
+        @OptIn(UseRepoLib::class)
         private fun JsonObject.getCollectionData(): List<CollectionItem> {
             val playerCollections = this["collection"].asMap { id, amount -> id to amount.asLong(0) }
             val allCollections =
