@@ -1,0 +1,34 @@
+{
+    "HELIX": {
+        "name": "Helix Fossil",
+        "pet": "AMMONITE"
+    },
+    "CLAW_FOSSIL": {
+        "name": "Claw Fossil",
+        "pet": "MOLE"
+    },
+    "WEBBED_FOSSIL": {
+        "name": "Webbed Fossil",
+        "pet": "PENGUIN"
+    },
+    "UGLY_FOSSIL": {
+        "name": "Ugly Fossil",
+        "pet": "GOBLIN"
+    },
+    "TUSK_FOSSIL": {
+        "name": "Tusk Fossil",
+        "pet": "MAMMOTH"
+    },
+    "SPINE_FOSSIL": {
+        "name": "Spine Fossil",
+        "pet": "SPINOSAURUS"
+    },
+    "FOOTPRINT_FOSSIL": {
+        "name": "Footprint Fossil",
+        "pet": "TYRANNOSAURUS"
+    },
+    "CLUBBED_FOSSIL": {
+        "name": "Clubbed Fossil",
+        "pet": "ANKYLOSAURUS"
+    }
+}

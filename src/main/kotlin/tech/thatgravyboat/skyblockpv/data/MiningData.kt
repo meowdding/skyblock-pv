@@ -134,6 +134,24 @@ data class ForgeSlot(
     }
 }
 
+data class GlaciteData(
+    val fossilsDonated: List<String>,
+    val fossilDust: Int,
+    val corpsesLooted: Map<String, Int>,
+    val mineshaftsEntered: Int,
+) {
+    companion object {
+        fun fromJson(json: JsonObject): GlaciteData {
+            return GlaciteData(
+                fossilsDonated = json.getAsJsonArray("fossils_donated").map { it.asString("") },
+                fossilDust = json["fossil_dust"].asInt(0),
+                corpsesLooted = json.getAsJsonObject("corpses_looted").asMap { id, amount -> id to amount.asInt(0) },
+                mineshaftsEntered = json["mineshafts_entered"].asInt(0),
+            )
+        }
+    }
+}
+
 enum class RockBrackets(val oresRequired: Int, val rarity: SkyBlockRarity) {
     COMMON(2500, SkyBlockRarity.COMMON),
     UNCOMMON(7500, SkyBlockRarity.UNCOMMON),
@@ -158,6 +176,19 @@ enum class PowderType(val formatting: ChatFormatting) : StringRepresentable {
     companion object {
         val CODEC: Codec<PowderType> = StringRepresentable.fromEnum { entries.toTypedArray() }
     }
+}
+
+object FossilTypes {
+    data class Fossil(
+        val id: String,
+        val name: String,
+        val pet: String,
+    )
+
+    val fossils: List<Fossil> = Utils.loadFromRepo<JsonObject>("fossils")?.asMap { id, data ->
+        val obj = data.asJsonObject
+        id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))
+    }?.map { it.value } ?: emptyList()
 }
 
 object MiningNodes {

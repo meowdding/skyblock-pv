@@ -62,11 +62,6 @@ TODO:
 <details>
 <summary>Mining</summary>
 
-- [ ] Corpses looted
-- [ ] shaft**S** entered
-- [ ] fossils donated
-- [ ] fossil dust
-
 - [ ] mining gear
 
 </details>

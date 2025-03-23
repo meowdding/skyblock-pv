@@ -21,6 +21,7 @@ abstract class BaseMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfi
 enum class MiningCategory(val screen: KClass<out BaseMiningScreen>, override val icon: ItemStack) : Category {
     MAIN(MainMiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
     HOTM(HotmScreen::class, hotmIcon),
+    GlACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance),
     ;
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null

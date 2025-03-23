@@ -14,6 +14,7 @@ import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.data.EssenceData
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
+import tech.thatgravyboat.skyblockpv.data.FossilTypes
 import tech.thatgravyboat.skyblockpv.screens.PvTabs
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
@@ -29,6 +30,7 @@ object SkyBlockPv : ModInitializer {
             CollectionAPI,
             ForgeTimeData,
             EssenceData,
+            FossilTypes,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }
