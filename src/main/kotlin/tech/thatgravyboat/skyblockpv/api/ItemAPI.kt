@@ -11,6 +11,8 @@ import tech.thatgravyboat.repolib.api.recipes.Recipe
 import tech.thatgravyboat.repolib.api.recipes.ingredient.ItemIngredient
 import tech.thatgravyboat.repolib.api.recipes.ingredient.PetIngredient
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
+import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
@@ -42,7 +44,7 @@ object ItemAPI {
                 val name = Text.join(
                     Text.of("[Lvl ${petData.level}] ").withColor(TextColor.GRAY),
                     Text.of(data.name).withColor(petData.rarity.color),
-                    if (hasSkin) Text.of(" ✦").withColor(TextColor.LIGHT_PURPLE) else null,
+                    if (hasSkin) Text.of(" ✦").withColor(skin?.getData(DataTypes.RARITY)?.color ?: TextColor.LIGHT_PURPLE) else null,
                 )
                 name.italic = false
                 val lore = pet.getFormattedLore(petData.level, petData.heldItem)
