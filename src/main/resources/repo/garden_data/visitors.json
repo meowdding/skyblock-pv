@@ -261,7 +261,7 @@
         "rarity": "UNCOMMON",
         "item": "villager_spawn_egg",
         "name": "Stella",
-        "id": "stelly"
+        "id": "stella"
     },
     {
         "rarity": "UNCOMMON",
@@ -327,7 +327,7 @@
         "rarity": "RARE",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYyNjExNTAwMTUyOSwKICAicHJvZmlsZUlkIiA6ICJkODAwZDI4MDlmNTE0ZjkxODk4YTU4MWYzODE0Yzc5OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0aGVCTFJ4eCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84ZWJmOWNhYzVhYjQ3OTAzZTFkMmQ0YzI0ZjY4NWE2NjdmMjA1ZjlhNjE3N2Y2YTc2MjFmODQ3MTllNDg3NDY1IgogICAgfQogIH0KfQ==",
         "name": "Emissary Sisko",
-        "id": "emissary_sisk"
+        "id": "emissary_sisko"
     },
     {
         "rarity": "RARE",

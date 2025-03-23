@@ -22,6 +22,7 @@ import tech.thatgravyboat.skyblockpv.api.PlayerDbAPI
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import kotlin.jvm.optionals.getOrNull
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -156,16 +157,8 @@ object Utils {
 
     fun String.toTitleCase() = lowercase().split("_").joinToString(" ") { it.replaceFirstChar { it.uppercase() } }
 
-    fun Number.shorten(): String {
-        val number = this.toLong()
-        return when {
-            number >= 1_000_000_000_000 -> String.format("%.1ft", number / 1_000_000_000_000.0)
-            number >= 1_000_000_000 -> String.format("%.1fb", number / 1_000_000_000.0)
-            number >= 1_000_000 -> String.format("%.1fm", number / 1_000_000.0)
-            number >= 1_000 -> String.format("%.1fk", number / 1_000.0)
-            else -> this.toString()
-        }
-    }
+    private val formatter = NumberFormat.getCompactNumberInstance()
+    fun Number.shorten(decimalDigits: Int = 1): String = formatter.apply { maximumFractionDigits = decimalDigits }.format(this)
 
     fun Duration.formatReadableTime(biggestUnit: DurationUnit, maxUnits: Int = -1): String {
         val units = listOf(

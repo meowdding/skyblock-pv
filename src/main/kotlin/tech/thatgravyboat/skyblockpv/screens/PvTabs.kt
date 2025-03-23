@@ -11,6 +11,7 @@ import tech.thatgravyboat.skyblockpv.screens.tabs.MainScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.PetScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.combat.BaseCombatScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.combat.DungeonScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.farming.BaseFarmingScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.farming.FarmingScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.InventoryScreen
@@ -32,7 +33,7 @@ enum class PvTabs(
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
-    FARMING(FarmingScreen::class, Items.WHEAT.defaultInstance),
+    FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(

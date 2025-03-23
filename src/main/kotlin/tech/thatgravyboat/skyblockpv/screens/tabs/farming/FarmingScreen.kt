@@ -31,7 +31,6 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         return LayoutBuild.frame {
             horizontal {
                 widget(getPlots())
-                widget(getTools())
                 widget(getGear(profile))
             }
         }
@@ -78,28 +77,6 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         return Displays.padding(4, Displays.item(vacum, showTooltip = true))
     }
 
-    fun getTools() = createWidget(
-        "Tools",
-        StaticGardenData.tools.map { tool ->
-            val items = profile?.let { profile ->
-                ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(tool.ids))
-            } ?: listOf()
-
-            if (items.isEmpty()) {
-                return@map Displays.background(SkyBlockPv.id(tool.type.id), Displays.empty(16, 16)).withTooltip(tool.displayName)
-            }
-
-            val toMutableList = items.toMutableList()
-            toMutableList.add(ItemStack.EMPTY)
-
-            val first = toMutableList.sortedBy(::evaluateToolScore).reversed().first()
-            Displays.item(first, showTooltip = true)
-        }.map { Displays.padding(2, it) }.chunked(5).map { it.toRow() }.toColumn()
-            .let { Displays.background(SkyBlockPv.id("inventory/inventory-5x2"), Displays.padding(2, it)) }
-            .let { LayoutBuild.frame { display(it) } },
-        padding = 20,
-    )
-
     private fun calculateEquipmentScore(stack: ItemStack): Int {
         var score = 0
 
@@ -112,10 +89,6 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         score += stack.getData(DataTypes.MODIFIER)?.let { 1 } ?: 0
 
         return score
-    }
-
-    private fun evaluateToolScore(stack: ItemStack): Long {
-        return stack.getData(DataTypes.CROPS_BROKEN) ?: stack.getData(DataTypes.RARITY)?.ordinal?.toLong() ?: -1L
     }
 
     fun getPlots() = createWidget(

@@ -1,12 +1,17 @@
 package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonObject
+import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.StringRepresentable
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -16,13 +21,14 @@ import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.CodecUtils.eitherList
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.createSkull
 import java.util.*
 
 
 typealias VisitorId = String
 typealias SkyblockItemId = String
 
-fun SkyblockItemId.asItemStack() = ItemAPI.getItem(this)
+fun SkyblockItemId.asItemStack() = ItemAPI.getItem(this.replace(":", "-"))
 
 enum class GardenResource(internalName: String? = null, itemId: SkyblockItemId? = null) : StringRepresentable {
     WHEAT,
@@ -37,7 +43,7 @@ enum class GardenResource(internalName: String? = null, itemId: SkyblockItemId? 
     MUSHROOM("MUSHROOM_COLLECTION", "RED_MUSHROOM"),
     UNKNOWN;
 
-    override fun getSerializedName() = name
+    override fun getSerializedName() = internalName
 
     val internalName: String
     val itemId: SkyblockItemId
@@ -76,7 +82,7 @@ private object GardenCodecs {
         it.group(
             Codec.STRING.fieldOf("reward_formula").forGetter(StaticComposterData::rewardFormula),
             Codec.STRING.fieldOf("tooltip").forGetter(StaticComposterData::tooltip),
-            Codec.unboundedMap(Codec.STRING, Codec.INT).fieldOf("upgrades").forGetter(StaticComposterData::upgrade),
+            Codec.unboundedMap(Codec.STRING, Codec.INT).listOf().fieldOf("upgrades").forGetter(StaticComposterData::upgrade),
         ).apply(it, ::StaticComposterData)
     }
 
@@ -96,12 +102,16 @@ private object GardenCodecs {
         ).apply(it, ::StaticMiscData)
     }
 
-    val PLOT_COST = RecordCodecBuilder.create {
-        it.group(
-            Codec.INT.fieldOf("amount").forGetter(StaticPlotCost::amount),
-            Codec.BOOL.optionalFieldOf("bundle", false).forGetter(StaticPlotCost::bundle),
-        ).apply(it, ::StaticPlotCost)
-    }
+    val PLOT_COST =
+        Codec.either(
+            Codec.INT.xmap({ StaticPlotCost(it, false) }, { it.amount }),
+            RecordCodecBuilder.create {
+                it.group(
+                    Codec.INT.fieldOf("amount").forGetter(StaticPlotCost::amount),
+                    Codec.BOOL.optionalFieldOf("bundle", false).forGetter(StaticPlotCost::bundle),
+                ).apply(it, ::StaticPlotCost)
+            },
+        ).xmap({ Either.unwrap(it) }, { if (it.bundle) Either.right(it) else Either.left(it) })
 
     val PLOT_DATA = RecordCodecBuilder.create {
         it.group(
@@ -118,7 +128,7 @@ private object GardenCodecs {
                 .forGetter(StaticVisitorData::rarity),
             Codec.STRING.fieldOf("name").forGetter(StaticVisitorData::name),
             Codec.STRING.fieldOf("id").forGetter(StaticVisitorData::id),
-            Codec.STRING.optionalFieldOf("item", "player_skull").fieldOf("item").forGetter(StaticVisitorData::item),
+            Codec.STRING.optionalFieldOf("item", "player_skull").forGetter(StaticVisitorData::item),
             Codec.STRING.optionalFieldOf("skin").forGetter { Optional.ofNullable(null) },
         ).apply(it, StaticVisitorData.Companion::create)
     }
@@ -127,7 +137,7 @@ private object GardenCodecs {
         it.group(
             ToolType.CODEC.fieldOf("type").forGetter(StaticToolInfo::type),
             Codec.STRING.eitherList().fieldOf("id").forGetter(StaticToolInfo::ids),
-            CodecUtils.COMPONENT_TAG.fieldOf("displayname").forGetter(StaticToolInfo::displayName)
+            CodecUtils.COMPONENT_TAG.fieldOf("displayname").forGetter(StaticToolInfo::displayName),
         ).apply(it, ::StaticToolInfo)
     }
 }
@@ -148,28 +158,29 @@ data object StaticGardenData {
         private set
     var visitors: List<StaticVisitorData> = emptyList()
         private set
-    var tools: List<StaticToolInfo> = emptyList()
+    var tools: Map<GardenResource, StaticToolInfo> = emptyMap()
 
     init {
         val CODEC = RecordCodecBuilder.create {
             it.group(
                 Codec.unboundedMap(Codec.STRING, GardenCodecs.BARN_SKIN).fieldOf("barn_skins").forGetter { barnSkins },
-                Codec.unboundedMap(Codec.STRING, GardenCodecs.COMPOSTER_DATA).fieldOf("composter_data")
-                    .forGetter { composterData },
-                Codec.unboundedMap(GardenResource.CODEC, Codec.INT.listOf()).fieldOf("crop_milestones")
-                    .forGetter { cropMilestones },
+                Codec.unboundedMap(Codec.STRING, GardenCodecs.COMPOSTER_DATA).fieldOf("composter_data").forGetter { composterData },
+                Codec.unboundedMap(GardenResource.CODEC, CodecUtils.CUMULATIVE_INT_LIST).fieldOf("crop_milestones").forGetter { cropMilestones },
                 GardenCodecs.MISC_DATA.fieldOf("misc").forGetter { miscData },
-                Codec.unboundedMap(Codec.STRING, GardenCodecs.PLOT_COST.listOf()).fieldOf("plot_cost")
-                    .forGetter { plotCost },
+                Codec.unboundedMap(Codec.STRING, GardenCodecs.PLOT_COST.listOf()).fieldOf("plot_cost").forGetter { plotCost },
                 GardenCodecs.PLOT_DATA.listOf().fieldOf("plots").forGetter { plots },
                 GardenCodecs.VISITOR_DATA.listOf().fieldOf("visitors").forGetter { visitors },
-                GardenCodecs.TOOL_INFO.listOf().fieldOf("tools").forGetter { tools },
+                Codec.unboundedMap(GardenResource.CODEC, GardenCodecs.TOOL_INFO).fieldOf("tools").forGetter { tools },
             ).apply(it, ::init)
         }
 
         val gardenData = Utils.loadFromRepo<JsonObject>("garden_data") ?: JsonObject()
 
-        CODEC.parse(JsonOps.INSTANCE, gardenData)
+        CODEC.parse(JsonOps.INSTANCE, gardenData).let {
+            if (it.isError) {
+                throw RuntimeException(it.error().get().message())
+            }
+        }
     }
 
     fun init(
@@ -180,7 +191,7 @@ data object StaticGardenData {
         plotCost: Map<String, List<StaticPlotCost>>,
         plots: List<StaticPlotData>,
         visitors: List<StaticVisitorData>,
-        tools: List<StaticToolInfo>,
+        tools: Map<GardenResource, StaticToolInfo>,
     ) {
         StaticGardenData.barnSkins = barnSkins
         StaticGardenData.composterData = composterData
@@ -205,7 +216,7 @@ data class StaticBarnSkin(
 data class StaticComposterData(
     val rewardFormula: String,
     val tooltip: String,
-    val upgrade: Map<String, Int>,
+    val upgrade: List<Map<String, Int>>,
 )
 
 data class StaticMiscData(
@@ -239,7 +250,7 @@ data class StaticVisitorData(
     val rarity: SkyBlockRarity,
     val name: String,
     val id: VisitorId,
-    val item: SkyblockItemId,
+    val item: String,
     val skin: String?,
 ) {
     companion object {
@@ -247,11 +258,16 @@ data class StaticVisitorData(
             rarity: SkyBlockRarity,
             name: String,
             id: VisitorId,
-            item: SkyblockItemId,
+            item: String,
             skin: Optional<String>,
         ): StaticVisitorData {
             return StaticVisitorData(rarity, name, id, item, skin.orElse(null))
         }
+    }
+
+    val itemStack: ItemStack by lazy {
+        skin?.let { createSkull(it) } ?: ItemAPI.getItem(item).takeUnless { it.item == Items.BARRIER }
+        ?: BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(item)).defaultInstance
     }
 }
 
@@ -270,7 +286,7 @@ private fun toArmorSet(baseId: String) = listOf(
     "${baseId}_HELMET",
     "${baseId}_LEGGINGS",
     "${baseId}_BOOTS",
-    "${baseId}_CHESTPLATE"
+    "${baseId}_CHESTPLATE",
 )
 
 enum class FarmingEquipment(vararg ids: String) {
@@ -284,40 +300,40 @@ enum class FarmingEquipment(vararg ids: String) {
             "CROPIE",
             "SQUASH",
             "FERMENTO",
-            "BIOHAZARD"
+            "BIOHAZARD",
         ).flatMap { toArmorSet(it) }.toTypedArray(),
         "RANCHERS_BOOTS",
-        "FARMER_BOOTS"
+        "FARMER_BOOTS",
     ),
     BELTS(
         "LOTUS_BELT",
-        "PESTHUNTERS_BELT"
+        "PESTHUNTERS_BELT",
     ),
     CLOAKS(
         "LOTUS_CLOAK",
         "ZORROS_CAPE",
-        "PESTHUNTERS_CLOAK"
+        "PESTHUNTERS_CLOAK",
     ),
     NECKLACES(
         "LOTUS_NECKLACE",
-        "PESTHUNTERS_NECKLACE"
+        "PESTHUNTERS_NECKLACE",
     ),
     GLOVES(
         "LOTUS_BRACELET",
-        "PESTHUNTERS_GLOVES"
+        "PESTHUNTERS_GLOVES",
     ),
     VACUUM(
         "SKYMART_VACUUM",
         "SKYMART_TURBO_VACUUM",
         "SKYMART_HYPER_VACUUM",
         "INFINI_VACUUM",
-        "INFINI_VACUUM_HOOVERIUS"
+        "INFINI_VACUUM_HOOVERIUS",
     ),
     PETS(
         "HEDGEHOG",
         "MOOSHROOM_COW",
         "SLUG",
-        "ELEPHANT"
+        "ELEPHANT",
     );
 
     val list = ids.toList()
@@ -327,7 +343,6 @@ enum class FarmingEquipment(vararg ids: String) {
         val gloves = GLOVES.list
         val necklaces = NECKLACES.list
         val belts = BELTS.list
-        val equipment = listOf(cloaks, gloves, necklaces, belts).flatten()
         val armor = ARMOR.list
         val vaccum = VACUUM.list
         val pets = PETS.list

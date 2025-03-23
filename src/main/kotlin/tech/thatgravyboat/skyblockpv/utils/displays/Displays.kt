@@ -31,6 +31,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.drawRoundedRec
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
 import tech.thatgravyboat.skyblockpv.utils.Utils.translate
+import java.util.*
 import kotlin.math.atan
 import kotlin.math.cos
 import kotlin.math.sin
@@ -92,12 +93,12 @@ object Displays {
         }
     }
 
-    fun background(sprite: ResourceLocation, display: Display): Display {
+    fun background(sprite: ResourceLocation, display: Display, color: Int = -1): Display {
         return object : Display {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
             override fun render(graphics: GuiGraphics) {
-                graphics.blitSprite(RenderType::guiTextured, sprite, 0, 0, display.getWidth(), display.getHeight())
+                graphics.blitSprite(RenderType::guiTextured, sprite, 0, 0, display.getWidth(), display.getHeight(), color.and(0xFFFFFF).or(-0xF000000))
                 display.render(graphics)
             }
         }
@@ -245,7 +246,7 @@ object Displays {
             override fun getWidth() = displays.sumOf { it.getWidth() } + spacing * (displays.size - 1)
             override fun getHeight() = displays.maxOfOrNull { it.getHeight() } ?: 0
             override fun render(graphics: GuiGraphics) {
-                var maxHeight = getHeight()
+                val maxHeight = getHeight()
 
                 graphics.pushPop {
                     var currentX = 0

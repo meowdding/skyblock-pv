@@ -2,11 +2,7 @@ package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import tech.thatgravyboat.skyblockpv.utils.asDouble
-import tech.thatgravyboat.skyblockpv.utils.asInt
-import tech.thatgravyboat.skyblockpv.utils.asLong
-import tech.thatgravyboat.skyblockpv.utils.asMap
-import tech.thatgravyboat.skyblockpv.utils.asMap as asMap1
+import tech.thatgravyboat.skyblockpv.utils.*
 
 data class GardenData(
     val copper: Int,
@@ -27,8 +23,16 @@ data class GardenProfile(
     val gardenExperience: GardenExperience,
     val unlockedBarnSkins: List<StaticBarnSkin>,
     val composterData: ComposterData,
+    val resourcesCollected: Map<GardenResource, Long>,
+    val cropUpgradeLevels: Map<GardenResource, Short>,
 ) {
     companion object {
+        private fun <T> JsonObject?.asGardenResourceMap(mapper: (JsonElement?) -> T): Map<GardenResource, T> {
+            if (this == null) return emptyMap()
+
+            return this.asMap { s, jsonElement -> GardenResource.getByApiId(s) to mapper(jsonElement) }
+        }
+
         fun fromJson(result: JsonObject): GardenProfile {
             return GardenProfile(
                 unlockedPlots = result.getAsJsonArray("unlocked_plots_ids")
@@ -36,8 +40,10 @@ data class GardenProfile(
                 selectedBarnSkin = result.get("selected_barn_skin").toBarnSkin(),
                 commissionData = result.getAsJsonObject("commission_data").toCommissionData(),
                 gardenExperience = result.get("garden_experience").asLong(0),
-                unlockedBarnSkins = result.getAsJsonArray("unlocked_barn_skins")?.map { it.toBarnSkin() }?: emptyList(),
-                composterData = result.getAsJsonObject("composter_data").toComposterData()
+                unlockedBarnSkins = result.getAsJsonArray("unlocked_barn_skins")?.map { it.toBarnSkin() } ?: emptyList(),
+                composterData = result.getAsJsonObject("composter_data").toComposterData(),
+                resourcesCollected = result.getAsJsonObject("resources_collected").asGardenResourceMap { it.asLong(0) },
+                cropUpgradeLevels = result.getAsJsonObject("crop_upgrade_levels").asGardenResourceMap { it.asShort(0) },
             )
         }
 
@@ -65,12 +71,18 @@ data class GardenProfile(
         }
 
         private fun JsonObject.toCommissionData(): CommissionData {
-            val visits = this.getAsJsonObject("visits").asMap1 { id, value -> id to value.asInt }
+            val visits = this.getAsJsonObject("visits").asMap { id, value -> id to value.asInt }
             val completed = this.getAsJsonObject("completed")
             val commissions = visits.mapNotNull { (id, visit) ->
                 id.let { StaticGardenData.visitors.find { it.id == id } }
-                    ?.let { Commission(it, visit, completed.get(id).asInt(0)) }
+                    ?.let { Commission(it, visit, completed.get(id).asInt(0)) }.let {
+                        if (it == null) {
+                            println("$id meow :(")
+                        }
+                        it
+                    }
             }
+
 
             return CommissionData(
                 commissions = commissions,
@@ -89,8 +101,8 @@ data class CommissionData(
 
 data class Commission(
     val visitor: StaticVisitorData,
-    val accepted: Int,
     val total: Int,
+    val accepted: Int,
 )
 
 enum class ComposterUpgrade {
