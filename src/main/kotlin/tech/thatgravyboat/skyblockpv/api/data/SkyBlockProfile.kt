@@ -31,6 +31,7 @@ data class SkyBlockProfile(
     val dungeonData: DungeonData?,
     val mining: MiningCore?,
     val forge: Forge?,
+    val glacite: GlaciteData?,
     val tamingLevelPetsDonated: List<String>,
     val pets: List<Pet>,
     val petMilestones: Map<String, Int>,
@@ -81,6 +82,7 @@ data class SkyBlockProfile(
                 dungeonData = member.getAsJsonObject("dungeons")?.let { DungeonData.fromJson(it) },
                 mining = member.getAsJsonObject("mining_core")?.let { MiningCore.fromJson(it) },
                 forge = member.getAsJsonObject("forge")?.let { Forge.fromJson(it) },
+                glacite = member.getAsJsonObject("glacite_player_data")?.let { GlaciteData.fromJson(it) },
                 tamingLevelPetsDonated = run {
                     val petsData = member.getAsJsonObject("pets_data")
                     val petCare = petsData?.getAsJsonObject("pet_care")
