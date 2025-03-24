@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -72,6 +73,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             }
         }
     }
+
+    fun isProfileOfUser() = gameProfile.id == McPlayer.uuid
 
     abstract fun create(bg: DisplayWidget)
 
