@@ -24,13 +24,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import java.util.*
 
-
-typealias VisitorId = String
-typealias SkyblockItemId = String
-
-fun SkyblockItemId.asItemStack() = ItemAPI.getItem(this.replace(":", "-"))
-
-enum class GardenResource(internalName: String? = null, itemId: SkyblockItemId? = null) : StringRepresentable {
+enum class GardenResource(internalName: String? = null, itemId: String? = null) : StringRepresentable {
     WHEAT,
     PUMPKIN,
     POTATO("POTATO_ITEM"),
@@ -46,7 +40,9 @@ enum class GardenResource(internalName: String? = null, itemId: SkyblockItemId? 
     override fun getSerializedName() = internalName
 
     val internalName: String
-    val itemId: SkyblockItemId
+    val itemId: String
+
+    fun getItem() = ItemAPI.getItem(itemId.replace(":", "-"))
 
     init {
         if (internalName == null) {
@@ -207,8 +203,9 @@ data object StaticGardenData {
 
 data class StaticBarnSkin(
     val displayName: Component,
-    val item: SkyblockItemId,
+    val item: String,
 ) {
+    fun getItem() = ItemAPI.getItem(item)
     companion object {
         val UNKNOWN = StaticBarnSkin(Text.of("Unknown") { this.color = TextColor.RED }, "barrier")
     }
@@ -272,7 +269,7 @@ data class StaticPlotData(
 data class StaticVisitorData(
     val rarity: SkyBlockRarity,
     val name: String,
-    val id: VisitorId,
+    val id: String,
     val item: String,
     val skin: String?,
 ) {
@@ -280,7 +277,7 @@ data class StaticVisitorData(
         fun create(
             rarity: SkyBlockRarity,
             name: String,
-            id: VisitorId,
+            id: String,
             item: String,
             skin: Optional<String>,
         ): StaticVisitorData {

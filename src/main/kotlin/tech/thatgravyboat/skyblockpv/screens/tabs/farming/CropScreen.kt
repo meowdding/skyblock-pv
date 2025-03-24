@@ -18,9 +18,9 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.GardenResource
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
-import tech.thatgravyboat.skyblockpv.data.asItemStack
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.addText
+import tech.thatgravyboat.skyblockpv.utils.Utils.addTextIf
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
@@ -94,8 +94,8 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val milestoneText = Text.of(milestone.toString()) { color = if (maxLevel == milestone) TextColor.GREEN else TextColor.RED }
         return loading(
-            Displays.item(resource.itemId.asItemStack(), customStackText = milestoneText).buildTooltip {
-                addText(resource.itemId.asItemStack().customName?.stripped ?: "meow :(") {
+            Displays.item(resource.getItem(), customStackText = milestoneText).buildTooltip {
+                addText(resource.getItem().customName?.stripped ?: "meow :(") {
                     bold = true
                     append(" Milestone")
                 }
@@ -105,22 +105,20 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     append("/")
                     append(maxLevel.toString())
                 }
-                if (maxLevel != milestone) {
-                    addText("Progress to ${milestone + 1}: ") {
-                        this.color = TextColor.GRAY
+                addTextIf("Progress to ${milestone + 1}: ", { maxLevel != milestone }) {
+                    this.color = TextColor.GRAY
 
-                        val collected = resourcesCollected.minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
-                        val needed = milestoneBrackets[milestone + 1].minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
+                    val collected = resourcesCollected.minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
+                    val needed = milestoneBrackets[milestone + 1].minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
 
-                        append(collected.toFormattedString()) { color = TextColor.YELLOW }
-                        append("/") { color = TextColor.GOLD }
-                        append(needed.shorten()) { color = TextColor.YELLOW }
-                        append(" (")
-                        append("${((collected.toFloat() / needed) * 100).round()}%") {
-                            this.color = TextColor.DARK_AQUA
-                        }
-                        append(")")
+                    append(collected.toFormattedString()) { color = TextColor.YELLOW }
+                    append("/") { color = TextColor.GOLD }
+                    append(needed.shorten()) { color = TextColor.YELLOW }
+                    append(" (")
+                    append("${((collected.toFloat() / needed) * 100).round()}%") {
+                        this.color = TextColor.DARK_AQUA
                     }
+                    append(")")
                 }
                 addText("Total") {
                     this.color = TextColor.GRAY

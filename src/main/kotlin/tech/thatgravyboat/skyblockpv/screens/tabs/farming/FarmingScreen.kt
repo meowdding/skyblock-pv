@@ -20,7 +20,6 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.FarmingEquipment
 import tech.thatgravyboat.skyblockpv.data.Pet
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
-import tech.thatgravyboat.skyblockpv.data.asItemStack
 import tech.thatgravyboat.skyblockpv.utils.GearUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.addTextIf
@@ -243,7 +242,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             map[2][2] = Displays.tooltip(
                 Displays.item(
                     loading<ItemStack>(
-                        data?.selectedBarnSkin?.item?.asItemStack() ?: ItemStack.EMPTY,
+                        data?.selectedBarnSkin?.getItem() ?: ItemStack.EMPTY,
                         Items.BARRIER.defaultInstance,
                         Items.BEDROCK.defaultInstance,
                     ),
