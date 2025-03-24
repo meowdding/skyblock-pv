@@ -188,7 +188,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     add("§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}")
                     if (isProfileOfUser()) {
                         add("")
-                        add("§aClick to set a reminder (Will not carry over game restarts)")
+                        add("§aClick to set a reminder")
                     }
                 }.asMultilineComponent()
 
