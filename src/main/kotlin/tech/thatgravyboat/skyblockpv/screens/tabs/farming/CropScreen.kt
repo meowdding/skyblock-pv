@@ -95,7 +95,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val milestoneText = Text.of(milestone.toString()) { color = if (maxLevel == milestone) TextColor.GREEN else TextColor.RED }
         return loading(
             Displays.item(resource.getItem(), customStackText = milestoneText).buildTooltip {
-                addText(resource.getItem().customName?.stripped ?: "meow :(") {
+                addText(resource.getItem().customName?.stripped ?: "Unknown") {
                     bold = true
                     append(" Milestone")
                 }
@@ -155,10 +155,8 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         return ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(staticToolInfo.ids))
             ?.asSequence()
             ?.sortedByDescending(::evaluateToolScore)
-            ?.take(1)
-            ?.map { Displays.item(it, showTooltip = true) }
-            ?.toMutableList()
             ?.firstOrNull()
+            ?.let { Displays.item(it, showTooltip = true) }
             ?: Displays.background(SkyBlockPv.id(staticToolInfo.type.id), 16, 16)
     }
 

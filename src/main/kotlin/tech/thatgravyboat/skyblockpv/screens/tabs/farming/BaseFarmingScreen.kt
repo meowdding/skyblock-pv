@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -20,12 +19,11 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.GardenProfile
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.Category
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 import kotlin.time.Duration.Companion.seconds
 
+// todo create abstraction for the loading methods
 abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("FARMING", gameProfile, profile) {
 
     var gardenProfile: Result<GardenProfile>? = null
@@ -85,11 +83,6 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
         errorMessage: Component = Text.of("Error!") { this.color = TextColor.RED },
     ): Component {
         return loading(message, loadingMessage, errorMessage)
-    }
-
-    protected fun createWidget(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
-        widget(Utils.getTitleWidget(title, element.width + padding))
-        widget(Utils.getMainContentWidget(element, element.width + padding))
     }
 }
 

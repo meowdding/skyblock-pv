@@ -71,7 +71,7 @@ data class GardenProfile(
                 id.let { StaticGardenData.visitors.find { it.id == id } }
                     ?.let { Commission(it, visit, completed.get(id).asInt(0)) }.let {
                         if (it == null) {
-                            println("$id meow :(")
+                            println("failed to create visitor, $this")
                         }
                         it
                     }

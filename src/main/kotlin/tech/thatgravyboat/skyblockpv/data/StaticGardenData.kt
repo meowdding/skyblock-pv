@@ -45,22 +45,12 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
     fun getItem() = ItemAPI.getItem(itemId.replace(":", "-"))
 
     init {
-        if (internalName == null) {
-            this.internalName = name
-        } else {
-            this.internalName = internalName
-        }
-        if (itemId == null) {
-            this.itemId = this.internalName
-        } else {
-            this.itemId = itemId
-        }
+        this.internalName = internalName ?: name
+        this.itemId = itemId ?: this.internalName
     }
 
     companion object {
-        fun getByApiId(s: String): GardenResource {
-            return entries.find { it.internalName == s } ?: UNKNOWN
-        }
+        fun getByApiId(s: String) = entries.find { it.internalName == s } ?: UNKNOWN
 
         val CODEC = StringRepresentable.fromEnum { entries.toTypedArray() }
     }
@@ -206,6 +196,7 @@ data class StaticBarnSkin(
     val item: String,
 ) {
     fun getItem() = ItemAPI.getItem(item)
+
     companion object {
         val UNKNOWN = StaticBarnSkin(Text.of("Unknown") { this.color = TextColor.RED }, "barrier")
     }
@@ -247,10 +238,7 @@ data class StaticPlotCost(
     val amount: Int,
     val bundle: Boolean,
 ) {
-    fun getDisplay(): Component {
-        val item = ItemAPI.getItem("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")
-        return item.hoverName
-    }
+    fun getDisplay() = ItemAPI.getItem("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST").hoverName
 }
 
 data class StaticPlotData(
@@ -302,63 +290,25 @@ enum class ToolType(val id: String) : StringRepresentable {
     }
 }
 
-private fun toArmorSet(baseId: String) = listOf(
-    "${baseId}_HELMET",
-    "${baseId}_LEGGINGS",
-    "${baseId}_BOOTS",
-    "${baseId}_CHESTPLATE",
-)
+enum class FarmingGear() {
+    ARMOR,
+    BELTS,
+    CLOAKS,
+    NECKLACES,
+    GLOVES,
+    VACUUM,
+    PETS;
 
-enum class FarmingEquipment(vararg ids: String) {
-    ARMOR(
-        *listOf(
-            "FARM_SUIT",
-            "FARM_ARMOR",
-            "SPEEDSTER",
-            "RABBIT",
-            "MELON",
-            "CROPIE",
-            "SQUASH",
-            "FERMENTO",
-            "BIOHAZARD",
-        ).flatMap { toArmorSet(it) }.toTypedArray(),
-        "RANCHERS_BOOTS",
-        "FARMER_BOOTS",
-    ),
-    BELTS(
-        "LOTUS_BELT",
-        "PESTHUNTERS_BELT",
-    ),
-    CLOAKS(
-        "LOTUS_CLOAK",
-        "ZORROS_CAPE",
-        "PESTHUNTERS_CLOAK",
-    ),
-    NECKLACES(
-        "LOTUS_NECKLACE",
-        "PESTHUNTERS_NECKLACE",
-    ),
-    GLOVES(
-        "LOTUS_BRACELET",
-        "PESTHUNTERS_GLOVES",
-    ),
-    VACUUM(
-        "SKYMART_VACUUM",
-        "SKYMART_TURBO_VACUUM",
-        "SKYMART_HYPER_VACUUM",
-        "INFINI_VACUUM",
-        "INFINI_VACUUM_HOOVERIUS",
-    ),
-    PETS(
-        "HEDGEHOG",
-        "MOOSHROOM_COW",
-        "SLUG",
-        "ELEPHANT",
-    );
-
-    val list = ids.toList()
+    var list: List<String> = emptyList()
+        private set
 
     companion object {
+        init {
+            Utils.loadFromRepo<Map<String, List<String>>>("gear/farming")?.forEach { (key, value) ->
+                runCatching { FarmingGear.valueOf(key.uppercase()).list = value }.onFailure { println(it) }
+            }
+        }
+
         val cloaks = CLOAKS.list
         val gloves = GLOVES.list
         val necklaces = NECKLACES.list

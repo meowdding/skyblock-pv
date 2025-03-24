@@ -17,13 +17,14 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
-import tech.thatgravyboat.skyblockpv.data.FarmingEquipment
+import tech.thatgravyboat.skyblockpv.data.FarmingGear
 import tech.thatgravyboat.skyblockpv.data.Pet
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
 import tech.thatgravyboat.skyblockpv.utils.GearUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.addTextIf
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
+import tech.thatgravyboat.skyblockpv.utils.Utils.createWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.*
@@ -91,7 +92,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                             append(")")
                         }
                         val totalRequired = StaticGardenData.miscData.gardenLevelBrackets.last()
-                        addTextIf("To max: ", { gardenLevel != maxLevel}) {
+                        addTextIf("To max: ", { gardenLevel != maxLevel }) {
                             this.color = TextColor.GRAY
 
                             append(garden.gardenExperience.toFormattedString()) { this.color = TextColor.DARK_GREEN }
@@ -123,7 +124,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     )
 
     private fun getPets(profile: SkyBlockProfile) = profile.pets.asSequence()
-        .filter { FarmingEquipment.pets.contains(it.type) }
+        .filter { FarmingGear.pets.contains(it.type) }
         .sortedWith(Comparator.comparingInt<Pet> { it.rarity.ordinal }.thenByDescending { pet -> pet.exp })
         .distinctBy { it.type }
         .mapTo(mutableListOf()) { Displays.item(it.itemStack, showTooltip = true, customStackText = it.level) }
@@ -135,17 +136,15 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getGear(profile: SkyBlockProfile) = createWidget(
         "Gear",
         LayoutBuild.horizontal {
-            widget(
-                GearUtils.getArmorAndEquipment(
-                    profile,
-                    ::calculateEquipmentScore,
-                    FarmingEquipment.necklaces,
-                    FarmingEquipment.cloaks,
-                    FarmingEquipment.belts,
-                    FarmingEquipment.gloves,
-                    FarmingEquipment.armor,
-                ),
-            )
+            GearUtils.getArmorAndEquipment(
+                profile,
+                ::calculateEquipmentScore,
+                FarmingGear.necklaces,
+                FarmingGear.cloaks,
+                FarmingGear.belts,
+                FarmingGear.gloves,
+                FarmingGear.armor,
+            ).let { widget(it) }
             spacer(width = 5)
             display(getPets(profile))
             spacer(width = 5)
@@ -155,12 +154,12 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     )
 
     private fun getVacuum(profile: SkyBlockProfile): Display {
-        val vacuums = ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(FarmingEquipment.vaccum)) ?: emptyList()
+        val vacuums = ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(FarmingGear.vaccum)) ?: emptyList()
 
-        val vacum = vacuums.sortedBy { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }
-            .reversed().firstOrNull() ?: return Displays.padding(4, Displays.background(SkyBlockPv.id("icon/slot/minecart"), Displays.empty(16, 16)))
+        val vacuum = vacuums.sortedBy { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }.reversed().firstOrNull()
+            ?: return Displays.padding(4, Displays.background(SkyBlockPv.id("icon/slot/minecart"), Displays.empty(16, 16)))
 
-        return Displays.padding(4, Displays.item(vacum, showTooltip = true))
+        return Displays.padding(4, Displays.item(vacuum, showTooltip = true))
     }
 
     private fun calculateEquipmentScore(stack: ItemStack): Int {

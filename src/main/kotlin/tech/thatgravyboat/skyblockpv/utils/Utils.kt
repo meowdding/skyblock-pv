@@ -142,6 +142,11 @@ object Utils {
         compoundWidget.withStretchToContentSize()
     }
 
+    fun createWidget(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
+        widget(getTitleWidget(title, element.width + padding))
+        widget(getMainContentWidget(element, element.width + padding))
+    }
+
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
