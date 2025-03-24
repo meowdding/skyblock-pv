@@ -214,4 +214,6 @@ object Utils {
     }
 
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
+
+    fun List<String>.asMultilineComponent() = Text.multiline(*this.toTypedArray())
 }
