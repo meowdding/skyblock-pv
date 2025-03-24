@@ -11,6 +11,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
+import tech.thatgravyboat.skyblockpv.api.RemindersAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.EssenceData.addMiningPerk
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
@@ -197,13 +198,17 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     Displays.text("§8${timeDisplay}", shadow = false),
                 ).toRow(1)
 
-                val widget = if (!isProfileOfUser()) display.asWidget()
-                else display.asButton {
-                    ChatUtils.chat("Reminder set for ${slot.itemStack.hoverName?.stripped} to be ready in $timeDisplay")
-                    Thread {
-                        Thread.sleep(timeRemaining.inWholeMilliseconds)
-                        ChatUtils.chat("Reminder: ${slot.itemStack.hoverName?.stripped} is ready!")
-                    }.start()
+                val widget = if (!isProfileOfUser()) {
+                    display.asWidget()
+                } else {
+                    display.asButton {
+                        ChatUtils.chat("Reminder set for ${slot.itemStack.hoverName?.stripped} to be ready in $timeDisplay")
+                        RemindersAPI.addReminder(
+                            "forge_slot_$index",
+                            Text.of("Reminder: ${slot.itemStack.hoverName?.stripped} is ready!"),
+                            System.currentTimeMillis() + timeRemaining.inWholeMilliseconds,
+                        )
+                    }
                 }
 
                 widget.withTooltip(hover)

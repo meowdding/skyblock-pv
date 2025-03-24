@@ -10,6 +10,7 @@ import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
+import tech.thatgravyboat.skyblockpv.api.RemindersAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.data.EssenceData
@@ -31,6 +32,7 @@ object SkyBlockPv : ModInitializer {
             ForgeTimeData,
             EssenceData,
             FossilTypes,
+            RemindersAPI,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }
