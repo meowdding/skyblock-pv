@@ -98,11 +98,12 @@ data class SkyBlockProfile(
                 essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
                 petMilestones = playerStats?.getAsJsonObject("pets")?.getAsJsonObject("milestone").asMap { id, amount -> id to amount.asInt(0) },
                 gardenData = run {
-                    val data = member.getAsJsonObject("garden_player_data") ?: return@run GardenData(0, 0)
+                    val data = member.getAsJsonObject("garden_player_data") ?: return@run GardenData(0, 0, 0)
 
                     return@run GardenData(
                         data.get("copper").asInt(0),
-                        data.get("larva_consumed").asInt(0)
+                        data.get("larva_consumed").asInt(0),
+                        playerStats.get("glowing_mushrooms_broken").asInt(0)
                     )
                 },
             )

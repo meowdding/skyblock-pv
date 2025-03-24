@@ -31,7 +31,6 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.drawRoundedRec
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
 import tech.thatgravyboat.skyblockpv.utils.Utils.translate
-import java.util.*
 import kotlin.math.atan
 import kotlin.math.cos
 import kotlin.math.sin

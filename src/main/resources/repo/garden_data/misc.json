@@ -106,5 +106,6 @@
         10,
         10
     ],
+    "max_larva_consumed": 5,
     "plot_farming_fortune_reward_formula": "3 * plotsUnlocked"
 }

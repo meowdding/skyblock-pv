@@ -223,4 +223,8 @@ object Utils {
         }
         return this
     }
+
+    fun MutableList<Any>.addTextIf(text: String, predicate: () -> Boolean, init: MutableComponent.() -> Unit) = predicate() && addText(text, init)
+    fun MutableList<Any>.addText(text: String, init: MutableComponent.() -> Unit) = this.add(Text.of(text, init))
+    fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 }

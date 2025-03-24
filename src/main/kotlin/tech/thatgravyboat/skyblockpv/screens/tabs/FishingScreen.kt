@@ -331,11 +331,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 GearUtils.getArmorAndEquipment(
                     profile,
                     ::calculateItemScore,
-                    FishingEquipment.necklaces,
-                    FishingEquipment.cloaks,
-                    FishingEquipment.belts,
-                    FishingEquipment.gloves,
-                    FishingEquipment.armor
+                    FishingGear.necklaces,
+                    FishingGear.cloaks,
+                    FishingGear.belts,
+                    FishingGear.gloves,
+                    FishingGear.armor
                 ),
             )
             spacer(width = 5)

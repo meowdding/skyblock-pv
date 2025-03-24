@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
@@ -53,8 +54,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createPetLayout(pet: Pet): AbstractWidget {
         val itemDisplay = Displays.item(pet.itemStack, showTooltip = true, customStackText = Text.of(pet.level.toString()).withColor(pet.rarity.color))
-        val texture = "inventory/inventory-1x1-highlighted".takeIf { pet == selectedPet } ?: "inventory/inventory-1x1"
-        val display = Displays.background(SkyBlockPv.id(texture), Displays.padding(3, itemDisplay))
+        val display = Displays.background(SkyBlockPv.id("inventory/inventory-1x1"), Displays.padding(3, itemDisplay), (-1).takeUnless { pet == selectedPet }?: TextColor.GREEN)
         return Button()
             .withSize(22, 22)
             .withTexture(null)

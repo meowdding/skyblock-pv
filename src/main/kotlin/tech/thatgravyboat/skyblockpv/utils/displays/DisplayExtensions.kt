@@ -6,6 +6,7 @@ import eu.pb4.placeholders.api.parsers.TagParser
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.multiline
 import tech.thatgravyboat.skyblockpv.mixin.I18nAccessor
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 
@@ -73,6 +74,7 @@ fun Display.withBackground(color: UInt): Display = Displays.background(color, th
 fun Display.asWidget(): DisplayWidget = DisplayWidget(this)
 
 fun Display.withTooltip(vararg tooltip: Any?): Display = Displays.tooltip(this, Text.multiline(*tooltip))
+fun Display.buildTooltip(builder: MutableList<Any>.() -> Unit) = this.withTooltip(multiline(mutableListOf<Any>().apply(builder)))
 fun Display.withTranslatedTooltip(key: String, vararg args: Any?): Display {
     var raw = I18nAccessor.getLanguage().getOrDefault(key)
     args.forEachIndexed { index, any ->

@@ -10,7 +10,7 @@ object CodecUtils {
 
     val CUMULATIVE_INT_LIST: Codec<List<Int>> =
         Codec.INT.listOf().xmap(
-            { it.runningFold(0, Int::plus) },
+            { it.runningFold(0, Int::plus).distinct() },
             { it.reversed().runningFold(0, Int::minus).reversed() }
         )
 

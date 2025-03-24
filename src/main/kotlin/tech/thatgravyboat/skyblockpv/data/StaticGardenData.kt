@@ -88,7 +88,7 @@ private object GardenCodecs {
 
     val MISC_DATA = RecordCodecBuilder.create {
         it.group(
-            Codec.INT.listOf().fieldOf("garden_level").forGetter(StaticMiscData::gardenLevelBrackets),
+            CodecUtils.CUMULATIVE_INT_LIST.fieldOf("garden_level").forGetter(StaticMiscData::gardenLevelBrackets),
             Codec.INT.listOf().fieldOf("crop_upgrade_cost").forGetter(StaticMiscData::cropUpgradeCost),
             Codec.STRING.fieldOf("crop_upgrade_reward_formula").forGetter(StaticMiscData::cropRewardFormula),
             Codec.unboundedMap(GardenResource.CODEC, Codec.INT).fieldOf("crop_requirements")
@@ -99,6 +99,7 @@ private object GardenCodecs {
                 .forGetter(StaticMiscData::uniqueVisitorsAcceptedMilestone),
             Codec.STRING.fieldOf("plot_farming_fortune_reward_formula")
                 .forGetter(StaticMiscData::plotFarmingFortuneReward),
+            Codec.INT.fieldOf("max_larva_consumed").forGetter(StaticMiscData::maxLarvaConsumed),
         ).apply(it, ::StaticMiscData)
     }
 
@@ -150,7 +151,7 @@ data object StaticGardenData {
     var cropMilestones: Map<GardenResource, List<Int>> = emptyMap()
         private set
     var miscData: StaticMiscData =
-        StaticMiscData(emptyList(), emptyList(), "0", emptyMap(), emptyList(), emptyList(), "0")
+        StaticMiscData(emptyList(), emptyList(), "0", emptyMap(), emptyList(), emptyList(), "0", 0)
         private set
     var plotCost: Map<String, List<StaticPlotCost>> = emptyMap()
         private set
@@ -227,18 +228,40 @@ data class StaticMiscData(
     val offersAcceptedMilestones: List<Int>,
     val uniqueVisitorsAcceptedMilestone: List<Int>,
     val plotFarmingFortuneReward: String,
-)
+    val maxLarvaConsumed: Int,
+) {
+    fun getXpRequired(gardenLevel: Int): Int {
+        if (gardenLevel >= gardenLevelBrackets.size - 1) {
+            return 0
+        }
+
+        return gardenLevelBrackets[gardenLevel] - gardenLevelBrackets[(gardenLevel - 1).coerceAtLeast(0)]
+    }
+
+    fun getLevelForExperience(gardenExperience: Long): Int {
+        return StaticGardenData.miscData.gardenLevelBrackets.let { data ->
+            (data.findLast { it <= gardenExperience } ?: 0).let { data.indexOf(it) + 1 }
+        }
+    }
+
+}
 
 data class StaticPlotCost(
     val amount: Int,
     val bundle: Boolean,
-)
+) {
+    fun getDisplay(): Component {
+        val item = ItemAPI.getItem("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")
+        return item.hoverName
+    }
+}
 
 data class StaticPlotData(
     val id: String,
     val location: Vector2i,
     val number: Int,
 ) {
+    val type: String = id.substringBefore("_")
     fun getName(): MutableComponent = Text.of("Plot") {
         this.color = TextColor.YELLOW
         append(Text.of(" - ") { this.color = TextColor.GRAY })

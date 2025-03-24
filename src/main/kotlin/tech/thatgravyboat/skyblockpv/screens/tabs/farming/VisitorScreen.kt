@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -13,6 +12,8 @@ import tech.thatgravyboat.skyblockpv.data.Commission
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
 import tech.thatgravyboat.skyblockpv.data.StaticVisitorData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.Utils.addText
+import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
@@ -63,43 +64,34 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             Items.BEDROCK.defaultInstance,
         )
 
-
-        val tooltip = buildList {
+        return Displays.item(item).buildTooltip {
             val profile = gardenProfile ?: run {
-                add(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE })
-                return@buildList
+                addText("Loading...") { this.color = TextColor.LIGHT_PURPLE }
+                return@buildTooltip
             }
 
             if (profile.isFailure) {
-                add(Text.of("Error!") { this.color = TextColor.RED })
-                return@buildList
+                addText("Error!") { this.color = TextColor.RED }
+                return@buildTooltip
             }
 
-            add(Text.of(visitor.name) { this.color = visitor.rarity.color })
+            addText(visitor.name) { this.color = visitor.rarity.color }
 
             if (commission != null) {
                 add("")
-                add(
-                    Text.of("Visits: ") {
-                        this.color = TextColor.GRAY
-                        append(Text.of("${commission.total}") { this.color = TextColor.GREEN })
-                    },
-                )
-                add(
-                    Text.of("Accepted: ") {
-                        this.color = TextColor.GRAY
-                        append(Text.of("${commission.accepted}") { this.color = TextColor.GREEN })
-                    },
-                )
-                add(
-                    Text.of("Rejected: ") {
-                        this.color = TextColor.GRAY
-                        append(Text.of("${commission.total - commission.accepted}") { this.color = TextColor.GREEN })
-                    },
-                )
+                addText("Visits: ") {
+                    this.color = TextColor.GRAY
+                    append("${commission.total}") { this.color = TextColor.GREEN }
+                }
+                addText("Accepted: ") {
+                    this.color = TextColor.GRAY
+                    append("${commission.accepted}") { this.color = TextColor.GREEN }
+                }
+                addText("Rejected: ") {
+                    this.color = TextColor.GRAY
+                    append("${commission.total - commission.accepted}") { this.color = TextColor.GREEN }
+                }
             }
         }
-
-        return Displays.item(item).withTooltip(tooltip)
     }
 }

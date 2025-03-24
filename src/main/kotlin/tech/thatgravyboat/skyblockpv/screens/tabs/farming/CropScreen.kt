@@ -20,6 +20,8 @@ import tech.thatgravyboat.skyblockpv.data.GardenResource
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
 import tech.thatgravyboat.skyblockpv.data.asItemStack
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.Utils.addText
+import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.displays.*
@@ -36,8 +38,8 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 add(getTool(it, profile))
                 add(getCropUpgrade(it))
                 add(getCropMilestone(it))
-            }.map { Displays.padding(2, it) }.map { Displays.background(SkyBlockPv.id("inventory/inventory-1x1"), it) }.toColumn()
-        }.toRow(2).let { LayoutBuild.frame { display(it) } }
+            }.map { Displays.padding(2, it) }.toColumn()
+        }.map { Displays.background(SkyBlockPv.id("inventory/inventory-1x3"), Displays.padding(2, it)) }.toRow(2).let { LayoutBuild.frame { display(it) } }
     }
 
     private fun getCropUpgrade(it: GardenResource): Display {
@@ -54,36 +56,28 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val cropLevelText = Text.of(cropLevel.toString()) { color = select(TextColor.GREEN, TextColor.RED) }
         return loading(
-            Displays.item(select(Items.NETHERRACK, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE).defaultInstance, customStackText = cropLevelText).withTooltip(
-                buildList {
-                    add(Text.of("Crop Upgrade") { this.bold = true })
-                    add(
-                        Text.of("Upgrades: ") {
-                            this.color = TextColor.GRAY
-                            append(cropLevelText)
-                            append("/$maxUpgrades")
-                        },
-                    )
-                    add(
-                        Text.of("Copper paid: ") {
-                            this.color = TextColor.GRAY
-                            val copperUsed = cropUpgradeCost.take(cropLevel).sum()
-                            append(Text.of(copperUsed.toFormattedString()) { this.color = TextColor.RED })
-                            append(Text.of("/") { this.color = TextColor.GOLD })
-                            append(Text.of(totalCopper.toFormattedString()) { this.color = TextColor.RED })
-                            if (totalCopper != copperUsed) {
-                                append(" (")
-                                append(
-                                    Text.of("${((copperUsed.toFloat() / totalCopper) * 100).round()}%") {
-                                        this.color = TextColor.YELLOW
-                                    },
-                                )
-                                append(")")
-                            }
-                        },
-                    )
-                },
-            ),
+            Displays.item(select(Items.NETHERRACK, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE).defaultInstance, customStackText = cropLevelText).buildTooltip {
+                addText("Crop Upgrade") { this.bold = true }
+                addText("Upgrades: ") {
+                    this.color = TextColor.GRAY
+                    append(cropLevelText)
+                    append("/$maxUpgrades")
+                }
+                addText("Copper paid: ") {
+                    this.color = TextColor.GRAY
+                    val copperUsed = cropUpgradeCost.take(cropLevel).sum()
+                    append(copperUsed.toFormattedString()) { this.color = TextColor.RED }
+                    append("/") { this.color = TextColor.GOLD }
+                    append(totalCopper.toFormattedString()) { this.color = TextColor.RED }
+                    if (totalCopper != copperUsed) {
+                        append(" (")
+                        append("${((copperUsed.toFloat() / totalCopper) * 100).round()}%") {
+                            this.color = TextColor.YELLOW
+                        }
+                        append(")")
+                    }
+                }
+            },
             Displays.item(Items.ORANGE_DYE.defaultInstance).withTooltip(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE }),
             Displays.item(Items.BEDROCK.defaultInstance).withTooltip(Text.of("Error!") { this.color = TextColor.RED }),
         )
@@ -100,67 +94,56 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val milestoneText = Text.of(milestone.toString()) { color = if (maxLevel == milestone) TextColor.GREEN else TextColor.RED }
         return loading(
-            Displays.item(resource.itemId.asItemStack(), customStackText = milestoneText).withTooltip(
-                buildList {
-                    add(Text.of(resource.itemId.asItemStack().customName?.stripped ?: "meow :(") { bold = true })
-                    add(
-                        Text.of("Progress: ") {
-                            color = TextColor.GRAY
-                            append(milestoneText)
-                            append("/")
-                            append(maxLevel.toString())
-                        },
-                    )
-                    if (maxLevel != milestone) {
-                        add(
-                            Text.of("Progress to ${milestone + 1}: ") {
-                                this.color = TextColor.GRAY
+            Displays.item(resource.itemId.asItemStack(), customStackText = milestoneText).buildTooltip {
+                addText(resource.itemId.asItemStack().customName?.stripped ?: "meow :(") {
+                    bold = true
+                    append(" Milestone")
+                }
+                addText("Progress: ") {
+                    color = TextColor.GRAY
+                    append(milestoneText)
+                    append("/")
+                    append(maxLevel.toString())
+                }
+                if (maxLevel != milestone) {
+                    addText("Progress to ${milestone + 1}: ") {
+                        this.color = TextColor.GRAY
 
-                                val collected = resourcesCollected.minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
-                                val needed = milestoneBrackets[milestone + 1].minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
+                        val collected = resourcesCollected.minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
+                        val needed = milestoneBrackets[milestone + 1].minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
 
-                                append(Text.of(collected.toFormattedString()) { color = TextColor.YELLOW })
-                                append(Text.of("/") { color = TextColor.GOLD })
-                                append(Text.of(needed.shorten()) { color = TextColor.YELLOW })
-                                append(" (")
-                                append(
-                                    Text.of("${((collected.toFloat() / needed) * 100).round()}%") {
-                                        this.color = TextColor.DARK_AQUA
-                                    },
-                                )
-                                append(")")
-                            },
-                        )
+                        append(collected.toFormattedString()) { color = TextColor.YELLOW }
+                        append("/") { color = TextColor.GOLD }
+                        append(needed.shorten()) { color = TextColor.YELLOW }
+                        append(" (")
+                        append("${((collected.toFloat() / needed) * 100).round()}%") {
+                            this.color = TextColor.DARK_AQUA
+                        }
+                        append(")")
                     }
-                    add(
-                        Text.of("Total") {
-                            this.color = TextColor.GRAY
+                }
+                addText("Total") {
+                    this.color = TextColor.GRAY
 
-                            if (milestone != maxLevel) {
-                                append(" Progress")
-                            }
-                            append(": ")
+                    if (milestone != maxLevel) {
+                        append(" Progress")
+                    }
+                    append(": ")
 
-                            append(Text.of(resourcesCollected.toFormattedString()) { color = TextColor.YELLOW })
-                            if (milestone != maxLevel) {
-                                append(Text.of("/") { color = TextColor.GOLD })
-                                append(
-                                    Text.of("${milestoneBrackets.last().shorten()} ") {
-                                        this.color = TextColor.YELLOW
-                                    },
-                                )
-                                append("(")
-                                append(
-                                    Text.of("${((resourcesCollected.toFloat() / milestoneBrackets.last()) * 100).round()}%") {
-                                        this.color = TextColor.DARK_AQUA
-                                    },
-                                )
-                                append(")")
-                            }
-                        },
-                    )
-                },
-            ),
+                    append(resourcesCollected.toFormattedString()) { color = TextColor.YELLOW }
+                    if (milestone != maxLevel) {
+                        append("/") { color = TextColor.GOLD }
+                        append("${milestoneBrackets.last().shorten()} ") {
+                            this.color = TextColor.YELLOW
+                        }
+                        append("(")
+                        append("${((resourcesCollected.toFloat() / milestoneBrackets.last()) * 100).round()}%") {
+                            this.color = TextColor.DARK_AQUA
+                        }
+                        append(")")
+                    }
+                }
+            },
             Displays.item(Items.ORANGE_DYE.defaultInstance).withTooltip(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE }),
             Displays.item(Items.BEDROCK.defaultInstance).withTooltip(Text.of("Error!") { this.color = TextColor.RED }),
         )

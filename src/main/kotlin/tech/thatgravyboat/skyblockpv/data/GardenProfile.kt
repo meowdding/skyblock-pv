@@ -7,20 +7,14 @@ import tech.thatgravyboat.skyblockpv.utils.*
 data class GardenData(
     val copper: Int,
     val larvaConsumed: Int,
+    val glowingMushroomBroken: Int,
 )
-
-typealias GardenExperience = Long
-
-fun GardenExperience.toLevel(): Int {
-    val cumulativeList = StaticGardenData.miscData.gardenLevelBrackets.runningFold(0, Int::plus)
-    return cumulativeList.find { it <= this }?.let { cumulativeList.indexOf(it) } ?: 0
-}
 
 data class GardenProfile(
     val unlockedPlots: List<StaticPlotData>,
     val selectedBarnSkin: StaticBarnSkin,
     val commissionData: CommissionData,
-    val gardenExperience: GardenExperience,
+    val gardenExperience: Long,
     val unlockedBarnSkins: List<StaticBarnSkin>,
     val composterData: ComposterData,
     val resourcesCollected: Map<GardenResource, Long>,
@@ -91,6 +85,8 @@ data class GardenProfile(
             )
         }
     }
+
+    fun getGardenLevel(): Int = StaticGardenData.miscData.getLevelForExperience(gardenExperience)
 }
 
 data class CommissionData(
