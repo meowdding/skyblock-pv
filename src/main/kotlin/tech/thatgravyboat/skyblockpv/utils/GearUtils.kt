@@ -60,22 +60,15 @@ object GearUtils {
     fun getDisplayArmor(list: List<ItemStack>) = buildList {
         fun addArmor(type: String) {
             val itemStack = list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) != false } ?: ItemStack.EMPTY
-            add(
-                Displays.padding(
-                    2,
-                    Displays.item(itemStack, showTooltip = true)
-                        .let {
-                            return@let if (itemStack.isEmpty) {
-                                Displays.background(
-                                    ResourceLocation.parse("container/slot/${type.lowercase()}"),
-                                    it,
-                                ).centerIn(-1, -1)
-                            } else {
-                                it
-                            }
-                        },
-                ),
-            )
+            Displays.padding(
+                2,
+                Displays.item(itemStack, showTooltip = true).let {
+                    it.takeUnless { itemStack.isEmpty } ?: Displays.background(
+                        ResourceLocation.parse("container/slot/${type.lowercase()}"),
+                        it,
+                    )
+                },
+            ).let { add(it) }
         }
 
         addArmor("HELMET")
