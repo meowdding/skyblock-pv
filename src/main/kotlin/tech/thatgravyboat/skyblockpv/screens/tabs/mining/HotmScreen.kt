@@ -36,6 +36,13 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val mining = profile?.mining ?: return LayoutBuild.horizontal { }
         val gridLayout = GridLayout()
 
+        // nodes that are unlocked but not in the repo:
+        val unknownNodes = mining.nodes.keys - MiningNodes.miningNodes.map { it.id }
+
+        if (unknownNodes.isNotEmpty()) {
+            println("Unknown hotm nodes: $unknownNodes")
+        }
+
         MiningNodes.miningNodes.forEach { node ->
             if (node is SpacerNode) {
                 gridLayout.addChild(

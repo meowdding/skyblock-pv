@@ -45,7 +45,6 @@ object MiningNodes {
     }
 
 }
-// todo unknown perks in chat
 
 data class Context(val hotmLevel: Int = -1, val perkLevel: Int = -1) {
     fun configure(kevalBuilder: KevalBuilder) = with(kevalBuilder) {
