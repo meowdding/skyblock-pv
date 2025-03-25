@@ -31,7 +31,6 @@ object SkillAPI {
 
     fun getMaxTamingLevel(profile: SkyBlockProfile): Int = profile.tamingLevelPetsDonated.size + 50
 
-    // TODO: Doesnt work correctly on runecrafting & social (fuck cosmetic)
     fun getSkillLevel(skill: String, exp: Long, profile: SkyBlockProfile): Int {
         val maxLevel = if (skill == "SKILL_TAMING") {
             getMaxTamingLevel(profile)
