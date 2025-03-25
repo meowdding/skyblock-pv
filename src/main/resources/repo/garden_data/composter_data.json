@@ -1,0 +1,622 @@
+{
+    "SPEED": {
+        "reward_formula": "20 * level",
+        "tooltip": "<gray>Increases composter production speed by <green>%reward%%<gray>.",
+        "upgrades": [
+            {
+                "copper": 100,
+                "ENCHANTED_WHEAT": 150
+            },
+            {
+                "copper": 150,
+                "ENCHANTED_GOLDEN_CARROT": 2
+            },
+            {
+                "copper": 200,
+                "ENCHANTED_WHEAT": 256
+            },
+            {
+                "copper": 250,
+                "ENCHANTED_GOLDEN_CARROT": 4
+            },
+            {
+                "copper": 300,
+                "ENCHANTED_WHEAT": 512
+            },
+            {
+                "copper": 350,
+                "ENCHANTED_GOLDEN_CARROT": 8
+            },
+            {
+                "copper": 400,
+                "ENCHANTED_HAY_BALE": 8
+            },
+            {
+                "copper": 500,
+                "ENCHANTED_GOLDEN_CARROT": 16,
+                "CROPIE": 3
+            },
+            {
+                "copper": 600,
+                "ENCHANTED_HAY_BALE": 16,
+                "CROPIE": 6
+            },
+            {
+                "copper": 700,
+                "ENCHANTED_GOLDEN_CARROT": 32,
+                "CROPIE": 12
+            },
+            {
+                "copper": 800,
+                "ENCHANTED_HAY_BALE": 24,
+                "CROPIE": 32
+            },
+            {
+                "copper": 900,
+                "ENCHANTED_GOLDEN_CARROT": 48,
+                "CROPIE": 64
+            },
+            {
+                "copper": 1000,
+                "ENCHANTED_HAY_BALE": 32,
+                "CROPIE": 128
+            },
+            {
+                "copper": 1200,
+                "ENCHANTED_GOLDEN_CARROT": 64,
+                "SQUASH": 3
+            },
+            {
+                "copper": 1400,
+                "ENCHANTED_HAY_BALE": 48,
+                "SQUASH": 6
+            },
+            {
+                "copper": 1600,
+                "ENCHANTED_GOLDEN_CARROT": 96,
+                "SQUASH": 12
+            },
+            {
+                "copper": 1800,
+                "ENCHANTED_HAY_BALE": 64,
+                "SQUASH": 32
+            },
+            {
+                "copper": 200,
+                "ENCHANTED_GOLDEN_CARROT": 64,
+                "SQUASH": 64
+            },
+            {
+                "copper": 2250,
+                "ENCHANTED_HAY_BALE": 80,
+                "SQUASH": 128
+            },
+            {
+                "copper": 2500,
+                "ENCHANTED_GOLDEN_CARROT": 192,
+                "FERMENTO": 3
+            },
+            {
+                "copper": 2750,
+                "ENCHANTED_HAY_BALE": 104,
+                "FERMENTO": 6
+            },
+            {
+                "copper": 3000,
+                "ENCHANTED_GOLDEN_CARROT": 256,
+                "FERMENTO": 12
+            },
+            {
+                "copper": 3300,
+                "ENCHANTED_HAY_BALE": 128,
+                "CONDENSED_FERMENTO": 4
+            },
+            {
+                "copper": 3600,
+                "ENCHANTED_GOLDEN_CARROT": 320,
+                "CONDENSED_FERMENTO": 7
+            },
+            {
+                "copper": 4000,
+                "ENCHANTED_HAY_BALE": 160,
+                "CONDENSED_FERMENTO": 14
+            }
+        ]
+    },
+    "MULTI_DROP": {
+        "reward_formula": "3 * level",
+        "tooltip": "<gray>When compost is produced, grants a <green>%reward%% <gray>chance to produce an extra one.",
+        "upgrades": [
+            {
+                "copper": 100,
+                "ENCHANTED_BAKED_POTATO": 1
+            },
+            {
+                "copper": 150,
+                "ENCHANTED_PUMPKIN": 64
+            },
+            {
+                "copper": 200,
+                "ENCHANTED_BAKED_POTATO": 2
+            },
+            {
+                "copper": 250,
+                "POLISHED_PUMPKIN": 1
+            },
+            {
+                "copper": 300,
+                "ENCHANTED_BAKED_POTATO": 4
+            },
+            {
+                "copper": 350,
+                "POLISHED_PUMPKIN": 2
+            },
+            {
+                "copper": 400,
+                "ENCHANTED_BAKED_POTATO": 8
+            },
+            {
+                "copper": 500,
+                "POLISHED_PUMPKIN": 4,
+                "CROPIE": 3
+            },
+            {
+                "copper": 600,
+                "ENCHANTED_BAKED_POTATO": 16,
+                "CROPIE": 6
+            },
+            {
+                "copper": 700,
+                "POLISHED_PUMPKIN": 8,
+                "CROPIE": 12
+            },
+            {
+                "copper": 800,
+                "ENCHANTED_BAKED_POTATO": 32,
+                "CROPIE": 32
+            },
+            {
+                "copper": 900,
+                "POLISHED_PUMPKIN": 16,
+                "CROPIE": 64
+            },
+            {
+                "copper": 1000,
+                "ENCHANTED_BAKED_POTATO": 48,
+                "CROPIE": 128
+            },
+            {
+                "copper": 1200,
+                "POLISHED_PUMPKIN": 32,
+                "SQUASH": 3
+            },
+            {
+                "copper": 1400,
+                "ENCHANTED_BAKED_POTATO": 64,
+                "SQUASH": 6
+            },
+            {
+                "copper": 1600,
+                "POLISHED_PUMPKIN": 48,
+                "SQUASH": 12
+            },
+            {
+                "copper": 1800,
+                "ENCHANTED_BAKED_POTATO": 96,
+                "SQUASH": 32
+            },
+            {
+                "copper": 200,
+                "POLISHED_PUMPKIN": 64,
+                "SQUASH": 64
+            },
+            {
+                "copper": 2250,
+                "ENCHANTED_BAKED_POTATO": 128,
+                "SQUASH": 128
+            },
+            {
+                "copper": 2500,
+                "POLISHED_PUMPKIN": 96,
+                "FERMENTO": 3
+            },
+            {
+                "copper": 2750,
+                "ENCHANTED_BAKED_POTATO": 192,
+                "FERMENTO": 6
+            },
+            {
+                "copper": 3000,
+                "POLISHED_PUMPKIN": 128,
+                "FERMENTO": 12
+            },
+            {
+                "copper": 3300,
+                "ENCHANTED_BAKED_POTATO": 256,
+                "CONDENSED_FERMENTO": 4
+            },
+            {
+                "copper": 3600,
+                "POLISHED_PUMPKIN": 192,
+                "CONDENSED_FERMENTO": 7
+            },
+            {
+                "copper": 4000,
+                "ENCHANTED_BAKED_POTATO": 320,
+                "CONDENSED_FERMENTO": 14
+            }
+        ]
+    },
+    "FUEL_CAP": {
+        "reward_formula": "100000 + 30000 * level",
+        "tooltip": "<gray>When compost is produced, grants a <green>%reward%% <gray>chance to produce an extra one.",
+        "upgrades": [
+            {
+                "copper": 100,
+                "ENCHANTED_SUGAR_CANE": 1
+            },
+            {
+                "copper": 150,
+                "ENCHANTED_MELON_BLOCK": 4
+            },
+            {
+                "copper": 200,
+                "ENCHANTED_SUGAR_CANE": 2
+            },
+            {
+                "copper": 250,
+                "ENCHANTED_MELON_BLOCK": 8
+            },
+            {
+                "copper": 300,
+                "ENCHANTED_SUGAR_CANE": 4
+            },
+            {
+                "copper": 350,
+                "ENCHANTED_MELON_BLOCK": 16
+            },
+            {
+                "copper": 400,
+                "ENCHANTED_SUGAR_CANE": 8
+            },
+            {
+                "copper": 500,
+                "ENCHANTED_MELON_BLOCK": 32,
+                "CROPIE": 3
+            },
+            {
+                "copper": 600,
+                "ENCHANTED_SUGAR_CANE": 16,
+                "CROPIE": 6
+            },
+            {
+                "copper": 700,
+                "ENCHANTED_MELON_BLOCK": 48,
+                "CROPIE": 12
+            },
+            {
+                "copper": 800,
+                "ENCHANTED_SUGAR_CANE": 32,
+                "CROPIE": 32
+            },
+            {
+                "copper": 900,
+                "ENCHANTED_MELON_BLOCK": 64,
+                "CROPIE": 64
+            },
+            {
+                "copper": 1000,
+                "ENCHANTED_SUGAR_CANE": 48,
+                "CROPIE": 128
+            },
+            {
+                "copper": 1200,
+                "ENCHANTED_MELON_BLOCK": 96,
+                "SQUASH": 3
+            },
+            {
+                "copper": 1400,
+                "ENCHANTED_SUGAR_CANE": 64,
+                "SQUASH": 6
+            },
+            {
+                "copper": 1600,
+                "ENCHANTED_MELON_BLOCK": 128,
+                "SQUASH": 12
+            },
+            {
+                "copper": 1800,
+                "ENCHANTED_SUGAR_CANE": 96,
+                "SQUASH": 32
+            },
+            {
+                "copper": 200,
+                "ENCHANTED_MELON_BLOCK": 192,
+                "SQUASH": 64
+            },
+            {
+                "copper": 2250,
+                "ENCHANTED_SUGAR_CANE": 128,
+                "SQUASH": 128
+            },
+            {
+                "copper": 2500,
+                "ENCHANTED_MELON_BLOCK": 256,
+                "FERMENTO": 3
+            },
+            {
+                "copper": 2750,
+                "ENCHANTED_SUGAR_CANE": 192,
+                "FERMENTO": 6
+            },
+            {
+                "copper": 3000,
+                "ENCHANTED_MELON_BLOCK": 384,
+                "FERMENTO": 12
+            },
+            {
+                "copper": 3300,
+                "ENCHANTED_SUGAR_CANE": 256,
+                "CONDENSED_FERMENTO": 4
+            },
+            {
+                "copper": 3600,
+                "ENCHANTED_MELON_BLOCK": 512,
+                "CONDENSED_FERMENTO": 7
+            },
+            {
+                "copper": 4000,
+                "ENCHANTED_SUGAR_CANE": 320,
+                "CONDENSED_FERMENTO": 14
+            }
+        ]
+    },
+    "ORGANIC_MATTER_CAP": {
+        "reward_formula": "40000 + 20000 * level",
+        "tooltip": "<gray>Increases the maximum amount of organic matter that can be stored to <green>%reward%<gray>.",
+        "upgrades": [
+            {
+                "copper": 100,
+                "ENCHANTED_CACTUS": 1
+            },
+            {
+                "copper": 150,
+                "ENCHANTED_COOKIE": 3
+            },
+            {
+                "copper": 200,
+                "ENCHANTED_CACTUS": 2
+            },
+            {
+                "copper": 250,
+                "ENCHANTED_COOKIE": 6
+            },
+            {
+                "copper": 300,
+                "ENCHANTED_CACTUS": 4
+            },
+            {
+                "copper": 350,
+                "ENCHANTED_COOKIE": 12
+            },
+            {
+                "copper": 400,
+                "ENCHANTED_CACTUS": 7
+            },
+            {
+                "copper": 500,
+                "ENCHANTED_COOKIE": 24,
+                "CROPIE": 3
+            },
+            {
+                "copper": 600,
+                "ENCHANTED_CACTUS": 10,
+                "CROPIE": 6
+            },
+            {
+                "copper": 700,
+                "ENCHANTED_COOKIE": 48,
+                "CROPIE": 12
+            },
+            {
+                "copper": 800,
+                "ENCHANTED_CACTUS": 16,
+                "CROPIE": 32
+            },
+            {
+                "copper": 900,
+                "ENCHANTED_COOKIE": 72,
+                "CROPIE": 64
+            },
+            {
+                "copper": 1000,
+                "ENCHANTED_CACTUS": 24,
+                "CROPIE": 128
+            },
+            {
+                "copper": 1200,
+                "ENCHANTED_COOKIE": 96,
+                "SQUASH": 3
+            },
+            {
+                "copper": 1400,
+                "ENCHANTED_CACTUS": 32,
+                "SQUASH": 6
+            },
+            {
+                "copper": 1600,
+                "ENCHANTED_COOKIE": 144,
+                "SQUASH": 12
+            },
+            {
+                "copper": 1800,
+                "ENCHANTED_CACTUS": 48,
+                "SQUASH": 32
+            },
+            {
+                "copper": 200,
+                "ENCHANTED_COOKIE": 192,
+                "SQUASH": 64
+            },
+            {
+                "copper": 2250,
+                "ENCHANTED_CACTUS": 64,
+                "SQUASH": 128
+            },
+            {
+                "copper": 2500,
+                "ENCHANTED_COOKIE": 256,
+                "FERMENTO": 3
+            },
+            {
+                "copper": 2750,
+                "ENCHANTED_CACTUS": 96,
+                "FERMENTO": 6
+            },
+            {
+                "copper": 3000,
+                "ENCHANTED_COOKIE": 352,
+                "FERMENTO": 12
+            },
+            {
+                "copper": 3300,
+                "ENCHANTED_CACTUS": 128,
+                "CONDENSED_FERMENTO": 4
+            },
+            {
+                "copper": 3600,
+                "ENCHANTED_COOKIE": 448,
+                "CONDENSED_FERMENTO": 7
+            },
+            {
+                "copper": 4000,
+                "ENCHANTED_CACTUS": 160,
+                "CONDENSED_FERMENTO": 14
+            }
+        ]
+    },
+    "COST_REDUCTION": {
+        "reward_formula": "level",
+        "tooltip": "<gray>Reduces the amount of organic matter and fuel required to produce compost by <green>%reward%%<gray>.",
+        "upgrades": [
+            {
+                "copper": 100,
+                "ENCHANTED_BROWN_MUSHROOM": 32
+            },
+            {
+                "copper": 150,
+                "MUTANT_NETHER_STALK": 1
+            },
+            {
+                "copper": 200,
+                "ENCHANTED_HUGE_MUSHROOM_2": 2
+            },
+            {
+                "copper": 250,
+                "MUTANT_NETHER_STALK": 2
+            },
+            {
+                "copper": 300,
+                "ENCHANTED_HUGE_MUSHROOM_1": 4
+            },
+            {
+                "copper": 350,
+                "MUTANT_NETHER_STALK": 4
+            },
+            {
+                "copper": 400,
+                "ENCHANTED_HUGE_MUSHROOM_2": 16
+            },
+            {
+                "copper": 500,
+                "MUTANT_NETHER_STALK": 8,
+                "CROPIE": 3
+            },
+            {
+                "copper": 600,
+                "ENCHANTED_HUGE_MUSHROOM_1": 32,
+                "CROPIE": 6
+            },
+            {
+                "copper": 700,
+                "MUTANT_NETHER_STALK": 16,
+                "CROPIE": 12
+            },
+            {
+                "copper": 800,
+                "ENCHANTED_HUGE_MUSHROOM_2": 64,
+                "CROPIE": 32
+            },
+            {
+                "copper": 900,
+                "MUTANT_NETHER_STALK": 32,
+                "CROPIE": 64
+            },
+            {
+                "copper": 1000,
+                "ENCHANTED_HUGE_MUSHROOM_1": 128,
+                "CROPIE": 128
+            },
+            {
+                "copper": 1200,
+                "MUTANT_NETHER_STALK": 48,
+                "SQUASH": 3
+            },
+            {
+                "copper": 1400,
+                "ENCHANTED_HUGE_MUSHROOM_2": 256,
+                "SQUASH": 6
+            },
+            {
+                "copper": 1600,
+                "MUTANT_NETHER_STALK": 64,
+                "SQUASH": 12
+            },
+            {
+                "copper": 1800,
+                "ENCHANTED_HUGE_MUSHROOM_1": 448,
+                "SQUASH": 32
+            },
+            {
+                "copper": 200,
+                "MUTANT_NETHER_STALK": 96,
+                "SQUASH": 64
+            },
+            {
+                "copper": 2250,
+                "ENCHANTED_HUGE_MUSHROOM_2": 640,
+                "SQUASH": 128
+            },
+            {
+                "copper": 2500,
+                "MUTANT_NETHER_STALK": 160,
+                "FERMENTO": 3
+            },
+            {
+                "copper": 2750,
+                "ENCHANTED_HUGE_MUSHROOM_1": 823,
+                "FERMENTO": 6
+            },
+            {
+                "copper": 3000,
+                "MUTANT_NETHER_STALK": 224,
+                "FERMENTO": 12
+            },
+            {
+                "copper": 3300,
+                "ENCHANTED_HUGE_MUSHROOM_2": 1024,
+                "CONDENSED_FERMENTO": 4
+            },
+            {
+                "copper": 3600,
+                "MUTANT_NETHER_STALK": 288,
+                "CONDENSED_FERMENTO": 7
+            },
+            {
+                "copper": 4000,
+                "ENCHANTED_HUGE_MUSHROOM_1": 1216,
+                "CONDENSED_FERMENTO": 14
+            }
+        ]
+    }
+}

@@ -126,9 +126,7 @@ idea {
     }
 }
 
-tasks.withType<ProcessResources>().configureEach {
-    exclude("repo/hotmperks/**")
-
+fun setupHotm(resources: ProcessResources) = with(resources) {
     val jsonArray = JsonArray()
 
     val idsUsed: MutableSet<String> = mutableSetOf()
@@ -162,4 +160,30 @@ tasks.withType<ProcessResources>().configureEach {
     file.asFile.parentFile.createDirectory()
     file.asFile.writeText(content)
     from(project.layout.buildDirectory.dir("tmp/generated_hotm/").get())
+}
+
+fun setupGarden(resources: ProcessResources) = with(resources) {
+    val newObject = JsonObject()
+
+    sourceSets.main.get().resources.srcDirs.map { it.toPath() }.forEach {
+        fileTree(it) {
+            include("repo/garden_data/*.json")
+            forEach {
+                newObject.add(it.nameWithoutExtension, JsonParser.parseString(it.toPath().readText()))
+            }
+        }
+    }
+
+    val content = newObject.toString()
+    val file = project.layout.buildDirectory.file("tmp/generated_garden/repo/garden_data.json").get()
+    file.asFile.parentFile.createDirectory()
+    file.asFile.writeText(content)
+    from(project.layout.buildDirectory.dir("tmp/generated_garden/").get())
+}
+
+tasks.withType<ProcessResources>().configureEach {
+    exclude("repo/hotmperks/**", "repo/garden_data/**")
+
+    setupHotm(this)
+    setupGarden(this)
 }

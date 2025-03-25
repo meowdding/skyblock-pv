@@ -5,13 +5,14 @@ import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
 import tech.thatgravyboat.skyblockapi.api.remote.UseRepoLib
+import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
-import tech.thatgravyboat.skyblockpv.utils.*
+import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import java.util.*
 
 data class SkyBlockProfile(
@@ -39,6 +40,7 @@ data class SkyBlockProfile(
     val trophyFish: TrophyFishData,
     val miscFishData: FishData,
     val essenceUpgrades: Map<String, Int>,
+    val gardenData: GardenData,
 ) {
     companion object {
 
@@ -96,6 +98,15 @@ data class SkyBlockProfile(
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
                 essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
                 petMilestones = playerStats?.getAsJsonObject("pets")?.getAsJsonObject("milestone").asMap { id, amount -> id to amount.asInt(0) },
+                gardenData = run {
+                    val data = member.getAsJsonObject("garden_player_data") ?: return@run GardenData(0, 0, 0)
+
+                    return@run GardenData(
+                        data.get("copper").asInt(0),
+                        data.get("larva_consumed").asInt(0),
+                        playerStats.get("glowing_mushrooms_broken").asInt(0)
+                    )
+                },
             )
         }
 

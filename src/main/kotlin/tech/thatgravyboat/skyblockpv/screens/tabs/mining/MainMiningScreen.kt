@@ -19,7 +19,6 @@ import tech.thatgravyboat.skyblockpv.data.MiningCore
 import tech.thatgravyboat.skyblockpv.data.RockBrackets
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.asMultilineComponent
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
@@ -181,8 +180,11 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     "§8${timeRemaining.formatReadableTime(DurationUnit.DAYS, 2)}"
                 }
 
-                // TODO: mona's .buildToolTip
-                val hover = buildList {
+                val display = listOf(
+                    Displays.text("§8§lSlot $index", shadow = false),
+                    Displays.padding(0, 0, -4, 0, itemDisplay),
+                    Displays.text("§8${timeDisplay}", shadow = false),
+                ).toRow(1).withTooltip {
                     add("§l${slot.itemStack.hoverName?.stripped}")
                     add("§7Time Remaining: $timeDisplay")
                     add("§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}")
@@ -190,13 +192,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                         add("")
                         add("§aClick to set a reminder")
                     }
-                }.asMultilineComponent()
-
-                val display = listOf(
-                    Displays.text("§8§lSlot $index", shadow = false),
-                    Displays.padding(0, 0, -4, 0, itemDisplay),
-                    Displays.text("§8${timeDisplay}", shadow = false),
-                ).toRow(1)
+                }
 
                 val widget = if (!isProfileOfUser()) {
                     display.asWidget()
@@ -211,7 +207,6 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     }
                 }
 
-                widget.withTooltip(hover)
                 widget(widget)
             }
         }

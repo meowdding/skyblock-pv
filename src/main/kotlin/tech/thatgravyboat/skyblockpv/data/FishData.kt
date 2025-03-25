@@ -5,10 +5,10 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockpv.utils.asInt
-import tech.thatgravyboat.skyblockpv.utils.asString
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 
 data class TrophyFishData(
