@@ -2,6 +2,8 @@ package tech.thatgravyboat.skyblockpv.api.data
 
 import com.google.gson.JsonObject
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockpv.utils.getNbt
 import tech.thatgravyboat.skyblockpv.utils.legacyStack
 
@@ -14,12 +16,13 @@ data class InventoryData(
     val potionBag: Inventory?,
     val talismans: List<TalismansPage>?,
     val fishingBag: Inventory?,
-    val sacks: Inventory?,
+    val sacks: Map<String, Long>,
     val quiver: Inventory?,
     val personalVault: Inventory?,
     val wardrobe: Wardrobe?,
 ) {
 
+    /** Get all items from all sources, **EXCEPT** for sacks.*/
     fun getAllItems() = buildList {
         fun addAll(list: List<ItemStack>?) = list?.let { this.addAll(it) }
 
@@ -31,7 +34,6 @@ data class InventoryData(
         addAll(potionBag?.inventory)
         addAll(talismans?.flatMap { it.talismans.inventory })
         addAll(fishingBag?.inventory)
-        addAll(sacks?.inventory)
         addAll(quiver?.inventory)
         addAll(personalVault?.inventory)
         addAll(wardrobe?.armor?.armor?.inventory)
@@ -118,7 +120,7 @@ data class InventoryData(
                 potionBag = bagContents?.getAsJsonObject("potion_bag")?.let { Inventory.fromJson(it) },
                 talismans = bagContents?.getAsJsonObject("talisman_bag")?.let { TalismansPage.fromJson(it) },
                 fishingBag = bagContents?.getAsJsonObject("fishing_bag")?.let { Inventory.fromJson(it) },
-                sacks = bagContents?.getAsJsonObject("sacks")?.let { Inventory.fromJson(it) },
+                sacks = json.getAsJsonObject("sacks_counts")?.asMap { key, value -> key to value.asLong(0) }?.filterValues { it > 0 } ?: emptyMap(),
                 quiver = bagContents?.getAsJsonObject("quiver")?.let { Inventory.fromJson(it) },
                 armorItems = json.getAsJsonObject("inv_armor")?.let { Inventory.fromJson(it) },
                 equipmentItems = json.getAsJsonObject("equipment_contents")?.let { Inventory.fromJson(it) },
