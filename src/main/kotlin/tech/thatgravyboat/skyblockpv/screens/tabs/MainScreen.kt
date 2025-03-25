@@ -113,17 +113,18 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     private fun createMiddleColumn(profile: SkyBlockProfile, width: Int): LinearLayout {
         val height = (width * 1.1).toInt()
+        val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
+        val skyblockLvl = profile.skyBlockLevel.first
+        val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
+        val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
+        val fakePlayer = FakePlayer(gameProfile, name, armor)
         val playerWidget = Displays.background(SkyBlockPv.id("buttons/dark/disabled"), width, height).asWidget().withRenderer { gr, ctx, _ ->
             val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             gr.pushPop {
                 translate(0f, 0f, 100f)
-                val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
-                val skyblockLvl = profile.skyBlockLevel.first
-                val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
-                val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
-                Displays.entity(
-                    FakePlayer(gameProfile, name, armor),
+                 Displays.entity(
+                    fakePlayer,
                     width, height,
                     (width / 2.5).toInt(),
                     eyesX, eyesY,
