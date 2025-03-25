@@ -41,7 +41,7 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
         initedWithGardenData = false
         isDoneLoading = false
         CoroutineScope(Dispatchers.IO).launch {
-            val data = GardenApi.getGardenData(profile)
+            val data = GardenApi.getData(profile)
             gardenProfile = data
 
             isDoneLoading = true

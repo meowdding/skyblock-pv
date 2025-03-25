@@ -2,7 +2,7 @@ package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import tech.thatgravyboat.skyblockpv.utils.*
+import tech.thatgravyboat.skyblockapi.utils.extentions.*
 
 data class GardenData(
     val copper: Int,

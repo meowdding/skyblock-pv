@@ -14,15 +14,16 @@ import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
+import net.minecraft.util.ExtraCodecs
 import net.minecraft.util.ExtraCodecs.LateBoundIdMapper
 import net.minecraft.util.StringRepresentable
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.Logger
-import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
-import tech.thatgravyboat.skyblockpv.utils.*
-import tech.thatgravyboat.skyblockpv.utils.CodecUtils.eitherList
+import tech.thatgravyboat.skyblockpv.utils.CodecUtils
+import tech.thatgravyboat.skyblockpv.utils.Utils
 
 data class MiningCore(
     val nodes: Map<String, Int>,
@@ -447,7 +448,7 @@ class CoreMiningNode(
                 it.group(
                     CotmCost.CODEC.fieldOf("cost").forGetter(CotmLevel::cost),
                     Codec.INT.listOf().optionalFieldOf("include", emptyList()).forGetter(CotmLevel::include),
-                    Codec.STRING.eitherList().fieldOf("reward").forGetter(CotmLevel::reward),
+                    ExtraCodecs.compactListCodec(Codec.STRING).fieldOf("reward").forGetter(CotmLevel::reward),
                 ).apply(it, ::CotmLevel)
             }
         }

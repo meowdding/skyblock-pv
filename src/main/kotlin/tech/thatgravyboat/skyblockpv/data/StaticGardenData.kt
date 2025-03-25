@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.ExtraCodecs
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -19,7 +20,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.CodecUtils
-import tech.thatgravyboat.skyblockpv.utils.CodecUtils.eitherList
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import java.util.*
@@ -123,7 +123,7 @@ private object GardenCodecs {
     val TOOL_INFO = RecordCodecBuilder.create {
         it.group(
             ToolType.CODEC.fieldOf("type").forGetter(StaticToolInfo::type),
-            Codec.STRING.eitherList().fieldOf("id").forGetter(StaticToolInfo::ids),
+            ExtraCodecs.compactListCodec(Codec.STRING).fieldOf("id").forGetter(StaticToolInfo::ids),
             CodecUtils.COMPONENT_TAG.fieldOf("displayname").forGetter(StaticToolInfo::displayName),
         ).apply(it, ::StaticToolInfo)
     }

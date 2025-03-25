@@ -1,38 +1,19 @@
 package tech.thatgravyboat.skyblockpv.api
 
+import com.google.gson.JsonObject
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import java.util.*
 
 private const val PATH = "v2/skyblock/profiles"
-private const val CACHE_TIME = 10 * 60 * 1000 // 10 minutes
 
-object ProfileAPI {
+object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
 
-    private val cache: MutableMap<UUID, CacheEntry<List<SkyBlockProfile>>> = mutableMapOf()
-
-    suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = cache.getOrPut(uuid) {
-        val result = HypixelAPI.get(PATH, mapOf("uuid" to uuid.toString())) ?: run {
-            ChatUtils.chat("Something went wrong :3")
-            return emptyList()
-        }
-
-        val profiles = result.getAsJsonArray("profiles").mapNotNull {
-            SkyBlockProfile.fromJson(it.asJsonObject, uuid)
-        }
-
-        CacheEntry(profiles, System.currentTimeMillis())
-    }.takeIf { System.currentTimeMillis() - it.timestamp < CACHE_TIME }?.data ?: run {
-        cache.remove(uuid)
-        getProfiles(uuid)
+    override fun path() = PATH
+    override fun decode(data: JsonObject, originalData: UUID) = data.getAsJsonArray("profiles").mapNotNull {
+        SkyBlockProfile.fromJson(it.asJsonObject, originalData)
     }
+    override fun getKey(data: UUID) = data
+    override fun variables(data: UUID) = mapOf("uuid" to data.toString())
 
-    fun clearCache() {
-        cache.clear()
-    }
+    suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = getData(uuid).getOrNull() ?: emptyList()
 }
-
-internal class CacheEntry<T>(
-    val data: T,
-    val timestamp: Long = System.currentTimeMillis(),
-)
