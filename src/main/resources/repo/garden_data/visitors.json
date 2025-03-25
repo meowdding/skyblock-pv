@@ -1,0 +1,506 @@
+[
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTkxMzU4MzE3MzksInByb2ZpbGVJZCI6ImIwZDRiMjhiYzFkNzQ4ODlhZjBlODY2MWNlZTk2YWFiIiwicHJvZmlsZU5hbWUiOiJ4RmFpaUxlUiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGQzNGYzOGMxYmIxMDZlMTE5MDhhZDNjYzkwMTYyYzE4Yjg2M2Q2NzgyNjVjODRhODRhMzU4OTAzZjhmN2ExYyJ9fX0=",
+        "name": "Adventurer",
+        "id": "adventurer"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "witch_spawn_egg",
+        "name": "Alchemist",
+        "id": "alchemist"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Andrew",
+        "id": "andrew"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwNDQxODU1MDQ5MCwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGQ0ZTlkMmE4Yzg4ZDBlZmQ3NTBlODUyNzMyYmEwNWZhM2YzMDJlMjA0ZTJiZGM4OGRhZDYwNWUyNTU3ZTJhNiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9",
+        "name": "Anita",
+        "id": "anita"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1MzY3NTkzMzY3NjQsInByb2ZpbGVJZCI6IjQ2N2NmOTRkY2UyYjQ1ZTY4YmRhNTJlNTUwMmU3M2U4IiwicHJvZmlsZU5hbWUiOiJMaWxpeWFfIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jYzJlODE5OTA2ZWIxNzk0MzliOGRkNTU1MTEzMmU1NGViNDcxNzNlMGY0NTg4NjFhZDJhOGM5Mzc5MTgzODkxIn19fQ==",
+        "name": "Arthur",
+        "id": "arthur"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwOTI0NTM4MDg1MCwKICAicHJvZmlsZUlkIiA6ICI3MmNiMDYyMWU1MTA0MDdjOWRlMDA1OTRmNjAxNTIyZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNb3M5OTAiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTU5ZjhjNGRmZDFjNTgzYThhNTRmYTVjYzdmOGViNmMyNGQyNjlhZjI3Yzk5ZmQ5ZjJiMmJiZjQwZTcwZmVkMiIKICAgIH0KICB9Cn0=",
+        "name": "Banker Broadjaw",
+        "id": "banker_broadjaw"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Duke",
+        "id": "duke"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NjMzMTc0ODQ5NzQsInByb2ZpbGVJZCI6IjllOGI4NzQ3YTMxNzQ0ZTY4YTQ4NzEzMzQwM2I0ZDM1IiwicHJvZmlsZU5hbWUiOiJFdmlsRGN0ciIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2NhODVjMTU2M2JmNTY5ZDg4YmY3YmMzNzVjYmM4MjBkN2Q0YTczYzkyYWFmN2Q5NDc5YWY1ZWY1MjU1ZDA0MCJ9fX0=",
+        "name": "Dusk",
+        "id": "dusk"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxMDIyNTA4NzI1OCwKICAicHJvZmlsZUlkIiA6ICJlYjIwYWVkYTRiYTM0NzVmOTczZGNmZjkzNTE2OGZhYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTa3lGYWxsZWVlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2M3NjVmZWU5N2JjZmFlN2MxMzZiNmE2YjhjYTk1MzgxYWY5NjRkNmFlYmMwOGJmZGQyMzUwYWY3OGUyY2Y1MWEiCiAgICB9CiAgfQp9",
+        "name": "Emissary Carlton",
+        "id": "emissary_carlton"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxMDIyNTIwNDMxMSwKICAicHJvZmlsZUlkIiA6ICJiMGQ0YjI4YmMxZDc0ODg5YWYwZTg2NjFjZWU5NmFhYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNaW5lU2tpbl9vcmciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTc4YzI1YWM4ZDc5M2E3M2FmMzFlNWRhM2U4YmYyZDYzYTZjMDAyNmZkZTlhOTY4MmZjOWNhZjYxNTU0MGM3OSIKICAgIH0KICB9Cn0=",
+        "name": "Emissary Ceanna",
+        "id": "emissary_ceanna"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxMDI0NzQ3MjczNCwKICAicHJvZmlsZUlkIiA6ICI3NDM3MGQ1Mjk5Mjk0ZThjODRlYjRlODlhYjc2MGY5MiIsCiAgInByb2ZpbGVOYW1lIiA6ICJQdXRZb3VySmFzT2ZmIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzlhNDMzMjI1MTFmNGJiYTcxMGJkNzhjOThjOTBlODNhYzkyYTJkYTBmMDVhMGE2OTUxMDg5YmFjZTBjZjIwM2EiCiAgICB9CiAgfQp9",
+        "name": "Emissary Fraiser",
+        "id": "emissary_fraiser"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxMDIyNTExNDI0MiwKICAicHJvZmlsZUlkIiA6ICI2MTZiODhkNDMwNzM0ZTM3OWM3NDc1ODdlZTJkNzlmZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJfX25vdGFodW1hbl9fIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2UxMTcyYjE3ZWIzMzE4Yjg0MWZhOTRiZTBiOGZiZDBiN2NkZGI1YWRkMWQyYjM1YWQ1ZTZhZGM4YWI3ZDUyMDYiCiAgICB9CiAgfQp9",
+        "name": "Emissary Wilson",
+        "id": "emissary_wilson"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5MzI4Njc3OTUxMiwKICAicHJvZmlsZUlkIiA6ICI4ODQ0ZDJiMWM2YjY0MmVkYTYxNTNjNGEyY2I3YTU5NiIsCiAgInByb2ZpbGVOYW1lIiA6ICJUYW52dmVyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzI4MjkwNGQzYzRmY2U4MjkxNzE4ZGFlOTA5OTVlMTM3Mzg3MWNiNjllMjI4Y2MyMDQ0OTU2MjBhMWEwZWM1MGEiCiAgICB9CiAgfQp9",
+        "name": "Farmer Jon",
+        "id": "farmer_jon"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Farmhand",
+        "id": "farmhand"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1Njk1MTE5NjQ0NzEsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg1NjY0NTc0NGJmY2E2YWYwM2MyM2UyOTdlNmVkZTc5YjUyOGQxZDI0ZWM1MGQzYTY0YWJlYzNhMDgzNGI5NDUifX19",
+        "name": "Fear Mongerer",
+        "id": "fear_mongerer"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Felix",
+        "id": "felix"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTk1NzQ0MjU3OTEsInByb2ZpbGVJZCI6ImZkNjBmMzZmNTg2MTRmMTJiM2NkNDdjMmQ4NTUyOTlhIiwicHJvZmlsZU5hbWUiOiJSZWFkIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hNjc1ZjA3MWVmYjBjZjI3YmYxNjA4MWUzZjgyZjliNWY4YWU4OGVjYTllZTk1MjNiNjIxNmU2MTdmNmY0NWM5In19fQ==",
+        "name": "Fisherman Gerald",
+        "id": "fisherman"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxNzg5OTEzNTk2MSwKICAicHJvZmlsZUlkIiA6ICJkODAwZDI4MDlmNTE0ZjkxODk4YTU4MWYzODE0Yzc5OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0aGVCTFJ4eCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jMzVhMjBmNTc4MGM2NjdjNWY1NzZiYTYzMDdkYjYxYjM1YTNjOWYzYWRjNmE4NjU0NTQ3MjVmNGU3N2ExMTIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==",
+        "name": "Friendly Hiker",
+        "id": "friendly_hiker"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzQ0NjA5MiwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjEzY2YwY2E3OWEzNjExYjhlMDVmZTllMjY0ZmIyYmY4ZDI3ZTQ2NGRjMTJkYzZlOTVkZDBhZTBjMzM1YTU2MSIKICAgIH0KICB9Cn0=",
+        "name": "Geonathan Greatforge",
+        "id": "geonathan_greatforge"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzQwOTk1NSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTdiMzU1MmM1YWYyYWIyZGM0ZTFmODRkNzhjYTRjNGQ2NzZkZWMwNjgxNTcyMjVhM2MyNjc0ZTU1NzRkMjM0OCIKICAgIH0KICB9Cn0=",
+        "name": "Gimley",
+        "id": "gimley"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NzUzMDMzNzQ3NjcsInByb2ZpbGVJZCI6IjQxZDNhYmMyZDc0OTQwMGM5MDkwZDU0MzRkMDM4MzFiIiwicHJvZmlsZU5hbWUiOiJNZWdha2xvb24iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2U5ZTIzYmU3ZjA0NTU2ZmEzMzM1MWE0Yzc3MWEzZjA1ZjRhNmQyN2RlNDEzYTM2ZDAyMzBjNjFmNzE2OTg3OTkifX19",
+        "name": "Guy",
+        "id": "guy"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzI1NzYzNCwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWJmOGRkNWNiOTIzYWQzY2FkNTQ4MzQwNjZlOGZhNDY1OWQzYTE4OWIxNDEwNTE1ZTQwMDVhNGVkZTA1NDFlYiIKICAgIH0KICB9Cn0=",
+        "name": "Hornum",
+        "id": "hornum"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxNzAzNjc3MTUyOSwKICAicHJvZmlsZUlkIiA6ICJiMGQ3MzJmZTAwZjc0MDdlOWU3Zjc0NjMwMWNkOThjYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJPUHBscyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9kNmY5YjliNjI0MDRjNWNmOTRjMzg1YzdmMWM4NmFkZGUwZDlhZWY5YTljZDI5ZTJhYjU4M2ZhMWRlNjNmNDI2IgogICAgfQogIH0KfQ==",
+        "name": "Hungry Hiker",
+        "id": "hungry_hiker"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Jack",
+        "id": "jack"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwNDM3MDQyNDk4NiwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2I4YmIxYjQ4ZjRiYWJjNjdjZTM5NTQ3MjA4ZmRiZWQ3MjJjYTU5OGNkZjMwNjgxZTM2N2M2MjQ3Y2FiMTkxOCIKICAgIH0KICB9Cn0=",
+        "name": "Jacob",
+        "id": "jacob"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Jamie",
+        "id": "jamie"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzU4ODM4NiwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODUzNjJiNjFmMjk4ZGVjMmRmNzY1NDU3ZDZiNDE3ZTkxN2QyMzA5ZWJjOGY2OTFmMDg1NTQ4OTY4MmRkZWM1OSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9",
+        "name": "Jotraeline Greatforge",
+        "id": "jotraeline_greatforge"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Leo",
+        "id": "leo"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Liam",
+        "id": "liam"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Librarian",
+        "id": "librarian"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTA2Nzg1MjAzNzMsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzY4MjUwMzBlNzc1MmZhZjdmODE2YWMyYTIwYjExNDMyYWY0YjJjZGU0OTMyZGMwZTkyMDgzMWU2MjE4MDhlZTgifX19",
+        "name": "Lumber Jack",
+        "id": "lumberjack"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Lynn",
+        "id": "lynn"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxNzg5OTY1NjAyMiwKICAicHJvZmlsZUlkIiA6ICJjNjc3MGJjZWMzZjE0ODA3ODc4MTU0NWRhMGFmMDI1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDVUNGTDE2IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzNmY2I0Mjk2Mjg1ZTMzMWE5MzYwMzAwNzJiZTcxNmZjYjRiN2JhM2UzZjU0NDc3OTMyOTRjMDNlZWUxYzkyN2MiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==",
+        "name": "Mason",
+        "id": "mason"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYyNTY3OTYzOTQyNywKICAicHJvZmlsZUlkIiA6ICJhYTZhNDA5NjU4YTk0MDIwYmU3OGQwN2JkMzVlNTg5MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJiejE0IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzZiN2NhZjRiZDkzNjE4MWY2YmExMGIwYTZiZGExNDRhYWIwMzY0ZThjODZlZmNhZDYwN2ZlZjRiZDc3MDgxNyIKICAgIH0KICB9Cn0=",
+        "name": "Odawa",
+        "id": "odawa"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1ODM1MTkxNjczMzUsInByb2ZpbGVJZCI6IjQxZDNhYmMyZDc0OTQwMGM5MDkwZDU0MzRkMDM4MzFiIiwicHJvZmlsZU5hbWUiOiJNZWdha2xvb24iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2U0OWZlNTk1YzZhMDhhZGVjOGI5ZGFiMDk4Njg1MzI3MWM2Yjg3ZDg5N2Q3MzE4YjFiYWRhZDJjMzRiZDVhMGUifX19",
+        "name": "Oringo",
+        "id": "oringo"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTcxMDg1MTUyNDUyMSwKICAicHJvZmlsZUlkIiA6ICJmNzcxMDI1NGMzYWY0YjA5YmRjY2NiNDRjNjg1NjFiMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDZXJ1c1YyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQzMWM2Y2I2MjE0MTJhYjRlODUxYWZjYTNmNDNlNWVkZWJkOGZjZGRkYjQwNGZhMjMxMGJlMjlkMmNiZDIyNzYiCiAgICB9CiAgfQp9",
+        "name": "Pest Wrangler",
+        "id": "pest_wrangler"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "sponge",
+        "name": "Plumber Joe",
+        "id": "plumber_joe"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxNDY5NDY2OSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmIyMGIyM2MxYWEyYmUwMjcwZjAxNmI0YzkwZDZlZTZiODMzMGExN2NmZWY4Nzg2OWQ2YWQ2MGIyZmZiZjNiNSIKICAgIH0KICB9Cn0=",
+        "name": "Rhys",
+        "id": "rhys"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzUxMDI0MiwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjdkYjE1NDQyMmM2NDE1MzcyMDRhMDgzYTAzNDBiYmU1YjNhYjBlYjg4MDk4ODM0MDhkMmE3OGRlMWU1OTJhIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
+        "name": "Royal Resident",
+        "id": "royal_resident_peasant"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzM3MzE3MywKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjVmMzFjMWMyMTVhNTdlOTM3ZmQ3NWFiMzU3ODJmODVlYzI0MmExYjFmOTUwYTI2YTQyYmI1ZTBhYTVjYmVkYSIKICAgIH0KICB9Cn0=",
+        "name": "Royal Resident",
+        "id": "royal_resident_neighbour"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Ryu",
+        "id": "ryu"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzM3MzE3MywKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjVmMzFjMWMyMTVhNTdlOTM3ZmQ3NWFiMzU3ODJmODVlYzI0MmExYjFmOTUwYTI2YTQyYmI1ZTBhYTVjYmVkYSIKICAgIH0KICB9Cn0=",
+        "name": "Sargwyn",
+        "id": "sargwyn"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxMzA5NTQ2OTc1NSwKICAicHJvZmlsZUlkIiA6ICJhYTZhNDA5NjU4YTk0MDIwYmU3OGQwN2JkMzVlNTg5MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJiejE0IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzI1OGY4OGRjYmQyYWYxMTBjNzdjZmZhYTAwZWFiN2E0OTljMDAxMzNlNjE1NzU1OTlkOWUwNmU2MWI4YTI0YTYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==",
+        "name": "Shaggy",
+        "id": "shaggy"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Stella",
+        "id": "stella"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzQ0NjA5MiwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjEzY2YwY2E3OWEzNjExYjhlMDVmZTllMjY0ZmIyYmY4ZDI3ZTQ2NGRjMTJkYzZlOTVkZDBhZTBjMzM1YTU2MSIKICAgIH0KICB9Cn0=",
+        "name": "Tarwen",
+        "id": "tarwen"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NzQ3ODY4NTg1MTEsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzljM2I3MjI0MmYzOGIxNWMxMzEyZmFjODRlN2NjNzMzMjkyMzZkMjAyMThlMGFiNzhkMDhlMmFjNDc4MDZhNDgifX19",
+        "name": "Terry",
+        "id": "terry"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Tom",
+        "id": "tom"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxODI2MzEwNDI4NywKICAicHJvZmlsZUlkIiA6ICI3NTE0NDQ4MTkxZTY0NTQ2OGM5NzM5YTZlMzk1N2JlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGFua3NNb2phbmciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjEwMmY4MjE0ODQ2MWNlZDFmN2I2MmUzMjZlYjJkYjNhOTRhMzNjYmE4MWQ0MjgxNDUyYWY0ZDhhZWNhNDk5MSIKICAgIH0KICB9Cn0=",
+        "name": "Trevor",
+        "id": "trevor"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "item": "villager_spawn_egg",
+        "name": "Vex",
+        "id": "vex"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTA2Nzg0NTQ3MTYsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2FmM2Y3YTY5YzlhN2FkOTVlOTBmMjEyZGEzMDQ5OTBjOGJlMzZlOTMxOTdkYjg3NGMyYjBmZTA4MTA2ZTMyM2IifX19",
+        "name": "Weaponsmith",
+        "id": "weaponsmith"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTkxNDEyMjMzNjIsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJmNjlhYjJmNGU3MzQxYWMyNjI1OTcwODNjYTM4YWQwMWJmYmJmODczMGZiZmJkZDEwY2E5MGFlZTMzN2EyZGQifX19",
+        "name": "Wizard",
+        "id": "wizard"
+    },
+    {
+        "rarity": "UNCOMMON",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwNzQ2NDg4MTMwOCwKICAicHJvZmlsZUlkIiA6ICJhMmY4MzQ1OTVjODk0YTI3YWRkMzA0OTcxNmNhOTEwYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJiUHVuY2giLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTcyODUwOTA2YjdmMGQ5NTJjMGU1MDgwNzNjYzQzOWZkMzM3NGNjZjViODg5YzA2ZjdlOGQ5MGNjMGNjMjU1YyIKICAgIH0KICB9Cn0=",
+        "name": "Xalx",
+        "id": "xalx"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1Mzc2NTgyNzQ0NDcsInByb2ZpbGVJZCI6ImVmYWY1NzU3NzgxZTQ3YWViYzE0Y2Q4MmM5MWM3ZjgyIiwicHJvZmlsZU5hbWUiOiJNaW5lU2tpbiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWVkZDhmMTZiMjAyYzQyYjNiNWFkNDU3ZDQzNmNjNjM5OTUyMTA3ZTM2MWFiMWU2MWI5MTY4OWU0MGM3OGJlNyJ9fX0=",
+        "name": "Bartender",
+        "id": "bartender"
+    },
+    {
+        "rarity": "RARE",
+        "item": "villager_spawn_egg",
+        "name": "Dalbrek",
+        "id": "dalbrek"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYyNjExNTAwMTUyOSwKICAicHJvZmlsZUlkIiA6ICJkODAwZDI4MDlmNTE0ZjkxODk4YTU4MWYzODE0Yzc5OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0aGVCTFJ4eCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84ZWJmOWNhYzVhYjQ3OTAzZTFkMmQ0YzI0ZjY4NWE2NjdmMjA1ZjlhNjE3N2Y2YTc2MjFmODQ3MTllNDg3NDY1IgogICAgfQogIH0KfQ==",
+        "name": "Emissary Sisko",
+        "id": "emissary_sisko"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxNTI0Mjg3Njg0NiwKICAicHJvZmlsZUlkIiA6ICJmZDYwZjM2ZjU4NjE0ZjEyYjNjZDQ3YzJkODU1Mjk5YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJSZWFkIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzMwNzIyYzAwMGFlZTBiYmEzMDU4YjQyNWZlNWVlYWM3NjZlMGEwYzNjM2E3ZWRmNDI5YWQxNGUxNTI5N2RkMzMiCiAgICB9CiAgfQp9",
+        "name": "Fragilis",
+        "id": "fragilis"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTk1OTMyMDkzMzIsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM3Y2EwZmYxNzkzNmJlMzNlYWEzMTc2MjRkYjQ3NDRmYzNmMjkyZTYxMjM1Nzg1ODQ1MzI1OGU0ZjllN2NhNzkifX19",
+        "name": "Gold Forger",
+        "id": "gold_forger"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxNDg3MTAxNDQ5OCwKICAicHJvZmlsZUlkIiA6ICJmMTA0NzMxZjljYTU0NmI0OTkzNjM4NTlkZWY5N2NjNiIsCiAgInByb2ZpbGVOYW1lIiA6ICJ6aWFkODciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODM5MTkzYzA5YmNhZDlkMWY5MDFhZmVmNGUyYzBjYWQ4M2FhZTFhNTcwMzM1YzNlY2JjN2QwNWZkZTE5ODc5NSIKICAgIH0KICB9Cn0=",
+        "name": "Grandma Wolf",
+        "id": "grandma_wolf"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzU2MTg0NSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWMzNDM1MTYwNmE5OWY2MmNhYjllN2M1MTI4Mzg2NDc1M2QyZTY3OTQ4YjFmMTI2YmFmNzBjMTI5MTcyMzNmMCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9",
+        "name": "Gwendolyn",
+        "id": "gwendolyn"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTk1OTU4NzUyNDgsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzY2MWUxYTNhOTRiZjIyY2FmMjgyNWIyZjE2NzZjYWQzN2ExNjRlNDc3NGYyNzgzNzZmNzI5M2I0MzE0MzRmMTgifX19",
+        "name": "Iron Forger",
+        "id": "iron_forger"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NjAxOTM2MzQxNTQsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Q5M2Q5NjM2YWE5NTU2YWNmNGJlMmNjNThkOTNmZjBiNTMyZTY4MDk4ZjgwYTdkYzE1MWEwZjFkMTZiOGU1ZjgifX19",
+        "name": "Lazy Miner",
+        "id": "lazy_miner"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxNTI0MjQ5OTc0NywKICAicHJvZmlsZUlkIiA6ICI3ZGEyYWIzYTkzY2E0OGVlODMwNDhhZmMzYjgwZTY4ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJHb2xkYXBmZWwiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2RhMzA4Y2FlMTc3MGY2YjcwOWIxZjA4MDA0Y2EyZTljMjBhZjZmZjhlYzUzODFkMTE0YzQ0MDZkZjZiODBiYyIKICAgIH0KICB9Cn0=",
+        "name": "Lumina",
+        "id": "lumina"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxMDYzOTU3NzAxNCwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTIxODY3ZjRlYzdhZmZmMDg5MjY3MWVhYzM5OWFjZGNjNjMxMDVkMGFlNDQ2MmE0OGE0M2FmNWVjYmExZTRkNSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9",
+        "name": "Old Man Garry",
+        "id": "old_man_garry"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5NTQyODIyMDAyMCwKICAicHJvZmlsZUlkIiA6ICJkYTQ5OGFjNGU5Mzc0ZTVjYjYxMjdiMzgwODU1Nzk4MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJOaXRyb2hvbGljXzIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJkOGZkM2FhNTYxN2IxZGFjMGFhZTljODFmNmRkNzBhZDkzYTU5OTQyZjQ2MGQyN2U0ZDU1YTVjYjg5MThlOCIKICAgIH0KICB9Cn0=",
+        "name": "Pete",
+        "id": "bear_pete"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxMDU5MzY3MjkzNywKICAicHJvZmlsZUlkIiA6ICI5NGMzZGM3YTdiMmQ0NzQ1YmVlYjQzZDc2ZjRjNDVkYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGVRdWFzb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY1MTRkODAxNGRjNmFhNGM4MDRmZmRmNjA5MDkzZjdmZjFhNTI4OWYxM2M3MTg4MTQyMTgyZGI0M2M4OGIzZCIKICAgIH0KICB9Cn0=",
+        "name": "Puzzler",
+        "id": "puzzler"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxNTIzMTU0OSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY3MDM4NWY0NzJjMDM4MjVjMGU4OTRkOTRhYzIwMWUxYjY0MmQxMDMyMjAyZDRiZjMzMzcyZmEzYWEyOWZiYSIKICAgIH0KICB9Cn0=",
+        "name": "Queen Mismyla",
+        "id": "queen_mismyla"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYwODMxMzI1NzYzNCwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWJmOGRkNWNiOTIzYWQzY2FkNTQ4MzQwNjZlOGZhNDY1OWQzYTE4OWIxNDEwNTE1ZTQwMDVhNGVkZTA1NDFlYiIKICAgIH0KICB9Cn0=",
+        "name": "Royal Resident",
+        "id": "royal_resident_reward"
+    },
+    {
+        "rarity": "RARE",
+        "item": "villager_spawn_egg",
+        "name": "Rusty",
+        "id": "rusty"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NzMwNTQ2Njg5NzUsInByb2ZpbGVJZCI6IjQxZDNhYmMyZDc0OTQwMGM5MDkwZDU0MzRkMDM4MzFiIiwicHJvZmlsZU5hbWUiOiJNZWdha2xvb24iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2M4YWFjNGU2MzEzOThjMGY0N2ZlODU2MTVlN2Y0OTIxNTUwMDA0MGJiOTA4MTlkNTY4ZTgyNGFjZjk0YmZhNGUifX19",
+        "name": "Seymour",
+        "id": "seymour"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NzUyOTg4MzI3NzcsInByb2ZpbGVJZCI6IjQxZDNhYmMyZDc0OTQwMGM5MDkwZDU0MzRkMDM4MzFiIiwicHJvZmlsZU5hbWUiOiJNZWdha2xvb24iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzZjMDFiMjEzNTc0ZjYzMDYxNmRkMDBiN2EzYmM2MTc3NGZkN2Q0NjcxMzY0NzZiZDdiN2E5OWVjMjVlZTI3NTcifX19",
+        "name": "Shifty",
+        "id": "shifty"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxODI2MjU5NzI4MywKICAicHJvZmlsZUlkIiA6ICIzOTg5OGFiODFmMjU0NmQxOGIyY2ExMTE1MDRkZGU1MCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNeVV1aWRJcyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jZWRjNmU3NzJkNTBlNjM1NTZiZmRlOTE0ZTc4NWM3NTQ4OTM2MWZjYzc5ODUxNjRjNDBiMzAwZTdmOTFiYzA4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
+        "name": "Tammy",
+        "id": "tammy"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTY4MzgyNjIyOTU3MywKICAicHJvZmlsZUlkIiA6ICI0YjBhOTI4NDY2NDY0NmRlYjY5NDJiZTIzZTlhMWQyZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJJc2FhY0FsdCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS83M2YwNzI5NDBhOTQyYjk1M2EzZjlkMTM5MWZmMzQyYjdkMTkwNzZmN2ExYTNlOTQ0MDQwZDY0MjBjN2Q0OTgwIgogICAgfQogIH0KfQ==",
+        "name": "Tia the Fairy",
+        "id": "tia"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTcxMDg1MDI2NTA2OCwKICAicHJvZmlsZUlkIiA6ICJmNzcxMDI1NGMzYWY0YjA5YmRjY2NiNDRjNjg1NjFiMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDZXJ1c1YyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2RhN2VmM2FlNTAxZGZhZGZhMWU2ODUxZTRkMjgwNGM3OGJjNWU1ZGQ0N2Y1YjI5MWEzMWM3NDJlYTRmNjZlMDIiCiAgICB9CiAgfQp9",
+        "name": "Vinyl Collector",
+        "id": "vinyl_collector"
+    },
+    {
+        "rarity": "RARE",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1ODU1NDUxNzU2NjgsInByb2ZpbGVJZCI6IjllOGI4NzQ3YTMxNzQ0ZTY4YTQ4NzEzMzQwM2I0ZDM1IiwicHJvZmlsZU5hbWUiOiJFdmlsRGN0ciIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmJiY2Y3M2E0NjAzYjVhYTU0OTFjZWZjMTU1Zjc3MGRlMWE4MjQ2NmE1ODUwNjA0YmE1ZWEyNDk4MGNiNTQ3OSJ9fX0=",
+        "name": "Zog",
+        "id": "zog"
+    },
+    {
+        "rarity": "LEGENDARY",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTgzOTc2NDAyMjIsInByb2ZpbGVJZCI6IjkxZjA0ZmU5MGYzNjQzYjU4ZjIwZTMzNzVmODZkMzllIiwicHJvZmlsZU5hbWUiOiJTdG9ybVN0b3JteSIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTA4YjdiNWFhZTUzNTc5NzY5YzAxM2EyNjU2YTMzZDJmYjgzMTg2ODVkNzRhY2UxYTFjNjY1YWQ2N2E4M2IzOCJ9fX0=",
+        "name": "Baker",
+        "id": "baker"
+    },
+    {
+        "rarity": "LEGENDARY",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYxNzEyNjQwMzM4NCwKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jYWJiMmMwNDYzNWEyOWIwOGUxNjFkODU5YjExYmRhZGI3NWEyOWQzYzY0ZGY3ZTg0YTEwOGMzN2Y3ZjgzYzAiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==",
+        "name": "Beth",
+        "id": "beth"
+    },
+    {
+        "rarity": "LEGENDARY",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NTk2NzYyNzYyNzYsInByb2ZpbGVJZCI6ImEyZjgzNDU5NWM4OTRhMjdhZGQzMDQ5NzE2Y2E5MTBjIiwicHJvZmlsZU5hbWUiOiJiUHVuY2giLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2NkNjU0NTMxODE2ZWM3MjAwYTZhNDYxZDdhMDNjMmRhZGYzMWY0NDlhNTkxYzg1ZjNiMzFjYjJhODNkZDczNjYifX19",
+        "name": "Clerk Seraphine",
+        "id": "seraphine"
+    },
+    {
+        "rarity": "LEGENDARY",
+        "item": "villager_spawn_egg",
+        "name": "Jerry",
+        "id": "jerry"
+    },
+    {
+        "rarity": "LEGENDARY",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTYzNTE2OTIwNTU3NywKICAicHJvZmlsZUlkIiA6ICI5MThhMDI5NTU5ZGQ0Y2U2YjE2ZjdhNWQ1M2VmYjQxMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJCZWV2ZWxvcGVyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3ZTBmYzhkZjkwNjdkMzkzYzk3N2YxZjM0MDI1NjM0MjIzZGIxNDVlOTQwM2RjMzJjMzExODg5ZTMzNjU5NjUiCiAgICB9CiAgfQp9",
+        "name": "Madame Eleanor Q. Goldsworth III",
+        "id": "madame_eleanor"
+    },
+    {
+        "rarity": "LEGENDARY",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTcxMDg1MDM5MDU1NiwKICAicHJvZmlsZUlkIiA6ICJmNzcxMDI1NGMzYWY0YjA5YmRjY2NiNDRjNjg1NjFiMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDZXJ1c1YyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Q3Nzg0NTcwNTA1NWQ3ZGZkNGZhMmVkMzg5MTYyOGQzMDJhZTg1YzExODdlNGRmYTE5N2YyNGU3Nzc5MDE2ZDgiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==",
+        "name": "Pest Wrangler?",
+        "id": "disguised_rats"
+    },
+    {
+        "rarity": "LEGENDARY",
+        "skin": "eyJ0aW1lc3RhbXAiOjE1NDU3NzE0NDUyNjEsInByb2ZpbGVJZCI6IjkxZjA0ZmU5MGYzNjQzYjU4ZjIwZTMzNzVmODZkMzllIiwicHJvZmlsZU5hbWUiOiJTdG9ybVN0b3JteSIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2FiODM4NThlYmM4ZWU4NWMzZTU0YWIxM2FhYmZjYzFlZjJhZDQ0NmQ2YTkwMGU0NzFjM2YzM2I3ODkwNmE1YiJ9fX0=",
+        "name": "Sirius",
+        "id": "sirius"
+    },
+    {
+        "rarity": "MYTHIC",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTY5NzU2OTY4ODUxNywKICAicHJvZmlsZUlkIiA6ICJmZWYyZDZjYzY5ZGI0ZWM5OWQzYzI5MzBmYzRmNTBhYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJsb3Zlbm90d2FyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2ZhM2NkY2NjOTIyYjY3MDY3MDdmYWM3ZGNlMzQzNzczYmVjNzdkYTE4NTA5MGJjODQyZWM1NDE1ZjcyM2M1ZDMiCiAgICB9CiAgfQp9",
+        "name": "Maeve",
+        "id": "maeve"
+    },
+    {
+        "rarity": "MYTHIC",
+        "skin": "ewogICJ0aW1lc3RhbXAiIDogMTcxNTA5MzAzOTAxMCwKICAicHJvZmlsZUlkIiA6ICJmNzcxMDI1NGMzYWY0YjA5YmRjY2NiNDRjNjg1NjFiMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDZXJ1c1YyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzZjNGRmZmE5ZGMxZTc0YWJmNDk2Zjc1ODA4MzA0NTkwMTU1NDA4MWFhNTE0NzYzZTU2M2Q2N2Y5MGJkMTQzODIiCiAgICB9CiAgfQp9",
+        "name": "Ravenous Rhino",
+        "id": "ravenous_rhino"
+    },
+    {
+        "rarity": "SPECIAL",
+        "skin": "eyJ0aW1lc3RhbXAiOjE0OTkyOTg4NjA5MDgsInByb2ZpbGVJZCI6ImY2OTBmZjQwNmIzNjRiZWZhMmQ1Yzk4OTBiNDM1OTgwIiwicHJvZmlsZU5hbWUiOiJNYWxpbmFXZWlzc21hbiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWNmMWE3ZTg4ZWRmZTNkYjE5YzdlNjRkZTAzZDZiMjUyMmZhNWYyYjk3NGQxYjM3MmE2ZTlmYWFjNTYzZjdlNSJ9fX0=",
+        "name": "Spaceman",
+        "id": "spaceman"
+    }
+]

@@ -22,6 +22,7 @@ import tech.thatgravyboat.skyblockpv.api.PlayerDbAPI
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import kotlin.jvm.optionals.getOrNull
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -141,6 +142,7 @@ object Utils {
         compoundWidget.withStretchToContentSize()
     }
 
+
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
@@ -156,16 +158,8 @@ object Utils {
 
     fun String.toTitleCase() = lowercase().split("_").joinToString(" ") { it.replaceFirstChar { it.uppercase() } }
 
-    fun Number.shorten(): String {
-        val number = this.toLong()
-        return when {
-            number >= 1_000_000_000_000 -> String.format("%.1ft", number / 1_000_000_000_000.0)
-            number >= 1_000_000_000 -> String.format("%.1fb", number / 1_000_000_000.0)
-            number >= 1_000_000 -> String.format("%.1fm", number / 1_000_000.0)
-            number >= 1_000 -> String.format("%.1fk", number / 1_000.0)
-            else -> this.toString()
-        }
-    }
+    private val formatter = NumberFormat.getCompactNumberInstance()
+    fun Number.shorten(decimalDigits: Int = 1): String = formatter.apply { maximumFractionDigits = decimalDigits }.format(this)
 
     fun Duration.formatReadableTime(biggestUnit: DurationUnit, maxUnits: Int = -1): String {
         val units = listOf(
@@ -215,5 +209,11 @@ object Utils {
 
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
 
-    fun List<String>.asMultilineComponent() = Text.multiline(*this.toTypedArray())
+    fun <T> MutableList<T>.rightPad(size: Int, element: T): MutableList<T> {
+        while (this.size < size) {
+            this.add(this.lastIndex + 1, element)
+        }
+        return this
+    }
+    fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 }

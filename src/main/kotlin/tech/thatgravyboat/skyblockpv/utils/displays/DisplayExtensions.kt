@@ -72,6 +72,7 @@ fun Display.withBackground(color: UInt): Display = Displays.background(color, th
 
 fun Display.asWidget(): DisplayWidget = DisplayWidget(this)
 
+fun Display.withTooltip(builder: TooltipBuilder.() -> Unit): Display = Displays.tooltip(this, TooltipBuilder().apply(builder).build())
 fun Display.withTooltip(vararg tooltip: Any?): Display = Displays.tooltip(this, Text.multiline(*tooltip))
 fun Display.withTranslatedTooltip(key: String, vararg args: Any?): Display {
     var raw = I18nAccessor.getLanguage().getOrDefault(key)

@@ -6,8 +6,8 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.PropertyMap
 import com.mojang.authlib.properties.PropertyMap.Serializer
 import kotlinx.coroutines.runBlocking
+import tech.thatgravyboat.skyblockapi.utils.extentions.asUUID
 import tech.thatgravyboat.skyblockapi.utils.http.Http
-import tech.thatgravyboat.skyblockpv.utils.asUUID
 import java.util.*
 
 private const val API_URL = "https://playerdb.co/api/player/minecraft/%s"
@@ -20,7 +20,7 @@ object PlayerDbAPI {
     fun getUUID(username: String) = cache.getOrPut(username) {
         runBlocking {
             val player = get(username)?.get("data")?.asJsonObject?.get("player")?.asJsonObject
-            val uuid = player?.get("id")?.asUUID
+            val uuid = player?.get("id")?.asUUID()
             val name = player?.get("username")?.asString
 
             if (uuid != null) {

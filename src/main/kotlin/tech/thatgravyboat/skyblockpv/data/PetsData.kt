@@ -3,10 +3,10 @@ package tech.thatgravyboat.skyblockpv.data
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
-import tech.thatgravyboat.skyblockpv.utils.asBoolean
-import tech.thatgravyboat.skyblockpv.utils.asInt
-import tech.thatgravyboat.skyblockpv.utils.asLong
 import java.util.*
 
 data class Pet(

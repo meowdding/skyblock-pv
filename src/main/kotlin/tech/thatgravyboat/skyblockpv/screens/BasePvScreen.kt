@@ -30,6 +30,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockpv.api.GardenApi
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
@@ -201,7 +202,10 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             .withRenderer(WidgetRenderers.text(Text.of("Clear Cache")))
             .withSize(60, 20)
             .withTexture(ExtraConstants.BUTTON_DARK)
-            .withCallback { ProfileAPI.clearCache() }
+            .withCallback {
+                ProfileAPI.clearCache()
+                GardenApi.clearCache()
+            }
 
 
         widget(refreshButton)
@@ -303,6 +307,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             { builder ->
                 builder.withCallback { profile ->
                     this.profile = profile
+                    this.onProfileSwitch(profile)
                     this.rebuildWidgets()
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
@@ -312,6 +317,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
         return dropdown
     }
+
+    open fun onProfileSwitch(profile: SkyBlockProfile) {}
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         this.renderBlurredBackground()
