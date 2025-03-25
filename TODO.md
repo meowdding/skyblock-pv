@@ -60,13 +60,6 @@ TODO:
 </details>
 
 <details>
-<summary>Mining</summary>
-
-- [ ] mining gear
-
-</details>
-
-<details>
 <summary>Rift</summary>
 
 - [ ] Montezuna
