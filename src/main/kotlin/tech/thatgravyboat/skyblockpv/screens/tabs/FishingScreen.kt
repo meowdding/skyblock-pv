@@ -27,7 +27,6 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
-import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
 import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
@@ -340,7 +339,13 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 ),
             )
             spacer(width = 5)
-            widget(getRods(profile))
+
+            PvWidgets.tools(
+                profile,
+                ::calculateItemScore,
+                FishingGear.rods,
+                "icon/slot/rod",
+            ).let { widget(it) }
         },
         padding = 20,
     )
@@ -356,34 +361,6 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             Displays.padding(2, PvWidgets.armorDisplay(trophyArmor)),
         ).asWidget()
     }
-
-    private fun getRods(profile: SkyBlockProfile): LayoutElement {
-        val fishingRods = ItemPredicateHelper.getItemsMatching(
-            profile = profile,
-            predicate = ItemPredicates.AnySkyblockID(FishingGear.rods),
-        )?.sortedBy(::calculateItemScore)?.reversed()?.take(4)?.toMutableList() ?: mutableListOf()
-
-
-        fishingRods.rightPad(4, ItemStack.EMPTY)
-
-        val column = fishingRods.map {
-            Displays.item(it, showTooltip = true)
-                .let { display ->
-                    if (it.isEmpty) {
-                        // TODO: hover over empty slot
-                        return@let Displays.background(SkyBlockPv.id("icon/slot/rod"), display)
-                    }
-
-                    display
-                }.let { Displays.padding(2, it) }
-        }.toColumn()
-
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-1x4"),
-            Displays.padding(2, column),
-        ).centerIn(-1, -1).asWidget()
-    }
-
 
     private fun getSmallTrophyTable(profile: SkyBlockProfile): LayoutElement {
         val trophyFishItems = TrophyFishTypes.entries.map { type ->

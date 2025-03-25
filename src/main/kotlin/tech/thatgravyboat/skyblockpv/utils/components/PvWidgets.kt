@@ -43,6 +43,7 @@ object PvWidgets {
 
         val column = toolsToDisplay.map { tool ->
             Displays.item(tool, showTooltip = true).let { display ->
+                // TODO: hover over empty slot
                 display.takeUnless { tool.isEmpty } ?: Displays.background(SkyBlockPv.id(emptyIcon), display)
             }.let { Displays.padding(2, it) }
         }.toColumn()
