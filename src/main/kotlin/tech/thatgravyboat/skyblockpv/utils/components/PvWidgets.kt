@@ -17,8 +17,6 @@ import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.toColumn
 import tech.thatgravyboat.skyblockpv.utils.displays.toRow
-import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 object PvWidgets {
 
