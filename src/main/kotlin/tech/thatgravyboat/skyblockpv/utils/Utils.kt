@@ -120,6 +120,7 @@ object Utils {
         return list
     }
 
+    @Deprecated("Use PvWidgets.getTitleWidget instead", ReplaceWith("PvWidgets.getTitleWidget(title, width, icon)"))
     fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->
             contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
@@ -129,6 +130,7 @@ object Utils {
         compoundWidget.withStretchToContentSize()
     }
 
+    @Deprecated("Use PvWidgets.getMainContentWidget instead", ReplaceWith("PvWidgets.getMainContentWidget(content, width)"))
     fun getMainContentWidget(content: LayoutElement, width: Int) = Widgets.frame { compoundWidget ->
         val contentWithSpacer = LayoutBuild.vertical {
             spacer(height = 7)

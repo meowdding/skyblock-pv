@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.utils.components
 
+import earth.terrarium.olympus.client.components.Widgets
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
@@ -11,8 +12,7 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
-import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
+import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.toColumn
@@ -117,4 +117,26 @@ object PvWidgets {
             addArmor("BOOTS")
         }.toTypedArray(),
     )
+
+    fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null): LayoutElement = Widgets.frame { compoundWidget ->
+        compoundWidget.withContents { contents ->
+            contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
+            if (icon != null) contents.addChild(Displays.padding(0, width - 30, 0, 0, Displays.sprite(icon, 12, 12)).asWidget())
+            contents.addChild(Widgets.text(title).centerHorizontally(width))
+        }
+        compoundWidget.withStretchToContentSize()
+    }
+
+    fun getMainContentWidget(content: LayoutElement, width: Int): LayoutElement = Widgets.frame { compoundWidget ->
+        val contentWithSpacer = LayoutBuild.vertical {
+            spacer(height = 7)
+            widget(content)
+            spacer(height = 7)
+        }
+        compoundWidget.withContents { contents ->
+            contents.addChild(Displays.background(SkyBlockPv.id("box/box"), width - 10, contentWithSpacer.height).asWidget())
+            contents.addChild(contentWithSpacer.centerHorizontally(width))
+        }
+        compoundWidget.withStretchToContentSize()
+    }
 }
