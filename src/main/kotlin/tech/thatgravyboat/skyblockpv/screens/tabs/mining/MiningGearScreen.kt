@@ -8,8 +8,8 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.MiningGear
-import tech.thatgravyboat.skyblockpv.utils.GearUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 
 class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
@@ -17,7 +17,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val profile = profile ?: return LayoutBuild.horizontal { }
 
         return LayoutBuild.horizontal(5) {
-            GearUtils.getArmorAndEquipment(
+            PvWidgets.armorAndEquipment(
                 profile,
                 ::calculateItemScore,
                 MiningGear.necklaces,
@@ -27,7 +27,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 MiningGear.armor,
             ).let { widget(it) }
 
-            GearUtils.getTools(
+            PvWidgets.tools(
                 profile,
                 ::calculateItemScore,
                 MiningGear.pickaxes,
@@ -36,7 +36,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 widget(it)
             }
 
-            GearUtils.getTools(
+            PvWidgets.tools(
                 profile,
                 ::calculateItemScore,
                 MiningGear.chisels,
