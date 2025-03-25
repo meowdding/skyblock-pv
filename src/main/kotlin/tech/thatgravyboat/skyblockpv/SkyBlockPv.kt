@@ -16,7 +16,7 @@ import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.data.EssenceData
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.FossilTypes
-import tech.thatgravyboat.skyblockpv.screens.PvTabs
+import tech.thatgravyboat.skyblockpv.screens.PvTab
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
@@ -43,7 +43,7 @@ object SkyBlockPv : ModInitializer {
         event.register("pv") {
             callback {
                 McClient.tell {
-                    McClient.setScreen(PvTabs.MAIN.create(McClient.self.gameProfile))
+                    McClient.setScreen(PvTab.MAIN.create(McClient.self.gameProfile))
                 }
             }
             then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
@@ -54,7 +54,7 @@ object SkyBlockPv : ModInitializer {
                             ChatUtils.chat("§cPlayer could not be found")
                         } else {
                             McClient.tell {
-                                McClient.setScreen(PvTabs.MAIN.create(profile))
+                                McClient.setScreen(PvTab.MAIN.create(profile))
                             }
                         }
                     }

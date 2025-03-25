@@ -1,10 +1,10 @@
 package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonObject
+import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToEssenceOrder
-import tech.thatgravyboat.skyblockpv.utils.asBoolean
-import tech.thatgravyboat.skyblockpv.utils.asLong
-import tech.thatgravyboat.skyblockpv.utils.asMap
 
 data class Currency(
     val purse: Long,

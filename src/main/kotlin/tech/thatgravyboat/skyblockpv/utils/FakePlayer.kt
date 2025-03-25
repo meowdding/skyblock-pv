@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.utils
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.RemotePlayer
+import net.minecraft.client.renderer.entity.state.PlayerRenderState
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.PlayerModelPart
 import net.minecraft.world.item.ItemStack
@@ -14,6 +15,18 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
     init {
         for (i in 0 until 4) {
             inventory.armor[i] = armor[i]
+        }
+    }
+
+    fun setupRenderState(renderState: PlayerRenderState, partialTick: Float) {
+        ContributorHandler.contributors[gameProfile.id]?.let {
+            renderState.scoreText = it.title?.let { Component.literal(it) }
+            renderState.parrotOnLeftShoulder = it.parrotLeft
+            renderState.parrotOnRightShoulder = it.parrotRight
+            renderState.isFullyFrozen = it.shaking
+
+
+            renderState.ageInTicks = (Minecraft.getInstance().player?.tickCount?.toFloat()?: 0.0f).plus(partialTick)
         }
     }
 

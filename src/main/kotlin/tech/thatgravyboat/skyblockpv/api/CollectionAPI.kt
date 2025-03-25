@@ -3,12 +3,12 @@ package tech.thatgravyboat.skyblockpv.api
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockpv.data.CollectionCategory
 import tech.thatgravyboat.skyblockpv.data.CollectionEntry
-import tech.thatgravyboat.skyblockpv.utils.asInt
-import tech.thatgravyboat.skyblockpv.utils.asLong
-import tech.thatgravyboat.skyblockpv.utils.asString
 
 private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/collections"
 
