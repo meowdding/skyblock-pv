@@ -44,7 +44,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         LayoutBuild.vertical {
             val garden = gardenProfile?.getOrNull()
 
-            string("Color: ") {
+            string("Copper: ") {
                 this.color = TextColor.DARK_GRAY
                 append(profile.gardenData.copper.toFormattedString()) {
                     this.color = TextColor.RED
