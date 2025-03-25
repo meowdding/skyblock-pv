@@ -1,8 +1,8 @@
 package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonObject
-import tech.thatgravyboat.skyblockpv.utils.asLong
-import tech.thatgravyboat.skyblockpv.utils.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 
 data class DungeonData(
     val dungeonTypes: Map<String, DungeonTypeData>,

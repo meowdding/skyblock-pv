@@ -1,0 +1,80 @@
+{
+    "WHEAT": {
+        "type": "hoe",
+        "displayname": "Wheat Hoe",
+        "id": [
+            "THEORETICAL_HOE_WHEAT_1",
+            "THEORETICAL_HOE_WHEAT_2",
+            "THEORETICAL_HOE_WHEAT_3"
+        ]
+    },
+    "PUMPKIN": {
+        "type": "axe",
+        "displayname": "Pumpkin Dicer",
+        "id": [
+            "PUMPKIN_DICER",
+            "PUMPKIN_DICER_2",
+            "PUMPKIN_DICER_3"
+        ]
+    },
+    "POTATO_ITEM": {
+        "type": "hoe",
+        "displayname": "Potato Hoe",
+        "id": [
+            "THEORETICAL_HOE_POTATO_1",
+            "THEORETICAL_HOE_POTATO_2",
+            "THEORETICAL_HOE_POTATO_3"
+        ]
+    },
+    "SUGAR_CANE": {
+        "type": "hoe",
+        "displayname": "Sugar Cane Hoe",
+        "id": [
+            "THEORETICAL_HOE_CANE_1",
+            "THEORETICAL_HOE_CANE_2",
+            "THEORETICAL_HOE_CANE_3"
+        ]
+    },
+    "MELON": {
+        "type": "axe",
+        "displayname": "Melon Dicer",
+        "id": [
+            "MELON_DICER",
+            "MELON_DICER_2",
+            "MELON_DICER_3"
+        ]
+    },
+    "CARROT_ITEM": {
+        "type": "hoe",
+        "displayname": "Carrot Hoe",
+        "id": [
+            "THEORETICAL_HOE_CARROT_1",
+            "THEORETICAL_HOE_CARROT_2",
+            "THEORETICAL_HOE_CARROT_3"
+        ]
+    },
+    "INK_SACK:3": {
+        "type": "axe",
+        "displayname": "Coco Chopper",
+        "id": "COCO_CHOPPER"
+    },
+    "NETHER_STALK": {
+        "type": "hoe",
+        "displayname": "Nether Wart Hoe",
+        "id": [
+            "THEORETICAL_HOE_WARTS_1",
+            "THEORETICAL_HOE_WARTS_2",
+            "THEORETICAL_HOE_WARTS_3"
+        ]
+    },
+    "CACTUS": {
+        "type": "hoe",
+        "displayname": "Cactus Knife",
+        "id": "CACTUS_KNIFE"
+    },
+    "MUSHROOM_COLLECTION": {
+        "type": "hoe",
+        "displayname": "Fungi Cutter",
+        "id": "FUNGI_CUTTER"
+    }
+}

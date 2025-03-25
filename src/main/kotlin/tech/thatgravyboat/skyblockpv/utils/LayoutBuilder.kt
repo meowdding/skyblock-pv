@@ -3,6 +3,8 @@ package tech.thatgravyboat.skyblockpv.utils
 import earth.terrarium.olympus.client.components.Widgets
 import net.minecraft.client.gui.layouts.*
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
@@ -57,6 +59,10 @@ abstract class LayoutBuilder {
 
     fun string(component: Component) {
         widgets.add(Widgets.text(component))
+    }
+
+    fun string(text: String, init: MutableComponent.() -> Unit) {
+        string(Text.of(text, init))
     }
 
     fun spacer(width: Int = 0, height: Int = 0) {
