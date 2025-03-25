@@ -16,7 +16,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     override fun getLayout(): Layout {
         val profile = profile ?: return LayoutBuild.horizontal { }
 
-        return LayoutBuild.horizontal(5) {
+        return LayoutBuild.horizontal(5, 0.5f) {
             PvWidgets.armorAndEquipment(
                 profile,
                 ::calculateItemScore,
@@ -45,6 +45,8 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             ).let {
                 widget(it)
             }
+        }.let {
+            PvWidgets.label("Mining Gear", it, 20)
         }
     }
 
