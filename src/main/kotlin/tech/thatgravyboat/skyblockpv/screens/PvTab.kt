@@ -21,7 +21,7 @@ import tech.thatgravyboat.skyblockpv.utils.createSkull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-enum class PvTabs(
+enum class PvTab(
     private val screen: KClass<out BasePvScreen>,
     private val constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen,
     private val icon: (GameProfile?) -> ItemStack,

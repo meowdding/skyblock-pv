@@ -243,7 +243,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
     private fun createTabs() = LayoutBuild.vertical(2) {
         // as you can see, maya has no idea what she is doing
-        PvTabs.entries.forEach { tab ->
+        PvTab.entries.forEach { tab ->
             val button = Button()
             button.setSize(31, 20)
             if (tab.isSelected()) {
@@ -273,7 +273,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
                 Utils.fetchGameProfile(box.value) { profile ->
                     profile?.let {
                         McClient.tell {
-                            McClient.setScreen(PvTabs.MAIN.create(it))
+                            McClient.setScreen(PvTab.MAIN.create(it))
                         }
                     }
                 }
