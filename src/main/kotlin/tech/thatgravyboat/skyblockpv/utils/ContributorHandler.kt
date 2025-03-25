@@ -6,6 +6,8 @@ import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import kotlinx.coroutines.runBlocking
 import net.minecraft.core.UUIDUtil
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.animal.Parrot
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -34,27 +36,53 @@ object ContributorHandler {
 
 data class ContributorData(
     val title: String?,
-    val parrotLeft: Parrot.Variant?,
-    val parrotRight: Parrot.Variant?,
+    val parrot: ParrotOnShoulder?,
+    val cat: CatOnShoulder?,
     val shaking: Boolean,
 ) {
     companion object {
+        private val PARROT_CODEC = RecordCodecBuilder.create {
+            it.group(
+                Parrot.Variant.CODEC.fieldOf("variant").forGetter(ParrotOnShoulder::variant),
+                Codec.BOOL.fieldOf("left_shoulder").forGetter(ParrotOnShoulder::leftSide),
+            ).apply(it, ::ParrotOnShoulder)
+        }
+        private val CAT_CODEC = RecordCodecBuilder.create {
+            it.group(
+                ResourceLocation.CODEC.xmap(
+                    {
+                        BuiltInRegistries.CAT_VARIANT.getOptional(it).orElse(null)?.texture ?: ResourceLocation.parse("meow")
+                    },
+                    { it },
+                ).fieldOf("type").forGetter(CatOnShoulder::type),
+                Codec.BOOL.fieldOf("left_shoulder").forGetter(CatOnShoulder::leftSide)
+            ).apply(it, ::CatOnShoulder)
+        }
+
         val CODEC: Codec<ContributorData> = RecordCodecBuilder.create {
             it.group(
                 Codec.STRING.optionalFieldOf("title").forGetter { Optional.empty() },
-                Parrot.Variant.CODEC.optionalFieldOf("parrot_left").forGetter { Optional.empty() },
-                Parrot.Variant.CODEC.optionalFieldOf("parrot_right").forGetter { Optional.empty() },
+                PARROT_CODEC.optionalFieldOf("parrot").forGetter { Optional.empty() },
+                CAT_CODEC.optionalFieldOf("cat").forGetter { Optional.empty() },
                 Codec.BOOL.optionalFieldOf("shaking", false).forGetter(ContributorData::shaking),
             ).apply(it, ::init)
         }
 
         fun init(
             title: Optional<String>,
-            parrotLeft: Optional<Parrot.Variant>,
-            parrotReft: Optional<Parrot.Variant>,
+            parrot: Optional<ParrotOnShoulder>,
+            cat: Optional<CatOnShoulder>,
             shaking: Boolean,
         ): ContributorData {
-            return ContributorData(title.getOrNull(), parrotLeft.getOrNull(), parrotReft.getOrNull(), shaking)
+            if (parrot.isPresent && cat.isPresent && parrot.get().leftSide == cat.get().leftSide) {
+                return ContributorData(title.getOrNull(), null, cat.get(), shaking)
+            }
+
+            return ContributorData(title.getOrNull(), parrot.getOrNull(), cat.getOrNull(), shaking)
         }
     }
+
 }
+
+data class ParrotOnShoulder(val variant: Parrot.Variant, val leftSide: Boolean)
+data class CatOnShoulder(val type: ResourceLocation, val leftSide: Boolean)

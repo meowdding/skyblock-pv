@@ -10,6 +10,8 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.Vec3
 import net.minecraft.world.scores.Scoreboard
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockpv.utils.CatHolder.cat
+import java.util.*
 
 class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val armor: List<ItemStack>) : RemotePlayer(McClient.self.level, gameProfile) {
     init {
@@ -19,14 +21,22 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
     }
 
     fun setupRenderState(renderState: PlayerRenderState, partialTick: Float) {
+        renderState.cat = null
         ContributorHandler.contributors[gameProfile.id]?.let {
             renderState.scoreText = it.title?.let { Component.literal(it) }
-            renderState.parrotOnLeftShoulder = it.parrotLeft
-            renderState.parrotOnRightShoulder = it.parrotRight
+            it.parrot?.let { parrot ->
+                if (parrot.leftSide) {
+                    renderState.parrotOnLeftShoulder = parrot.variant
+                } else {
+                    renderState.parrotOnRightShoulder = parrot.variant
+                }
+            }
+            it.cat?.let { cat ->
+                renderState.cat = cat
+            }
             renderState.isFullyFrozen = it.shaking
 
-
-            renderState.ageInTicks = (Minecraft.getInstance().player?.tickCount?.toFloat()?: 0.0f).plus(partialTick)
+            renderState.ageInTicks = (Minecraft.getInstance().player?.tickCount?.toFloat() ?: 0.0f).plus(partialTick)
         }
     }
 
@@ -42,4 +52,15 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
     override fun isModelPartShown(part: PlayerModelPart) = part != PlayerModelPart.CAPE
 
     override fun position(): Vec3? = Minecraft.getInstance().cameraEntity?.position()
+
+}
+
+object CatHolder {
+    var map = WeakHashMap<PlayerRenderState, CatOnShoulder>()
+
+    var PlayerRenderState.cat: CatOnShoulder?
+        get() = map[this]
+        set(value) {
+            map[this] = value
+        }
 }
