@@ -7,8 +7,6 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
-import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.MiningGear
 import tech.thatgravyboat.skyblockpv.utils.GearUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -28,13 +26,28 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 MiningGear.gloves,
                 MiningGear.armor,
             ).let { widget(it) }
+
+            GearUtils.getTools(
+                profile,
+                ::calculateItemScore,
+                MiningGear.pickaxes,
+                "icon/slot/pickaxe",
+            ).let {
+                widget(it)
+            }
+
+            GearUtils.getTools(
+                profile,
+                ::calculateItemScore,
+                MiningGear.chisels,
+                "icon/slot/armorstand",
+                maxAmount = 1,
+            ).let {
+                widget(it)
+            }
         }
     }
 
-    private fun getPickaxes(profile: SkyBlockProfile) = ItemPredicateHelper.getItemsMatching(
-        profile,
-        ItemPredicates.AnySkyblockID(MiningGear.pickaxes),
-    )?.sortedBy(::calculateItemScore)?.reversed() ?: emptyList()
 
     private fun calculateItemScore(itemStack: ItemStack): Int {
         fun <T> getData(type: DataType<T>): T? = itemStack.getData(type)

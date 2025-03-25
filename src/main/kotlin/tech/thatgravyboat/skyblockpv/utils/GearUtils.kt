@@ -3,15 +3,47 @@ package tech.thatgravyboat.skyblockpv.utils
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.toColumn
+import tech.thatgravyboat.skyblockpv.utils.displays.toRow
 
 object GearUtils {
+
+    fun getTools(
+        profile: SkyBlockProfile,
+        score: (ItemStack) -> Int,
+        tools: List<String>,
+        emptyIcon: String,
+        maxAmount: Int = 4,
+    ): LayoutElement {
+        val toolsToDisplay = (ItemPredicateHelper.getItemsMatching(
+            profile,
+            ItemPredicates.AnySkyblockID(tools),
+        )?.sortedByDescending(score) ?: emptyList()).toMutableList().distinctBy { it.getData(DataTypes.ID) }.take(maxAmount).toMutableList()
+
+        while (toolsToDisplay.size < maxAmount) {
+            toolsToDisplay.add(Items.AIR.defaultInstance)
+        }
+
+        val column = toolsToDisplay.map { tool ->
+            Displays.item(tool, showTooltip = true).let { display ->
+                display.takeUnless { tool.isEmpty } ?: Displays.background(SkyBlockPv.id(emptyIcon), display)
+            }.let { Displays.padding(2, it) }
+        }.toColumn()
+
+        return Displays.background(
+            SkyBlockPv.id("inventory/inventory-1x$maxAmount"),
+            Displays.padding(2, column),
+        ).asWidget()
+    }
 
     fun getArmorAndEquipment(
         profile: SkyBlockProfile,
@@ -54,7 +86,7 @@ object GearUtils {
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-2x4"),
             Displays.padding(2, armorEquipment),
-        ).centerIn(-1, -1).asWidget()
+        ).asWidget()
     }
 
     fun getDisplayArmor(list: List<ItemStack>) = buildList {

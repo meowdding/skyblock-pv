@@ -159,6 +159,7 @@ enum class MiningGear {
     CLOAKS,
     NECKLACES,
     GLOVES,
+    CHISELS,
     ;
 
     var list: List<String> = emptyList()
@@ -178,6 +179,7 @@ enum class MiningGear {
         val equipment = listOf(cloaks, gloves, necklaces, belts).flatten()
         val armor = ARMOR.list
         val pickaxes = PICKAXES.list
+        val chisels = CHISELS.list
     }
 }
 
