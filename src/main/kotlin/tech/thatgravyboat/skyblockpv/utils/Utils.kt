@@ -123,7 +123,6 @@ object Utils {
     @Deprecated("Use PvWidgets.getMainContentWidget instead", ReplaceWith("PvWidgets.getMainContentWidget(content, width)"))
     fun getMainContentWidget(content: LayoutElement, width: Int) = PvWidgets.getMainContentWidget(content, width)
 
-
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
