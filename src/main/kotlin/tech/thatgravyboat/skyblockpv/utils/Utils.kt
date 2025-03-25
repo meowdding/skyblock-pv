@@ -2,7 +2,6 @@ package tech.thatgravyboat.skyblockpv.utils
 
 import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.vertex.PoseStack
-import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import earth.terrarium.olympus.client.shader.builtin.RoundedRectShader
@@ -17,10 +16,8 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.PlayerDbAPI
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import kotlin.jvm.optionals.getOrNull
@@ -121,28 +118,10 @@ object Utils {
     }
 
     @Deprecated("Use PvWidgets.getTitleWidget instead", ReplaceWith("PvWidgets.getTitleWidget(title, width, icon)"))
-    fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = Widgets.frame { compoundWidget ->
-        compoundWidget.withContents { contents ->
-            contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
-            if (icon != null) contents.addChild(Displays.padding(0, width - 30, 0, 0, Displays.sprite(icon, 12, 12)).asWidget())
-            contents.addChild(Widgets.text(title).centerHorizontally(width))
-        }
-        compoundWidget.withStretchToContentSize()
-    }
+    fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = PvWidgets.getTitleWidget(title, width, icon)
 
     @Deprecated("Use PvWidgets.getMainContentWidget instead", ReplaceWith("PvWidgets.getMainContentWidget(content, width)"))
-    fun getMainContentWidget(content: LayoutElement, width: Int) = Widgets.frame { compoundWidget ->
-        val contentWithSpacer = LayoutBuild.vertical {
-            spacer(height = 7)
-            widget(content)
-            spacer(height = 7)
-        }
-        compoundWidget.withContents { contents ->
-            contents.addChild(Displays.background(SkyBlockPv.id("box/box"), width - 10, contentWithSpacer.height).asWidget())
-            contents.addChild(contentWithSpacer.centerHorizontally(width))
-        }
-        compoundWidget.withStretchToContentSize()
-    }
+    fun getMainContentWidget(content: LayoutElement, width: Int) = PvWidgets.getMainContentWidget(content, width)
 
 
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
