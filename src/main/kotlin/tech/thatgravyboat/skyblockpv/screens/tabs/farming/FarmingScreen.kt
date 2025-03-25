@@ -3,7 +3,6 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.farming
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
@@ -20,13 +19,11 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.FarmingGear
 import tech.thatgravyboat.skyblockpv.data.Pet
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
-import tech.thatgravyboat.skyblockpv.utils.GearUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.addTextIf
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
-import tech.thatgravyboat.skyblockpv.utils.Utils.createWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
@@ -42,22 +39,18 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }
     }
 
-    private fun getInfoWidget(profile: SkyBlockProfile) = createWidget(
+    private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
         LayoutBuild.vertical {
             val garden = gardenProfile?.getOrNull()
 
-            fun grayString(text: String, init: MutableComponent.() -> Unit) {
-                string(
-                    Text.of(text).also {
-                        it.color = TextColor.DARK_GRAY
-                    }.apply(init),
-                )
+            string("Color: ") {
+                this.color = TextColor.DARK_GRAY
+                append(profile.gardenData.copper.toFormattedString()) {
+                    this.color = TextColor.RED
+                }
             }
 
-            grayString("Copper: ") {
-                append(profile.gardenData.copper.toFormattedString()) { this.color = TextColor.RED }
-            }
             display(
                 Displays.text(
                     Text.of("Garden Level: ") {
@@ -72,47 +65,51 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     val maxLevel = StaticGardenData.miscData.gardenLevelBrackets.size
 
 
-                    it.buildTooltip {
-                        addTextIf("To lvl $gardenLevel: ", { gardenLevel != maxLevel }) {
-                            val xpRequired = StaticGardenData.miscData.getXpRequired(gardenLevel).toLong()
-                            val xp = garden.gardenExperience - StaticGardenData.miscData.gardenLevelBrackets[(gardenLevel - 1).coerceAtLeast(0)]
-
-                            this.color = TextColor.GRAY
-                            append("$xp") { this.color = TextColor.DARK_GREEN }
-                            append("/") { this.color = TextColor.GREEN }
-                            append("$xpRequired") { this.color = TextColor.DARK_GREEN }
-                            if (xpRequired == 0L) {
-                                return@addTextIf
-                            }
-                            append(" (")
-                            append(((xp.toFloat() / xpRequired) * 100).round()) {
-                                this.color = TextColor.DARK_AQUA
-                                append("%")
-                            }
-                            append(")")
-                        }
+                    it.withTooltip {
                         val totalRequired = StaticGardenData.miscData.gardenLevelBrackets.last()
-                        addTextIf("To max: ", { gardenLevel != maxLevel }) {
-                            this.color = TextColor.GRAY
+                        if (gardenLevel != maxLevel) {
+                            add("To lvl $gardenLevel: ") {
+                                val xpRequired = StaticGardenData.miscData.getXpRequired(gardenLevel).toLong()
+                                val xp = garden.gardenExperience - StaticGardenData.miscData.gardenLevelBrackets[(gardenLevel - 1).coerceAtLeast(0)]
 
-                            append(garden.gardenExperience.toFormattedString()) { this.color = TextColor.DARK_GREEN }
-                            append("/") { this.color = TextColor.GREEN }
-                            append(totalRequired.toFormattedString()) { this.color = TextColor.DARK_GREEN }
-                            append(" (")
-                            append(((garden.gardenExperience.toFloat() / totalRequired) * 100).round()) {
-                                this.color = TextColor.DARK_AQUA
-                                append("%")
+                                this.color = TextColor.GRAY
+                                append("$xp") { this.color = TextColor.DARK_GREEN }
+                                append("/") { this.color = TextColor.GREEN }
+                                append("$xpRequired") { this.color = TextColor.DARK_GREEN }
+                                if (xpRequired != 0L) {
+                                    append(" (")
+                                    append(((xp.toFloat() / xpRequired) * 100).round()) {
+                                        this.color = TextColor.DARK_AQUA
+                                        append("%")
+                                    }
+                                    append(")")
+                                }
                             }
-                            append(")")
-                        }
-                        addTextIf("Total xp: ", { gardenLevel == maxLevel }) {
-                            this.color = TextColor.GRAY
-                            append((garden.gardenExperience - totalRequired).toFormattedString()) { this.color = TextColor.DARK_GREEN }
+
+                            add("To max: ") {
+                                this.color = TextColor.GRAY
+
+                                append(garden.gardenExperience.toFormattedString()) { this.color = TextColor.DARK_GREEN }
+                                append("/") { this.color = TextColor.GREEN }
+                                append(totalRequired.toFormattedString()) { this.color = TextColor.DARK_GREEN }
+                                append(" (")
+                                append(((garden.gardenExperience.toFloat() / totalRequired) * 100).round()) {
+                                    this.color = TextColor.DARK_AQUA
+                                    append("%")
+                                }
+                                append(")")
+                            }
+                        } else {
+                            add("Total xp: ") {
+                                this.color = TextColor.GRAY
+                                append((garden.gardenExperience - totalRequired).toFormattedString()) { this.color = TextColor.DARK_GREEN }
+                            }
                         }
                     }
                 },
             )
-            grayString("Larva Consumed: ") {
+            string("Larva Consumed: ") {
+                this.color = TextColor.DARK_GRAY
                 append("${profile.gardenData.larvaConsumed}") {
                     this.color = TextColor.GREEN.takeIf { profile.gardenData.larvaConsumed == StaticGardenData.miscData.maxLarvaConsumed } ?: TextColor.RED
                 }
@@ -133,10 +130,10 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         .toColumn()
         .let { Displays.background(SkyBlockPv.id("inventory/inventory-1x4"), Displays.padding(2, it)) }
 
-    private fun getGear(profile: SkyBlockProfile) = createWidget(
+    private fun getGear(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
         LayoutBuild.horizontal {
-            GearUtils.getArmorAndEquipment(
+            widget(PvWidgets.armorAndEquipment(
                 profile,
                 ::calculateEquipmentScore,
                 FarmingGear.necklaces,
@@ -144,7 +141,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 FarmingGear.belts,
                 FarmingGear.gloves,
                 FarmingGear.armor,
-            ).let { widget(it) }
+            ))
             spacer(width = 5)
             display(getPets(profile))
             spacer(width = 5)
@@ -176,7 +173,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         return score
     }
 
-    fun getPlots() = createWidget(
+    fun getPlots() = PvWidgets.label(
         "Plots",
         LayoutBuild.frame {
             val data = gardenProfile?.getOrNull()

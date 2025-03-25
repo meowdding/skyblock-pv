@@ -19,6 +19,7 @@ import net.minecraft.util.ARGB
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.ItemLike
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -299,6 +300,17 @@ object Displays {
                 }
             }
         }
+    }
+
+    fun item(
+        item: ItemLike,
+        width: Int = 16,
+        height: Int = 16,
+        showTooltip: Boolean = false,
+        showStackSize: Boolean = false,
+        customStackText: Any? = null,
+    ): Display {
+        return item(item.asItem().defaultInstance, width, height, showTooltip, showStackSize, customStackText)
     }
 
     fun item(

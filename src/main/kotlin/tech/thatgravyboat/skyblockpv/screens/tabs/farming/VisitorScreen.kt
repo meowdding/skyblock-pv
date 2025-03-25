@@ -12,7 +12,6 @@ import tech.thatgravyboat.skyblockpv.data.Commission
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
 import tech.thatgravyboat.skyblockpv.data.StaticVisitorData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.addText
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.displays.*
@@ -64,30 +63,30 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             Items.BEDROCK.defaultInstance,
         )
 
-        return Displays.item(item).buildTooltip {
+        return Displays.item(item).withTooltip {
             val profile = gardenProfile ?: run {
-                addText("Loading...") { this.color = TextColor.LIGHT_PURPLE }
-                return@buildTooltip
+                add("Loading...") { this.color = TextColor.LIGHT_PURPLE }
+                return@withTooltip
             }
 
             if (profile.isFailure) {
-                addText("Error!") { this.color = TextColor.RED }
-                return@buildTooltip
+                add("Error!") { this.color = TextColor.RED }
+                return@withTooltip
             }
 
-            addText(visitor.name) { this.color = visitor.rarity.color }
+            add(visitor.name) { this.color = visitor.rarity.color }
 
             if (commission != null) {
-                add("")
-                addText("Visits: ") {
+                space()
+                add("Visits: ") {
                     this.color = TextColor.GRAY
                     append("${commission.total}") { this.color = TextColor.GREEN }
                 }
-                addText("Accepted: ") {
+                add("Accepted: ") {
                     this.color = TextColor.GRAY
                     append("${commission.accepted}") { this.color = TextColor.GREEN }
                 }
-                addText("Rejected: ") {
+                add("Rejected: ") {
                     this.color = TextColor.GRAY
                     append("${commission.total - commission.accepted}") { this.color = TextColor.GREEN }
                 }

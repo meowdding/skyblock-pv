@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.utils
+package tech.thatgravyboat.skyblockpv.utils.components
 
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.resources.ResourceLocation
@@ -9,11 +9,19 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
+import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
-object GearUtils {
+object PvWidgets {
 
-    fun getArmorAndEquipment(
+    fun label(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
+        widget(getTitleWidget(title, element.width + padding))
+        widget(getMainContentWidget(element, element.width + padding))
+    }
+
+    fun armorAndEquipment(
         profile: SkyBlockProfile,
         score: (ItemStack) -> Int,
         necklaces: List<String>,
@@ -26,8 +34,6 @@ object GearUtils {
             profile,
             ItemPredicates.AnySkyblockID(armor).or(ItemPredicates.AnySkyblockID(listOf(cloaks, necklaces, belts, gloves).flatten())),
         )?.sortedBy(score)?.reversed() ?: emptyList()
-
-        val displayArmor = getDisplayArmor(armorAndEquipment)
 
         val displayEquipment = buildList {
             fun addEquipment(list: List<String>, name: String) {
@@ -48,7 +54,7 @@ object GearUtils {
         }
 
         val armorEquipment = listOf(
-            displayArmor.toColumn(),
+            armorDisplay(armorAndEquipment),
             displayEquipment.toColumn(),
         ).toRow()
         return Displays.background(
@@ -57,31 +63,32 @@ object GearUtils {
         ).centerIn(-1, -1).asWidget()
     }
 
-    fun getDisplayArmor(list: List<ItemStack>) = buildList {
-        fun addArmor(type: String) {
-            val itemStack = list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) != false } ?: ItemStack.EMPTY
-            add(
-                Displays.padding(
-                    2,
-                    Displays.item(itemStack, showTooltip = true)
-                        .let {
-                            return@let if (itemStack.isEmpty) {
-                                Displays.background(
-                                    ResourceLocation.parse("container/slot/${type.lowercase()}"),
-                                    it,
-                                ).centerIn(-1, -1)
-                            } else {
-                                it
-                            }
-                        },
-                ),
-            )
-        }
+    fun armorDisplay(list: List<ItemStack>) = Displays.column(
+        *buildList {
+            fun addArmor(type: String) {
+                val itemStack = list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) != false } ?: ItemStack.EMPTY
+                add(
+                    Displays.padding(
+                        2,
+                        Displays.item(itemStack, showTooltip = true)
+                            .let {
+                                return@let if (itemStack.isEmpty) {
+                                    Displays.background(
+                                        ResourceLocation.parse("container/slot/${type.lowercase()}"),
+                                        it,
+                                    ).centerIn(-1, -1)
+                                } else {
+                                    it
+                                }
+                            },
+                    ),
+                )
+            }
 
-        addArmor("HELMET")
-        addArmor("CHESTPLATE")
-        addArmor("LEGGINGS")
-        addArmor("BOOTS")
-    }
-
+            addArmor("HELMET")
+            addArmor("CHESTPLATE")
+            addArmor("LEGGINGS")
+            addArmor("BOOTS")
+        }.toTypedArray(),
+    )
 }

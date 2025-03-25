@@ -8,6 +8,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
@@ -19,8 +20,6 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.GardenResource
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.addText
-import tech.thatgravyboat.skyblockpv.utils.Utils.addTextIf
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
@@ -31,15 +30,23 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     override fun getLayout(): Layout {
         val profile = profile ?: return LayoutBuild.frame {}
 
-        return GardenResource.entries.mapNotNull {
+        val resourcesDisplay = GardenResource.entries.mapNotNull {
             if (it == GardenResource.UNKNOWN) return@mapNotNull null
 
-            buildList {
-                add(getTool(it, profile))
-                add(getCropUpgrade(it))
-                add(getCropMilestone(it))
-            }.map { Displays.padding(2, it) }.toColumn()
-        }.map { Displays.background(SkyBlockPv.id("inventory/inventory-1x3"), Displays.padding(2, it)) }.toRow(2).let { LayoutBuild.frame { display(it) } }
+            Displays.background(
+                SkyBlockPv.id("inventory/inventory-1x3"),
+                Displays.padding(
+                    2,
+                    Displays.column(
+                        Displays.padding(2, getTool(it, profile)),
+                        Displays.padding(2, getCropUpgrade(it)),
+                        Displays.padding(2, getCropMilestone(it)),
+                    ),
+                ),
+            )
+        }
+
+        return resourcesDisplay.toRow(2).let { LayoutBuild.frame { display(it) } }
     }
 
     private fun getCropUpgrade(it: GardenResource): Display {
@@ -50,36 +57,37 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val maxUpgrades = cropUpgradeCost.size
         val totalCopper = cropUpgradeCost.sum()
 
-        val isMax = cropLevel == maxUpgrades
+        val icon = if (cropLevel == maxUpgrades) Items.NETHERRACK else Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE
+        val color = if (cropLevel == maxUpgrades) TextColor.GREEN else TextColor.RED
 
-        fun <T> select(maxed: T, nonMaxed: T) = if (isMax) maxed else nonMaxed
-
-        val cropLevelText = Text.of(cropLevel.toString()) { color = select(TextColor.GREEN, TextColor.RED) }
+        val cropLevelText = Text.of(cropLevel.toString()) { this.color = color }
         return loading(
-            Displays.item(select(Items.NETHERRACK, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE).defaultInstance, customStackText = cropLevelText).buildTooltip {
-                addText("Crop Upgrade") { this.bold = true }
-                addText("Upgrades: ") {
+            Displays.item(icon, customStackText = cropLevelText).withTooltip {
+                add("Crop Upgrade") { this.bold = true }
+                add("Upgrades: ") {
                     this.color = TextColor.GRAY
+
                     append(cropLevelText)
                     append("/$maxUpgrades")
                 }
-                addText("Copper paid: ") {
+                add("Copper paid: ") {
                     this.color = TextColor.GRAY
+
                     val copperUsed = cropUpgradeCost.take(cropLevel).sum()
                     append(copperUsed.toFormattedString()) { this.color = TextColor.RED }
                     append("/") { this.color = TextColor.GOLD }
                     append(totalCopper.toFormattedString()) { this.color = TextColor.RED }
                     if (totalCopper != copperUsed) {
-                        append(" (")
-                        append("${((copperUsed.toFloat() / totalCopper) * 100).round()}%") {
-                            this.color = TextColor.YELLOW
-                        }
-                        append(")")
+                        append(
+                            Text.of("${((copperUsed.toFloat() / totalCopper) * 100).round()}%") {
+                                this.color = TextColor.YELLOW
+                            }.wrap(" (", ")"),
+                        )
                     }
                 }
             },
-            Displays.item(Items.ORANGE_DYE.defaultInstance).withTooltip(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE }),
-            Displays.item(Items.BEDROCK.defaultInstance).withTooltip(Text.of("Error!") { this.color = TextColor.RED }),
+            Displays.item(Items.ORANGE_DYE).withTooltip(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE }),
+            Displays.item(Items.BEDROCK).withTooltip(Text.of("Error!") { this.color = TextColor.RED }),
         )
     }
 
@@ -94,33 +102,36 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val milestoneText = Text.of(milestone.toString()) { color = if (maxLevel == milestone) TextColor.GREEN else TextColor.RED }
         return loading(
-            Displays.item(resource.getItem(), customStackText = milestoneText).buildTooltip {
-                addText(resource.getItem().customName?.stripped ?: "Unknown") {
+            Displays.item(resource.getItem(), customStackText = milestoneText).withTooltip {
+                add(resource.getItem().customName?.stripped ?: "Unknown") {
                     bold = true
                     append(" Milestone")
                 }
-                addText("Progress: ") {
+                add("Progress: ") {
                     color = TextColor.GRAY
                     append(milestoneText)
                     append("/")
                     append(maxLevel.toString())
                 }
-                addTextIf("Progress to ${milestone + 1}: ", { maxLevel != milestone }) {
-                    this.color = TextColor.GRAY
+                if (milestone != maxLevel) {
+                    add("Progress to ${milestone + 1}: ") {
+                        this.color = TextColor.GRAY
 
-                    val collected = resourcesCollected.minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
-                    val needed = milestoneBrackets[milestone + 1].minus(milestoneBrackets[(milestone).coerceAtLeast(0)])
+                        val collected = resourcesCollected - milestoneBrackets[(milestone).coerceAtLeast(0)]
+                        val needed = milestoneBrackets[milestone + 1] - milestoneBrackets[(milestone).coerceAtLeast(0)]
 
-                    append(collected.toFormattedString()) { color = TextColor.YELLOW }
-                    append("/") { color = TextColor.GOLD }
-                    append(needed.shorten()) { color = TextColor.YELLOW }
-                    append(" (")
-                    append("${((collected.toFloat() / needed) * 100).round()}%") {
-                        this.color = TextColor.DARK_AQUA
+                        append(collected.toFormattedString()) { color = TextColor.YELLOW }
+                        append("/") { color = TextColor.GOLD }
+                        append(needed.shorten()) { color = TextColor.YELLOW }
+
+                        append(
+                            Text.of("${((collected.toFloat() / needed) * 100).round()}%") {
+                                this.color = TextColor.DARK_AQUA
+                            }.wrap(" (", ")"),
+                        )
                     }
-                    append(")")
                 }
-                addText("Total") {
+                add("Total") {
                     this.color = TextColor.GRAY
 
                     if (milestone != maxLevel) {
@@ -134,30 +145,31 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                         append("${milestoneBrackets.last().shorten()} ") {
                             this.color = TextColor.YELLOW
                         }
-                        append("(")
-                        append("${((resourcesCollected.toFloat() / milestoneBrackets.last()) * 100).round()}%") {
-                            this.color = TextColor.DARK_AQUA
-                        }
-                        append(")")
+                        append(
+                            Text.of("${((resourcesCollected.toFloat() / milestoneBrackets.last()) * 100).round()}%") {
+                                this.color = TextColor.DARK_AQUA
+                            }.wrap("(", ")"),
+                        )
                     }
                 }
             },
-            Displays.item(Items.ORANGE_DYE.defaultInstance).withTooltip(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE }),
-            Displays.item(Items.BEDROCK.defaultInstance).withTooltip(Text.of("Error!") { this.color = TextColor.RED }),
+            Displays.item(Items.ORANGE_DYE).withTooltip(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE }),
+            Displays.item(Items.BEDROCK).withTooltip(Text.of("Error!") { this.color = TextColor.RED }),
         )
     }
 
     private fun getTool(resource: GardenResource, profile: SkyBlockProfile): Display {
         val staticToolInfo = StaticGardenData.tools[resource]
+        val backgroundDisplay = Displays.background(SkyBlockPv.id(staticToolInfo?.type?.id ?: "icon/questionmark"), 16, 16)
 
-        staticToolInfo ?: return Displays.background(SkyBlockPv.id("icon/questionmark"), 16, 16).withTooltip(resource.name)
+        if (staticToolInfo == null) return backgroundDisplay.withTooltip(resource.name)
 
-        return ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(staticToolInfo.ids))
+        val tool = ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(staticToolInfo.ids))
             ?.asSequence()
             ?.sortedByDescending(::evaluateToolScore)
             ?.firstOrNull()
-            ?.let { Displays.item(it, showTooltip = true) }
-            ?: Displays.background(SkyBlockPv.id(staticToolInfo.type.id), 16, 16)
+
+        return tool?.let { Displays.item(it, showTooltip = true) } ?: backgroundDisplay
     }
 
     private fun evaluateToolScore(stack: ItemStack): Long {

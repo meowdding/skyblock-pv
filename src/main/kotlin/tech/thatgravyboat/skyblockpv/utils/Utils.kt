@@ -142,10 +142,6 @@ object Utils {
         compoundWidget.withStretchToContentSize()
     }
 
-    fun createWidget(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
-        widget(getTitleWidget(title, element.width + padding))
-        widget(getMainContentWidget(element, element.width + padding))
-    }
 
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
@@ -213,23 +209,11 @@ object Utils {
 
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
 
-    fun List<String>.asMultilineComponent() = Text.multiline(*this.toTypedArray())
-
-    fun <T> MutableList<T>.leftPad(size: Int, element: T): MutableList<T> {
-        while (this.size < size) {
-            this.add(0, element)
-        }
-        return this
-    }
-
     fun <T> MutableList<T>.rightPad(size: Int, element: T): MutableList<T> {
         while (this.size < size) {
             this.add(this.lastIndex + 1, element)
         }
         return this
     }
-
-    fun MutableList<Any>.addTextIf(text: String, predicate: () -> Boolean, init: MutableComponent.() -> Unit) = predicate() && addText(text, init)
-    fun MutableList<Any>.addText(text: String, init: MutableComponent.() -> Unit) = this.add(Text.of(text, init))
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 }

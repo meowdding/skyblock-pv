@@ -22,7 +22,6 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.EssenceData.addFishingPerk
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
-import tech.thatgravyboat.skyblockpv.utils.GearUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
@@ -32,6 +31,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
 import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -215,7 +215,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                                 withStyle(ChatFormatting.DARK_GRAY)
                             }
                             append(
-                                text("${it.rarity.displayName} Dolphin") {
+                                Text.of("${it.rarity.displayName} Dolphin") {
+                                    this.color = TextColor.DARK_GRAY
                                     if (hasObtained) {
                                         withColor((it.rarity.color))
                                     }
@@ -328,7 +329,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             widget(getTrophyArmor(profile))
             spacer(width = 5)
             widget(
-                GearUtils.getArmorAndEquipment(
+                PvWidgets.armorAndEquipment(
                     profile,
                     ::calculateItemScore,
                     FishingGear.necklaces,
@@ -350,10 +351,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             ItemPredicates.AnySkyblockID(FishingGear.trophyArmor),
         ) ?: emptyList()
 
-        val displayArmor = GearUtils.getDisplayArmor(trophyArmor).toColumn()
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-1x4"),
-            Displays.padding(2, displayArmor),
+            Displays.padding(2, PvWidgets.armorDisplay(trophyArmor)),
         ).asWidget()
     }
 
