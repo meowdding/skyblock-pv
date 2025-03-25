@@ -21,7 +21,7 @@ object RemindersAPI {
 
     private val CODEC = Reminder.CODEC.listOf()
 
-    private val file = FabricLoader.getInstance().configDir.resolve("slyblockpv").resolve("reminders.json")
+    private val file = FabricLoader.getInstance().configDir.resolve("skyblockpv").resolve("reminders.json")
     private val reminders = mutableListOf<Reminder>()
 
     init {
