@@ -20,6 +20,7 @@ abstract class BaseMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfi
 
 enum class MiningCategory(val screen: KClass<out BaseMiningScreen>, override val icon: ItemStack) : Category {
     MAIN(MainMiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
+    GEAR(MiningGearScreen::class, Items.PRISMARINE_SHARD.defaultInstance),
     HOTM(HotmScreen::class, hotmIcon),
     GlACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance),
     ;
