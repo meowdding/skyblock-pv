@@ -4,6 +4,7 @@ import earth.terrarium.olympus.client.components.Widgets
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -12,13 +13,45 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.toColumn
+import tech.thatgravyboat.skyblockpv.utils.displays.toRow
 
 object PvWidgets {
 
     fun label(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
         widget(getTitleWidget(title, element.width + padding))
         widget(getMainContentWidget(element, element.width + padding))
+    }
+
+    fun tools(
+        profile: SkyBlockProfile,
+        score: (ItemStack) -> Int,
+        tools: List<String>,
+        emptyIcon: String,
+        maxAmount: Int = 4,
+    ): LayoutElement {
+        val toolsToDisplay = (ItemPredicateHelper.getItemsMatching(
+            profile,
+            ItemPredicates.AnySkyblockID(tools),
+        )?.sortedByDescending(score) ?: emptyList()).distinctBy { it.getData(DataTypes.ID) }.take(maxAmount).toMutableList()
+
+        while (toolsToDisplay.size < maxAmount) {
+            toolsToDisplay.add(Items.AIR.defaultInstance)
+        }
+
+        val column = toolsToDisplay.map { tool ->
+            Displays.item(tool, showTooltip = true).let { display ->
+                // TODO: hover over empty slot
+                display.takeUnless { tool.isEmpty } ?: Displays.background(SkyBlockPv.id(emptyIcon), display)
+            }.let { Displays.padding(2, it) }
+        }.toColumn()
+
+        return Displays.background(
+            SkyBlockPv.id("inventory/inventory-1x$maxAmount"),
+            Displays.padding(2, column),
+        ).asWidget()
     }
 
     fun armorAndEquipment(
@@ -60,29 +93,22 @@ object PvWidgets {
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-2x4"),
             Displays.padding(2, armorEquipment),
-        ).centerIn(-1, -1).asWidget()
+        ).asWidget()
     }
 
     fun armorDisplay(list: List<ItemStack>) = Displays.column(
         *buildList {
             fun addArmor(type: String) {
                 val itemStack = list.firstOrNull { it.getData(DataTypes.ID)?.contains(type) != false } ?: ItemStack.EMPTY
-                add(
-                    Displays.padding(
-                        2,
-                        Displays.item(itemStack, showTooltip = true)
-                            .let {
-                                return@let if (itemStack.isEmpty) {
-                                    Displays.background(
-                                        ResourceLocation.parse("container/slot/${type.lowercase()}"),
-                                        it,
-                                    ).centerIn(-1, -1)
-                                } else {
-                                    it
-                                }
-                            },
-                    ),
-                )
+                Displays.padding(
+                    2,
+                    Displays.item(itemStack, showTooltip = true).let {
+                        it.takeUnless { itemStack.isEmpty } ?: Displays.background(
+                            ResourceLocation.parse("container/slot/${type.lowercase()}"),
+                            it,
+                        )
+                    },
+                ).let { add(it) }
             }
 
             addArmor("HELMET")
