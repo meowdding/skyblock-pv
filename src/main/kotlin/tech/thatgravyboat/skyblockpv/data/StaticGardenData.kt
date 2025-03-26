@@ -39,15 +39,10 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
 
     override fun getSerializedName() = internalName
 
-    val internalName: String
-    val itemId: String
+    val internalName: String = internalName ?: name
+    val itemId: String = itemId ?: this.internalName
 
     fun getItem() = ItemAPI.getItem(itemId.replace(":", "-"))
-
-    init {
-        this.internalName = internalName ?: name
-        this.itemId = itemId ?: this.internalName
-    }
 
     companion object {
         fun getByApiId(s: String) = entries.find { it.internalName == s } ?: UNKNOWN
@@ -320,7 +315,7 @@ enum class FarmingGear() {
         val necklaces = NECKLACES.list
         val belts = BELTS.list
         val armor = ARMOR.list
-        val vaccum = VACUUM.list
+        val vacuum = VACUUM.list
         val pets = PETS.list
     }
 }
