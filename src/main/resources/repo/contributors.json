@@ -6,7 +6,7 @@
             "left_shoulder": false
         },
         "cat": {
-            "type": "red",
+            "asset_id": "minecraft:entity/cat/red",
             "left_shoulder": true
         }
     }
