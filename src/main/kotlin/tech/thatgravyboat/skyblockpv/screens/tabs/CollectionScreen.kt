@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getIconFromCollectionType
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToMax
@@ -101,7 +102,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         }
 
         val hover = Text.multiline(
-            "§l${col.itemStack?.hoverName?.string ?: col.itemId}",
+            "§l${col.itemStack?.hoverName?.stripped ?: col.itemId}",
             "§7Collected: ${col.amount.toFormattedString()}",
             if (!isMaxed) "§7Progress to ${progNext.first}: ${(progNext.second * 100).round()}%" else null,
             "§7Progress to Max: ${if (isMaxed) "§2Maxed" else "${(progMaxed * 100).round()}%"}",
@@ -110,7 +111,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         return Displays.row(
             Displays.item(col.itemStack ?: ItemStack.EMPTY),
             listOf(
-                Displays.text(Text.join(col.itemStack?.hoverName ?: col.itemId, ": ${col.amount.shorten()}")),
+                Displays.text(Text.join(col.itemStack?.hoverName?.stripped ?: col.itemId, ": ${col.amount.shorten()}")),
                 listOf(Displays.progress(progNext.second), progressText).toRow(3),
             ).toColumn(1),
             spacing = 5,
