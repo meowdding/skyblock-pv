@@ -122,7 +122,7 @@ enum class FishingGear {
     companion object {
         init {
             Utils.loadFromRepo<Map<String, List<String>>>("gear/fishing")?.forEach { (key, value) ->
-                runCatching { FishingGear.valueOf(key.uppercase()).list = value }.onFailure { println(it) }
+                runCatching { FishingGear.valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }
 

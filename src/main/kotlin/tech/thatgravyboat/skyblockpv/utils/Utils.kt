@@ -14,10 +14,13 @@ import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
+import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.PlayerDbAPI
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
+import java.nio.file.Files
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import kotlin.jvm.optionals.getOrNull
@@ -169,9 +172,9 @@ object Utils {
 
     inline fun <reified T : Any> loadFromRepo(file: String) = runBlocking {
         try {
-            this.javaClass.getResourceAsStream("/repo/$file.json")?.readJson<T>() ?: return@runBlocking null
+            SkyBlockPv.mod.findPath("repo/$file.json").orElseThrow()?.let(Files::readString)?.readJson<T>() ?: return@runBlocking null
         } catch (e: Exception) {
-            println(e)
+            Logger.error("Failed to load $file from repo", e)
             null
         }
     }
