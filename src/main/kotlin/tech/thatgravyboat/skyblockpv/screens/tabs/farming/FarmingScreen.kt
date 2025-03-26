@@ -37,7 +37,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             horizontal {
                 widget(getPlots())
                 widget(getGear(profile))
-                widget(getCrops(profile.farmingData))
+                widget(getContests(profile.farmingData))
                 widget(getInfoWidget(profile))
             }
         }
@@ -207,17 +207,15 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getGear(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
         LayoutBuild.horizontal {
-            widget(
-                PvWidgets.armorAndEquipment(
-                    profile,
-                    ::calculateEquipmentScore,
-                    FarmingGear.necklaces,
-                    FarmingGear.cloaks,
-                    FarmingGear.belts,
-                    FarmingGear.gloves,
-                    FarmingGear.armor,
-                ),
-            )
+            PvWidgets.armorAndEquipment(
+                profile,
+                ::calculateEquipmentScore,
+                FarmingGear.necklaces,
+                FarmingGear.cloaks,
+                FarmingGear.belts,
+                FarmingGear.gloves,
+                FarmingGear.armor,
+            ).let { widget(it) }
             spacer(width = 5)
             display(getPets(profile))
             spacer(width = 5)
@@ -333,7 +331,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         padding = 20,
     )
 
-    private fun getCrops(farmingData: FarmingData) = PvWidgets.label(
+    private fun getContests(farmingData: FarmingData) = PvWidgets.label(
         "Contests",
         GardenResource.actualValues.map { entry ->
             Displays.item(entry.getItem()).withTooltip {
