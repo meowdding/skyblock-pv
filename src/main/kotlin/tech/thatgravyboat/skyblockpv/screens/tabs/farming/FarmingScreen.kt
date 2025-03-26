@@ -10,19 +10,22 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
-import tech.thatgravyboat.skyblockpv.data.FarmingGear
-import tech.thatgravyboat.skyblockpv.data.Pet
-import tech.thatgravyboat.skyblockpv.data.StaticGardenData
+import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
+import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
@@ -34,6 +37,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             horizontal {
                 widget(getPlots())
                 widget(getGear(profile))
+                widget(getContests(profile.farmingData))
                 widget(getInfoWidget(profile))
             }
         }
@@ -108,6 +112,23 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     }
                 },
             )
+            string("Contests Participated: ") {
+                this.color = TextColor.DARK_GRAY
+                append("${profile.farmingData.contest.size}") {
+                    this.color = TextColor.YELLOW
+                }
+            }
+            string("Medals: ") {
+                this.color = TextColor.DARK_GRAY
+                Text.join(
+                    MedalType.actualMedals.map {
+                        val amount = profile.farmingData.medalInventory[it] ?: 0
+                        Text.of(amount.toFormattedString()) { this.color = it.color }
+                    },
+                    separator = Text.of("/") { this.color = TextColor.DARK_GRAY },
+                ).let { append(it) }
+            }
+
             string("Larva Consumed: ") {
                 this.color = TextColor.DARK_GRAY
                 append("${profile.gardenData.larvaConsumed}") {
@@ -115,7 +136,60 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 }
                 append("/${StaticGardenData.miscData.maxLarvaConsumed}")
             }
+            fun addLevelingPerk(perkLevel: Int, name: String, values: List<Map<String, Int>>) {
+                display(
+                    Displays.text(
+                        Text.of("$name: ") {
+                            this.color = TextColor.DARK_GRAY
+                            append("$perkLevel") {
+                                this.color = TextColor.GREEN.takeIf { perkLevel == values.size } ?: TextColor.RED
+                            }
+                            append("/${values.size}")
+                        },
+                        shadow = false,
+                    ).let {
+                        if (perkLevel == values.size) {
+                            return@let it
+                        }
 
+                        it.withTooltip {
+                            val neededForMax = values.last()
+                            val paid = if (perkLevel > 1) values[perkLevel - 1] else emptyMap()
+                            neededForMax.forEach {
+                                add(
+                                    when (it.key) {
+                                        "gold_medal" -> "Gold Medal"
+                                        else -> ItemAPI.getItemName(it.key).stripped
+                                    },
+                                ) {
+                                    this.color = TextColor.GRAY
+                                    val paidAmount = paid[it.key] ?: 0
+                                    append(": ")
+                                    append(paidAmount.toFormattedString()) {
+                                        this.color = TextColor.DARK_GREEN
+                                    }
+                                    append("/") {
+                                        this.color = TextColor.GREEN
+                                    }
+                                    append(it.value.toFormattedString()) {
+                                        this.color = TextColor.DARK_GREEN
+                                    }
+
+                                    append(
+                                        Text.of(((paidAmount / it.value.toFloat()).times(100).round())) {
+                                            append("%")
+                                            this.color = TextColor.DARK_AQUA
+                                        }.wrap(" (", ")"),
+                                    )
+                                }
+                            }
+                        }
+                    },
+                )
+            }
+
+            addLevelingPerk(profile.farmingData.perks.farmingLevelCap, "Farming Level Cap", StaticGardenData.miscData.farmingLevelCap)
+            addLevelingPerk(profile.farmingData.perks.doubleDrops, "Double Drops", StaticGardenData.miscData.bonusDrops)
         },
         padding = 20,
     )
@@ -133,7 +207,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getGear(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
         LayoutBuild.horizontal {
-            widget(PvWidgets.armorAndEquipment(
+            PvWidgets.armorAndEquipment(
                 profile,
                 ::calculateEquipmentScore,
                 FarmingGear.necklaces,
@@ -141,7 +215,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 FarmingGear.belts,
                 FarmingGear.gloves,
                 FarmingGear.armor,
-            ))
+            ).let { widget(it) }
             spacer(width = 5)
             display(getPets(profile))
             spacer(width = 5)
@@ -257,6 +331,93 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         padding = 20,
     )
 
+    private fun getContests(farmingData: FarmingData) = PvWidgets.label(
+        "Contests",
+        GardenResource.actualValues.map { entry ->
+            Displays.item(entry.getItem()).withTooltip {
+                add(entry.getItem().hoverName.copy().stripped) {
+                    this.bold = true
+                    this.color = TextColor.WHITE
+                }
+
+                val contests = farmingData.contest.filter { it.isOfType(entry) }
+                space()
+                add("Brackets: ") {
+                    this.color = TextColor.GRAY
+
+                    fun getDot(unlocked: Boolean) = if (unlocked) "●" else "◌"
+
+                    MedalType.entries.forEach {
+                        append(getDot(farmingData.uniqueBrackets[it]?.contains(entry) == true)) {
+                            this.color = it.color
+                        }
+                    }
+
+                    val medals = contests.groupByTo(mutableMapOf()) { it.claimedMedal }
+                        .apply { remove(null) }
+                        .mapKeys { MedalType.valueOf(it.key?.uppercase() ?: "") }
+                        .toSortedMap(MedalType::compareTo)
+
+                    if (medals.isNotEmpty()) {
+                        medals.map { (key, value) ->
+                            Text.of(value.size.toFormattedString()) {
+                                this.color = key.color
+                            }
+                        }.let {
+                            Text.join(it, separator = Text.of("/") { this.color = TextColor.DARK_GRAY })
+                        }
+                            .wrap(" (", ")")
+                            .let { append(it) }
+                    }
+                }
+
+                add("Personal Best: ") {
+                    this.color = TextColor.GRAY
+                    if (!farmingData.perks.personalBests) {
+                        append("Not Unlocked!") {
+                            this.color = TextColor.RED
+                        }
+                        return@add
+                    }
+
+                    val maxPersonalBest = StaticGardenData.miscData.personalBests[entry] ?: 0
+                    val personalBest = farmingData.personalBests[entry] ?: 0
+                    append(personalBest.toFormattedString()) {
+                        this.color = TextColor.YELLOW
+                    }
+                    if (maxPersonalBest >= personalBest) {
+                        append("/") { this.color = TextColor.GOLD }
+                        append(maxPersonalBest.shorten(0)) { this.color = TextColor.YELLOW }
+
+                        append(
+                            Text.of("${((personalBest / maxPersonalBest.toFloat()) * 100).round()}%") {
+                                this.color = TextColor.DARK_AQUA
+                            }.wrap(" (", ")"),
+                        )
+                    }
+                }
+
+                add("Contests participated: ") {
+                    this.color = TextColor.GRAY
+                    append(contests.count().toFormattedString()) {
+                        this.color = TextColor.YELLOW
+                    }
+                }
+                contests.mapNotNull { it.position?.plus(1) }.minByOrNull { it }?.let { rank ->
+                    add("Highest Position: ") {
+                        this.color = TextColor.GRAY
+                        append("#") {
+                            this.color = TextColor.YELLOW
+                            append(rank.toFormattedString())
+                        }
+                    }
+                }
+            }
+        }.map { Displays.padding(2, it) }.chunked(5)
+            .map { it.toColumn() }
+            .toRow().let { Displays.background(SkyBlockPv.id("inventory/inventory-2x5"), Displays.padding(2, it)) }.asWidget(),
+        padding = 20,
+    )
 }
 
 private operator fun <E> MutableList<MutableList<E>>.set(location: Vector2i, value: E) {

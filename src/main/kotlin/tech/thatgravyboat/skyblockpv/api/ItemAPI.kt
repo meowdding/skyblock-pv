@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.api
 
 import com.mojang.serialization.JsonOps
 import net.minecraft.core.component.DataComponents
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
@@ -36,6 +37,8 @@ object ItemAPI {
         val data = RepoAPI.items().getItem(id)
         ItemStack.CODEC.parse(JsonOps.INSTANCE, data).ifError { Logger.error(it.message()) }.result().orElse(null) ?: fallbackItem(id)
     }
+
+    fun getItemName(id: String): Component = getItem(id).hoverName
 
     fun getPet(petData: PetData): ItemStack = petCache.getOrPut(petData) {
         val data = RepoAPI.pets().getPet(petData.id)

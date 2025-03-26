@@ -82,13 +82,6 @@ TODO:
 - [ ] plots
 - [ ] composter upgrades, progress total and so on
 
-## Contest page
-- [ ] personal bests
-- [ ] unique golds, plats usw
-- [ ] total contests
-- [ ] maybe amount of contests done or smth?
-- [ ] anita upgrades
-
 ## Main page
 - [ ] weight
 - [ ] visitor stats (only total)
