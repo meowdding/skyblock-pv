@@ -23,16 +23,17 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.Display
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.toRow
+import tech.thatgravyboat.skyblockpv.utils.displays.withTooltip
 
 class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
 
     override fun getLayout(): Layout {
         val profile = profile ?: return LayoutBuild.frame {}
 
-        val resourcesDisplay = GardenResource.entries.mapNotNull {
-            if (it == GardenResource.UNKNOWN) return@mapNotNull null
-
+        val resourcesDisplay = GardenResource.actualValues.map {
             Displays.background(
                 SkyBlockPv.id("inventory/inventory-1x3"),
                 Displays.padding(

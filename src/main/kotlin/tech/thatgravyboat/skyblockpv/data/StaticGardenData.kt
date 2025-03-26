@@ -47,6 +47,8 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
     companion object {
         fun getByApiId(s: String) = entries.find { it.internalName == s } ?: UNKNOWN
 
+        val actualValues = GardenResource.entries.filterNot { it == UNKNOWN }
+
         val CODEC = StringRepresentable.fromEnum { entries.toTypedArray() }
     }
 }
@@ -72,8 +74,7 @@ private object GardenCodecs {
             CodecUtils.CUMULATIVE_INT_LIST.fieldOf("garden_level").forGetter(StaticMiscData::gardenLevelBrackets),
             Codec.INT.listOf().fieldOf("crop_upgrade_cost").forGetter(StaticMiscData::cropUpgradeCost),
             Codec.STRING.fieldOf("crop_upgrade_reward_formula").forGetter(StaticMiscData::cropRewardFormula),
-            Codec.unboundedMap(GardenResource.CODEC, Codec.INT).fieldOf("crop_requirements")
-                .forGetter(StaticMiscData::cropRequirements),
+            Codec.unboundedMap(GardenResource.CODEC, Codec.INT).fieldOf("crop_requirements").forGetter(StaticMiscData::cropRequirements),
             Codec.INT.listOf().fieldOf("offers_accepted_milestone")
                 .forGetter(StaticMiscData::offersAcceptedMilestones),
             Codec.INT.listOf().fieldOf("unique_visitors_served_milestone")
@@ -81,6 +82,9 @@ private object GardenCodecs {
             Codec.STRING.fieldOf("plot_farming_fortune_reward_formula")
                 .forGetter(StaticMiscData::plotFarmingFortuneReward),
             Codec.INT.fieldOf("max_larva_consumed").forGetter(StaticMiscData::maxLarvaConsumed),
+            Codec.unboundedMap(GardenResource.CODEC, Codec.INT).fieldOf("personal_bests").forGetter(StaticMiscData::cropRequirements),
+            CodecUtils.CUMULATIVE_STRING_INT_MAP.fieldOf("farming_level_cap").forGetter(StaticMiscData::farmingLevelCap),
+            CodecUtils.CUMULATIVE_STRING_INT_MAP.fieldOf("extra_farming_fortune").forGetter(StaticMiscData::bonusDrops),
         ).apply(it, ::StaticMiscData)
     }
 
@@ -132,7 +136,7 @@ data object StaticGardenData {
     var cropMilestones: Map<GardenResource, List<Int>> = emptyMap()
         private set
     var miscData: StaticMiscData =
-        StaticMiscData(emptyList(), emptyList(), "0", emptyMap(), emptyList(), emptyList(), "0", 0)
+        StaticMiscData(emptyList(), emptyList(), "0", emptyMap(), emptyList(), emptyList(), "0", 0, emptyMap(), emptyList(), emptyList())
         private set
     var plotCost: Map<String, List<StaticPlotCost>> = emptyMap()
         private set
@@ -212,6 +216,9 @@ data class StaticMiscData(
     val uniqueVisitorsAcceptedMilestone: List<Int>,
     val plotFarmingFortuneReward: String,
     val maxLarvaConsumed: Int,
+    val personalBests: Map<GardenResource, Int>,
+    val farmingLevelCap: List<Map<String, Int>>,
+    val bonusDrops: List<Map<String, Int>>,
 ) {
     fun getXpRequired(gardenLevel: Int): Int {
         if (gardenLevel >= gardenLevelBrackets.size - 1) {
@@ -226,14 +233,13 @@ data class StaticMiscData(
             (data.findLast { it <= gardenExperience } ?: 0).let { data.indexOf(it) + 1 }
         }
     }
-
 }
 
 data class StaticPlotCost(
     val amount: Int,
     val bundle: Boolean,
 ) {
-    fun getDisplay() = ItemAPI.getItem("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST").hoverName
+    fun getDisplay() = ItemAPI.getItemName("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")
 }
 
 data class StaticPlotData(
