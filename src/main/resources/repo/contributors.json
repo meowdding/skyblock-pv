@@ -1,7 +1,13 @@
 {
     "e90ea9ec-080a-401b-8d10-6a53c407ac53": {
         "title": "§dɢᴀʏ",
-        "parrot_left": "red_blue",
-        "parrot_right": "blue"
+        "parrot": {
+            "variant": "red_blue",
+            "left_shoulder": false
+        },
+        "cat": {
+            "type": "red",
+            "left_shoulder": true
+        }
     }
 }

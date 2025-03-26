@@ -1,18 +1,19 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "package": "tech.thatgravyboat.skyblockpv.mixin",
-    "compatibilityLevel": "JAVA_21",
-    "client": [
-        "I18nAccessor",
-        "PlayerRendererMixin",
-        "compat.ProfileViewerScreenMixin"
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    },
-    "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin",
-    "mixins": [
-        "LanguageMixin"
-    ]
+  "required": true,
+  "minVersion": "0.8",
+  "package": "tech.thatgravyboat.skyblockpv.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "I18nAccessor",
+    "PlayerRendererMixin",
+    "PlayerRenderStateMixin",
+    "compat.ProfileViewerScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin",
+  "mixins": [
+    "LanguageMixin"
+  ]
 }

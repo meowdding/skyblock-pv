@@ -139,6 +139,37 @@ data class GlaciteData(
     }
 }
 
+enum class MiningGear {
+    PICKAXES,
+    ARMOR,
+    BELTS,
+    CLOAKS,
+    NECKLACES,
+    GLOVES,
+    CHISELS,
+    ;
+
+    var list: List<String> = emptyList()
+        private set
+
+    companion object {
+        init {
+            Utils.loadFromRepo<Map<String, List<String>>>("gear/mining")?.forEach { (key, value) ->
+                runCatching { MiningGear.valueOf(key.uppercase()).list = value }.onFailure { println(it) }
+            }
+        }
+
+        val cloaks = CLOAKS.list
+        val gloves = GLOVES.list
+        val necklaces = NECKLACES.list
+        val belts = BELTS.list
+        val equipment = listOf(cloaks, gloves, necklaces, belts).flatten()
+        val armor = ARMOR.list
+        val pickaxes = PICKAXES.list
+        val chisels = CHISELS.list
+    }
+}
+
 enum class RockBrackets(val oresRequired: Int, val rarity: SkyBlockRarity) {
     COMMON(2500, SkyBlockRarity.COMMON),
     UNCOMMON(7500, SkyBlockRarity.UNCOMMON),
