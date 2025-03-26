@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.entity.state.CatRenderState
 import net.minecraft.client.renderer.entity.state.PlayerRenderState
 import net.minecraft.client.renderer.texture.OverlayTexture
 import net.minecraft.resources.ResourceLocation
-import tech.thatgravyboat.skyblockpv.utils.CatHolder.cat
 
 class CatOnShoulderLayer(renderer: RenderLayerParent<PlayerRenderState, PlayerModel>, modelSet: EntityModelSet) :
     RenderLayer<PlayerRenderState, PlayerModel>(renderer) {
@@ -24,8 +23,8 @@ class CatOnShoulderLayer(renderer: RenderLayerParent<PlayerRenderState, PlayerMo
     }
 
     override fun render(poseStack: PoseStack, bufferSource: MultiBufferSource, packedLight: Int, renderState: PlayerRenderState, yRot: Float, xRot: Float) {
-        renderState.cat?.let {
-            renderOnShoulder(poseStack, bufferSource, packedLight, renderState, it.type, yRot, xRot, it.leftSide)
+        (renderState as PlayerRenderStateAccessor).`skyblockpv$catOnShoulder`?.let {
+            renderOnShoulder(poseStack, bufferSource, packedLight, renderState, it.type.texture, yRot, xRot, it.leftSide)
         }
     }
 

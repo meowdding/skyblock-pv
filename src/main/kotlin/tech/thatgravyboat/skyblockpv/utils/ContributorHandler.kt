@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import kotlinx.coroutines.runBlocking
 import net.minecraft.core.UUIDUtil
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.animal.CatVariant
 import net.minecraft.world.entity.animal.Parrot
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -49,12 +49,7 @@ data class ContributorData(
         }
         private val CAT_CODEC = RecordCodecBuilder.create {
             it.group(
-                ResourceLocation.CODEC.xmap(
-                    {
-                        BuiltInRegistries.CAT_VARIANT.getOptional(it).orElse(null)?.texture ?: ResourceLocation.parse("meow")
-                    },
-                    { it },
-                ).fieldOf("type").forGetter(CatOnShoulder::type),
+                BuiltInRegistries.CAT_VARIANT.byNameCodec().fieldOf("type").forGetter(CatOnShoulder::type),
                 Codec.BOOL.fieldOf("left_shoulder").forGetter(CatOnShoulder::leftSide)
             ).apply(it, ::CatOnShoulder)
         }
@@ -85,4 +80,4 @@ data class ContributorData(
 }
 
 data class ParrotOnShoulder(val variant: Parrot.Variant, val leftSide: Boolean)
-data class CatOnShoulder(val type: ResourceLocation, val leftSide: Boolean)
+data class CatOnShoulder(val type: CatVariant, val leftSide: Boolean)
