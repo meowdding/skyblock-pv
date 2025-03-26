@@ -5,9 +5,8 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import kotlinx.coroutines.runBlocking
+import net.minecraft.core.ClientAsset
 import net.minecraft.core.UUIDUtil
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.world.entity.animal.CatVariant
 import net.minecraft.world.entity.animal.Parrot
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -49,7 +48,7 @@ data class ContributorData(
         }
         private val CAT_CODEC = RecordCodecBuilder.create {
             it.group(
-                BuiltInRegistries.CAT_VARIANT.byNameCodec().fieldOf("type").forGetter(CatOnShoulder::type),
+                ClientAsset.CODEC.fieldOf("asset_id").forGetter(CatOnShoulder::asset),
                 Codec.BOOL.fieldOf("left_shoulder").forGetter(CatOnShoulder::leftSide)
             ).apply(it, ::CatOnShoulder)
         }
@@ -80,4 +79,4 @@ data class ContributorData(
 }
 
 data class ParrotOnShoulder(val variant: Parrot.Variant, val leftSide: Boolean)
-data class CatOnShoulder(val type: CatVariant, val leftSide: Boolean)
+data class CatOnShoulder(val asset: ClientAsset, val leftSide: Boolean)
