@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
-@Mixin(Language.class)
+@Mixin(value = Language.class)
 public class LanguageMixin {
 
     @Shadow
@@ -24,7 +24,7 @@ public class LanguageMixin {
 
     @Inject(
         method = "loadFromJson",
-        at = @At(value = "INVOKE", target = "Lcom/google/gson/JsonObject;entrySet()Ljava/util/Set;"),
+        at = @At(value = "INVOKE", target = "Lcom/google/gson/JsonObject;entrySet()Ljava/util/Set;", remap = false),
         cancellable = true
     )
     private static void loadFromJsonInject(
