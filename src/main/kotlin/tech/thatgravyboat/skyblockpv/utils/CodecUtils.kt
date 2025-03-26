@@ -28,16 +28,15 @@ object CodecUtils {
             {
                 it.runningFold(
                     mutableMapOf(),
-                    { acc: MutableMap<String, Int>, mutableMap: MutableMap<String, Int>? ->
-                        LinkedHashMap(
-                            acc.also {
-                                mutableMap?.forEach {
-                                    acc[it.key] = it.value + (acc[it.key] ?: 0)
-                                }
-                            },
-                        )
-                    },
-                ).drop(1)
+                ) { acc: MutableMap<String, Int>, mutableMap: MutableMap<String, Int>? ->
+                    LinkedHashMap(
+                        acc.also {
+                            mutableMap?.forEach {
+                                acc[it.key] = it.value + (acc[it.key] ?: 0)
+                            }
+                        },
+                    )
+                }.drop(1)
             },
             { it },
         )
