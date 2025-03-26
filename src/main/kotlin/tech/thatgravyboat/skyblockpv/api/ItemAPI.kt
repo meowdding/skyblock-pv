@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import tech.thatgravyboat.repolib.api.RepoAPI
+import tech.thatgravyboat.repolib.api.RepoVersion
 import tech.thatgravyboat.repolib.api.recipes.ForgeRecipe
 import tech.thatgravyboat.repolib.api.recipes.Recipe
 import tech.thatgravyboat.repolib.api.recipes.ingredient.ItemIngredient
@@ -13,6 +14,7 @@ import tech.thatgravyboat.repolib.api.recipes.ingredient.PetIngredient
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
@@ -25,12 +27,14 @@ object ItemAPI {
     private val forgeRecipeCache = mutableMapOf<String, ForgeRecipe?>()
 
     init {
-        RepoAPI.setup()
+        RepoAPI.setup(RepoVersion.V1_21_4)
     }
 
     fun getItem(id: String): ItemStack = itemCache.getOrPut(id) {
+        val id = id.takeUnless { it == "MUSHROOM_COLLECTION" } ?: "RED_MUSHROOM"
+
         val data = RepoAPI.items().getItem(id)
-        ItemStack.CODEC.parse(JsonOps.INSTANCE, data).result().orElse(null) ?: fallbackItem(id)
+        ItemStack.CODEC.parse(JsonOps.INSTANCE, data).ifError { Logger.error(it.message()) }.result().orElse(null) ?: fallbackItem(id)
     }
 
     fun getPet(petData: PetData): ItemStack = petCache.getOrPut(petData) {
