@@ -7,8 +7,8 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.DungeonData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -41,7 +41,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun countRuns(completions: Map<String, Long>?) = completions?.filterKeys { it != "total" }?.values?.sum() ?: 0
 
-    private fun createInfoBoxDisplay(dungeonData: DungeonData) = LayoutBuild.vertical {
+    private fun createInfoBoxDisplay(dungeonData: DungeonData): LayoutElement {
         val catacombsCompl = dungeonData.dungeonTypes["catacombs"]?.tierCompletions
         val masterModeCompl = dungeonData.dungeonTypes["master_catacombs"]?.tierCompletions
 
@@ -51,11 +51,10 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             string("Secrets/Run: ${(dungeonData.secrets / (countRuns(catacombsCompl) + countRuns(masterModeCompl))).round()}")
         }
 
-        widget(Utils.getTitleWidget("Dungeon Info", mainContent.width + 20))
-        widget(Utils.getMainContentWidget(mainContent, mainContent.width + 20))
+        return PvWidgets.label("Dungeon Info", mainContent, 20)
     }
 
-    private fun createLevelingDisplay(dungeonData: DungeonData) = LayoutBuild.vertical {
+    private fun createLevelingDisplay(dungeonData: DungeonData): LayoutElement {
         val catacombsXp = dungeonData.dungeonTypes["catacombs"]?.experience ?: 0
 
         val catacombsLevel = levelXpMap.entries.findLast { it.value < catacombsXp }?.key ?: 50
@@ -84,8 +83,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
         }
 
-        widget(Utils.getTitleWidget("Dungeon Levels", mainContent.width + 20))
-        widget(Utils.getMainContentWidget(mainContent, mainContent.width + 20))
+        return PvWidgets.label("Dungeon Levels", mainContent, 20)
     }
 
     private fun createRunsDisplay(dungeonData: DungeonData): LayoutElement {
@@ -110,10 +108,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             add(listOf("Total", countRuns(catacombsComp).toString(), countRuns(masterComp).toString()))
         }.map { it.map { Displays.text(it, color = { 0x555555u }, shadow = false) } }.asTable(10).asWidget()
 
-        return LayoutBuild.vertical {
-            widget(Utils.getTitleWidget("Dungeon Runs", table.width + 20))
-            widget(Utils.getMainContentWidget(table, table.width + 20))
-        }
+        return PvWidgets.label("Dungeon Runs", table, 20)
     }
 
     // region Leveling
