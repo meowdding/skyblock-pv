@@ -12,6 +12,7 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -25,6 +26,14 @@ object PvWidgets {
         widget(getMainContentWidget(element, element.width + padding))
     }
 
+    fun LayoutBuilder.toolsBuild(
+        profile: SkyBlockProfile,
+        score: (ItemStack) -> Int,
+        tools: List<String>,
+        emptyIcon: String,
+        maxAmount: Int = 4,
+    ) = widget(tools(profile, score, tools, emptyIcon, maxAmount))
+
     fun tools(
         profile: SkyBlockProfile,
         score: (ItemStack) -> Int,
@@ -35,7 +44,7 @@ object PvWidgets {
         val toolsToDisplay = (ItemPredicateHelper.getItemsMatching(
             profile,
             ItemPredicates.AnySkyblockID(tools),
-        )?.sortedByDescending(score) ?: emptyList()).toMutableList().distinctBy { it.getData(DataTypes.ID) }.take(maxAmount).toMutableList()
+        )?.sortedByDescending(score) ?: emptyList()).distinctBy { it.getData(DataTypes.ID) }.take(maxAmount).toMutableList()
 
         while (toolsToDisplay.size < maxAmount) {
             toolsToDisplay.add(Items.AIR.defaultInstance)
@@ -53,6 +62,16 @@ object PvWidgets {
             Displays.padding(2, column),
         ).asWidget()
     }
+
+    fun LayoutBuilder.armorAndEquipmentBuild(
+        profile: SkyBlockProfile,
+        score: (ItemStack) -> Int,
+        necklaces: List<String>,
+        cloaks: List<String>,
+        belts: List<String>,
+        gloves: List<String>,
+        armor: List<String>,
+    ) = widget(armorAndEquipment(profile, score, necklaces, cloaks, belts, gloves, armor))
 
     fun armorAndEquipment(
         profile: SkyBlockProfile,
