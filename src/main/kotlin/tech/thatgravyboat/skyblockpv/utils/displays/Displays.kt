@@ -226,7 +226,7 @@ object Displays {
             override fun getWidth() = McFont.width(sequence)
             override fun getHeight() = McFont.height
             override fun render(graphics: GuiGraphics) {
-                graphics.drawString(McFont.self, sequence, 0, 1, color().toInt(), shadow)
+                graphics.drawString(McFont.self, sequence, 0, 0, color().toInt(), shadow)
             }
         }
     }

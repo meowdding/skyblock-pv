@@ -107,5 +107,119 @@
         10
     ],
     "max_larva_consumed": 5,
-    "plot_farming_fortune_reward_formula": "3 * plotsUnlocked"
+    "plot_farming_fortune_reward_formula": "3 * plotsUnlocked",
+    "personal_bests": {
+        "WHEAT": 1000000,
+        "CARROT_ITEM": 3000000,
+        "POTATO_ITEM": 3000000,
+        "PUMPKIN": 1000000,
+        "MELON": 5000000,
+        "MUSHROOM_COLLECTION": 1000000,
+        "CACTUS": 2000000,
+        "SUGAR_CANE": 2000000,
+        "NETHER_STALK": 3000000,
+        "INK_SACK:3": 3000000
+    },
+    "farming_level_cap": [
+        {
+            "gold_medal": 1
+        },
+        {
+            "gold_medal": 1,
+            "JACOBS_TICKET": 50
+        },
+        {
+            "gold_medal": 1,
+            "JACOBS_TICKET": 50
+        },
+        {
+            "gold_medal": 1,
+            "JACOBS_TICKET": 100
+        },
+        {
+            "gold_medal": 1,
+            "JACOBS_TICKET": 100
+        },
+        {
+            "gold_medal": 2,
+            "JACOBS_TICKET": 150
+        },
+        {
+            "gold_medal": 2,
+            "JACOBS_TICKET": 150
+        },
+        {
+            "gold_medal": 2,
+            "JACOBS_TICKET": 200
+        },
+        {
+            "gold_medal": 2,
+            "JACOBS_TICKET": 250
+        },
+        {
+            "gold_medal": 3,
+            "JACOBS_TICKET": 500
+        }
+    ],
+    "extra_farming_fortune": [
+        {
+            "gold_medal": 1
+        },
+        {
+            "gold_medal": 1,
+            "JACOBS_TICKET": 50
+        },
+        {
+            "gold_medal": 1,
+            "JACOBS_TICKET": 50
+        },
+        {
+            "gold_medal": 2,
+            "JACOBS_TICKET": 100
+        },
+        {
+            "gold_medal": 2,
+            "JACOBS_TICKET": 100
+        },
+        {
+            "gold_medal": 3,
+            "JACOBS_TICKET": 150
+        },
+        {
+            "gold_medal": 3,
+            "JACOBS_TICKET": 150
+        },
+        {
+            "gold_medal": 4,
+            "JACOBS_TICKET": 200
+        },
+        {
+            "gold_medal": 4,
+            "JACOBS_TICKET": 200
+        },
+        {
+            "gold_medal": 5,
+            "JACOBS_TICKET": 250
+        },
+        {
+            "gold_medal": 6,
+            "JACOBS_TICKET": 300
+        },
+        {
+            "gold_medal": 7,
+            "JACOBS_TICKET": 350
+        },
+        {
+            "gold_medal": 8,
+            "JACOBS_TICKET": 400
+        },
+        {
+            "gold_medal": 9,
+            "JACOBS_TICKET": 450
+        },
+        {
+            "gold_medal": 10,
+            "JACOBS_TICKET": 1000
+        }
+    ]
 }
