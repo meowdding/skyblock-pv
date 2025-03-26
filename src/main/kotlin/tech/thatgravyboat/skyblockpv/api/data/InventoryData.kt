@@ -61,7 +61,7 @@ data class InventoryData(
         companion object {
             fun fromJson(json: JsonObject): List<EnderChestPage> {
                 return json.get("data").getNbt().let {
-                    it.getList("i", 10).map { item -> item.legacyStack() }.chunked(45).map { EnderChestPage(Inventory(it)) }
+                    it.getListOrEmpty("i").map { item -> item.legacyStack() }.chunked(45).map { EnderChestPage(Inventory(it)) }
                 }
             }
         }
@@ -74,7 +74,7 @@ data class InventoryData(
         companion object {
             fun icons(json: JsonObject): Map<Int, ItemStack> {
                 return json.entrySet().associate { entry ->
-                    entry.key.toInt() to entry.value.asJsonObject.get("data").getNbt().getList("i", 10).first().legacyStack()
+                    entry.key.toInt() to entry.value.asJsonObject.get("data").getNbt().getListOrEmpty("i").first().legacyStack()
                 }
             }
 
@@ -91,7 +91,7 @@ data class InventoryData(
     ) {
         companion object {
             fun fromJson(json: JsonObject): List<TalismansPage> {
-                return json.get("data").getNbt().getList("i", 10)?.let {
+                return json.get("data").getNbt().getListOrEmpty("i")?.let {
                     it.map { it.legacyStack() }.chunked(45).map { TalismansPage(Inventory(it)) }
                 } ?: listOf()
             }
@@ -104,7 +104,7 @@ data class InventoryData(
         companion object {
             fun fromJson(json: JsonObject): Inventory {
                 if (!json.has("data")) return Inventory(listOf())
-                val itemList = json.get("data").getNbt().getList("i", 10)
+                val itemList = json.get("data").getNbt().getListOrEmpty("i")
                 return Inventory(itemList.map { item -> item.legacyStack() })
             }
         }

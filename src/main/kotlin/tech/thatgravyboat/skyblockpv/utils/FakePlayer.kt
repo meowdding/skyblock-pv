@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.player.RemotePlayer
 import net.minecraft.client.renderer.entity.state.PlayerRenderState
 import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.player.PlayerModelPart
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.Vec3
@@ -13,14 +14,15 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 
 class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val armor: List<ItemStack>) : RemotePlayer(McClient.self.level, gameProfile) {
     init {
-        for (i in 0 until 4) {
-            inventory.armor[i] = armor[i]
-        }
+        equipment.set(EquipmentSlot.HEAD, armor[3])
+        equipment.set(EquipmentSlot.CHEST, armor[2])
+        equipment.set(EquipmentSlot.LEGS, armor[1])
+        equipment.set(EquipmentSlot.FEET, armor[0])
     }
 
     fun setupRenderState(renderState: PlayerRenderState, partialTick: Float) {
         ContributorHandler.contributors[gameProfile.id]?.let {
-            renderState.scoreText = it.title?.let { Component.literal(it) }
+            renderState.scoreText = it.title
             it.parrot?.let { parrot ->
                 if (parrot.leftSide) {
                     renderState.parrotOnLeftShoulder = parrot.variant

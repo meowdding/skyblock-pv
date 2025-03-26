@@ -5,9 +5,9 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import kotlinx.coroutines.runBlocking
+import net.minecraft.core.ClientAsset
 import net.minecraft.core.UUIDUtil
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.world.entity.animal.CatVariant
+import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.animal.Parrot
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -35,7 +35,7 @@ object ContributorHandler {
 }
 
 data class ContributorData(
-    val title: String?,
+    val title: Component?,
     val parrot: ParrotOnShoulder?,
     val cat: CatOnShoulder?,
     val shaking: Boolean,
@@ -49,14 +49,14 @@ data class ContributorData(
         }
         private val CAT_CODEC = RecordCodecBuilder.create {
             it.group(
-                BuiltInRegistries.CAT_VARIANT.byNameCodec().fieldOf("type").forGetter(CatOnShoulder::type),
+                ClientAsset.CODEC.fieldOf("asset_id").forGetter(CatOnShoulder::asset),
                 Codec.BOOL.fieldOf("left_shoulder").forGetter(CatOnShoulder::leftSide)
             ).apply(it, ::CatOnShoulder)
         }
 
         val CODEC: Codec<ContributorData> = RecordCodecBuilder.create {
             it.group(
-                Codec.STRING.optionalFieldOf("title").forGetter { Optional.empty() },
+                CodecUtils.COMPONENT_TAG.optionalFieldOf("title").forGetter { Optional.empty() },
                 PARROT_CODEC.optionalFieldOf("parrot").forGetter { Optional.empty() },
                 CAT_CODEC.optionalFieldOf("cat").forGetter { Optional.empty() },
                 Codec.BOOL.optionalFieldOf("shaking", false).forGetter(ContributorData::shaking),
@@ -64,7 +64,7 @@ data class ContributorData(
         }
 
         fun init(
-            title: Optional<String>,
+            title: Optional<Component>,
             parrot: Optional<ParrotOnShoulder>,
             cat: Optional<CatOnShoulder>,
             shaking: Boolean,
@@ -80,4 +80,4 @@ data class ContributorData(
 }
 
 data class ParrotOnShoulder(val variant: Parrot.Variant, val leftSide: Boolean)
-data class CatOnShoulder(val type: CatVariant, val leftSide: Boolean)
+data class CatOnShoulder(val asset: ClientAsset, val leftSide: Boolean)
