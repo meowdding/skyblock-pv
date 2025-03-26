@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import kotlinx.coroutines.runBlocking
 import net.minecraft.core.ClientAsset
 import net.minecraft.core.UUIDUtil
+import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.animal.Parrot
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -34,7 +35,7 @@ object ContributorHandler {
 }
 
 data class ContributorData(
-    val title: String?,
+    val title: Component?,
     val parrot: ParrotOnShoulder?,
     val cat: CatOnShoulder?,
     val shaking: Boolean,
@@ -55,7 +56,7 @@ data class ContributorData(
 
         val CODEC: Codec<ContributorData> = RecordCodecBuilder.create {
             it.group(
-                Codec.STRING.optionalFieldOf("title").forGetter { Optional.empty() },
+                CodecUtils.COMPONENT_TAG.optionalFieldOf("title").forGetter { Optional.empty() },
                 PARROT_CODEC.optionalFieldOf("parrot").forGetter { Optional.empty() },
                 CAT_CODEC.optionalFieldOf("cat").forGetter { Optional.empty() },
                 Codec.BOOL.optionalFieldOf("shaking", false).forGetter(ContributorData::shaking),
@@ -63,7 +64,7 @@ data class ContributorData(
         }
 
         fun init(
-            title: Optional<String>,
+            title: Optional<Component>,
             parrot: Optional<ParrotOnShoulder>,
             cat: Optional<CatOnShoulder>,
             shaking: Boolean,

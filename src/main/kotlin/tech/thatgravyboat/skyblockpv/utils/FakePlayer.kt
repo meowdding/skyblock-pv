@@ -22,7 +22,7 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
 
     fun setupRenderState(renderState: PlayerRenderState, partialTick: Float) {
         ContributorHandler.contributors[gameProfile.id]?.let {
-            renderState.scoreText = it.title?.let { Component.literal(it) }
+            renderState.scoreText = it.title
             it.parrot?.let { parrot ->
                 if (parrot.leftSide) {
                     renderState.parrotOnLeftShoulder = parrot.variant

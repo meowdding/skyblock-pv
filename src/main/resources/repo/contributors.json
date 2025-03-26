@@ -6,7 +6,18 @@
             "left_shoulder": false
         },
         "cat": {
-            "asset_id": "minecraft:entity/cat/red",
+            "asset_id": "skyblock-pv:trans_cat",
+            "left_shoulder": true
+        }
+    },
+    "b75d7e0a-03d0-4c2a-ae47-809b6b808246": {
+        "title": "§dɢᴀʏ",
+        "parrot": {
+            "variant": "green",
+            "left_shoulder": false
+        },
+        "cat": {
+            "asset_id": "skyblock-pv:trans_cat",
             "left_shoulder": true
         }
     }
