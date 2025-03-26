@@ -10,8 +10,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.Vec3
 import net.minecraft.world.scores.Scoreboard
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockpv.utils.CatHolder.cat
-import java.util.*
 
 class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val armor: List<ItemStack>) : RemotePlayer(McClient.self.level, gameProfile) {
     init {
@@ -21,7 +19,6 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
     }
 
     fun setupRenderState(renderState: PlayerRenderState, partialTick: Float) {
-        renderState.cat = null
         ContributorHandler.contributors[gameProfile.id]?.let {
             renderState.scoreText = it.title?.let { Component.literal(it) }
             it.parrot?.let { parrot ->
@@ -32,7 +29,7 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
                 }
             }
             it.cat?.let { cat ->
-                renderState.cat = cat
+                (renderState as PlayerRenderStateAccessor).`skyblockpv$catOnShoulder` = cat
             }
             renderState.isFullyFrozen = it.shaking
 
@@ -55,12 +52,6 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
 
 }
 
-object CatHolder {
-    var map = WeakHashMap<PlayerRenderState, CatOnShoulder>()
-
-    var PlayerRenderState.cat: CatOnShoulder?
-        get() = map[this]
-        set(value) {
-            map[this] = value
-        }
+internal interface PlayerRenderStateAccessor {
+    var `skyblockpv$catOnShoulder`: CatOnShoulder?
 }
