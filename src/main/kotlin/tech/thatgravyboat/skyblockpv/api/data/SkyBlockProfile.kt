@@ -3,10 +3,9 @@ package tech.thatgravyboat.skyblockpv.api.data
 import com.google.gson.JsonObject
 import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
-import tech.thatgravyboat.skyblockapi.api.remote.SkyBlockItems
-import tech.thatgravyboat.skyblockapi.api.remote.UseRepoLib
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
@@ -105,14 +104,13 @@ data class SkyBlockProfile(
                     return@run GardenData(
                         data.get("copper").asInt(0),
                         data.get("larva_consumed").asInt(0),
-                        playerStats.get("glowing_mushrooms_broken").asInt(0)
+                        playerStats.get("glowing_mushrooms_broken").asInt(0),
                     )
                 },
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest"))
             )
         }
 
-        @OptIn(UseRepoLib::class)
         private fun JsonObject.getCollectionData(): List<CollectionItem> {
             val playerCollections = this["collection"].asMap { id, amount -> id to amount.asLong(0) }
             val allCollections =
@@ -121,7 +119,7 @@ data class SkyBlockProfile(
                 id to (playerCollections[id] ?: 0)
             }.mapNotNull { (id, amount) ->
                 CollectionAPI.getCategoryByItemName(id)?.let {
-                    CollectionItem(it, id, SkyBlockItems.getItemById(id), amount)
+                    CollectionItem(it, id, ItemAPI.getItem(id.replace(":", "-")), amount)
                 }
             }
         }

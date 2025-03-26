@@ -227,7 +227,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     )
 
     private fun getVacuum(profile: SkyBlockProfile): Display {
-        val vacuums = ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(FarmingGear.vaccum)) ?: emptyList()
+        val vacuums = ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(FarmingGear.vacuum)) ?: emptyList()
 
         val vacuum = vacuums.sortedBy { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }.reversed().firstOrNull()
             ?: return Displays.padding(4, Displays.background(SkyBlockPv.id("icon/slot/minecart"), Displays.empty(16, 16)))

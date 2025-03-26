@@ -165,8 +165,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
                         Util.getPlatform().openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
                     },
             )
-
-            // todo: button to remove name entry from usercache.json
         }
 
         FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)

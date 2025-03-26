@@ -25,7 +25,6 @@ import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
-import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
@@ -53,11 +52,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val trophyWidget by lazy {
             LayoutBuild.vertical {
                 val useSmallTable = (trophyWidth < 480)
-                widget(Utils.getTitleWidget("Trophy Fish", trophyWidth))
+                widget(PvWidgets.getTitleWidget("Trophy Fish", trophyWidth))
                 if (useSmallTable) {
-                    widget(Utils.getMainContentWidget(getSmallTrophyTable(profile), trophyWidth))
+                    widget(PvWidgets.getMainContentWidget(getSmallTrophyTable(profile), trophyWidth))
                 } else {
-                    widget(Utils.getMainContentWidget(getTrophyTable(profile), trophyWidth))
+                    widget(PvWidgets.getMainContentWidget(getTrophyTable(profile), trophyWidth))
                 }
                 spacer(height = 5)
             }
@@ -164,7 +163,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
 
-    private fun getInfoWidget(profile: SkyBlockProfile) = createWidget(
+    private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
         LayoutBuild.vertical {
             if (profile.trophyFish.lastCatch == null) {
@@ -231,7 +230,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         padding = 30,
     )
 
-    private fun getStatWidget(profile: SkyBlockProfile) = createWidget(
+    private fun getStatWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Stats",
         LayoutBuild.vertical {
             val sharksKilled = profile.miscFishData.festivalSharksKilled
@@ -323,7 +322,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         padding = 30,
     )
 
-    private fun getGearWidget(profile: SkyBlockProfile) = createWidget(
+    private fun getGearWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
         LayoutBuild.horizontal {
             widget(getTrophyArmor(profile))
@@ -451,7 +450,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         return Displays.background(
             SkyBlockPv.id("inventory/inventory-1x1"),
             Displays.padding(3, item),
-        ).centerIn(-1, -1).let {
+        ).let {
             if (trophyFish.tier == TrophyFishTiers.NONE) {
                 return@let Displays.padding(0, 0, 0, 0, it)
             }
@@ -489,10 +488,5 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
 
         return score
-    }
-
-    private fun createWidget(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
-        widget(Utils.getTitleWidget(title, element.width + padding))
-        widget(Utils.getMainContentWidget(element, element.width + padding))
     }
 }

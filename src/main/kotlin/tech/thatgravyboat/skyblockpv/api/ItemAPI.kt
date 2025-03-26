@@ -32,6 +32,8 @@ object ItemAPI {
     }
 
     fun getItem(id: String): ItemStack = itemCache.getOrPut(id) {
+        val id = id.takeUnless { it == "MUSHROOM_COLLECTION" } ?: "RED_MUSHROOM"
+
         val data = RepoAPI.items().getItem(id)
         ItemStack.CODEC.parse(JsonOps.INSTANCE, data).ifError { Logger.error(it.message()) }.result().orElse(null) ?: fallbackItem(id)
     }
