@@ -1,6 +1,5 @@
 package tech.thatgravyboat.skyblockpv.utils.displays
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils
@@ -81,14 +80,12 @@ object Displays {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
             override fun render(graphics: GuiGraphics) {
-                RenderSystem.enableBlend()
                 graphics.fill(
                     0, 0,
                     getWidth(), getHeight(),
                     color.toInt(),
                 )
                 display.render(graphics)
-                RenderSystem.disableBlend()
             }
         }
     }

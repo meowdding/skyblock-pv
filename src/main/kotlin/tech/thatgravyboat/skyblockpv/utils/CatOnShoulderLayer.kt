@@ -24,7 +24,7 @@ class CatOnShoulderLayer(renderer: RenderLayerParent<PlayerRenderState, PlayerMo
 
     override fun render(poseStack: PoseStack, bufferSource: MultiBufferSource, packedLight: Int, renderState: PlayerRenderState, yRot: Float, xRot: Float) {
         (renderState as PlayerRenderStateAccessor).`skyblockpv$catOnShoulder`?.let {
-            renderOnShoulder(poseStack, bufferSource, packedLight, renderState, it.type.texture, yRot, xRot, it.leftSide)
+            renderOnShoulder(poseStack, bufferSource, packedLight, renderState, it.asset.texturePath, yRot, xRot, it.leftSide)
         }
     }
 
