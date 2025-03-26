@@ -41,6 +41,7 @@ data class SkyBlockProfile(
     val miscFishData: FishData,
     val essenceUpgrades: Map<String, Int>,
     val gardenData: GardenData,
+    val farmingData: FarmingData
 ) {
     companion object {
 
@@ -107,6 +108,7 @@ data class SkyBlockProfile(
                         playerStats.get("glowing_mushrooms_broken").asInt(0)
                     )
                 },
+                farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest"))
             )
         }
 

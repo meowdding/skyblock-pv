@@ -89,7 +89,7 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
 enum class FarmingCategories(val screen: KClass<out BaseFarmingScreen>, override val icon: ItemStack) : Category {
     MAIN(FarmingScreen::class, Items.WHEAT.defaultInstance),
     VISITORS(VisitorScreen::class, Items.VILLAGER_SPAWN_EGG.defaultInstance),
-    CROP(CropScreen::class, Items.CARROT.defaultInstance),
+    CROP(CropScreen::class, Items.CARROT.defaultInstance)
     ;
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
