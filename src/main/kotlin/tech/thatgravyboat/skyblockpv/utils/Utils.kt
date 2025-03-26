@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.vertex.PoseStack
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.compound.LayoutWidget
-import earth.terrarium.olympus.client.shader.builtin.RoundedRectShader
+import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
@@ -40,7 +40,7 @@ object Utils {
         val yOffset = this.pose().last().pose().m31()
         pushPop {
             translate(-xOffset, -yOffset, 0f)
-            RoundedRectShader.fill(
+            RoundedRectanage.draw(
                 this@drawRoundedRec, (x + xOffset).toInt(), (y + yOffset).toInt(), width, height,
                 backgroundColor, borderColor, width.coerceAtMost(height) * (radius / 100f), borderSize,
             )

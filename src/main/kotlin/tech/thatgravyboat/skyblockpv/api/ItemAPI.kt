@@ -27,7 +27,7 @@ object ItemAPI {
     private val forgeRecipeCache = mutableMapOf<String, ForgeRecipe?>()
 
     init {
-        RepoAPI.setup(RepoVersion.V1_21_4)
+        RepoAPI.setup(RepoVersion.V1_21_5)
     }
 
     fun getItem(id: String): ItemStack = itemCache.getOrPut(id) {

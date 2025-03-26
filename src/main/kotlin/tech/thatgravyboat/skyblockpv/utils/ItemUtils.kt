@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.serialization.Dynamic
+import it.unimi.dsi.fastutil.objects.ReferenceSortedSets
 import net.azureaaron.legacyitemdfu.LegacyItemStackFixer
 import net.azureaaron.legacyitemdfu.TypeReferences
 import net.minecraft.core.component.DataComponents
@@ -13,11 +14,11 @@ import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.RegistryOps
-import net.minecraft.util.Unit
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemAttributeModifiers
 import net.minecraft.world.item.component.ResolvableProfile
+import net.minecraft.world.item.component.TooltipDisplay
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import java.util.*
 
@@ -45,9 +46,9 @@ fun Tag.legacyStack(): ItemStack {
     ).map {
         // move data out of extra attributes so it's equal to the modern hypixel format
         if (it is CompoundTag) {
-            val customData = it.getCompound("components").getCompound("minecraft:custom_data")
-            val extraAttributes = customData?.getCompound("ExtraAttributes")
-            extraAttributes?.allKeys?.associate { it to extraAttributes.get(it) }?.filterValues { it != null }?.forEach { (key, tag) ->
+            val customData = it.getCompoundOrEmpty("components")?.getCompoundOrEmpty("minecraft:custom_data")
+            val extraAttributes = customData?.getCompoundOrEmpty("ExtraAttributes")
+            extraAttributes?.keySet()?.associate { it to extraAttributes.get(it) }?.filterValues { it != null }?.forEach { (key, tag) ->
                 customData.put(key, tag!!) // can't be null because of previous filter
             }
         }
@@ -58,8 +59,8 @@ fun Tag.legacyStack(): ItemStack {
         .resultOrPartial()
         .get()
 
-    stack.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
-    stack.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers(listOf(), false))
+    stack.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay(true, ReferenceSortedSets.emptySet()),)
+    stack.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers(listOf()))
 
     return stack
 }
