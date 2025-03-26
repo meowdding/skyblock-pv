@@ -21,7 +21,8 @@ import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object SkyBlockPv : ModInitializer {
-    val version = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow().metadata.version
+    val mod = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
+    val version = mod.metadata.version
 
     override fun onInitialize() {
         val modules = listOf(

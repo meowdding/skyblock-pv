@@ -28,7 +28,7 @@ object ContributorHandler {
                     parse.getOrThrow()
                 } ?: mutableMapOf()
             } catch (e: Exception) {
-                println(e)
+                e.printStackTrace()
             }
         }
     }

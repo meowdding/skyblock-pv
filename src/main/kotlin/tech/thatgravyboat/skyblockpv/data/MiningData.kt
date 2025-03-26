@@ -155,7 +155,7 @@ enum class MiningGear {
     companion object {
         init {
             Utils.loadFromRepo<Map<String, List<String>>>("gear/mining")?.forEach { (key, value) ->
-                runCatching { MiningGear.valueOf(key.uppercase()).list = value }.onFailure { println(it) }
+                runCatching { MiningGear.valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }
 
@@ -197,14 +197,20 @@ enum class PowderType(val formatting: ChatFormatting) : StringRepresentable {
 }
 
 object FossilTypes {
+
     data class Fossil(
         val id: String,
         val name: String,
         val pet: String,
     )
 
-    val fossils: List<Fossil> = Utils.loadFromRepo<JsonObject>("fossils")?.asMap { id, data ->
-        val obj = data.asJsonObject
-        id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))
-    }?.map { it.value } ?: emptyList()
+    var fossils: List<Fossil> = listOf()
+        private set
+
+    init {
+        Utils.loadFromRepo<JsonObject>("fossils")?.asMap { id, data ->
+            val obj = data.asJsonObject
+            id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))
+        }?.map { it.value }?.let { fossils = it }
+    }
 }
