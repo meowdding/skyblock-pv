@@ -23,6 +23,10 @@
     },
     "a1732122-e22e-4edf-883c-09673eb55de8": {
         "title": "<gr #55CDFC #F7A8B8 #FFFFFF #F7A8B8 #55CDFC>Cool person<gr>",
+        "parrot": {
+            "variant": "blue",
+            "left_shoulder": true
+        },
         "cat": {
             "asset_id": "skyblock-pv:cat/trans",
             "left_shoulder": false
