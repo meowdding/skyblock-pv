@@ -31,7 +31,6 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
-import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
@@ -218,7 +217,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     } else Text.of("§a${(progress * 100).round()}% to next")
 
                     Text.multiline(
-                        Text.of("§e${skill.id.toTitleCase()}"),
+                        Text.of("§e${skill.data.name}"),
                         Text.of("§7Exp: ${num.shorten()}"),
                         Text.join("§7Progress: ", progressText),
                     )
