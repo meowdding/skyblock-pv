@@ -19,7 +19,6 @@ import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.data.EssenceData
 import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.FossilTypes
-import tech.thatgravyboat.skyblockpv.feature.debug.RabbitParser
 import tech.thatgravyboat.skyblockpv.screens.PvTab
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
@@ -42,7 +41,6 @@ object SkyBlockPv : ModInitializer {
             EssenceData,
             FossilTypes,
             RemindersAPI,
-            RabbitParser,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }
