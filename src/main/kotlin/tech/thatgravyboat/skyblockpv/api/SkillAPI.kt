@@ -32,7 +32,7 @@ object SkillAPI {
     }
 
     fun getSkill(name: String): Skill {
-        return this.skills.find { it.id.equals(name, true) || it.skillApiId.equals(name, true) } ?: UnknownSkill(name, SkillData(name, 0, emptyMap()))
+        return this.skills.find { it.id.equals(name, true) || it.skillApiId.equals(name, true) } ?: UnknownSkill.empty(name)
     }
 
     interface Skill {
@@ -97,6 +97,7 @@ object SkillAPI {
 
         companion object {
             val QUESTIONMARK: ResourceLocation = SkyBlockPv.id("icon/questionmark")
+            fun empty(name: String) = UnknownSkill(name, SkillData(name, 0, emptyMap()))
         }
     }
 
