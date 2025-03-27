@@ -14,74 +14,89 @@ import tech.thatgravyboat.skyblockpv.data.SkillData
 private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/skills"
 
 object SkillAPI {
-    var skillData: Map<String, SkillData> = emptyMap()
+    var skills: List<Skill> = emptyList()
         private set
 
-    fun getProgressToNextLevel(skill: String, exp: Long, profile: SkyBlockProfile): Float {
-        val skillData = skillData.firstNotNullOfOrNull { (name, data) ->
-            if (convertFromPlayerApiSkillName(skill).equals(name, true)) data else null
-        } ?: return 0f
+    fun getProgressToNextLevel(skill: Skill, exp: Long, profile: SkyBlockProfile): Float {
         val currentLevel = getSkillLevel(skill, exp, profile)
-        val nextLevel = (currentLevel + 1).coerceAtMost(skillData.maxLevel)
-        if (currentLevel == skillData.maxLevel) return 1f
-        val currentExp = skillData.skillLevels[currentLevel] ?: return 0f
-        val nextExp = skillData.skillLevels[nextLevel] ?: return 1f
+        val nextLevel = (currentLevel + 1).coerceAtMost(skill.maxLevel(profile))
+        if (currentLevel == skill.data.maxLevel) return 1f
+        val currentExp = skill.data.skillLevels[currentLevel] ?: return 0f
+        val nextExp = skill.data.skillLevels[nextLevel] ?: return 1f
         return (exp - currentExp).toFloat() / (nextExp - currentExp)
     }
 
-    fun hasFloatingLevelCap(skill: String): Boolean {
-        return when (skill) {
-            "SKILL_TAMING", "SKILL_FARMING" -> true
-            else -> false
-        }
+    fun getSkillLevel(skill: Skill, exp: Long, profile: SkyBlockProfile): Int {
+        val maxLevel = skill.maxLevel(profile)
+        return skill.data.skillLevels.entries.lastOrNull { it.value < exp }?.key?.coerceAtMost(maxLevel) ?: 0
     }
 
-    fun getMaxSkillLevel(skill: String, profile: SkyBlockProfile): Int? {
-        return when (skill) {
-            "SKILL_TAMING" -> profile.tamingLevelPetsDonated.size + 50
-            "SKILL_FARMING" -> profile.farmingData.perks.farmingLevelCap + 50
-            else -> skillData.firstNotNullOfOrNull { (name, data) ->
-                if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
-            }
-        }
+    fun getSkill(name: String): Skill {
+        return this.skills.find { it.id.equals(name, true) || it.skillApiId.equals(name, true) } ?: UnknownSkill(name, SkillData(name, 0, emptyMap()))
     }
 
-    fun getSkillLevel(skill: String, exp: Long, profile: SkyBlockProfile): Int {
-        val maxLevel = getMaxSkillLevel(skill, profile) ?: return 0
-        return (getLevelingCurveForSkill(skill).entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
+    interface Skill {
+        val data: SkillData
+        val id: String
+        val icon: ResourceLocation
+        fun maxLevel(profile: SkyBlockProfile): Int = data.maxLevel
+        fun hasFloatingLevelCap(): Boolean = false
+        val skillApiId
+            get() = "SKILL_$id"
     }
-
-    private fun getLevelingCurveForSkill(skill: String): Map<Int, Long> {
-        return skillData.firstNotNullOfOrNull { (name, data) ->
-            if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.skillLevels else null
-        } ?: emptyMap()
-    }
-
-    fun getIconFromSkillName(name: String): ResourceLocation = SkyBlockPv.id(
-        when (name) {
-            "SKILL_COMBAT" -> "icon/skill/combat"
-            "SKILL_FARMING" -> "icon/skill/farming"
-            "SKILL_FISHING" -> "icon/skill/fishing"
-            "SKILL_MINING" -> "icon/skill/mining"
-            "SKILL_FORAGING" -> "icon/skill/foraging"
-            "SKILL_ENCHANTING" -> "icon/skill/enchanting"
-            "SKILL_ALCHEMY" -> "icon/skill/alchemy"
-            "SKILL_TAMING" -> "icon/skill/taming"
-            "SKILL_SOCIAL" -> "icon/skill/social"
-            "SKILL_RUNECRAFTING" -> "icon/skill/runecrafting"
-            "SKILL_CARPENTRY" -> "icon/skill/carpentry"
-            else -> "icon/questionmark"
-        },
-    )
-
-    private fun convertFromPlayerApiSkillName(name: String) = name.split("_").drop(1).joinToString("_").lowercase()
 
     init {
-        runBlocking {
-            val skills = get()?.getAsJsonObject("skills") ?: return@runBlocking
-            skillData = skills.entrySet().associate { (key, value) ->
-                key to value.asJsonObject.toSkillData()
+        Skills.initialize()
+    }
+
+    enum class Skills : Skill {
+        COMBAT,
+        FISHING,
+        MINING,
+        FORAGING,
+        ENCHANTING,
+        ALCHEMY,
+        SOCIAL,
+        RUNECRAFTING,
+        CARPENTRY,
+        FARMING {
+            override fun hasFloatingLevelCap() = true
+            override fun maxLevel(profile: SkyBlockProfile) = profile.farmingData.perks.farmingLevelCap + 50
+        },
+        TAMING {
+            override fun hasFloatingLevelCap() = true
+            override fun maxLevel(profile: SkyBlockProfile) = profile.tamingLevelPetsDonated.size + 50
+        };
+
+        private var internalSkillData: SkillData? = null
+        override val data: SkillData
+            get() = internalSkillData ?: throw UnsupportedOperationException("Internal skill data is not yet supported")
+        override val id: String = name
+        override val icon: ResourceLocation by lazy { SkyBlockPv.id("icon/skill/${id.lowercase()}") }
+
+        companion object {
+            fun initialize() {
+                runBlocking {
+                    val skills = get()?.getAsJsonObject("skills") ?: return@runBlocking
+                    SkillAPI.skills = skills.entrySet().map { (key, value) ->
+                        val skillData = value.asJsonObject.toSkillData()
+
+                        runCatching {
+                            Skills.valueOf(key).also { skill -> skill.internalSkillData = skillData }
+                        }.getOrElse {
+                            UnknownSkill(key, skillData)
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    data class UnknownSkill(override val id: String, override val data: SkillData) : Skill {
+        override val icon: ResourceLocation = QUESTIONMARK
+
+        companion object {
+            val QUESTIONMARK: ResourceLocation = SkyBlockPv.id("icon/questionmark")
         }
     }
 
