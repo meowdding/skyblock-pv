@@ -19,9 +19,9 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.withScrollToBottom
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
-import tech.thatgravyboat.skyblockpv.utils.Utils.withScrollToBottom
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget

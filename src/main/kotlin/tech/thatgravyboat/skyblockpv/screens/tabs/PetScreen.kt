@@ -18,7 +18,7 @@ import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
-import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
@@ -54,7 +54,11 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createPetLayout(pet: Pet): AbstractWidget {
         val itemDisplay = Displays.item(pet.itemStack, showTooltip = true, customStackText = Text.of(pet.level.toString()).withColor(pet.rarity.color))
-        val display = Displays.background(SkyBlockPv.id("inventory/inventory-1x1"), Displays.padding(3, itemDisplay), (-1).takeUnless { pet == selectedPet }?: TextColor.GREEN)
+        val display = Displays.background(
+            SkyBlockPv.id("inventory/inventory-1x1"),
+            Displays.padding(3, itemDisplay),
+            (-1).takeUnless { pet == selectedPet } ?: TextColor.GREEN,
+        )
         return Button()
             .withSize(22, 22)
             .withTexture(null)

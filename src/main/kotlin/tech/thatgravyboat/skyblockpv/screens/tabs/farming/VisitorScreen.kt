@@ -12,8 +12,8 @@ import tech.thatgravyboat.skyblockpv.data.Commission
 import tech.thatgravyboat.skyblockpv.data.StaticGardenData
 import tech.thatgravyboat.skyblockpv.data.StaticVisitorData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
-import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {

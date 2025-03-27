@@ -19,7 +19,7 @@ import tech.thatgravyboat.skyblockpv.data.MiningCore
 import tech.thatgravyboat.skyblockpv.data.RockBrackets
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
