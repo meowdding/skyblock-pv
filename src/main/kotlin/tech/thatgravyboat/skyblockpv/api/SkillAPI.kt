@@ -19,12 +19,16 @@ object SkillAPI {
 
     fun getProgressToNextLevel(skill: Skill, exp: Long, profile: SkyBlockProfile): Float {
         val currentLevel = getSkillLevel(skill, exp, profile)
-        val nextLevel = (currentLevel + 1).coerceAtMost(skill.maxLevel(profile))
         if (currentLevel == skill.data.maxLevel) return 1f
-        val currentExp = skill.data.skillLevels[currentLevel] ?: return 0f
-        val nextExp = skill.data.skillLevels[nextLevel] ?: return 1f
-        return (exp - currentExp).toFloat() / (nextExp - currentExp)
+
+        val currentLevelExp = getExpRequired(skill, currentLevel) ?: return 0f
+        val actualXp = exp - currentLevelExp
+        val requiredForNext = getExpRequired(skill, (currentLevel + 1).coerceAtMost(skill.maxLevel(profile))) ?: return 1f
+
+        return actualXp.toFloat() / (requiredForNext - currentLevelExp)
     }
+
+    fun getExpRequired(skill: Skill, level: Int) = skill.data.skillLevels[level]
 
     fun getSkillLevel(skill: Skill, exp: Long, profile: SkyBlockProfile): Int {
         val maxLevel = skill.maxLevel(profile)
