@@ -12,14 +12,12 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.PlayerDbAPI
-import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import java.nio.file.Files
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -119,12 +117,6 @@ object Utils {
         }
         return list
     }
-
-    @Deprecated("Use PvWidgets.getTitleWidget instead", ReplaceWith("PvWidgets.getTitleWidget(title, width, icon)"))
-    fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = PvWidgets.getTitleWidget(title, width, icon)
-
-    @Deprecated("Use PvWidgets.getMainContentWidget instead", ReplaceWith("PvWidgets.getMainContentWidget(content, width)"))
-    fun getMainContentWidget(content: LayoutElement, width: Int) = PvWidgets.getMainContentWidget(content, width)
 
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return

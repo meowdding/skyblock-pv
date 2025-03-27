@@ -18,10 +18,10 @@ import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
-import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
@@ -89,8 +89,8 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
             }
         }
 
-        widget(Utils.getTitleWidget("Pet Info", width))
-        widget(Utils.getMainContentWidget(petInfo, width))
+        widget(PvWidgets.getTitleWidget("Pet Info", width))
+        widget(PvWidgets.getMainContentWidget(petInfo, width))
     }
 }
 

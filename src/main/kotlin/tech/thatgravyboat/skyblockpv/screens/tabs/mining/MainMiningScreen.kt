@@ -21,12 +21,11 @@ import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
-import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
-import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 import kotlin.time.DurationUnit
@@ -111,8 +110,8 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             addMiningPerk(profile, "return_to_sender")
         }
 
-        widget(getTitleWidget("Info", width - 5))
-        widget(getMainContentWidget(info, width - 5))
+        widget(PvWidgets.getTitleWidget("Info", width - 5))
+        widget(PvWidgets.getMainContentWidget(info, width - 5))
 
         spacer(height = 5)
 
@@ -122,8 +121,8 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             listOf("§dGemstone", mining.powderGemstone.shorten(), (mining.powderSpentGemstone + mining.powderGemstone).shorten()),
             listOf("§bGlacite", mining.powderGlacite.shorten(), (mining.powderSpentGlacite + mining.powderGlacite).shorten()),
         ).asTable(5).asWidget()
-        widget(getTitleWidget("Powder", width - 5))
-        widget(getMainContentWidget(powderTable, width - 5))
+        widget(PvWidgets.getTitleWidget("Powder", width - 5))
+        widget(PvWidgets.getMainContentWidget(powderTable, width - 5))
     }
 
     private fun createRightColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
@@ -158,8 +157,8 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             }
         }
 
-        widget(getTitleWidget("Placed Crystals", width - 5))
-        widget(getMainContentWidget(crystalContent, width - 5))
+        widget(PvWidgets.getTitleWidget("Placed Crystals", width - 5))
+        widget(PvWidgets.getMainContentWidget(crystalContent, width - 5))
 
 
         val forgeSlots = profile?.forge?.slots ?: return@vertical
@@ -211,7 +210,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             }
         }
 
-        widget(getTitleWidget("Forge", width - 5))
-        widget(getMainContentWidget(forgeContent, width - 5))
+        widget(PvWidgets.getTitleWidget("Forge", width - 5))
+        widget(PvWidgets.getMainContentWidget(forgeContent, width - 5))
     }
 }
