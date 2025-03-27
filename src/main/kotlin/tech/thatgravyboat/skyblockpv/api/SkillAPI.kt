@@ -29,17 +29,25 @@ object SkillAPI {
         return (exp - currentExp).toFloat() / (nextExp - currentExp)
     }
 
-    fun getMaxTamingLevel(profile: SkyBlockProfile): Int = profile.tamingLevelPetsDonated.size + 50
+    fun hasFloatingLevelCap(skill: String): Boolean {
+        return when (skill) {
+            "SKILL_TAMING", "SKILL_FARMING" -> true
+            else -> false
+        }
+    }
 
-    fun getSkillLevel(skill: String, exp: Long, profile: SkyBlockProfile): Int {
-        val maxLevel = if (skill == "SKILL_TAMING") {
-            getMaxTamingLevel(profile)
-        } else {
-            skillData.firstNotNullOfOrNull { (name, data) ->
+    fun getMaxSkillLevel(skill: String, profile: SkyBlockProfile): Int? {
+        return when (skill) {
+            "SKILL_TAMING" -> profile.tamingLevelPetsDonated.size + 50
+            "SKILL_FARMING" -> profile.farmingData.perks.farmingLevelCap + 50
+            else -> skillData.firstNotNullOfOrNull { (name, data) ->
                 if (convertFromPlayerApiSkillName(skill).equals(name, true)) data.maxLevel else null
             }
         }
-        if (maxLevel == null) return 0
+    }
+
+    fun getSkillLevel(skill: String, exp: Long, profile: SkyBlockProfile): Int {
+        val maxLevel = getMaxSkillLevel(skill, profile) ?: return 0
         return (getLevelingCurveForSkill(skill).entries.lastOrNull { it.value < exp }?.key ?: 0).coerceAtMost(maxLevel)
     }
 

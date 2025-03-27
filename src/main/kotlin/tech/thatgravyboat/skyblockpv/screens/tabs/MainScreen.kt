@@ -215,15 +215,15 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             data = profile.skill.asSequence().map { it.toPair() },
             getToolTip = { name, num ->
                 SkillAPI.getProgressToNextLevel(name, num, profile).let { progress ->
-                    val progress = if (progress == 1f) Text.of("§cMaxed!")
-                    else if (name == "SKILL_TAMING" && getSkillLevel(name, num, profile) == SkillAPI.getMaxTamingLevel(profile)) {
+                    val progressText = if (progress == 1f) Text.of("§cMaxed!")
+                    else if (SkillAPI.hasFloatingLevelCap(name) && getSkillLevel(name, num, profile) == SkillAPI.getMaxSkillLevel(name, profile)) {
                         Text.of("§5Reached max skill cap!")
                     } else Text.of("§a${(progress * 100).round()}% to next")
 
                     Text.multiline(
                         Text.of("§e${name.toTitleCase()}"),
                         Text.of("§7Exp: ${num.shorten()}"),
-                        Text.join("§7Progress: ", progress),
+                        Text.join("§7Progress: ", progressText),
                     )
                 }
             },
