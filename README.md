@@ -22,6 +22,7 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 
 > [!WARNING]
 > The mod is still in development, design is subject to change.
+> Screenshots may be very outdated.
 > Visit the [TODO.md](./TODO.md) for a list of features that are planned to be added.
 
 ### 🏠 Home Tab
