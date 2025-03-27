@@ -78,7 +78,7 @@ data class SkyBlockProfile(
                 },
 
                 //  todo: missing skill data when not unlocked
-                skill = playerData["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkillsOrder(),
+                skill = playerData.getSkillData(),
                 collections = member.getCollectionData(),
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
@@ -107,8 +107,13 @@ data class SkyBlockProfile(
                         playerStats.get("glowing_mushrooms_broken").asInt(0),
                     )
                 },
-                farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest"))
+                farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
             )
+        }
+
+        private fun JsonObject.getSkillData(): Map<String, Long> {
+            val skills = this["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkillsOrder()
+            return skills.filter { it.key != "SKILL_DUNGEONEERING" }
         }
 
         private fun JsonObject.getCollectionData(): List<CollectionItem> {
