@@ -6,6 +6,7 @@ import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
+import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.data.*
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
@@ -112,8 +113,15 @@ data class SkyBlockProfile(
         }
 
         private fun JsonObject.getSkillData(): Map<String, Long> {
-            val skills = this["experience"].asMap { id, amount -> id to amount.asLong(0) }.sortToSkillsOrder()
-            return skills.filter { it.key != "SKILL_DUNGEONEERING" }
+            val skills = this["experience"].asMap { id, amount -> id to amount.asLong(0) }
+                .filterKeys { it != "SKILL_DUNGEONEERING" }
+                .toMutableMap()
+
+            SkillAPI.Skills.entries.forEach { skill ->
+                skills.putIfAbsent(skill.skillApiId, 0)
+            }
+
+            return skills.sortToSkillsOrder()
         }
 
         private fun JsonObject.getCollectionData(): List<CollectionItem> {

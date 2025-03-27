@@ -41,8 +41,7 @@ object SkillAPI {
         val icon: ResourceLocation
         fun maxLevel(profile: SkyBlockProfile): Int = data.maxLevel
         fun hasFloatingLevelCap(): Boolean = false
-        val skillApiId
-            get() = "SKILL_$id"
+        val skillApiId get() = "SKILL_$id"
     }
 
     init {
