@@ -6,6 +6,8 @@ import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.ResourceLocation
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
@@ -23,7 +25,7 @@ import tech.thatgravyboat.skyblockpv.screens.PvTab
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
-object SkyBlockPv : ModInitializer {
+object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
     val mod = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
     val version = mod.metadata.version
 
