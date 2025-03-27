@@ -12,16 +12,17 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.PronounsDbAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
-import tech.thatgravyboat.skyblockpv.api.SkillAPI.getIconFromSkillName
 import tech.thatgravyboat.skyblockpv.api.SkillAPI.getSkillLevel
 import tech.thatgravyboat.skyblockpv.api.StatusAPI
 import tech.thatgravyboat.skyblockpv.api.data.PlayerStatus
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.SkullTextures
-import tech.thatgravyboat.skyblockpv.data.SlayerTypeData
 import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
 import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
@@ -30,10 +31,10 @@ import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
-import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
@@ -65,7 +66,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val skillAvg = profile.skill
             .filterNot { it.key in irrelevantSkills }
-            .map { getSkillLevel(it.key, it.value, profile) }
+            .map { getSkillLevel(SkillAPI.getSkill(it.key), it.value, profile) }
             .average()
 
         widget(PvWidgets.getTitleWidget("Info", width))
@@ -166,13 +167,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
         spacer(height = 5)
 
-        fun <T> addSection(
+        fun <D, T> addSection(
             title: String,
             titleIcon: ResourceLocation? = null,
-            data: Sequence<Pair<String, T>>,
-            getToolTip: (String, T) -> Component? = { _, _ -> null },
-            getIcon: (String) -> Any,
-            getLevel: (String, T) -> Any,
+            data: Sequence<Pair<D, T>>,
+            getToolTip: (D, T) -> Component? = { _, _ -> null },
+            getIcon: (D) -> Any,
+            getLevel: (D, T) -> Any,
         ) {
             val mainContent = LinearLayout.vertical().spacing(5)
 
@@ -188,9 +189,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     icon,
                     Displays.padding(0, 0, 2, 0, Displays.text(level, color = { 0x555555u }, shadow = false)),
                 ).toRow(1)
-                val widget = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, display)).asWidget()
-                getToolTip(name, data)?.let { widget.withTooltip(it) }
-                widget
+                val skillDisplay = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, display))
+                (getToolTip(name, data)?.let { skillDisplay.withTooltip(it) }?: skillDisplay).asWidget()
             }.toList()
 
             val elementsPerRow = width / (convertedElements.firstOrNull()?.width?.plus(10) ?: return)
@@ -208,32 +208,54 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             widget(PvWidgets.getMainContentWidget(mainContent, width))
         }
 
-        addSection<Long>(
+        addSection(
             title = "Skills",
             titleIcon = SkyBlockPv.id("icon/item/sword"),
-            data = profile.skill.asSequence().map { it.toPair() },
-            getToolTip = { name, num ->
-                SkillAPI.getProgressToNextLevel(name, num, profile).let { progress ->
-                    val progressText = if (progress == 1f) Text.of("§cMaxed!")
-                    else if (SkillAPI.hasFloatingLevelCap(name) && getSkillLevel(name, num, profile) == SkillAPI.getMaxSkillLevel(name, profile)) {
-                        Text.of("§5Reached max skill cap!")
-                    } else Text.of("§a${(progress * 100).round()}% to next")
+            data = profile.skill.asSequence().map { SkillAPI.getSkill(it.key) to it.value },
+            getToolTip = { skill, num ->
+                SkillAPI.getProgressToNextLevel(skill, num, profile).let { progress ->
+                    TooltipBuilder().apply {
+                        add(skill.data.name) { this.color = TextColor.YELLOW }
+                        add("Exp: ${num.shorten()}") { this.color = TextColor.GRAY }
+                        add("Progress: ") {
+                            this.color = TextColor.GRAY
+                            if (progress == 1f) {
+                                append("Maxed!") { this.color = TextColor.RED }
+                            } else if (skill.hasFloatingLevelCap() && getSkillLevel(skill, num, profile) == skill.maxLevel(profile)) {
+                                append("Reached max skill cap!") { this.color = TextColor.DARK_PURPLE }
+                            } else {
+                                append("${(progress * 100).round()}% to next") { this.color = TextColor.GREEN }
+                            }
+                        }
+                        if (skill.data.maxLevel != getSkillLevel(skill, num, profile)) {
+                            add("Progress to max: ") {
+                                this.color = TextColor.GRAY
+                                val expRequired = SkillAPI.getExpRequired(skill, skill.data.maxLevel)
+                                if (expRequired == null) {
+                                    append("Unknown") { this.color = TextColor.RED }
+                                    return@add
+                                }
 
-                    Text.multiline(
-                        Text.of("§e${name.toTitleCase()}"),
-                        Text.of("§7Exp: ${num.shorten()}"),
-                        Text.join("§7Progress: ", progressText),
-                    )
+                                append(num.toFormattedString()) { this.color = TextColor.YELLOW}
+                                append("/") { this.color = TextColor.GOLD}
+                                append(expRequired.shorten()) { this.color = TextColor.YELLOW}
+                                append(Text.of(((num.toFloat() / expRequired) * 100).round()) {
+                                    append("%")
+                                    this.color = TextColor.GREEN
+                                }.wrap(" (", ")"))
+                            }
+                        }
+                    }.build()
                 }
             },
-            getIcon = ::getIconFromSkillName,
+            getIcon = SkillAPI.Skill::icon,
         ) { name, num ->
             getSkillLevel(name, num, profile)
         }
 
         spacer(height = 10)
 
-        addSection<SlayerTypeData>(
+        addSection(
             title = "Slayer",
             data = profile.slayer.asSequence().map { it.toPair() },
             getIcon = ::getIconFromSlayerName,
@@ -246,7 +268,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val essence = profile.currency?.essence?.asSequence()?.map { it.toPair() } ?: emptySequence()
         if (essence.sumOf { it.second } == 0L) return@vertical
-        addSection<Long>(
+        addSection(
             title = "Essence",
             data = essence,
             getIcon = {
