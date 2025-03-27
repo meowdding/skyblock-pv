@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.center
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.center
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {

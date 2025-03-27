@@ -2,15 +2,10 @@ package tech.thatgravyboat.skyblockpv.utils
 
 import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.vertex.PoseStack
-import earth.terrarium.olympus.client.components.base.ListWidget
-import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.layouts.FrameLayout
-import net.minecraft.client.gui.layouts.Layout
-import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.Logger
@@ -75,35 +70,6 @@ object Utils {
     }
 
     fun Number.round(): String = DecimalFormat("#.##").format(this)
-
-    fun LayoutElement.centerVertically(height: Int): LayoutElement {
-        return FrameLayout(0, height).also { it.addChild(this) }
-    }
-
-    fun LayoutElement.centerHorizontally(width: Int): LayoutElement {
-        return FrameLayout(width, 0).also { it.addChild(this) }
-    }
-
-    fun LayoutElement.center(width: Int, height: Int): LayoutElement {
-        return FrameLayout(width, height).also { it.addChild(this) }
-    }
-
-    fun Layout.asScrollable(width: Int, height: Int, init: ListWidget.() -> Unit = {}): Layout {
-        this.arrangeElements()
-        val widget = LayoutWidget(this).also { it.visible = true }.withStretchToContentSize()
-        val scrollable = ListWidget((widget.width + 20).coerceAtMost(width), widget.height.coerceAtMost(height - 20))
-
-        scrollable.add(widget)
-        scrollable.init()
-
-        return LayoutBuild.frame(width - 20, height) {
-            widget(scrollable)
-        }
-    }
-
-    fun ListWidget.withScrollToBottom() {
-        this.mouseScrolled(0.0, 0.0, 0.0, -this.height.toDouble())
-    }
 
     fun <T> List<List<T>>.transpose(): List<List<T>> {
         val list = mutableListOf<MutableList<T>>()
