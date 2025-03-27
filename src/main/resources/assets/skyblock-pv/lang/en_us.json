@@ -2,6 +2,8 @@
     "@metadata": {
         "allowArrays": true
     },
+    "sbpv.dev": "Dev Mode",
+    "sbpv.dev.desc": "Enable Debug Dev Features. \n§cMight bring unwanted consequences like crashes.",
 
     "skyblockpv.tab.main": "General",
     "skyblockpv.tab.combat": "Combat",

@@ -33,6 +33,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.api.GardenApi
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -127,7 +128,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         dropdown.visitWidgets(this::addRenderableWidget)
 
 
-        if (McClient.isDev /* || Config.devMode */) createDevRow(bg).visitWidgets(this::addRenderableWidget)
+        if (McClient.isDev || Config.devMode) createDevRow(bg).visitWidgets(this::addRenderableWidget)
 
 
         addRenderableOnly(
