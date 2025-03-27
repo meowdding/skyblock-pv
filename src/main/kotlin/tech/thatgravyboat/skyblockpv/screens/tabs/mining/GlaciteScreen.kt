@@ -14,9 +14,8 @@ import tech.thatgravyboat.skyblockpv.data.EssenceData.addMiningPerk
 import tech.thatgravyboat.skyblockpv.data.FossilTypes
 import tech.thatgravyboat.skyblockpv.data.GlaciteData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
-import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -52,8 +51,8 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addMiningPerk(profile, "frozen_skin")
         }
 
-        widget(getTitleWidget("Info", width - 5))
-        widget(getMainContentWidget(info, width - 5))
+        widget(PvWidgets.getTitleWidget("Info", width - 5))
+        widget(PvWidgets.getMainContentWidget(info, width - 5))
 
         spacer(width, 5)
 
@@ -86,8 +85,8 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             )
         }.asWidget()
 
-        widget(getTitleWidget("Fossils", width - 5))
-        widget(getMainContentWidget(fossils, width - 5))
+        widget(PvWidgets.getTitleWidget("Fossils", width - 5))
+        widget(PvWidgets.getMainContentWidget(fossils, width - 5))
 
     }
 
@@ -110,8 +109,8 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addCorpse("vanguard", TextColor.AQUA)
         }
 
-        widget(getTitleWidget("Corpses Looted", width - 5))
-        widget(getMainContentWidget(corpses, width - 5))
+        widget(PvWidgets.getTitleWidget("Corpses Looted", width - 5))
+        widget(PvWidgets.getMainContentWidget(corpses, width - 5))
     }
 
     private val fossilDustConversions = mapOf(

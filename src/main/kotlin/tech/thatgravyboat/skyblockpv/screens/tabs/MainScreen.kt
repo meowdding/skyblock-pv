@@ -30,12 +30,11 @@ import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.Utils.getMainContentWidget
-import tech.thatgravyboat.skyblockpv.utils.Utils.getTitleWidget
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
 
@@ -69,7 +68,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             .map { getSkillLevel(it.key, it.value, profile) }
             .average()
 
-        widget(getTitleWidget("Info", width))
+        widget(PvWidgets.getTitleWidget("Info", width))
 
         val infoColumn = LayoutBuild.vertical(2) {
             fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
@@ -108,7 +107,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             string("Fairy Souls: ${profile.fairySouls}")
         }
 
-        widget(getMainContentWidget(infoColumn, width))
+        widget(PvWidgets.getMainContentWidget(infoColumn, width))
     }
 
     private fun createMiddleColumn(profile: SkyBlockProfile, width: Int): LinearLayout {
@@ -123,7 +122,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             gr.pushPop {
                 translate(0f, 0f, 100f)
-                 Displays.entity(
+                Displays.entity(
                     fakePlayer,
                     width, height,
                     (width / 2.5).toInt(),
@@ -175,7 +174,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             getIcon: (String) -> Any,
             getLevel: (String, T) -> Any,
         ) {
-            widget(getTitleWidget(title, width, titleIcon))
             val mainContent = LinearLayout.vertical().spacing(5)
 
             val convertedElements = data.map { (name, data) ->
@@ -206,7 +204,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
             mainContent.arrangeElements()
 
-            widget(getMainContentWidget(mainContent, width))
+            widget(PvWidgets.getTitleWidget(title, width, titleIcon))
+            widget(PvWidgets.getMainContentWidget(mainContent, width))
         }
 
         addSection<Long>(
