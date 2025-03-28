@@ -65,9 +65,9 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
         super.init()
     }
 
-    protected fun <D> loading(
-        data: Result<D>?,
-        onSuccess: (D) -> Unit,
+    protected fun loading(
+        data: Result<GardenProfile>?,
+        onSuccess: (GardenProfile) -> Unit,
         loadingValue: () -> Unit,
         errorValue: () -> Unit,
     ) {
@@ -78,11 +78,11 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
         }
     }
 
-    protected fun <T, D> loading(
-        data: Result<D>?,
-        onSuccess: (D) -> T,
+    protected fun <T> loaded(
+        data: Result<GardenProfile>? = gardenProfile,
         whileLoading: T,
         onError: T,
+        onSuccess: (GardenProfile) -> T,
     ): T {
         return when {
             data == null -> whileLoading
@@ -91,7 +91,7 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
         }
     }
 
-    protected fun <T> loading(
+    protected fun <T> loadingValue(
         successValue: T,
         loadingValue: T,
         errorValue: T,
@@ -103,25 +103,25 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
             else -> successValue
         }
     }
+    protected val loadingMessage by lazy {  Text.of("Loading...") { this.color = TextColor.RED } }
+    protected val errorMessage by lazy {  Text.of("Error...") { this.color = TextColor.RED } }
+
 
     protected fun loadingComponent(
         successMessage: Component,
-        loadingMessage: Component = loadingMessage(),
-        errorMessage: Component = errorMessage(),
+        loadingMessage: Component = this.loadingMessage,
+        errorMessage: Component = this.errorMessage,
     ): Component {
-        return loading(successMessage, loadingMessage, errorMessage)
+        return loadingValue(successMessage, loadingMessage, errorMessage)
     }
 
-    protected fun loadingMessage() = Text.of("Loading...") { this.color = TextColor.RED }
-    protected fun errorMessage() = Text.of("Error!") { this.color = TextColor.RED }
-
-    protected fun <D> loadingComponent(
-        data: Result<D>?,
-        successMessage: (D) -> Component,
-        loadingMessage: Component = loadingMessage(),
-        errorMessage: Component = errorMessage(),
+    protected fun loadingComponent(
+        data: Result<GardenProfile>? = gardenProfile,
+        loadingMessage: Component = this.loadingMessage,
+        errorMessage: Component = this.errorMessage,
+        successMessage: (GardenProfile) -> Component,
     ): Component {
-        return loading(data, successMessage, loadingMessage, errorMessage)
+        return loaded(data, loadingMessage, errorMessage, successMessage)
     }
 }
 

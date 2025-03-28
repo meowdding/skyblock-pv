@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -60,7 +61,7 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
 }
 
 private object GardenCodecs {
-    val COMPOSTER_UPGRADE = StringRepresentable.fromEnum { ComposterUpgrade.entries.toTypedArray() }
+    val COMPOSTER_UPGRADE = EnumCodec.of(ComposterUpgrade.entries.toTypedArray())
     val BARN_SKIN = RecordCodecBuilder.create {
         it.group(
             CodecUtils.COMPONENT_TAG.fieldOf("displayname").forGetter(StaticBarnSkin::displayName),

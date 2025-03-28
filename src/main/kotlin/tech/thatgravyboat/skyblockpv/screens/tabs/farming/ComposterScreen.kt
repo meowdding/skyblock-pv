@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
-import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
@@ -22,12 +21,10 @@ import tech.thatgravyboat.skyblockpv.data.StaticGardenData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
+import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout() = LayoutBuild.horizontal {
@@ -46,53 +43,38 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         LayoutBuild.vertical {
             string("Organic Matter Stored: ") {
                 append(
-                    loadingComponent(
-                        gardenProfile,
-                        {
-                            Text.of(it.composterData.organicMatter.toLong().toFormattedString()) {
-                                this.color = TextColor.GREEN
-                            }
-                        },
-                    ),
+                    loadingComponent(gardenProfile) {
+                        Text.of(it.composterData.organicMatter.toLong().toFormattedString()) {
+                            this.color = TextColor.GREEN
+                        }
+                    },
                 )
             }
             string("Fuel Stored: ") {
                 append(
-                    loadingComponent(
-                        gardenProfile,
-                        {
-                            Text.of(it.composterData.fuel.toLong().toFormattedString()) {
-                                this.color = TextColor.DARK_GREEN
-                            }
-                        },
-                    ),
+                    loadingComponent(gardenProfile) {
+                        Text.of(it.composterData.fuel.toLong().toFormattedString()) {
+                            this.color = TextColor.DARK_GREEN
+                        }
+                    },
                 )
             }
             string("Compost Stored: ") {
                 append(
-                    loadingComponent(
-                        gardenProfile,
-                        {
-                            Text.of(it.composterData.compostItems.toFormattedString()) {
-                                this.color = TextColor.RED
-                            }
-                        },
-                    ),
+                    loadingComponent(gardenProfile) {
+                        Text.of(it.composterData.compostItems.toFormattedString()) {
+                            this.color = TextColor.RED
+                        }
+                    },
                 )
             }
             string("Last Update: ") {
                 append(
-                    loadingComponent(
-                        gardenProfile,
-                        {
-                            val ofEpochMilli = Instant.ofEpochMilli(it.composterData.lastUpdateTimestamp)
-                            Text.of(
-                                DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss").format(LocalDateTime.ofInstant(ofEpochMilli, ZoneOffset.systemDefault())),
-                            ) {
-                                this.color = TextColor.DARK_GRAY
-                            }
-                        },
-                    ),
+                    loadingComponent(gardenProfile) {
+                        Text.of(Instant.ofEpochMilli(it.composterData.lastUpdateTimestamp).toReadableString()) {
+                            this.color = TextColor.DARK_GRAY
+                        }
+                    },
                 )
             }
         },
@@ -116,12 +98,10 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     )
 
     fun getComposterUpgrade(upgrade: ComposterUpgrade, data: StaticComposterData): Display {
-        return loading(
-            data = gardenProfile,
-            { createDisplay(it, upgrade, data) },
-            Displays.item(Items.BEDROCK).withTooltip { add("Error") { this.color = TextColor.RED } },
-            Displays.item(Items.ORANGE_DYE).withTooltip { add("Loading...") { this.color = TextColor.GOLD } },
-        )
+        return loaded(
+            onError = Displays.item(Items.BEDROCK).withTooltip { add("Error") { this.color = TextColor.RED } },
+            whileLoading = Displays.item(Items.ORANGE_DYE).withTooltip { add("Loading...") { this.color = TextColor.GOLD } },
+        ) { createDisplay(it, upgrade, data) }
     }
 
     fun createDisplay(gardenProfile: GardenProfile, upgrade: ComposterUpgrade, data: StaticComposterData): Display {
@@ -174,7 +154,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             val used = current[key] ?: 0
             val percentage = used.toFloat() / neededMax
 
-            Component.empty().apply {
+            Text.of("") {
                 this.color = TextColor.GRAY
                 if (key.equals(StaticGardenData.COPPER, ignoreCase = true)) {
                     append("Copper") {
@@ -210,7 +190,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             val map = MutableList(5) { MutableList(5) { Displays.empty() } }
 
             StaticGardenData.plots.forEach {
-                map[it.location] = Displays.tooltip(Displays.item(Items.BLACK_STAINED_GLASS_PANE.defaultInstance), it.getName())
+                map[it.location] = Displays.tooltip(Displays.item(Items.BLACK_STAINED_GLASS_PANE), it.getName())
             }
 
             fun fillMap(value: Display) {
@@ -225,9 +205,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     val staticPlots = StaticGardenData.plots.toMutableList().apply { removeAll(data.unlockedPlots) }
                     data.unlockedPlots.forEach {
                         map[it.location] = Displays.tooltip(
-                            Displays.item(
-                                Items.GREEN_STAINED_GLASS_PANE.defaultInstance,
-                            ),
+                            Displays.item(Items.GREEN_STAINED_GLASS_PANE),
                             it.getName().also { it.color = TextColor.GREEN },
                         )
                     }
@@ -241,7 +219,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         }
 
                         val plotCost = cost[plots]
-                        map[it.location] = Displays.item(Items.BLACK_STAINED_GLASS_PANE.defaultInstance).withTooltip(
+                        map[it.location] = Displays.item(Items.BLACK_STAINED_GLASS_PANE).withTooltip(
                             it.getName(),
                             plotCost.getDisplay().copy().apply { append(Text.of(" x${plotCost.amount}") { color = TextColor.DARK_GRAY }) },
                         )
@@ -250,7 +228,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 loadingValue = {
                     fillMap(
                         Displays.tooltip(
-                            Displays.item(Items.ORANGE_STAINED_GLASS_PANE.defaultInstance),
+                            Displays.item(Items.ORANGE_STAINED_GLASS_PANE),
                             Text.of("Loading...") { this.color = TextColor.GOLD },
                         ),
                     )
@@ -258,7 +236,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 errorValue = {
                     fillMap(
                         Displays.tooltip(
-                            Displays.item(Items.BEDROCK.defaultInstance),
+                            Displays.item(Items.BEDROCK),
                             Text.of("Error!") { this.color = TextColor.RED },
                         ),
                     )
@@ -267,14 +245,13 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
             map[2][2] = Displays.tooltip(
                 Displays.item(
-                    loading(
+                    loaded(
                         gardenProfile,
-                        { it.selectedBarnSkin.getItem() },
                         Items.BARRIER.defaultInstance,
                         Items.BEDROCK.defaultInstance,
-                    ),
+                    ) { it.selectedBarnSkin.getItem() },
                 ),
-                loadingComponent(gardenProfile, { it.selectedBarnSkin.displayName }),
+                loadingComponent(gardenProfile) { it.selectedBarnSkin.displayName },
             )
 
             val plots = map.map { it.reversed().map { Displays.padding(2, it) }.toColumn() }.toRow()

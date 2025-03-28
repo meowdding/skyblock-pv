@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.utils.components
 
 import earth.terrarium.olympus.client.components.Widgets
-import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
@@ -22,9 +21,6 @@ import tech.thatgravyboat.skyblockpv.utils.displays.toRow
 object PvWidgets {
 
     fun label(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
-        if (element is Layout) {
-            element.arrangeElements()
-        }
         widget(getTitleWidget(title, element.width + padding + 20))
         widget(getMainContentWidget(element, element.width + padding + 20))
     }
