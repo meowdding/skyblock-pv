@@ -14,6 +14,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.PronounsDbAPI
@@ -35,6 +36,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.text.SimpleDateFormat
@@ -190,7 +192,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     Displays.padding(0, 0, 2, 0, Displays.text(level, color = { 0x555555u }, shadow = false)),
                 ).toRow(1)
                 val skillDisplay = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, display))
-                (getToolTip(name, data)?.let { skillDisplay.withTooltip(it) }?: skillDisplay).asWidget()
+                (getToolTip(name, data)?.let { skillDisplay.withTooltip(it) } ?: skillDisplay).asWidget()
             }.toList()
 
             val elementsPerRow = width / (convertedElements.firstOrNull()?.width?.plus(10) ?: return)
@@ -236,13 +238,15 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                                     return@add
                                 }
 
-                                append(num.toFormattedString()) { this.color = TextColor.YELLOW}
-                                append("/") { this.color = TextColor.GOLD}
-                                append(expRequired.shorten()) { this.color = TextColor.YELLOW}
-                                append(Text.of(((num.toFloat() / expRequired) * 100).round()) {
-                                    append("%")
-                                    this.color = TextColor.GREEN
-                                }.wrap(" (", ")"))
+                                append(num.toFormattedString()) { this.color = TextColor.YELLOW }
+                                append("/") { this.color = TextColor.GOLD }
+                                append(expRequired.shorten()) { this.color = TextColor.YELLOW }
+                                append(
+                                    Text.of(((num.toFloat() / expRequired) * 100).round()) {
+                                        append("%")
+                                        this.color = TextColor.GREEN
+                                    }.wrap(" (", ")"),
+                                )
                             }
                         }
                     }.build()
@@ -259,6 +263,22 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             title = "Slayer",
             data = profile.slayer.asSequence().map { it.toPair() },
             getIcon = ::getIconFromSlayerName,
+            getToolTip = { name, data ->
+                TooltipBuilder().apply {
+                    add(name.toTitleCase()) { this.color = TextColor.YELLOW }
+                    add("Exp: ${data.exp.shorten()}") { this.color = TextColor.GRAY }
+                    add("Kills: ") {
+                        this.color = TextColor.GRAY
+                        Text.join(
+                            data.bossKillsTier.map {
+                                Text.of(it.value.toFormattedString()) { this.color = TextColor.GRAY }
+                            },
+                            separator = Text.of("/") { this.color = TextColor.DARK_GRAY }
+                                .takeUnless { it.stripped.isBlank() } ?: Text.of("0") { this.color = TextColor.GRAY },
+                        ).let { append(it) }
+                    }
+                }.build()
+            },
         )
         { name, data ->
             getSlayerLevel(name, data.exp)
