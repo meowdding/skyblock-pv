@@ -15,6 +15,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.GardenApi
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.GardenProfile
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
@@ -64,8 +65,34 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
         super.init()
     }
 
+    protected fun <D> loading(
+        data: Result<D>?,
+        onSuccess: (D) -> Unit,
+        loadingValue: () -> Unit,
+        errorValue: () -> Unit,
+    ) {
+        return when {
+            data == null -> loadingValue()
+            data.isFailure -> errorValue()
+            else -> onSuccess(data.getOrThrow())
+        }
+    }
+
+    protected fun <T, D> loading(
+        data: Result<D>?,
+        onSuccess: (D) -> T,
+        whileLoading: T,
+        onError: T,
+    ): T {
+        return when {
+            data == null -> whileLoading
+            data.isFailure -> onError
+            else -> onSuccess(data.getOrThrow())
+        }
+    }
+
     protected fun <T> loading(
-        value: T,
+        successValue: T,
         loadingValue: T,
         errorValue: T,
     ): T {
@@ -73,16 +100,28 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
         return when {
             data == null -> loadingValue
             data.isFailure -> errorValue
-            else -> value
+            else -> successValue
         }
     }
 
     protected fun loadingComponent(
-        message: Component,
-        loadingMessage: Component = Text.of("Loading...") { this.color = TextColor.RED },
-        errorMessage: Component = Text.of("Error!") { this.color = TextColor.RED },
+        successMessage: Component,
+        loadingMessage: Component = loadingMessage(),
+        errorMessage: Component = errorMessage(),
     ): Component {
-        return loading(message, loadingMessage, errorMessage)
+        return loading(successMessage, loadingMessage, errorMessage)
+    }
+
+    protected fun loadingMessage() = Text.of("Loading...") { this.color = TextColor.RED }
+    protected fun errorMessage() = Text.of("Error!") { this.color = TextColor.RED }
+
+    protected fun <D> loadingComponent(
+        data: Result<D>?,
+        successMessage: (D) -> Component,
+        loadingMessage: Component = loadingMessage(),
+        errorMessage: Component = errorMessage(),
+    ): Component {
+        return loading(data, successMessage, loadingMessage, errorMessage)
     }
 }
 
@@ -90,6 +129,7 @@ enum class FarmingCategories(val screen: KClass<out BaseFarmingScreen>, override
     MAIN(FarmingScreen::class, Items.WHEAT.defaultInstance),
     VISITORS(VisitorScreen::class, Items.VILLAGER_SPAWN_EGG.defaultInstance),
     CROP(CropScreen::class, Items.CARROT.defaultInstance),
+    COMPOSTER(ComposterScreen::class, ItemAPI.getItem("COMPOST")),
     ;
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
