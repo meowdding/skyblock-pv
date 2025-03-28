@@ -41,7 +41,8 @@ data class SkyBlockProfile(
     val miscFishData: FishData,
     val essenceUpgrades: Map<String, Int>,
     val gardenData: GardenData,
-    val farmingData: FarmingData
+    val farmingData: FarmingData,
+    val chocolateFactoryData: CFData?,
 ) {
     companion object {
 
@@ -77,8 +78,6 @@ data class SkyBlockProfile(
 
                     experience / 100 to (experience % 100).toInt()
                 },
-
-                //  todo: missing skill data when not unlocked
                 skill = playerData.getSkillData(),
                 collections = member.getCollectionData(),
                 mobData = playerStats?.getMobData() ?: emptyList(),
@@ -109,6 +108,7 @@ data class SkyBlockProfile(
                     )
                 },
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
+                chocolateFactoryData = member.getAsJsonObject("events")?.getAsJsonObject("easter")?.let { CFData.fromJson(it) },
             )
         }
 
