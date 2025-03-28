@@ -14,7 +14,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
-import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.PronounsDbAPI
@@ -273,8 +272,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                             data.bossKillsTier.map {
                                 Text.of(it.value.toFormattedString()) { this.color = TextColor.GRAY }
                             },
-                            separator = Text.of("/") { this.color = TextColor.DARK_GRAY }
-                                .takeUnless { it.stripped.isBlank() } ?: Text.of("0") { this.color = TextColor.GRAY },
+                            separator = Text.of("/") { this.color = TextColor.DARK_GRAY },
                         ).let { append(it) }
                     }
                 }.build()
