@@ -85,6 +85,8 @@ tasks.withType<ProcessResources>().configureEach {
     val listOfPaths = configuration.compactors.flatMap { it.getPath().toList() }.map { "${configuration.basePath}/$it" }
 
     val outDirectory = project.layout.buildDirectory.file("generated/compacted_resources/").get().asFile.toPath()
+    project.delete(outDirectory)
+    logger.warn("Deleted old out directory!")
     outDirectory.parent.createDirectories()
     val outputBaseDirectory = outDirectory.resolve(configuration.basePath!!)
     val projectDirectory = layout.projectDirectory.asFile.toPath()
