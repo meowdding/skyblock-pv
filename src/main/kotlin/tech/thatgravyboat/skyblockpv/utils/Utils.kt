@@ -16,6 +16,11 @@ import tech.thatgravyboat.skyblockpv.api.PlayerDbAPI
 import java.nio.file.Files
 import java.text.DecimalFormat
 import java.text.NumberFormat
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import kotlin.jvm.optionals.getOrNull
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -157,4 +162,9 @@ object Utils {
         return this
     }
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
+
+    private val dateTimeFormatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss")
+    fun Instant.toReadableString(zoneId: ZoneId = ZoneOffset.systemDefault()): String {
+        return dateTimeFormatter.format(LocalDateTime.ofInstant(this, zoneId))
+    }
 }
