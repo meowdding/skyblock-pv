@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.notkamui.keval.keval
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
@@ -49,7 +50,7 @@ data class CFData(
 }
 
 data class RabbitEmployee(
-    val name: String,
+    val id: String,
     val level: Int,
 ) {
     val color = when (level) {
@@ -95,19 +96,28 @@ data class Hitman(
 }
 
 object CFCodecs {
-    var data: ChocolateFactoryRepoData? = null
+    var data: CfRepoData? = null
         private set
 
-    private val CFTextureCodec = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(
-        { it.entries.map { (key, value) -> CFTexture(key, value) } },
+    private val CfTextureCodec = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(
+        { it.entries.map { (key, value) -> CfTextureRepo(key, value) } },
         { emptyMap() },
     )
+
+    private val CfEmployeeCodec = RecordCodecBuilder.create {
+        it.group(
+            Codec.STRING.fieldOf("id").forGetter(CfEmployeeRepo::id),
+            Codec.STRING.fieldOf("name").forGetter(CfEmployeeRepo::name),
+            Codec.STRING.fieldOf("reward").forGetter(CfEmployeeRepo::rewardFormula),
+        ).apply(it, ::CfEmployeeRepo)
+    }
 
     init {
         val CODEC = RecordCodecBuilder.create {
             it.group(
-                CFTextureCodec.fieldOf("textures").forGetter(ChocolateFactoryRepoData::textures),
-            ).apply(it, ::ChocolateFactoryRepoData)
+                CfTextureCodec.fieldOf("textures").forGetter(CfRepoData::textures),
+                CfEmployeeCodec.listOf().fieldOf("employees").forGetter(CfRepoData::employees),
+            ).apply(it, ::CfRepoData)
         }
 
         val cfData = Utils.loadFromRepo<JsonObject>("chocolate_factory") ?: JsonObject()
@@ -120,11 +130,26 @@ object CFCodecs {
         }
     }
 
-    data class ChocolateFactoryRepoData(
-        val textures: List<CFTexture>,
+    data class CfRepoData(
+        val textures: List<CfTextureRepo>,
+        val employees: List<CfEmployeeRepo>,
     )
 
-    data class CFTexture(
+    data class CfEmployeeRepo(
+        val id: String,
+        val name: String,
+        val rewardFormula: String,
+    ) {
+        fun getReward(level: Int) = rewardFormula.keval {
+            includeDefault()
+            constant {
+                name = "level"
+                value = level.toDouble()
+            }
+        }.toInt()
+    }
+
+    data class CfTextureRepo(
         val id: String,
         val texture: String,
     ) {
