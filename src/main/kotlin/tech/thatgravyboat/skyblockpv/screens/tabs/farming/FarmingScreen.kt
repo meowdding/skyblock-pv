@@ -2,10 +2,7 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
-import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
-import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -35,7 +32,6 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         return LayoutBuild.frame {
             horizontal {
-                widget(getPlots())
                 widget(getGear(profile))
                 widget(getContests(profile.farmingData))
                 widget(getInfoWidget(profile))
@@ -191,7 +187,6 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addLevelingPerk(profile.farmingData.perks.farmingLevelCap, "Farming Level Cap", StaticGardenData.miscData.farmingLevelCap)
             addLevelingPerk(profile.farmingData.perks.doubleDrops, "Double Drops", StaticGardenData.miscData.bonusDrops)
         },
-        padding = 20,
     )
 
     private fun getPets(profile: SkyBlockProfile) = profile.pets.asSequence()
@@ -221,7 +216,6 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             spacer(width = 5)
             widget(Displays.background(SkyBlockPv.id("inventory/inventory-1x1"), getVacuum(profile)).asWidget()) { alignVerticallyMiddle() }
         },
-        padding = 20,
     )
 
     private fun getVacuum(profile: SkyBlockProfile): Display {
@@ -246,90 +240,6 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         return score
     }
-
-    fun getPlots() = PvWidgets.label(
-        "Plots",
-        LayoutBuild.frame {
-            val data = gardenProfile?.getOrNull()
-            val map = MutableList(5) { MutableList(5) { Displays.empty() } }
-
-            StaticGardenData.plots.forEach {
-                map[it.location] = Displays.tooltip(Displays.item(Items.BLACK_STAINED_GLASS_PANE.defaultInstance), it.getName())
-            }
-
-            fun fillMap(value: Display) {
-                map.forEach {
-                    it.fill(value)
-                }
-            }
-
-            loading(
-                {
-                    val data = data ?: return@loading
-                    val staticPlots = StaticGardenData.plots.toMutableList().apply { removeAll(data.unlockedPlots) }
-                    data.unlockedPlots.forEach {
-                        map[it.location] = Displays.tooltip(
-                            Displays.item(
-                                Items.GREEN_STAINED_GLASS_PANE.defaultInstance,
-                            ),
-                            it.getName().also { it.color = TextColor.GREEN },
-                        )
-                    }
-                    val unlockedAmount = data.unlockedPlots.groupBy { it.type }.mapValues { it.value.size }
-                    staticPlots.forEach {
-                        val plots = unlockedAmount[it.type] ?: 0
-                        val cost = StaticGardenData.plotCost[it.type] ?: emptyList()
-
-                        if (plots >= cost.size) {
-                            return@forEach
-                        }
-
-                        val plotCost = cost[plots]
-                        map[it.location] = Displays.item(Items.BLACK_STAINED_GLASS_PANE.defaultInstance).withTooltip(
-                            it.getName(),
-                            plotCost.getDisplay().copy().apply { append(Text.of(" x${plotCost.amount}") { color = TextColor.DARK_GRAY }) },
-                        )
-                    }
-                },
-                {
-                    fillMap(
-                        Displays.tooltip(
-                            Displays.item(Items.ORANGE_STAINED_GLASS_PANE.defaultInstance),
-                            Text.of("Loading...") { this.color = TextColor.GOLD },
-                        ),
-                    )
-                },
-                {
-                    fillMap(
-                        Displays.tooltip(
-                            Displays.item(Items.BEDROCK.defaultInstance),
-                            Text.of("Error!") { this.color = TextColor.RED },
-                        ),
-                    )
-                },
-            ).invoke()
-
-            map[2][2] = Displays.tooltip(
-                Displays.item(
-                    loading<ItemStack>(
-                        data?.selectedBarnSkin?.getItem() ?: ItemStack.EMPTY,
-                        Items.BARRIER.defaultInstance,
-                        Items.BEDROCK.defaultInstance,
-                    ),
-                ),
-                loadingComponent(data?.selectedBarnSkin?.displayName ?: Component.empty()),
-            )
-
-            val plots = map.map { it.reversed().map { Displays.padding(2, it) }.toColumn() }.toRow()
-            display(
-                Displays.background(
-                    SkyBlockPv.id("inventory/inventory-5x5"),
-                    Displays.padding(2, plots),
-                ),
-            )
-        },
-        padding = 20,
-    )
 
     private fun getContests(farmingData: FarmingData) = PvWidgets.label(
         "Contests",
@@ -416,10 +326,6 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }.map { Displays.padding(2, it) }.chunked(5)
             .map { it.toColumn() }
             .toRow().let { Displays.background(SkyBlockPv.id("inventory/inventory-2x5"), Displays.padding(2, it)) }.asWidget(),
-        padding = 20,
     )
 }
 
-private operator fun <E> MutableList<MutableList<E>>.set(location: Vector2i, value: E) {
-    this[location.x][location.y] = value
-}

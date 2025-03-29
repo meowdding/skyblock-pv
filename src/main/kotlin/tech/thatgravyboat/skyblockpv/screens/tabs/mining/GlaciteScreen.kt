@@ -5,6 +5,7 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -74,6 +75,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 Text.join(
                     Text.of("In Pet Menu: ").withColor(TextColor.GRAY),
                     Text.of(if (inPetMenu) "Yes" else "No").withColor(if (inPetMenu) TextColor.GREEN else TextColor.RED),
+                    if (!inPetMenu) Text.of("§a${it.pet.toTitleCase()}").wrap(" §7(", "§7)") else null,
                 ),
             )
 

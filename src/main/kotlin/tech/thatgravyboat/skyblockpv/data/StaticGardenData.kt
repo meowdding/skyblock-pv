@@ -5,22 +5,29 @@ import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.notkamui.keval.keval
+import eu.pb4.placeholders.api.ParserContext
+import eu.pb4.placeholders.api.parsers.TagParser
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.ExtraCodecs
 import net.minecraft.util.StringRepresentable
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import java.util.*
 
@@ -54,6 +61,7 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
 }
 
 private object GardenCodecs {
+    val COMPOSTER_UPGRADE = EnumCodec.of(ComposterUpgrade.entries.toTypedArray())
     val BARN_SKIN = RecordCodecBuilder.create {
         it.group(
             CodecUtils.COMPONENT_TAG.fieldOf("displayname").forGetter(StaticBarnSkin::displayName),
@@ -61,11 +69,16 @@ private object GardenCodecs {
         ).apply(it, ::StaticBarnSkin)
     }
 
+    val COMPOST_NUMBER_CODEC = EnumCodec.of(CompostNumberFormat.entries.toTypedArray())
+
     val COMPOSTER_DATA = RecordCodecBuilder.create {
         it.group(
             Codec.STRING.fieldOf("reward_formula").forGetter(StaticComposterData::rewardFormula),
+            COMPOST_NUMBER_CODEC.fieldOf("format").forGetter(StaticComposterData::format),
             Codec.STRING.fieldOf("tooltip").forGetter(StaticComposterData::tooltip),
-            Codec.unboundedMap(Codec.STRING, Codec.INT).listOf().fieldOf("upgrades").forGetter(StaticComposterData::upgrade),
+            BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(StaticComposterData::item),
+            CodecUtils.COMPONENT_TAG.fieldOf("name").forGetter(StaticComposterData::name),
+            CodecUtils.CUMULATIVE_STRING_INT_MAP.fieldOf("upgrades").forGetter(StaticComposterData::upgrade),
         ).apply(it, ::StaticComposterData)
     }
 
@@ -131,7 +144,7 @@ private object GardenCodecs {
 data object StaticGardenData {
     var barnSkins: Map<String, StaticBarnSkin> = emptyMap()
         private set
-    var composterData: Map<String, StaticComposterData> = emptyMap()
+    var composterData: Map<ComposterUpgrade, StaticComposterData> = emptyMap()
         private set
     var cropMilestones: Map<GardenResource, List<Int>> = emptyMap()
         private set
@@ -145,12 +158,14 @@ data object StaticGardenData {
     var visitors: List<StaticVisitorData> = emptyList()
         private set
     var tools: Map<GardenResource, StaticToolInfo> = emptyMap()
+    val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO")
+    const val COPPER = "copper"
 
     init {
         val CODEC = RecordCodecBuilder.create {
             it.group(
                 Codec.unboundedMap(Codec.STRING, GardenCodecs.BARN_SKIN).fieldOf("barn_skins").forGetter { barnSkins },
-                Codec.unboundedMap(Codec.STRING, GardenCodecs.COMPOSTER_DATA).fieldOf("composter_data").forGetter { composterData },
+                Codec.unboundedMap(GardenCodecs.COMPOSTER_UPGRADE, GardenCodecs.COMPOSTER_DATA).fieldOf("composter_data").forGetter { composterData },
                 Codec.unboundedMap(GardenResource.CODEC, CodecUtils.CUMULATIVE_INT_LIST).fieldOf("crop_milestones").forGetter { cropMilestones },
                 GardenCodecs.MISC_DATA.fieldOf("misc").forGetter { miscData },
                 Codec.unboundedMap(Codec.STRING, GardenCodecs.PLOT_COST.listOf()).fieldOf("plot_cost").forGetter { plotCost },
@@ -171,7 +186,7 @@ data object StaticGardenData {
 
     fun init(
         barnSkins: Map<String, StaticBarnSkin>,
-        composterData: Map<String, StaticComposterData>,
+        composterData: Map<ComposterUpgrade, StaticComposterData>,
         cropMilestones: Map<GardenResource, List<Int>>,
         miscData: StaticMiscData,
         plotCost: Map<String, List<StaticPlotCost>>,
@@ -201,11 +216,35 @@ data class StaticBarnSkin(
     }
 }
 
+enum class CompostNumberFormat(val formatting: (Int) -> String) {
+    PERCENTAGE({ it.round() }),
+    INTEGER({ it.toFormattedString() });
+
+    fun format(number: Int) = formatting(number)
+}
+
 data class StaticComposterData(
     val rewardFormula: String,
+    val format: CompostNumberFormat,
     val tooltip: String,
+    val item: Item,
+    val name: Component,
     val upgrade: List<Map<String, Int>>,
-)
+) {
+    fun getRewardForLevel(level: Int): Int {
+        return rewardFormula.keval {
+            includeDefault()
+            constant {
+                name = "level"
+                value = level.toDouble()
+            }
+        }.toInt()
+    }
+
+    fun getTooltipForLevel(level: Int): Component {
+        return TagParser.QUICK_TEXT_SAFE.parseText(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
+    }
+}
 
 data class StaticMiscData(
     val gardenLevelBrackets: List<Int>,

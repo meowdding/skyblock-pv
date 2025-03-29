@@ -48,7 +48,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 ),
             )
         }.let {
-            PvWidgets.label("Mining Gear", it, 20)
+            PvWidgets.label("Mining Gear", it)
         }
     }
 

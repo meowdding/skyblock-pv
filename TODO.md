@@ -77,11 +77,6 @@ TODO:
 <details>
 <summary>Garden</summary>
 
-
-## Composter page 
-- [ ] plots
-- [ ] composter upgrades, progress total and so on
-
 ## Main page
 - [ ] weight
 - [ ] visitor stats (only total)
