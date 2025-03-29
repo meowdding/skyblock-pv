@@ -122,7 +122,7 @@ idea {
     }
 }
 
-`compacting-resource` {
+compactingResource {
     this.basePath = "repo"
     compactToArray("hotmperks", "hotm")
     compactToObject("garden_data", "garden_data")
