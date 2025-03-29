@@ -53,7 +53,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             string("Fuel Stored: ") {
                 append(
                     loadingComponent(gardenProfile) {
-                        Text.of(it.composterData.fuel.toLong().toFormattedString()) {
+                        Text.of(it.composterData.fuel.toFormattedString()) {
                             this.color = TextColor.DARK_GREEN
                         }
                     },
