@@ -44,7 +44,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             string("Organic Matter Stored: ") {
                 append(
                     loadingComponent(gardenProfile) {
-                        Text.of(it.composterData.organicMatter.toLong().toFormattedString()) {
+                        Text.of(it.composterData.organicMatter.toFormattedString()) {
                             this.color = TextColor.GREEN
                         }
                     },
