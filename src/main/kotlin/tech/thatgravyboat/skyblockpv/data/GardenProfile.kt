@@ -2,7 +2,6 @@ package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import net.minecraft.util.StringRepresentable
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 
 data class GardenData(
@@ -102,14 +101,12 @@ data class Commission(
     val accepted: Int,
 )
 
-enum class ComposterUpgrade: StringRepresentable {
+enum class ComposterUpgrade {
     SPEED,
     MULTI_DROP,
     FUEL_CAP,
     ORGANIC_MATTER_CAP,
-    COST_REDUCTION;
-
-    override fun getSerializedName() = name
+    COST_REDUCTION,
 }
 
 data class ComposterData(

@@ -69,7 +69,7 @@ private object GardenCodecs {
         ).apply(it, ::StaticBarnSkin)
     }
 
-    val COMPOST_NUMBER_CODEC = StringRepresentable.fromEnum { CompostNumberFormat.entries.toTypedArray() }
+    val COMPOST_NUMBER_CODEC = EnumCodec.of(CompostNumberFormat.entries.toTypedArray())
 
     val COMPOSTER_DATA = RecordCodecBuilder.create {
         it.group(
@@ -216,13 +216,11 @@ data class StaticBarnSkin(
     }
 }
 
-enum class CompostNumberFormat(val formatting: (Int) -> String) : StringRepresentable {
+enum class CompostNumberFormat(val formatting: (Int) -> String) {
     PERCENTAGE({ it.round() }),
     INTEGER({ it.toFormattedString() });
 
     fun format(number: Int) = formatting(number)
-
-    override fun getSerializedName() = name.lowercase()
 }
 
 data class StaticComposterData(
