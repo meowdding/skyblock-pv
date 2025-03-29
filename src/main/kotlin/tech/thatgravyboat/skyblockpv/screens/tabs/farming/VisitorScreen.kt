@@ -57,7 +57,7 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     private fun toDisplay(visitor: StaticVisitorData, commission: Commission?): Display {
-        val item = loading(
+        val item = loadingValue(
             visitor.itemStack.takeUnless { commission == null } ?: Items.GRAY_DYE.defaultInstance,
             Items.ORANGE_DYE.defaultInstance,
             Items.BEDROCK.defaultInstance,

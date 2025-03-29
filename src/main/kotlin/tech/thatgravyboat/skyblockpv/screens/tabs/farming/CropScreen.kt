@@ -62,7 +62,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val color = if (cropLevel == maxUpgrades) TextColor.GREEN else TextColor.RED
 
         val cropLevelText = Text.of(cropLevel.toString()) { this.color = color }
-        return loading(
+        return loadingValue(
             Displays.item(icon, customStackText = cropLevelText).withTooltip {
                 add("Crop Upgrade") { this.bold = true }
                 add("Upgrades: ") {
@@ -102,7 +102,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val maxLevel = milestoneBrackets.size - 1
 
         val milestoneText = Text.of(milestone.toString()) { color = if (maxLevel == milestone) TextColor.GREEN else TextColor.RED }
-        return loading(
+        return loadingValue(
             Displays.item(resource.getItem(), customStackText = milestoneText).withTooltip {
                 add(resource.getItem().customName?.stripped ?: "Unknown") {
                     bold = true
