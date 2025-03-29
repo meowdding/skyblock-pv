@@ -6,7 +6,7 @@ import com.google.gson.JsonParser
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
-import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.hours
 
 open class CompactingResourcesExtension {
 
@@ -62,7 +62,7 @@ abstract class CompactedResources<T: JsonElement>(private val factory: () -> T, 
 
 data class ExternalResource(val url: String, val name: String, val json: Boolean)
 
-val downloadCache = DownloadedFileCache(project.gradle.gradleUserHomeDir.toPath().resolve("caches/sbpv_download"), 30.minutes)
+val downloadCache = DownloadedFileCache(project.gradle.gradleUserHomeDir.toPath().resolve("caches/sbpv_download"), 1.hours)
 
 tasks.withType<ProcessResources>().configureEach {
     val configuration = project.extensions.getByType<CompactingResourcesExtension>()
