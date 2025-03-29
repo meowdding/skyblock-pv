@@ -1,3 +1,4 @@
+
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -97,6 +98,7 @@ tasks.withType<ProcessResources>().configureEach {
         val directoriesToSearch = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).resources.srcDirs.map { it.toPath() }
 
         configuration.externalResources.forEach { resource ->
+            logger.warn("Downloading {} from {}", resource.name, resource.url)
             val openStream = URI(resource.url).toURL().openStream()
             openStream.use {
                 val contents = openStream.readAllBytes().toString(Charsets.UTF_8)
@@ -114,6 +116,7 @@ tasks.withType<ProcessResources>().configureEach {
         configuration.compactors.forEach { compactor ->
             compactor.setup()
             val pathsToCompact = compactor.getPath().map { "${configuration.basePath}/$it" }
+            logger.warn("Compacting folder {}", compactor.getOutput())
 
             directoriesToSearch.forEach { file ->
                 fileTree(file) {
@@ -122,17 +125,16 @@ tasks.withType<ProcessResources>().configureEach {
                     exclude(*mutableListOf(*listOfPaths.toTypedArray()).apply { this.removeAll(pathsToCompact) }.toTypedArray())
 
                     forEach {
-                        compactor.add(it.nameWithoutExtension,  JsonParser.parseString(it.readText()))
+                        compactor.add(it.nameWithoutExtension, JsonParser.parseString(it.readText()))
                     }
                 }
             }
 
             val complete = compactor.complete()
             val output = compactor.getOutput()
-            val path = outputBaseDirectory
 
-            path.createDirectories()
-            path.resolve("$output.json").writeText(
+            outputBaseDirectory.createDirectories()
+            outputBaseDirectory.resolve("$output.json").writeText(
                 complete.toString(),
                 options = arrayOf(StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
             )
@@ -144,6 +146,7 @@ tasks.withType<ProcessResources>().configureEach {
                 exclude(*listOfPaths.toTypedArray())
                 forEach {
                     val toRelativeString = it.toRelativeString(file.resolve(configuration.basePath!!).toFile())
+                    logger.warn("Compacting file {}", toRelativeString)
                     val parseString = JsonParser.parseString(it.readText())
                     val path = outputBaseDirectory.resolve(toRelativeString)
                     path.parent.createDirectories()
