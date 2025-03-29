@@ -106,7 +106,7 @@ enum class ComposterUpgrade {
     MULTI_DROP,
     FUEL_CAP,
     ORGANIC_MATTER_CAP,
-    COST_REDUCTION
+    COST_REDUCTION,
 }
 
 data class ComposterData(
