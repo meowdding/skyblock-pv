@@ -25,6 +25,9 @@ repo = "1.2.0"
 devauth = "1.2.1"
 modmenu = "14.0.0-rc.2"
 
+# Build src dependencies
+gson = "2.12.1"
+
 [libraries]
 
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -45,6 +48,8 @@ repo = { module = "tech.thatgravyboat.repo-lib:repo-lib", version.ref = "repo" }
 
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
+
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 [plugins]
 
