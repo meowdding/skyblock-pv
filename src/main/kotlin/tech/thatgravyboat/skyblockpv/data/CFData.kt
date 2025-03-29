@@ -1,14 +1,17 @@
 package tech.thatgravyboat.skyblockpv.data
 
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.notkamui.keval.keval
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockpv.utils.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 
@@ -32,11 +35,11 @@ data class CFData(
                 chocolate = json["chocolate"].asLong(0),
                 totalChocolate = json["total_chocolate"].asLong(0),
                 chocolateSincePrestige = json["chocolate_since_prestige"].asLong(0),
-                employees = json["employees"].asMap { k, v ->
-                    if (v !is JsonObject) k to v.asInt(0)
+                employees = json["employees"].asMap { k, v -> k to v.asInt(0) }.map { RabbitEmployee(it.key, it.value) },
+                rabbits = json["rabbits"].asMap { k, v ->
+                    if (v is JsonPrimitive) k to v.asInt
                     else k to -1
-                }.filterValues { it != -1 }.map { RabbitEmployee(it.key, it.value) },
-                rabbits = json["rabbits"].asMap { k, v -> k to v.asInt(0) },
+                }.filterValues { it != -1 },
                 barnCapacity = json["barn_capacity"].asInt(0),
                 prestigeLevel = json["prestige_level"].asInt(0),
                 clickUpgrades = json["click_upgrades"].asInt(0),
@@ -112,11 +115,14 @@ object CFCodecs {
         ).apply(it, ::CfEmployeeRepo)
     }
 
+    private val CfRabbitRaritiesCodec = Codec.unboundedMap(CodecUtils.SKYBLOCK_RARITY_CODEC, Codec.STRING.listOf())
+
     init {
         val CODEC = RecordCodecBuilder.create {
             it.group(
                 CfTextureCodec.fieldOf("textures").forGetter(CfRepoData::textures),
                 CfEmployeeCodec.listOf().fieldOf("employees").forGetter(CfRepoData::employees),
+                CfRabbitRaritiesCodec.fieldOf("rabbits").forGetter(CfRepoData::rabbits),
             ).apply(it, ::CfRepoData)
         }
 
@@ -133,6 +139,7 @@ object CFCodecs {
     data class CfRepoData(
         val textures: List<CfTextureRepo>,
         val employees: List<CfEmployeeRepo>,
+        val rabbits: Map<SkyBlockRarity, List<String>>,
     )
 
     data class CfEmployeeRepo(

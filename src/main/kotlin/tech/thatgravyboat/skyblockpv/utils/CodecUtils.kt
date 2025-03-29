@@ -4,8 +4,12 @@ import com.mojang.serialization.Codec
 import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
 import org.joml.Vector2i
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
 
 object CodecUtils {
+
+    val SKYBLOCK_RARITY_CODEC: Codec<SkyBlockRarity> = EnumCodec.of(SkyBlockRarity.entries.toTypedArray())
 
     val CUMULATIVE_INT_LIST: Codec<List<Int>> =
         Codec.INT.listOf().xmap(

@@ -17,6 +17,10 @@ import java.nio.file.Files
 object RabbitParser {
     var data: MutableMap<String, MutableSet<String>> = mutableMapOf()
 
+    private val incorrectApiNames = mapOf(
+        "fish_the_rabbit" to "fish",
+    )
+
     @Subscription
     fun onInv(event: ContainerChangeEvent) {
         if (!Config.devMode) return
@@ -26,7 +30,9 @@ object RabbitParser {
 
         val rarity = event.item.getData(DataTypes.RARITY) ?: return
         val name = event.item.hoverName.stripped
-        val probablyApiName = name.split(" ").joinToString("_").lowercase()
+        val probablyApiName = name.split(" ", "-").joinToString("_").lowercase().let {
+            incorrectApiNames[it] ?: it
+        }
         data.computeIfAbsent(rarity.name) { mutableSetOf() }.add(probablyApiName)
     }
 
