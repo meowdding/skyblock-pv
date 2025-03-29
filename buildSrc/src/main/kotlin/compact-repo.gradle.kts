@@ -2,6 +2,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import java.net.URI
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
@@ -10,6 +11,7 @@ import kotlin.io.path.writeText
 open class CompactingResourcesExtension {
 
     internal val compactors: MutableList<CompactedResources> = mutableListOf()
+    internal val externalResources: MutableList<ExternalResource> = mutableListOf()
     var basePath: String? = null
 
     fun compactToArray(folder: String, output: String = folder) {
@@ -18,6 +20,10 @@ open class CompactingResourcesExtension {
 
     fun compactToObject(folder: String, output: String = folder) {
         compactors.add(CompactToObject(folder, output))
+    }
+
+    fun downloadResource(url: String, output: String, json: Boolean = true) {
+        externalResources.add(ExternalResource(url, output, json))
     }
 }
 project.extensions.create<CompactingResourcesExtension>("compacting-resource")
@@ -70,22 +76,40 @@ interface CompactedResources {
     fun getOutput(): String
 }
 
+data class ExternalResource(val url: String, val name: String, val json: Boolean)
+
 tasks.withType<ProcessResources>().configureEach {
     val configuration = project.extensions.getByType<CompactingResourcesExtension>()
     val sourceSets = project.extensions.getByType<SourceSetContainer>()
     val listOfPaths = configuration.compactors.flatMap { it.getPath().toList() }.map { "${configuration.basePath}/$it" }
 
-    val outDirectory = project.layout.buildDirectory.file("generated/compacted_resources/").get()
-    outDirectory.asFile.parentFile.toPath().createDirectories()
+    val outDirectory = project.layout.buildDirectory.file("generated/compacted_resources/").get().asFile.toPath()
+    outDirectory.parent.createDirectories()
+    val outputBaseDirectory = outDirectory.resolve(configuration.basePath!!)
     val projectDirectory = layout.projectDirectory.asFile.toPath()
 
     exclude { projectDirectory.relativize(it.file.toPath()).toString().contains("src/main/resources/${configuration.basePath}") }
     from(project.layout.buildDirectory.dir("generated/compacted_resources/").get())
 
-    sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).resources.srcDirs.add(outDirectory.asFile)
+    sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).resources.srcDirs.add(outDirectory.toFile())
 
-    doLast {
+    doFirst {
         val directoriesToSearch = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).resources.srcDirs.map { it.toPath() }
+
+        configuration.externalResources.forEach { resource ->
+            val openStream = URI(resource.url).toURL().openStream()
+            openStream.use {
+                val contents = openStream.readAllBytes().toString(Charsets.UTF_8)
+                val output: String = if (resource.json) {
+                    JsonParser.parseString(contents).toString()
+                } else {
+                    contents
+                }
+                val path = outputBaseDirectory.resolve(resource.name)
+                path.parent.createDirectories()
+                path.writeText(output, options = arrayOf(StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING))
+            }
+        }
 
         configuration.compactors.forEach { compactor ->
             compactor.setup()
@@ -105,7 +129,7 @@ tasks.withType<ProcessResources>().configureEach {
 
             val complete = compactor.complete()
             val output = compactor.getOutput()
-            val path = outDirectory.asFile.toPath().resolve(configuration.basePath!!)
+            val path = outputBaseDirectory
 
             path.createDirectories()
             path.resolve("$output.json").writeText(
@@ -121,7 +145,7 @@ tasks.withType<ProcessResources>().configureEach {
                 forEach {
                     val toRelativeString = it.toRelativeString(file.resolve(configuration.basePath!!).toFile())
                     val parseString = JsonParser.parseString(it.readText())
-                    val path = outDirectory.asFile.toPath().resolve(configuration.basePath!!).resolve(toRelativeString)
+                    val path = outputBaseDirectory.resolve(toRelativeString)
                     path.parent.createDirectories()
                     path.writeText(
                         parseString.toString(),
