@@ -1,7 +1,10 @@
 {
     "SPEED": {
         "reward_formula": "20 * level",
-        "tooltip": "<gray>Increases composter production speed by <green>%reward%%<gray>.",
+        "format": "PERCENTAGE",
+        "item": "minecraft:sugar",
+        "name": "Composter Speed",
+        "tooltip": "<gray>Increases composter production\nspeed by <green>%reward%%<gray>.",
         "upgrades": [
             {
                 "copper": 100,
@@ -125,7 +128,10 @@
     },
     "MULTI_DROP": {
         "reward_formula": "3 * level",
-        "tooltip": "<gray>When compost is produced, grants a <green>%reward%% <gray>chance to produce an extra one.",
+        "format": "PERCENTAGE",
+        "item": "minecraft:diamond_hoe",
+        "name": "Multi Drop",
+        "tooltip": "<gray>When compost is produced, grants a\n<green>%reward%% <gray>chance to produce an extra one.",
         "upgrades": [
             {
                 "copper": 100,
@@ -249,7 +255,10 @@
     },
     "FUEL_CAP": {
         "reward_formula": "100000 + 30000 * level",
-        "tooltip": "<gray>When compost is produced, grants a <green>%reward%% <gray>chance to produce an extra one.",
+        "format": "INTEGER",
+        "item": "minecraft:green_dye",
+        "name": "Fuel Cap",
+        "tooltip": "<gray>Increase the maximum machine fuel the\ncomposter can hold to <green>%reward%<gray>.",
         "upgrades": [
             {
                 "copper": 100,
@@ -373,7 +382,10 @@
     },
     "ORGANIC_MATTER_CAP": {
         "reward_formula": "40000 + 20000 * level",
-        "tooltip": "<gray>Increases the maximum amount of organic matter that can be stored to <green>%reward%<gray>.",
+        "format": "INTEGER",
+        "item": "minecraft:potato",
+        "name": "Organic Matter Cap",
+        "tooltip": "<gray>Increases the maximum amount of organic\nmatter that can be stored to <green>%reward%<gray>.",
         "upgrades": [
             {
                 "copper": 100,
@@ -497,7 +509,10 @@
     },
     "COST_REDUCTION": {
         "reward_formula": "level",
-        "tooltip": "<gray>Reduces the amount of organic matter and fuel required to produce compost by <green>%reward%%<gray>.",
+        "format": "PERCENTAGE",
+        "item": "minecraft:gold_ingot",
+        "name": "Cost Reduction",
+        "tooltip": "<gray>Reduces the amount of organic matter\nand fuel required to produce compost\nby <green>%reward%%<gray>.",
         "upgrades": [
             {
                 "copper": 100,

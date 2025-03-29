@@ -226,7 +226,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 ),
             )
         },
-        padding = 30,
+        padding = 10,
     )
 
     private fun getStatWidget(profile: SkyBlockProfile) = PvWidgets.label(
@@ -318,7 +318,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 }.toList().takeUnless { it.isEmpty() }?.let { withTooltip(it) } ?: this
             }
         },
-        padding = 30,
+        padding = 10,
     )
 
     private fun getGearWidget(profile: SkyBlockProfile) = PvWidgets.label(
@@ -346,7 +346,6 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 "icon/slot/rod",
             ).let { widget(it) }
         },
-        padding = 20,
     )
 
     private fun getTrophyArmor(profile: SkyBlockProfile): LayoutElement {
