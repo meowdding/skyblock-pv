@@ -62,7 +62,7 @@ abstract class CompactedResources<T: JsonElement>(private val factory: () -> T, 
 
 data class ExternalResource(val url: String, val name: String, val json: Boolean)
 
-val downloadCache = DownloadedFileCache(project.gradle.gradleUserHomeDir.toPath().resolve("sbpv_download_cache"), 30.minutes)
+val downloadCache = DownloadedFileCache(project.gradle.gradleUserHomeDir.toPath().resolve("caches/sbpv_download"), 30.minutes)
 
 tasks.withType<ProcessResources>().configureEach {
     val configuration = project.extensions.getByType<CompactingResourcesExtension>()
