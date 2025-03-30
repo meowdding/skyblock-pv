@@ -12,11 +12,13 @@ import kotlin.io.path.readBytes
 import kotlin.io.path.writeBytes
 import kotlin.time.Duration
 
-data class DownloadedFileCache(val root: Path, val duration: Duration) {
+const val DEFAULT_CACHE_DIRECTORY = "caches/sbpv_download"
+
+data class FileCache(val root: Path, val duration: Duration) {
     fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }
 
     fun getOrDownload(url: String): ByteArray {
-        val key = MessageDigest.getInstance("SHA-256").digest(url.toByteArray()).toHexString()
+        val key = getKey(url)
 
         if (isCached(key)) {
             return read(key)
@@ -32,6 +34,10 @@ data class DownloadedFileCache(val root: Path, val duration: Duration) {
         return openStream.use {
             return@use openStream.readAllBytes()
         }
+    }
+
+    fun getKey(name: String): String {
+        return MessageDigest.getInstance("SHA-256").digest(name.toByteArray()).toHexString()
     }
 
     fun isCached(key: String): Boolean {
