@@ -1,17 +1,24 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
+import net.minecraft.core.component.DataComponents
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.component.ItemLore
+import net.minecraft.world.level.ItemLike
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.CfCodecs
 import tech.thatgravyboat.skyblockpv.data.CfData
 import tech.thatgravyboat.skyblockpv.data.RabbitEmployee
+import tech.thatgravyboat.skyblockpv.data.SkullTextures
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToRarityOrder
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -21,6 +28,8 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
+
+val coachSkull by lazy { SkullTextures.COACH_JACKRABBIT.createSkull() }
 
 class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("CF", gameProfile, profile) {
 
@@ -32,27 +41,99 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val employees = getEmployees(cf, data)
         val rarities = getRarities(cf, data)
         val info = getInfo(cf, data)
+        val upgrades = getUpgrades(cf, data)
 
         LayoutBuild.frame(bg.width, bg.height) {
-            if (maxOf(employees.width, rarities.width) + info.width + 3 > bg.width) {
+            if (maxOf(employees.width, upgrades.width) + info.width + 3 > bg.width) {
                 widget(
                     LayoutBuild.vertical(3, 0.5f) {
                         widget(employees)
-                        widget(rarities)
+                        widget(upgrades)
                         widget(info)
+                        widget(rarities)
                     }.asScrollable(bg.width, bg.height),
                 )
             } else {
                 horizontal(3, 0.5f) {
                     vertical(3, 0.5f) {
                         widget(employees)
-                        widget(rarities)
+                        widget(upgrades)
                     }
                     widget(info)
+                    widget(rarities)
                 }
             }
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
     }
+
+    private fun getUpgrades(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
+        "Upgrades",
+        buildList {
+            val cookie = createUpgradeItem(Items.COOKIE, "Click Upgrade", cf.clickUpgrades + 1) {
+                add("Increases the amount of ") {
+                    italic = false
+                    color = TextColor.GRAY
+                    append("Chocolate ") {
+                        color = TextColor.GOLD
+                    }
+                    append("you get per click.")
+                }
+            }
+            val timeTower = createUpgradeItem(Items.CLOCK, "Time Tower", cf.timeTower?.level ?: 0) {
+                add("Increases your ") {
+                    italic = false
+                    color = TextColor.GRAY
+                    append("Chocolate Production ") {
+                        color = TextColor.GOLD
+                    }
+                    append("for ")
+                    append("1h ") {
+                        color = TextColor.GREEN
+                    }
+                    append("per charge.")
+                }
+            }
+            val shrine = createUpgradeItem(Items.RABBIT_FOOT, "Rabbit Shrine", cf.rabbitRarityUpgrades) {
+                add("Increases the chance of getting ") {
+                    italic = false
+                    color = TextColor.GRAY
+                    append("higher rarity rabbits ") {
+                        color = TextColor.LIGHT_PURPLE
+                    }
+                    append("during ")
+                    append("Hoppity's Hunt") {
+                        color = TextColor.LIGHT_PURPLE
+                    }
+                    append(".")
+                }
+            }
+            val coach = createUpgradeItem(coachSkull.copy(), "Coach Jackrabbit", cf.chocolateMultiplierUpgrades) {
+                add("Increases the amount of ") {
+                    italic = false
+                    color = TextColor.GRAY
+                    append("Chocolate ") {
+                        color = TextColor.GOLD
+                    }
+                    append("you get per second.")
+                }
+            }
+
+            add(cookie)
+            add(timeTower)
+            add(shrine)
+            add(coach)
+        }.map { Displays.padding(2, Displays.item(it, showTooltip = true)) }.toRow(2).let {
+            Displays.background(SkyBlockPv.id("inventory/inventory-4x1"), Displays.padding(2, it))
+        }.asWidget(),
+    )
+
+    private fun createUpgradeItem(item: ItemStack, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) = item.apply {
+        set(DataComponents.CUSTOM_NAME, Text.join(name, " $level") { italic = false; color = TextColor.LIGHT_PURPLE })
+        set(DataComponents.LORE, ItemLore(listOf(TooltipBuilder().apply(tooltipBuilder).build())))
+    }
+
+    private fun createUpgradeItem(base: ItemLike, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) =
+        createUpgradeItem(ItemStack(base), name, level, tooltipBuilder)
 
     private fun getInfo(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
         "Information",
