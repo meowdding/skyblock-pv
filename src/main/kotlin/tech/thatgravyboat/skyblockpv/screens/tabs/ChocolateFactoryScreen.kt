@@ -31,7 +31,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
         val employees = getEmployees(cf, data)
         val rarities = getRarities(cf, data)
-        val info = getInfo(cf)
+        val info = getInfo(cf, data)
 
         LayoutBuild.frame(bg.width, bg.height) {
             if (maxOf(employees.width, rarities.width) + info.width + 3 > bg.width) {
@@ -54,7 +54,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
     }
 
-    private fun getInfo(cf: CfData) = PvWidgets.label(
+    private fun getInfo(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
         "Information",
         LayoutBuild.vertical {
             string("Chocolate: ") {
@@ -73,6 +73,16 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 color = TextColor.DARK_GRAY
                 append(cf.chocolateSincePrestige.shorten()) {
                     color = TextColor.GOLD
+                }
+            }
+            if (cf.prestigeLevel != data.misc.maxPrestigeLevel) {
+                val needed = (data.misc.chocolatePerPrestige[cf.prestigeLevel + 1] ?: 0) - cf.chocolateSincePrestige
+                val string = "§aReady!".takeIf { needed <= 0 } ?: needed.shorten()
+                string("Chocolate for next Prestige: ") {
+                    color = TextColor.DARK_GRAY
+                    append(string) {
+                        color = TextColor.GOLD
+                    }
                 }
             }
             string("Prestige Level: ") {

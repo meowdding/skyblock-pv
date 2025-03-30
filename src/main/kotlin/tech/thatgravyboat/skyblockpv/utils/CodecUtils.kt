@@ -9,6 +9,11 @@ import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
 
 object CodecUtils {
 
+    val INT_LONG_MAP: Codec<Map<Int, Long>> = Codec.unboundedMap(Codec.STRING, Codec.LONG).xmap(
+        { it.mapKeys { entry -> entry.key.toInt() } },
+        { it.mapKeys { entry -> entry.key.toString() } },
+    )
+
     val SKYBLOCK_RARITY_CODEC: Codec<SkyBlockRarity> = EnumCodec.of(SkyBlockRarity.entries.toTypedArray())
 
     val CUMULATIVE_INT_LIST: Codec<List<Int>> =

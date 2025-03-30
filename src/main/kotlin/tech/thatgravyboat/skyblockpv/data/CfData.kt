@@ -117,6 +117,12 @@ object CfCodecs {
         ).apply(it, ::CfEmployeeRepo)
     }
 
+    private val CfMiscCodec = RecordCodecBuilder.create {
+        it.group(
+            CodecUtils.INT_LONG_MAP.fieldOf("chocolate_prestige").forGetter(CfMiscRepo::chocolatePerPrestige),
+        ).apply(it, ::CfMiscRepo)
+    }
+
     private val CfRabbitRaritiesCodec = Codec.unboundedMap(CodecUtils.SKYBLOCK_RARITY_CODEC, Codec.STRING.listOf())
 
     init {
@@ -125,6 +131,7 @@ object CfCodecs {
                 CfTextureCodec.fieldOf("textures").forGetter(CfRepoData::textures),
                 CfEmployeeCodec.listOf().fieldOf("employees").forGetter(CfRepoData::employees),
                 CfRabbitRaritiesCodec.fieldOf("rabbits").forGetter(CfRepoData::rabbits),
+                CfMiscCodec.fieldOf("misc").forGetter(CfRepoData::misc),
             ).apply(it, ::CfRepoData)
         }
 
@@ -142,6 +149,7 @@ object CfCodecs {
         val textures: List<CfTextureRepo>,
         val employees: List<CfEmployeeRepo>,
         val rabbits: Map<SkyBlockRarity, List<String>>,
+        val misc: CfMiscRepo,
     )
 
     data class CfEmployeeRepo(
@@ -163,6 +171,12 @@ object CfCodecs {
         val texture: String,
     ) {
         fun createSkull() = createSkull(texture)
+    }
+
+    data class CfMiscRepo(
+        val chocolatePerPrestige: Map<Int, Long>,
+    ) {
+        val maxPrestigeLevel = chocolatePerPrestige.size + 1
     }
 }
 
