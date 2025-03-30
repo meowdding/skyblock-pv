@@ -40,8 +40,8 @@ data class CFData(
                     if (v is JsonPrimitive) k to v.asInt
                     else k to -1
                 }.filterValues { it != -1 },
-                barnCapacity = json["barn_capacity"].asInt(0),
-                prestigeLevel = json["prestige_level"].asInt(0),
+                barnCapacity = json["rabbit_barn_capacity_level"].asInt(0),
+                prestigeLevel = json["chocolate_level"].asInt(0),
                 clickUpgrades = json["click_upgrades"].asInt(0),
                 chocolateMultiplierUpgrades = json["chocolate_multiplier_upgrades"].asInt(0),
                 rabbitRarityUpgrades = json["rabbit_rarity_upgrades"].asInt(0),
