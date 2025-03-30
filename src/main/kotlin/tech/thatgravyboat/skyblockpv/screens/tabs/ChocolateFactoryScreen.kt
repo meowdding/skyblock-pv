@@ -9,8 +9,8 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.CFCodecs
-import tech.thatgravyboat.skyblockpv.data.CFData
+import tech.thatgravyboat.skyblockpv.data.CfCodecs
+import tech.thatgravyboat.skyblockpv.data.CfData
 import tech.thatgravyboat.skyblockpv.data.RabbitEmployee
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToRarityOrder
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
@@ -27,7 +27,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     override fun create(bg: DisplayWidget) {
         val profile = profile ?: return
         val cf = profile.chocolateFactoryData ?: return
-        val data = CFCodecs.data ?: return
+        val data = CfCodecs.data ?: return
 
         val employees = getEmployees(cf, data)
         val rarities = getRarities(cf, data)
@@ -54,7 +54,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
     }
 
-    private fun getInfo(cf: CFData) = PvWidgets.label(
+    private fun getInfo(cf: CfData) = PvWidgets.label(
         "Information",
         LayoutBuild.vertical {
             string("Chocolate: ") {
@@ -90,7 +90,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         },
     )
 
-    private fun getRarities(cf: CFData, data: CFCodecs.CfRepoData) = cf.rabbits.entries
+    private fun getRarities(cf: CfData, data: CfCodecs.CfRepoData) = cf.rabbits.entries
         .groupBy { data.rabbits.entries.find { repo -> repo.value.contains(it.key) }?.key }
         .mapNotNull { if (it.key != null) it.key!! to it.value else null }.toMap()
         .sortToRarityOrder()
@@ -100,9 +100,9 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             PvWidgets.iconNumberElement(item, Text.of("${rarity.value.size}") { color = rarity.key.color })
         }.chunked(4).map { it.toRow(1) }.toColumn(1, Alignment.CENTER).let { PvWidgets.label("Rarities", it.asWidget()) }
 
-    private fun getEmployees(cf: CFData, data: CFCodecs.CfRepoData) = data.employees.map { repoEmployee ->
+    private fun getEmployees(cf: CfData, data: CfCodecs.CfRepoData) = data.employees.map { repoEmployee ->
         val employee = cf.employees.find { it.id == repoEmployee.id } ?: RabbitEmployee(repoEmployee.id, 0)
-        val item = (CFCodecs.data?.textures?.find { it.id == employee.id }?.createSkull() ?: Items.BARRIER.defaultInstance).takeIf { employee.level > 0 }
+        val item = (CfCodecs.data?.textures?.find { it.id == employee.id }?.createSkull() ?: Items.BARRIER.defaultInstance).takeIf { employee.level > 0 }
             ?: Items.GRAY_DYE.defaultInstance
 
         PvWidgets.iconNumberElement(item, Text.of("${employee.level}") { color = employee.color }).withTooltip {

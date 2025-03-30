@@ -42,7 +42,7 @@ data class SkyBlockProfile(
     val essenceUpgrades: Map<String, Int>,
     val gardenData: GardenData,
     val farmingData: FarmingData,
-    val chocolateFactoryData: CFData?,
+    val chocolateFactoryData: CfData?,
 ) {
     companion object {
 
@@ -108,7 +108,7 @@ data class SkyBlockProfile(
                     )
                 },
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
-                chocolateFactoryData = member.getAsJsonObject("events")?.getAsJsonObject("easter")?.let { CFData.fromJson(it) },
+                chocolateFactoryData = member.getAsJsonObject("events")?.getAsJsonObject("easter")?.let { CfData.fromJson(it) },
             )
         }
 

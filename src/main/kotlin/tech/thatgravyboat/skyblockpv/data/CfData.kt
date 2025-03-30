@@ -15,7 +15,7 @@ import tech.thatgravyboat.skyblockpv.utils.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 
-data class CFData(
+data class CfData(
     val chocolate: Long,
     val totalChocolate: Long,
     val chocolateSincePrestige: Long,
@@ -32,8 +32,8 @@ data class CFData(
     val barnCapacity = barnCapacityLevel * 2 + 18
 
     companion object {
-        fun fromJson(json: JsonObject): CFData {
-            return CFData(
+        fun fromJson(json: JsonObject): CfData {
+            return CfData(
                 chocolate = json["chocolate"].asLong(0),
                 totalChocolate = json["total_chocolate"].asLong(0),
                 chocolateSincePrestige = json["chocolate_since_prestige"].asLong(0),
@@ -100,7 +100,7 @@ data class Hitman(
     }
 }
 
-object CFCodecs {
+object CfCodecs {
     var data: CfRepoData? = null
         private set
 
