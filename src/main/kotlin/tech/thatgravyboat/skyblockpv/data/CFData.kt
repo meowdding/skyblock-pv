@@ -21,7 +21,7 @@ data class CFData(
     val chocolateSincePrestige: Long,
     val employees: List<RabbitEmployee>,
     val rabbits: Map<String, Int>, // todo: also contains eggs collected & island stuff, needs custom handling
-    val barnCapacity: Int,
+    val barnCapacityLevel: Int,
     val prestigeLevel: Int,
     val clickUpgrades: Int,
     val chocolateMultiplierUpgrades: Int,
@@ -29,6 +29,8 @@ data class CFData(
     val timeTower: TimeTower?,
     val hitman: Hitman?,
 ) {
+    val barnCapacity = barnCapacityLevel * 2 + 18
+
     companion object {
         fun fromJson(json: JsonObject): CFData {
             return CFData(
@@ -40,7 +42,7 @@ data class CFData(
                     if (v is JsonPrimitive) k to v.asInt
                     else k to -1
                 }.filterValues { it != -1 },
-                barnCapacity = json["rabbit_barn_capacity_level"].asInt(0),
+                barnCapacityLevel = json["rabbit_barn_capacity_level"].asInt(0),
                 prestigeLevel = json["chocolate_level"].asInt(0),
                 clickUpgrades = json["click_upgrades"].asInt(0),
                 chocolateMultiplierUpgrades = json["chocolate_multiplier_upgrades"].asInt(0),
