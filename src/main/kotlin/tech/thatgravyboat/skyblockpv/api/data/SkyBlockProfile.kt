@@ -7,8 +7,9 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
-import tech.thatgravyboat.skyblockpv.data.*
+import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.Currency
+import tech.thatgravyboat.skyblockpv.data.EssenceData
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
@@ -24,6 +25,7 @@ import tech.thatgravyboat.skyblockpv.data.skills.mining.Forge
 import tech.thatgravyboat.skyblockpv.data.skills.mining.GlaciteData
 import tech.thatgravyboat.skyblockpv.data.skills.mining.MiningCore
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
+import tech.thatgravyboat.skyblockpv.utils.getPath
 import java.util.*
 
 data class SkyBlockProfile(
@@ -58,7 +60,7 @@ data class SkyBlockProfile(
     companion object {
 
         fun fromJson(json: JsonObject, user: UUID): SkyBlockProfile? {
-            val member = json.getAsJsonObject("members").getAsJsonObject(user.toString().replace("-", "")) ?: return null
+            val member = json.getPath("members.${user.toString().replace("-", "")}")?.asJsonObject ?: return null
             val playerStats = member.getAsJsonObject("player_stats")
             val playerData = member.getAsJsonObject("player_data")
             val profile = member.getAsJsonObject("profile")
@@ -82,12 +84,12 @@ data class SkyBlockProfile(
                 inventory = member.getAsJsonObject("inventory")?.let { InventoryData.fromJson(it) },
                 currency = member.getAsJsonObject("currencies")?.let { Currency.fromJson(it) },
                 firstJoin = profile["first_join"].asLong(0),
-                fairySouls = member.getAsJsonObject("fairy_soul")?.get("total_collected").asInt(0),
+                fairySouls = member.getPath("fairy_soul.total_collected").asInt(0),
                 skyBlockLevel = run {
                     val level = member.getAsJsonObject("leveling")
                     val experience = level?.get("experience").asInt(0)
 
-                    experience / 100 to (experience % 100).toInt()
+                    experience / 100 to (experience % 100)
                 },
                 skill = playerData.getSkillData(),
                 collections = member.getCollectionData(),
@@ -97,18 +99,13 @@ data class SkyBlockProfile(
                 mining = member.getAsJsonObject("mining_core")?.let { MiningCore.fromJson(it) },
                 forge = member.getAsJsonObject("forge")?.let { Forge.fromJson(it) },
                 glacite = member.getAsJsonObject("glacite_player_data")?.let { GlaciteData.fromJson(it) },
-                tamingLevelPetsDonated = run {
-                    val petsData = member.getAsJsonObject("pets_data")
-                    val petCare = petsData?.getAsJsonObject("pet_care")
-                    val donatedPets = petCare?.getAsJsonArray("pet_types_sacrificed")
-
-                    donatedPets?.toList()?.map { it.asString("") }?.filter { it.isNotBlank() } ?: emptyList()
-                },
+                tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed")?.asJsonArray
+                    ?.map { it.asString("") }?.filter { it.isNotBlank() } ?: emptyList(),
                 pets = member.getAsJsonObject("pets_data").getAsJsonArray("pets").map { Pet.fromJson(it.asJsonObject) },
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
                 essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
-                petMilestones = playerStats?.getAsJsonObject("pets")?.getAsJsonObject("milestone").asMap { id, amount -> id to amount.asInt(0) },
+                petMilestones = playerStats?.getPath("pets.milestone").asMap { id, amount -> id to amount.asInt(0) },
                 gardenData = run {
                     val data = member.getAsJsonObject("garden_player_data") ?: return@run GardenData(0, 0, 0)
 
@@ -161,8 +158,8 @@ data class SkyBlockProfile(
             }
         }
 
-        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { name, data ->
-            val data = data.asJsonObject
+        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { name, jsonElement ->
+            val data = jsonElement.asJsonObject
             val maxTier = when (name) {
                 "zombie", "vampire" -> 4
                 else -> 3
