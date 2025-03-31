@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.level.ItemLike
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
@@ -20,7 +21,6 @@ import tech.thatgravyboat.skyblockpv.data.CfCodecs
 import tech.thatgravyboat.skyblockpv.data.CfData
 import tech.thatgravyboat.skyblockpv.data.RabbitEmployee
 import tech.thatgravyboat.skyblockpv.data.SkullTextures
-import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToRarityOrder
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
@@ -35,6 +35,15 @@ import java.time.Instant
 val coachSkull by lazy { SkullTextures.COACH_JACKRABBIT.createSkull() }
 
 class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("CF", gameProfile, profile) {
+
+    private val rabbitRarities = listOf(
+        SkyBlockRarity.COMMON,
+        SkyBlockRarity.UNCOMMON,
+        SkyBlockRarity.RARE,
+        SkyBlockRarity.EPIC,
+        SkyBlockRarity.LEGENDARY,
+        SkyBlockRarity.MYTHIC,
+    )
 
     override fun create(bg: DisplayWidget) {
         val profile = profile ?: return
@@ -217,15 +226,40 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         },
     )
 
-    private fun getRarities(cf: CfData, data: CfCodecs.CfRepoData) = cf.rabbits.entries
-        .groupBy { data.rabbits.entries.find { repo -> repo.value.contains(it.key) }?.key }
-        .mapNotNull { if (it.key != null) it.key!! to it.value else null }.toMap()
-        .sortToRarityOrder()
-        .map { rarity ->
-            val item = data.textures.find { it.id == rarity.key.name }?.createSkull() ?: Items.BARRIER.defaultInstance
+    private fun getRarities(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
+        "Rarities",
+        data.rabbits.entries
+            .reversed()
+            .associateWith { repo -> cf.rabbits.entries.filter { repo.value.contains(it.key) } }
+            .map { (repo, entries) ->
+                val item = data.textures.find { it.id == repo.key.name }?.createSkull() ?: Items.BARRIER.defaultInstance
 
-            PvWidgets.iconNumberElement(item, Text.of("${rarity.value.size}") { color = rarity.key.color })
-        }.chunked(4).map { it.toRow(1) }.toColumn(1, Alignment.CENTER).let { PvWidgets.label("Rarities", it.asWidget()) }
+                PvWidgets.iconNumberElement(item, Text.of("${entries.size}") { color = repo.key.color }).withTooltip {
+                    add(repo.key.name) {
+                        bold = true
+                        color = repo.key.color
+                        append(
+                            Text.of("${entries.size}") {
+                                color = repo.key.color
+                                bold = false
+                            }.wrap(" §7(", "§7)"),
+                        )
+                    }
+                    add("Uniques: ") {
+                        color = TextColor.GRAY
+                        append("${entries.size}") {
+                            color = repo.key.color
+                        }
+                    }
+                    add("Total: ") {
+                        color = TextColor.GRAY
+                        append("${entries.sumOf { it.value }}") {
+                            color = TextColor.GOLD
+                        }
+                    }
+                }
+            }.chunked(4).map { it.toRow(1) }.toColumn(1, Alignment.CENTER).asWidget(),
+    )
 
     private fun getEmployees(cf: CfData, data: CfCodecs.CfRepoData) = data.employees.map { repoEmployee ->
         val employee = cf.employees.find { it.id == repoEmployee.id } ?: RabbitEmployee(repoEmployee.id, 0)
