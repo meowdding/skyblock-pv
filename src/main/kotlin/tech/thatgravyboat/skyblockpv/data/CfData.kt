@@ -107,7 +107,7 @@ object CfCodecs {
         private set
 
     private val CfTextureCodec = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(
-        { it.entries.map { (key, value) -> CfTextureRepo(key, value) } },
+        { it.entries.map(::CfTextureRepo) },
         { emptyMap() },
     )
 
