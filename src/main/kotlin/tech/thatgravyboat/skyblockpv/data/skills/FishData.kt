@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data
+package tech.thatgravyboat.skyblockpv.data.skills
 
 import com.google.gson.JsonObject
 import net.minecraft.ChatFormatting
