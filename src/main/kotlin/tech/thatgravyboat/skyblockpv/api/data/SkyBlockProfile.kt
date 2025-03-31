@@ -10,6 +10,7 @@ import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.EssenceData
+import tech.thatgravyboat.skyblockpv.data.RiftData
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
@@ -55,6 +56,7 @@ data class SkyBlockProfile(
     val essenceUpgrades: Map<String, Int>,
     val gardenData: GardenData,
     val farmingData: FarmingData,
+    val rift: RiftData? = null,
 ) {
     companion object {
 
@@ -117,6 +119,7 @@ data class SkyBlockProfile(
                     )
                 },
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
+                rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
             )
         }
 
