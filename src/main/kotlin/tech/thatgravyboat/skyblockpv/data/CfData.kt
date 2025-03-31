@@ -28,6 +28,7 @@ data class CfData(
     val rabbitRarityUpgrades: Int,
     val timeTower: TimeTower?,
     val hitman: Hitman?,
+    val lastUpdate: Long,
 ) {
     val barnCapacity = barnCapacityLevel * 2 + 18
 
@@ -49,6 +50,7 @@ data class CfData(
                 rabbitRarityUpgrades = json["rabbit_rarity_upgrades"].asInt(0),
                 timeTower = json.getAsJsonObject("time_tower")?.let { TimeTower.fromJson(it) },
                 hitman = json.getAsJsonObject("rabbit_hitmen")?.let { Hitman.fromJson(it) },
+                lastUpdate = json["last_viewed_chocolate_factory"].asLong(0),
             )
         }
     }

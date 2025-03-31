@@ -26,8 +26,10 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
+import java.time.Instant
 
 val coachSkull by lazy { SkullTextures.COACH_JACKRABBIT.createSkull() }
 
@@ -41,7 +43,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val employees = getEmployees(cf, data)
         val rarities = getRarities(cf, data)
         val info = getInfo(cf, data)
-        val upgrades = getUpgrades(cf, data)
+        val upgrades = getUpgrades(cf)
 
         LayoutBuild.frame(bg.width, bg.height) {
             if (maxOf(employees.width, upgrades.width) + info.width + 3 > bg.width) {
@@ -66,7 +68,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
     }
 
-    private fun getUpgrades(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
+    private fun getUpgrades(cf: CfData) = PvWidgets.label(
         "Upgrades",
         buildList {
             val cookie = createUpgradeItem(Items.COOKIE, "Click Upgrade", cf.clickUpgrades + 1) {
@@ -91,6 +93,19 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                         color = TextColor.GREEN
                     }
                     append("per charge.")
+                }
+                space()
+                add("Charges: ") {
+                    color = TextColor.GRAY
+                    append("${cf.timeTower?.charges ?: 0}") {
+                        color = TextColor.LIGHT_PURPLE
+                    }
+                    append("/") {
+                        color = TextColor.GRAY
+                    }
+                    append("3") {
+                        color = TextColor.LIGHT_PURPLE
+                    }
                 }
             }
             val shrine = createUpgradeItem(Items.RABBIT_FOOT, "Rabbit Shrine", cf.rabbitRarityUpgrades) {
@@ -177,6 +192,10 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 append("${cf.barnCapacity}") {
                     color = TextColor.GREEN
                 }
+            }
+            string("Last Updated: ") {
+                color = TextColor.DARK_GRAY
+                append(Instant.ofEpochMilli(cf.lastUpdate).toReadableString())
             }
         },
     )
