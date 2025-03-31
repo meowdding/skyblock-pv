@@ -14,9 +14,9 @@ import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.RemindersAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.EssenceData.addMiningPerk
-import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
-import tech.thatgravyboat.skyblockpv.data.MiningCore
-import tech.thatgravyboat.skyblockpv.data.RockBrackets
+import tech.thatgravyboat.skyblockpv.data.skills.mining.ForgeTimeData
+import tech.thatgravyboat.skyblockpv.data.skills.mining.MiningCore
+import tech.thatgravyboat.skyblockpv.data.skills.mining.RockBrackets
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
