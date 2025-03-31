@@ -19,8 +19,6 @@ import tech.thatgravyboat.skyblockpv.utils.createSkull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-val cfIcon by lazy { SkullTextures.CF.createSkull() }
-
 enum class PvTab(
     private val screen: KClass<out BasePvScreen>,
     private val constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen,
@@ -34,7 +32,7 @@ enum class PvTab(
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
-    CF(ChocolateFactoryScreen::class, cfIcon)
+    CF(ChocolateFactoryScreen::class, SkullTextures.CF.createSkull())
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(
