@@ -17,16 +17,6 @@ TODO:
 </details>
 
 <details>
-<summary>Chocolate Factory (seperate tab in stats)</summary>
-
-- [ ] Rabbit Family
-- [ ] modifiers
-- [ ] Stats
-- [ ] found rabbits stats
-
-</details>
-
-<details>
 <summary>Collections</summary>
 
 - [ ] Minions
