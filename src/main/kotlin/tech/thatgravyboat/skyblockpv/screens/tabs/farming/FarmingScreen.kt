@@ -44,7 +44,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
         LayoutBuild.vertical {
-            val garden = gardenProfile?.getOrNull()
+            val garden = data?.getOrNull()
 
             string("Copper: ") {
                 this.color = TextColor.DARK_GRAY
@@ -57,7 +57,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 Displays.text(
                     Text.of("Garden Level: ") {
                         this.color = TextColor.DARK_GRAY
-                        append(loadingComponent(Text.of((garden?.getGardenLevel() ?: 0).toString()) { this.color = TextColor.DARK_GREEN }))
+                        append(loadingComponent { Text.of(it.getGardenLevel().toString()) { this.color = TextColor.DARK_GREEN } })
                     },
                     shadow = false,
                 ).let {

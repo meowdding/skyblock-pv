@@ -16,7 +16,8 @@ abstract class CachedApi<D, V, K> {
             return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong")))
         }
 
-        return@getOrPut CacheEntry(Result.success(decode(result, data)))
+
+        return@getOrPut CacheEntry(decode(result, data)?.let { Result.success(it) } ?: run { Result.failure(RuntimeException("Something went wrong!")) })
     }.takeIf { System.currentTimeMillis() - it.timestamp < CACHE_TIME }?.data ?: run {
         cache.remove(getKey(data))
         getData(data)
@@ -25,7 +26,7 @@ abstract class CachedApi<D, V, K> {
     abstract fun path(): String
     abstract fun variables(data: D): Map<String, String>
     abstract fun getKey(data: D): K
-    abstract fun decode(data: JsonObject, originalData: D): V
+    abstract fun decode(data: JsonObject, originalData: D): V?
 
     fun clearCache() {
         cache.clear()

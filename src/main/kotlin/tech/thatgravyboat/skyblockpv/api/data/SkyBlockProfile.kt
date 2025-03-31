@@ -27,11 +27,13 @@ import tech.thatgravyboat.skyblockpv.data.skills.mining.GlaciteData
 import tech.thatgravyboat.skyblockpv.data.skills.mining.MiningCore
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.getPath
+import tech.thatgravyboat.skyblockpv.utils.Utils.toDashlessString
 import java.util.*
 
 data class SkyBlockProfile(
     val selected: Boolean,
     val id: ProfileId,
+    val userId: UUID,
     val profileType: ProfileType = ProfileType.UNKNOWN,
 
     val currency: Currency?,
@@ -61,7 +63,7 @@ data class SkyBlockProfile(
     companion object {
 
         fun fromJson(json: JsonObject, user: UUID): SkyBlockProfile? {
-            val member = json.getPath("members.${user.toString().replace("-", "")}")?.asJsonObject ?: return null
+            val member = json.getPath("members.${user.toDashlessString()}")?.asJsonObject ?: return null
             val playerStats = member.getAsJsonObject("player_stats")
             val playerData = member.getAsJsonObject("player_data")
             val profile = member.getAsJsonObject("profile")
@@ -72,6 +74,7 @@ data class SkyBlockProfile(
                     id = json["profile_id"].asUUID(Util.NIL_UUID),
                     name = json["cute_name"].asString("Unknown"),
                 ),
+                userId = user,
 
                 profileType = json.get("game_mode")?.asString.let {
                     when (it) {

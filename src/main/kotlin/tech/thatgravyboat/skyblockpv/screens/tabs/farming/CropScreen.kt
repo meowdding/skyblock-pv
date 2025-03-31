@@ -52,7 +52,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     private fun getCropUpgrade(it: GardenResource): Display {
-        val gardenData = gardenProfile?.getOrNull()
+        val gardenData = data?.getOrNull()
         val cropLevel = gardenData?.cropUpgradeLevels?.get(it)?.toInt() ?: 0
 
         val cropUpgradeCost = StaticGardenData.miscData.cropUpgradeCost
@@ -94,7 +94,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     private fun getCropMilestone(resource: GardenResource): Display {
-        val gardenData = gardenProfile?.getOrNull()
+        val gardenData = data?.getOrNull()
 
         val resourcesCollected = gardenData?.resourcesCollected?.get(resource) ?: 0
 
