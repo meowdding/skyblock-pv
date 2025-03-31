@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data
+package tech.thatgravyboat.skyblockpv.data.skills.mining
 
 import com.google.gson.JsonArray
 import com.mojang.datafixers.util.Either
@@ -262,7 +262,7 @@ class CoreMiningNode(
                 it.group(
                     PowderType.CODEC.optionalFieldOf("type", PowderType.MITHRIL).forGetter(CotmCost::type),
                     Codec.INT.optionalFieldOf("amount", 0).forGetter(CotmCost::amount),
-                ).apply(it, ::CotmCost)
+                ).apply(it, CoreMiningNode::CotmCost)
             }
         }
     }
@@ -274,7 +274,7 @@ class CoreMiningNode(
                     CotmCost.CODEC.fieldOf("cost").forGetter(CotmLevel::cost),
                     Codec.INT.listOf().optionalFieldOf("include", emptyList()).forGetter(CotmLevel::include),
                     ExtraCodecs.compactListCodec(Codec.STRING).fieldOf("reward").forGetter(CotmLevel::reward),
-                ).apply(it, ::CotmLevel)
+                ).apply(it, CoreMiningNode::CotmLevel)
             }
         }
 

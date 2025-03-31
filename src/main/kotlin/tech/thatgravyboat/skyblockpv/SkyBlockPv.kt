@@ -19,8 +19,8 @@ import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.data.EssenceData
-import tech.thatgravyboat.skyblockpv.data.ForgeTimeData
-import tech.thatgravyboat.skyblockpv.data.FossilTypes
+import tech.thatgravyboat.skyblockpv.data.skills.mining.ForgeTimeData
+import tech.thatgravyboat.skyblockpv.data.skills.mining.FossilTypes
 import tech.thatgravyboat.skyblockpv.screens.PvTab
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils

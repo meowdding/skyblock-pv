@@ -23,8 +23,8 @@ import tech.thatgravyboat.skyblockpv.api.StatusAPI
 import tech.thatgravyboat.skyblockpv.api.data.PlayerStatus
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.SkullTextures
-import tech.thatgravyboat.skyblockpv.data.getIconFromSlayerName
-import tech.thatgravyboat.skyblockpv.data.getSlayerLevel
+import tech.thatgravyboat.skyblockpv.data.skills.combat.getIconFromSlayerName
+import tech.thatgravyboat.skyblockpv.data.skills.combat.getSlayerLevel
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer

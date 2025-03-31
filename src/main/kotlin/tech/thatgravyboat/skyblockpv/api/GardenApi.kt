@@ -2,7 +2,7 @@ package tech.thatgravyboat.skyblockpv.api
 
 import com.google.gson.JsonObject
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.GardenProfile
+import tech.thatgravyboat.skyblockpv.data.skills.farming.GardenProfile
 import java.util.*
 
 private const val PATH = "v2/skyblock/garden"

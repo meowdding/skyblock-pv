@@ -9,7 +9,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.SkillData
+import tech.thatgravyboat.skyblockpv.data.skills.SkillData
 
 private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/skills"
 

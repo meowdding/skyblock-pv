@@ -12,8 +12,8 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.EssenceData.addMiningPerk
-import tech.thatgravyboat.skyblockpv.data.FossilTypes
-import tech.thatgravyboat.skyblockpv.data.GlaciteData
+import tech.thatgravyboat.skyblockpv.data.skills.mining.FossilTypes
+import tech.thatgravyboat.skyblockpv.data.skills.mining.GlaciteData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
