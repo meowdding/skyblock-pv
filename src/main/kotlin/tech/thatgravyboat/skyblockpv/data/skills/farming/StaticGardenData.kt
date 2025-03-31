@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data
+package tech.thatgravyboat.skyblockpv.data.skills.farming
 
 import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
@@ -172,7 +172,7 @@ data object StaticGardenData {
                 GardenCodecs.PLOT_DATA.listOf().fieldOf("plots").forGetter { plots },
                 GardenCodecs.VISITOR_DATA.listOf().fieldOf("visitors").forGetter { visitors },
                 Codec.unboundedMap(GardenResource.CODEC, GardenCodecs.TOOL_INFO).fieldOf("tools").forGetter { tools },
-            ).apply(it, ::init)
+            ).apply(it, StaticGardenData::init)
         }
 
         val gardenData = Utils.loadFromRepo<JsonObject>("garden_data") ?: JsonObject()

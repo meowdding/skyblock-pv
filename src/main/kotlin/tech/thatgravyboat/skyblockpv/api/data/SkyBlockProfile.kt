@@ -12,6 +12,17 @@ import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
+import tech.thatgravyboat.skyblockpv.data.skills.FishData
+import tech.thatgravyboat.skyblockpv.data.skills.Pet
+import tech.thatgravyboat.skyblockpv.data.skills.TrophyFishData
+import tech.thatgravyboat.skyblockpv.data.skills.combat.DungeonData
+import tech.thatgravyboat.skyblockpv.data.skills.combat.MobData
+import tech.thatgravyboat.skyblockpv.data.skills.combat.SlayerTypeData
+import tech.thatgravyboat.skyblockpv.data.skills.farming.FarmingData
+import tech.thatgravyboat.skyblockpv.data.skills.farming.GardenData
+import tech.thatgravyboat.skyblockpv.data.skills.mining.Forge
+import tech.thatgravyboat.skyblockpv.data.skills.mining.GlaciteData
+import tech.thatgravyboat.skyblockpv.data.skills.mining.MiningCore
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import java.util.*
 

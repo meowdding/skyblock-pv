@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data
+package tech.thatgravyboat.skyblockpv.data.skills.combat
 
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
