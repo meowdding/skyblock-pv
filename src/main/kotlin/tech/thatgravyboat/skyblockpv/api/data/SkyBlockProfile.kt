@@ -7,6 +7,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
+import tech.thatgravyboat.skyblockpv.data.CfData
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.EssenceData
