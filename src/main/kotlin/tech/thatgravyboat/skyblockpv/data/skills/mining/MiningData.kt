@@ -9,6 +9,7 @@ import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.getPath
 
 data class MiningCore(
     val nodes: Map<String, Int>,
@@ -89,7 +90,7 @@ data class Forge(
 ) {
     companion object {
         fun fromJson(json: JsonObject): Forge {
-            val forge = json.getAsJsonObject("forge_processes")?.getAsJsonObject("forge_1") ?: JsonObject()
+            val forge = json.getPath("forge_processes.forge_1") ?: JsonObject()
 
             return forge.asMap { key, value ->
                 val obj = value.asJsonObject
