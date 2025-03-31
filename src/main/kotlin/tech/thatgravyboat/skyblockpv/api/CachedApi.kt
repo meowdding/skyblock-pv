@@ -12,8 +12,8 @@ abstract class CachedApi<D, V, K> {
 
     suspend fun getData(data: D): Result<V> = cache.getOrPut(getKey(data)) {
         val result = HypixelAPI.get(path(), variables(data)) ?: run {
-            ChatUtils.chat("Something went wrong :3")
-            return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong :3")))
+            ChatUtils.chat("Something went wrong fetching the status from Hypixel. Report this on the Discord!")
+            return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong")))
         }
 
         return@getOrPut CacheEntry(Result.success(decode(result, data)))
