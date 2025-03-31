@@ -1,70 +1,18 @@
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import tech.thatgravyboat.skyblockpv.museum.CreateMuseumDataTask
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 import kotlin.time.Duration.Companion.hours
 
-open class CompactingResourcesExtension {
-
-    internal val compactors: MutableList<CompactedResources<*>> = mutableListOf()
-    internal val externalResources: MutableList<ExternalResource> = mutableListOf()
-    var basePath: String? = null
-
-    fun compactToArray(folder: String, output: String = folder) {
-        compactors.add(CompactToArray(folder, output))
-    }
-
-    fun compactToObject(folder: String, output: String = folder) {
-        compactors.add(CompactToObject(folder, output))
-    }
-
-    fun downloadResource(url: String, output: String, json: Boolean = true) {
-        externalResources.add(ExternalResource(url, output, json))
-    }
-}
 project.extensions.create<CompactingResourcesExtension>("compactingResource")
 
-class CompactToObject(val folder: String, val outputFile: String) : CompactedResources<JsonObject>(::JsonObject, outputFile) {
-    override fun getPath() = arrayOf("$folder/*.json", "$folder/*.jsonc")
-
-    override fun add(fileName: String, element: JsonElement) {
-        value!!.add(fileName, element)
-    }
-}
-class CompactToArray(private val folder: String, outputFile: String) : CompactedResources<JsonArray>(::JsonArray, outputFile) {
-    override fun getPath() = arrayOf("$folder/*.json", "$folder/*.jsonc")
-
-    override fun add(fileName: String, element: JsonElement) {
-        value!!.add(element)
-    }
-}
-
-abstract class CompactedResources<T: JsonElement>(private val factory: () -> T, val output: String) {
-    protected var value: T? = null
-
-    abstract fun add(fileName: String, element: JsonElement)
-    abstract fun getPath(): Array<String>
-
-    fun setup() {
-        value = factory()
-    }
-
-    fun complete(): JsonElement {
-        val data = value!!
-        value = null
-        return data
-    }
-}
-
-data class ExternalResource(val url: String, val name: String, val json: Boolean)
-
-val downloadCache = DownloadedFileCache(project.gradle.gradleUserHomeDir.toPath().resolve("caches/sbpv_download"), 1.hours)
+val downloadCache = FileCache(project.gradle.gradleUserHomeDir.toPath().resolve(DEFAULT_CACHE_DIRECTORY), 1.hours)
+val museumDataTask = tasks.register<CreateMuseumDataTask>("createMuseumData")
 
 tasks.withType<ProcessResources>().configureEach {
+    dependsOn(museumDataTask.get())
     val configuration = project.extensions.getByType<CompactingResourcesExtension>()
     val sourceSets = project.extensions.getByType<SourceSetContainer>()
     val listOfPaths = configuration.compactors.flatMap { it.getPath().toList() }.map { "${configuration.basePath}/$it" }
@@ -76,6 +24,7 @@ tasks.withType<ProcessResources>().configureEach {
 
     exclude { projectDirectory.relativize(it.file.toPath()).toString().contains("src/main/resources/${configuration.basePath}") }
     from(project.layout.buildDirectory.dir("generated/compacted_resources/").get())
+    from(museumDataTask.get().outputs.files)
 
     sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).resources.srcDirs.add(outDirectory.toFile())
 
