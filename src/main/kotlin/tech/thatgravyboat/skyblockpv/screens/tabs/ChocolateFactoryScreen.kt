@@ -13,6 +13,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
+import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.split
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.CfCodecs
@@ -78,7 +79,11 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                     append("Chocolate ") {
                         color = TextColor.GOLD
                     }
-                    append("you get per click.")
+
+                }
+                add("you get per click.") {
+                    italic = false
+                    color = TextColor.GRAY
                 }
             }
             val timeTower = createUpgradeItem(Items.CLOCK, "Time Tower", cf.timeTower?.level ?: 0) {
@@ -88,7 +93,10 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                     append("Chocolate Production ") {
                         color = TextColor.GOLD
                     }
-                    append("for ")
+                }
+                add("for ") {
+                    italic = false
+                    color = TextColor.GRAY
                     append("1h ") {
                         color = TextColor.GREEN
                     }
@@ -96,6 +104,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 }
                 space()
                 add("Charges: ") {
+                    italic = false
                     color = TextColor.GRAY
                     append("${cf.timeTower?.charges ?: 0}") {
                         color = TextColor.LIGHT_PURPLE
@@ -112,24 +121,32 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 add("Increases the chance of getting ") {
                     italic = false
                     color = TextColor.GRAY
-                    append("higher rarity rabbits ") {
-                        color = TextColor.LIGHT_PURPLE
+                }
+                add("higher rarity rabbits ") {
+                    italic = false
+                    color = TextColor.LIGHT_PURPLE
+                    append("during ") {
+                        color = TextColor.GRAY
                     }
-                    append("during ")
                     append("Hoppity's Hunt") {
                         color = TextColor.LIGHT_PURPLE
                     }
-                    append(".")
+                    append(".") {
+                        color = TextColor.GRAY
+                    }
                 }
             }
             val coach = createUpgradeItem(coachSkull.copy(), "Coach Jackrabbit", cf.chocolateMultiplierUpgrades) {
                 add("Increases the amount of ") {
                     italic = false
                     color = TextColor.GRAY
-                    append("Chocolate ") {
-                        color = TextColor.GOLD
+                }
+                add("Chocolate ") {
+                    italic = false
+                    color = TextColor.GOLD
+                    append("you get per second.") {
+                        color = TextColor.GRAY
                     }
-                    append("you get per second.")
                 }
             }
 
@@ -144,7 +161,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     private fun createUpgradeItem(item: ItemStack, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) = item.apply {
         set(DataComponents.CUSTOM_NAME, Text.join(name, " $level") { italic = false; color = TextColor.LIGHT_PURPLE })
-        set(DataComponents.LORE, ItemLore(listOf(TooltipBuilder().apply(tooltipBuilder).build())))
+        set(DataComponents.LORE, ItemLore(TooltipBuilder().apply(tooltipBuilder).build().split("\n")))
     }
 
     private fun createUpgradeItem(base: ItemLike, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) =
