@@ -26,6 +26,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
+import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
@@ -223,6 +224,42 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 color = TextColor.DARK_GRAY
                 append(Instant.ofEpochMilli(cf.lastUpdate).toReadableString())
             }
+
+            display(
+                Displays.text(
+                    Text.of("Hitman Slots: ") {
+                        color = TextColor.DARK_GRAY
+                        append("${cf.hitman?.slots ?: 0} Unlocked") {
+                            color = TextColor.RED
+                        }
+                        append(" - ")
+                        append("${cf.hitman?.uncollectedEggs ?: 0} Ready") {
+                            color = TextColor.RED
+                        }
+                    },
+                    shadow = false,
+                ).withTooltip {
+                    add("Paid: ") {
+                        color = TextColor.GRAY
+                        val paid = cf.hitman?.slots?.minus(1)?.let { data.hitmanCost[it] } ?: 0
+                        val total = data.hitmanCost.last()
+                        val percentage = paid.toDouble() / total * 100
+
+                        append(paid.toFormattedString()) {
+                            color = TextColor.GOLD
+                        }
+                        append("/")
+                        append(total.shorten(2)) {
+                            color = TextColor.GOLD
+                        }
+                        append(" (")
+                        append("${percentage.round()}%") {
+                            color = TextColor.GOLD
+                        }
+                        append(")")
+                    }
+                },
+            )
         },
     )
 

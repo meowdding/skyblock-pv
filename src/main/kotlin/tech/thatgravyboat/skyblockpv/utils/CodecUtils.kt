@@ -22,6 +22,12 @@ object CodecUtils {
             { it.reversed().runningFold(0, Int::minus).reversed() },
         )
 
+    val CUMULATIVE_LONG_LIST: Codec<List<Long>> =
+        Codec.LONG.listOf().xmap(
+            { it.runningFold(0, Long::plus).distinct() },
+            { it.reversed().runningFold(0, Long::minus).reversed() },
+        )
+
     val VECTOR_2I = Codec.INT.listOf(2, 2).xmap(
         { Vector2i(it[0], it[1]) },
         { listOf(it.x, it.y) },

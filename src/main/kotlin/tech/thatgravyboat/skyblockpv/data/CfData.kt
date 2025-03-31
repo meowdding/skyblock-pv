@@ -134,6 +134,7 @@ object CfCodecs {
                 CfEmployeeCodec.listOf().fieldOf("employees").forGetter(CfRepoData::employees),
                 CfRabbitRaritiesCodec.fieldOf("rabbits").forGetter(CfRepoData::rabbits),
                 CfMiscCodec.fieldOf("misc").forGetter(CfRepoData::misc),
+                CodecUtils.CUMULATIVE_LONG_LIST.fieldOf("hitman_cost").forGetter(CfRepoData::hitmanCost),
             ).apply(it, ::CfRepoData)
         }
 
@@ -152,6 +153,7 @@ object CfCodecs {
         val employees: List<CfEmployeeRepo>,
         val rabbits: Map<SkyBlockRarity, List<String>>,
         val misc: CfMiscRepo,
+        val hitmanCost: List<Long>,
     )
 
     data class CfEmployeeRepo(
