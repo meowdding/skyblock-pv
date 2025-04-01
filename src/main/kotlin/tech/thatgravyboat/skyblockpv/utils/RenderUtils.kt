@@ -20,6 +20,9 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 
 object RenderUtils {
 
+    val MONO_TEXTURE = SkyBlockPv.id("textures/gui/inventory/mono.png")
+    val POLY_TEXTURE = SkyBlockPv.id("textures/gui/inventory/poly.png")
+
     val INVENTORY_BACKGROUND = RenderPipelines.register(
         RenderPipeline.builder()
             .withLocation(SkyBlockPv.id("inventory"))
@@ -71,7 +74,7 @@ object RenderUtils {
         buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 1.0f).setUv(1f, 0f)
 
 
-        val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(SkyBlockPv.id("textures/gui/inventory-3x1.png")).texture
+        val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(MONO_TEXTURE).texture
         RenderSystem.setShaderTexture(0, gpuTexture)
         PipelineRenderer.draw(MONO_INVENTORY_BACKGROUND, buffer.buildOrThrow()) { pass: RenderPass ->
             pass.bindSampler("Sampler0", gpuTexture)
@@ -96,7 +99,7 @@ object RenderUtils {
         buffer.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 1.0f).setUv(1f, 1f)
         buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 1.0f).setUv(1f, 0f)
 
-        val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(SkyBlockPv.id("textures/gui/base_inventory.png")).texture
+        val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(POLY_TEXTURE).texture
         RenderSystem.setShaderTexture(0, gpuTexture)
         PipelineRenderer.draw(INVENTORY_BACKGROUND, buffer.buildOrThrow()) { pass: RenderPass ->
             pass.bindSampler("Sampler0", gpuTexture)
