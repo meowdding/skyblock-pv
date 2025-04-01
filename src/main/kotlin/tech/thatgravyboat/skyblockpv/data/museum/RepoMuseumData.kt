@@ -9,19 +9,19 @@ import tech.thatgravyboat.skyblockpv.utils.Utils
 object RepoMuseumData {
 
     var armor: List<MuseumArmor> = emptyList()
-    var items: List<MuseumItem> = emptyList()
+    var weapons: List<MuseumItem> = emptyList()
     var rarities: List<MuseumItem> = emptyList()
     var special: List<String> = emptyList()
 
     private val CODEC = RecordCodecBuilder.create {
         it.group(
             MUSEUM_ARMOR_CODEC.listOf().fieldOf("armor").forGetter { armor },
-            MUSEUM_ITEM_CODEC.listOf().fieldOf("items").forGetter { items },
+            MUSEUM_ITEM_CODEC.listOf().fieldOf("weapons").forGetter { weapons },
             MUSEUM_ITEM_CODEC.listOf().fieldOf("rarities").forGetter { rarities },
             Codec.STRING.listOf().fieldOf("special").forGetter { special }
-        ).apply(it) { armor, items, rarities, special ->
+        ).apply(it) { armor, weapons, rarities, special ->
             RepoMuseumData.armor = armor
-            RepoMuseumData.items = items
+            RepoMuseumData.weapons = weapons
             RepoMuseumData.rarities = rarities
             RepoMuseumData.special = special
         }

@@ -4,6 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils
 import earth.terrarium.olympus.client.utils.Orientation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.PlayerFaceRenderer
 import net.minecraft.client.gui.components.Renderable
@@ -28,6 +31,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.width
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.data.LegacyItemStack
 import tech.thatgravyboat.skyblockpv.utils.Utils.drawRoundedRec
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
@@ -337,6 +341,25 @@ object Displays {
                 }
             }
         }
+    }
+
+    fun item(
+        item: LegacyItemStack,
+        width: Int = 16,
+        height: Int = 16,
+        showTooltip: Boolean = false,
+        showStackSize: Boolean = false,
+        customStackText: Any? = null,
+    ): Display {
+        var display = item(item.itemStack, width, height, showTooltip, showStackSize, customStackText)
+        if (!item.hasFinishedLoading) {
+            CoroutineScope(Dispatchers.IO).launch {
+                item.load()
+                display = item(item.itemStack, width, height, showTooltip, showStackSize, customStackText)
+            }
+        }
+
+        return supplied { display }
     }
 
     fun item(

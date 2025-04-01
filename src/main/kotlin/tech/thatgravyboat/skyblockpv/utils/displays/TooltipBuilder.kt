@@ -19,4 +19,5 @@ class TooltipBuilder {
     fun add(init: MutableComponent.() -> Unit) = lines.add(Text.of("", init))
 
     fun build(): Component = Text.multiline(*lines.toTypedArray())
+    fun lines() = lines
 }

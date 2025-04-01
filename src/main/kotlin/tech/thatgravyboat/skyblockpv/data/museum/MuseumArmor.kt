@@ -9,9 +9,9 @@ data class MuseumArmor(val id: String, val parentId: String?, val armorIds: List
 
 val MUSEUM_ARMOR_CODEC = RecordCodecBuilder.create {
     it.group(
-        Codec.STRING.fieldOf("id").forGetter(MuseumArmor::id),
+        Codec.STRING.fieldOf("armor_id").forGetter(MuseumArmor::id),
         Codec.STRING.optionalFieldOf("parent_id").forGetter { Optional.empty() },
-        Codec.STRING.listOf().optionalFieldOf("item", emptyList()).forGetter(MuseumArmor::armorIds)
+        Codec.STRING.listOf().optionalFieldOf("items", emptyList()).forGetter(MuseumArmor::armorIds)
     ).apply(it, ::initArmor)
 }
 

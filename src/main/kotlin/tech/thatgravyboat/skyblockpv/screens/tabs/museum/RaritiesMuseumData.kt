@@ -1,0 +1,9 @@
+package tech.thatgravyboat.skyblockpv.screens.tabs.museum
+
+import com.mojang.authlib.GameProfile
+import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.data.museum.RepoMuseumData
+
+class RaritiesMuseumData(gameProfile: GameProfile, profile: SkyBlockProfile? = null): AbstractMuseumItemScreen(gameProfile, profile) {
+    override fun getMuseumData() = RepoMuseumData.rarities
+}

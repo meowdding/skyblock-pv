@@ -56,11 +56,11 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
 
 
     protected fun loading(
-        data: Result<V>? = this.data,
         onSuccess: (V) -> Unit,
         loadingValue: () -> Unit,
         errorValue: () -> Unit,
     ) {
+        val data = this.data
         return when {
             data == null -> loadingValue()
             data.isFailure -> errorValue()
@@ -69,11 +69,11 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
     }
 
     protected fun <T> loaded(
-        data: Result<V>? = this.data,
         whileLoading: T,
         onError: T,
         onSuccess: (V) -> T,
     ): T {
+        val data = this.data
         return when {
             data == null -> whileLoading
             data.isFailure -> onError
@@ -106,11 +106,10 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
     }
 
     protected fun loadingComponent(
-        data: Result<V>? = this.data,
         loadingMessage: Component = this.loadingMessage,
         errorMessage: Component = this.errorMessage,
         successMessage: (V) -> Component,
     ): Component {
-        return loaded(data, loadingMessage, errorMessage, successMessage)
+        return loaded(loadingMessage, errorMessage, successMessage)
     }
 }
