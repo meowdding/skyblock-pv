@@ -7,6 +7,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
+import tech.thatgravyboat.skyblockpv.data.CfData
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.EssenceData
@@ -55,6 +56,7 @@ data class SkyBlockProfile(
     val essenceUpgrades: Map<String, Int>,
     val gardenData: GardenData,
     val farmingData: FarmingData,
+    val chocolateFactoryData: CfData?,
 ) {
     companion object {
 
@@ -90,8 +92,6 @@ data class SkyBlockProfile(
 
                     experience / 100 to (experience % 100)
                 },
-
-                //  todo: missing skill data when not unlocked
                 skill = playerData.getSkillData(),
                 collections = member.getCollectionData(),
                 mobData = playerStats?.getMobData() ?: emptyList(),
@@ -117,6 +117,7 @@ data class SkyBlockProfile(
                     )
                 },
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
+                chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
             )
         }
 
