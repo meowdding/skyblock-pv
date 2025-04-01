@@ -74,7 +74,6 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         buildList {
             createUpgradeItem(Items.COOKIE, "Click Upgrade", cf.clickUpgrades + 1) {
                 add("Increases the amount of ") {
-                    italic = false
                     color = TextColor.GRAY
                     append("Chocolate ") {
                         color = TextColor.GOLD
@@ -82,20 +81,17 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
                 }
                 add("you get per click.") {
-                    italic = false
                     color = TextColor.GRAY
                 }
             }
             createUpgradeItem(Items.CLOCK, "Time Tower", cf.timeTower?.level ?: 0) {
                 add("Increases your ") {
-                    italic = false
                     color = TextColor.GRAY
                     append("Chocolate Production ") {
                         color = TextColor.GOLD
                     }
                 }
                 add("for ") {
-                    italic = false
                     color = TextColor.GRAY
                     append("1h ") {
                         color = TextColor.GREEN
@@ -104,7 +100,6 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 }
                 space()
                 add("Charges: ") {
-                    italic = false
                     color = TextColor.GRAY
                     append("${cf.timeTower?.charges ?: 0}") {
                         color = TextColor.LIGHT_PURPLE
@@ -119,11 +114,9 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             }
             createUpgradeItem(Items.RABBIT_FOOT, "Rabbit Shrine", cf.rabbitRarityUpgrades) {
                 add("Increases the chance of getting ") {
-                    italic = false
                     color = TextColor.GRAY
                 }
                 add("higher rarity rabbits ") {
-                    italic = false
                     color = TextColor.LIGHT_PURPLE
                     append("during ") {
                         color = TextColor.GRAY
@@ -138,11 +131,9 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             }
             createUpgradeItem(coachSkull.copy(), "Coach Jackrabbit", cf.chocolateMultiplierUpgrades) {
                 add("Increases the amount of ") {
-                    italic = false
                     color = TextColor.GRAY
                 }
                 add("Chocolate ") {
-                    italic = false
                     color = TextColor.GOLD
                     append("you get per second.") {
                         color = TextColor.GRAY
@@ -156,8 +147,9 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     private fun MutableList<ItemStack>.createUpgradeItem(item: ItemStack, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) = add(
         item.apply {
+            val lore = TooltipBuilder().apply(tooltipBuilder).build().split("\n")
             set(DataComponents.CUSTOM_NAME, Text.join(name, " $level") { italic = false; color = TextColor.LIGHT_PURPLE })
-            set(DataComponents.LORE, ItemLore(TooltipBuilder().apply(tooltipBuilder).build().split("\n")))
+            set(DataComponents.LORE, ItemLore(lore, lore))
         },
     )
 
