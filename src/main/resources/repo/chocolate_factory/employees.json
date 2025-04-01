@@ -1,0 +1,37 @@
+[
+    {
+        "id": "rabbit_bro",
+        "name": "Rabbit Bro",
+        "reward": "level"
+    },
+    {
+        "id": "rabbit_cousin",
+        "name": "Rabbit Cousin",
+        "reward": "level * 2"
+    },
+    {
+        "id": "rabbit_sis",
+        "name": "Rabbit Sis",
+        "reward": "level * 3"
+    },
+    {
+        "id": "rabbit_father",
+        "name": "Rabbit Daddy",
+        "reward": "level * 4"
+    },
+    {
+        "id": "rabbit_grandma",
+        "name": "Rabbit Granny",
+        "reward": "level * 5"
+    },
+    {
+        "id": "rabbit_uncle",
+        "name": "Rabbit Uncle",
+        "reward": "level * 6"
+    },
+    {
+        "id": "rabbit_dog",
+        "name": "Rabbit Dog",
+        "reward": "level * 7"
+    }
+]

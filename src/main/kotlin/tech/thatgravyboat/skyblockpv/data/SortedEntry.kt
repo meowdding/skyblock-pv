@@ -1,5 +1,7 @@
 package tech.thatgravyboat.skyblockpv.data
 
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+
 enum class SortedEntry(vararg entries: String) {
     SKILLS(
         "SKILL_COMBAT",
@@ -135,5 +137,7 @@ enum class SortedEntry(vararg entries: String) {
         fun List<String>.sortToCollectionCategoryOrder() = COLLECTION_CATEGORY.sortToSkyBlockOrder(this)
         fun <T> Map<String, T>.sortToSlayerOrder() = SLAYER.sortToSkyBlockOrder(this)
         fun <T> Map<String, T>.sortToEssenceOrder() = ESSENCE.sortToSkyBlockOrder(this)
+
+        fun <T> Map<SkyBlockRarity, T>.sortToRarityOrder() = this.toList().sortedBy { SkyBlockRarity.entries.indexOf(it.first) }.toMap()
     }
 }
