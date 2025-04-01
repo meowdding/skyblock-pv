@@ -45,5 +45,8 @@ void main() {
     }
 
     vec4 color = texture(Sampler0, outUv);
-    fragColor = color * vertexColor;
+    if (color.a < 0.1) {
+        discard;
+    }
+    fragColor = color;
 }

@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.utils
 
 import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.pipeline.RenderPipeline
+import com.mojang.blaze3d.platform.DepthTestFunction
 import com.mojang.blaze3d.platform.LogicOp
 import com.mojang.blaze3d.shaders.UniformType
 import com.mojang.blaze3d.systems.RenderPass
@@ -25,6 +26,7 @@ object RenderUtils {
             .withVertexShader(SkyBlockPv.id("core/inventory"))
             .withFragmentShader(SkyBlockPv.id("core/inventory"))
             .withCull(false)
+            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
             .withColorLogic(LogicOp.NONE)
             .withBlend(BlendFunction.TRANSLUCENT)
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
@@ -40,6 +42,7 @@ object RenderUtils {
             .withVertexShader(SkyBlockPv.id("core/inventory"))
             .withFragmentShader(SkyBlockPv.id("core/mono_inventory"))
             .withCull(false)
+            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
             .withColorLogic(LogicOp.NONE)
             .withBlend(BlendFunction.TRANSLUCENT)
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
@@ -62,10 +65,10 @@ object RenderUtils {
     ) {
         val matrix = graphics.pose().last().pose()
         val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-        buffer.addVertex(matrix, (x).toFloat(), (y).toFloat(), 0.0f).setUv(0f, 0f)
-        buffer.addVertex(matrix, (x).toFloat(), (y + height).toFloat(), 0.0f).setUv(0f, 1f)
-        buffer.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 0.0f).setUv(1f, 1f)
-        buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 0.0f).setUv(1f, 0f)
+        buffer.addVertex(matrix, (x).toFloat(), (y).toFloat(), 1.0f).setUv(0f, 0f)
+        buffer.addVertex(matrix, (x).toFloat(), (y + height).toFloat(), 1.0f).setUv(0f, 1f)
+        buffer.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 1.0f).setUv(1f, 1f)
+        buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 1.0f).setUv(1f, 0f)
 
 
         val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(SkyBlockPv.id("textures/gui/inventory-3x1.png")).texture
@@ -88,10 +91,10 @@ object RenderUtils {
     ) {
         val matrix = graphics.pose().last().pose()
         val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-        buffer.addVertex(matrix, (x).toFloat(), (y).toFloat(), 0.0f).setUv(0f, 0f)
-        buffer.addVertex(matrix, (x).toFloat(), (y + height).toFloat(), 0.0f).setUv(0f, 1f)
-        buffer.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 0.0f).setUv(1f, 1f)
-        buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 0.0f).setUv(1f, 0f)
+        buffer.addVertex(matrix, (x).toFloat(), (y).toFloat(), 1.0f).setUv(0f, 0f)
+        buffer.addVertex(matrix, (x).toFloat(), (y + height).toFloat(), 1.0f).setUv(0f, 1f)
+        buffer.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 1.0f).setUv(1f, 1f)
+        buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 1.0f).setUv(1f, 0f)
 
         val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(SkyBlockPv.id("textures/gui/base_inventory.png")).texture
         RenderSystem.setShaderTexture(0, gpuTexture)

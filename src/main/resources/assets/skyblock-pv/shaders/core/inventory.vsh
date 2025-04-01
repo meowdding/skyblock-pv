@@ -9,10 +9,11 @@ uniform vec2 Size;
 
 out vec2 texCoord0;
 out vec4 vertexColor;
+in vec4 Color;
 
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
 
     texCoord0 = UV0;
-    vertexColor = vec4(1, 1, 1, 1);
+    vertexColor = Color;
 }
