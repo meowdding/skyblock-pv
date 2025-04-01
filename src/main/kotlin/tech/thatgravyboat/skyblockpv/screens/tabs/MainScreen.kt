@@ -3,9 +3,7 @@ package tech.thatgravyboat.skyblockpv.screens.tabs
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import earth.terrarium.olympus.client.utils.Orientation
 import kotlinx.coroutines.runBlocking
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
@@ -33,7 +31,6 @@ import tech.thatgravyboat.skyblockpv.utils.FakePlayer
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.RenderUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
@@ -113,18 +110,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         widget(PvWidgets.getMainContentWidget(infoColumn, width))
-
-        display(object: Display {
-            override fun getWidth() = 64
-            override fun getHeight() = 64
-
-            override fun render(graphics: GuiGraphics) {
-                RenderUtils.drawInventory(graphics, 0,0, 105, 44, 5, 2)
-                RenderUtils.drawInventory(graphics, 0,64, 105, 24, 5, Orientation.HORIZONTAL)
-                RenderUtils.drawInventory(graphics, 0,100, 24, 105, 5, Orientation.VERTICAL)
-            }
-
-        })
     }
 
     private fun createMiddleColumn(profile: SkyBlockProfile, width: Int): LinearLayout {
