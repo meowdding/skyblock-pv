@@ -16,6 +16,8 @@ enum class SkullTextures(var texture: String = "") {
     PERSONAL_VAULT,
     DUNGEONS,
     HOTM,
+    CHOCOLATE_FACTORY,
+    COACH_JACKRABBIT,
     ;
 
     fun createSkull() = tech.thatgravyboat.skyblockpv.utils.createSkull(texture)

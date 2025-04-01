@@ -125,5 +125,6 @@ compactingResource {
     this.basePath = "repo"
     compactToArray("hotmperks", "hotm")
     compactToObject("garden_data")
+    compactToObject("chocolate_factory")
     downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/bestiary.json", "bestiary.json")
 }

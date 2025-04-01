@@ -2,9 +2,11 @@ package tech.thatgravyboat.skyblockpv.utils.components
 
 import earth.terrarium.olympus.client.components.Widgets
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.level.ItemLike
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -19,6 +21,13 @@ import tech.thatgravyboat.skyblockpv.utils.displays.toColumn
 import tech.thatgravyboat.skyblockpv.utils.displays.toRow
 
 object PvWidgets {
+
+    fun iconNumberElement(icon: ItemStack, text: Component) = listOf(
+        Displays.item(icon, 12, 12),
+        Displays.padding(0, 0, 2, 0, Displays.text(text, shadow = false)),
+    ).toRow(1).let { Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, it)) }
+
+    fun iconNumberElement(icon: ItemLike, text: Component) = iconNumberElement(icon.asItem().defaultInstance, text)
 
     fun label(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
         widget(getTitleWidget(title, element.width + padding + 20))
