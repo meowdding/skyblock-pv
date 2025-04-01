@@ -15,6 +15,8 @@ import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.InventoryScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.mining.BaseMiningScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.mining.MainMiningScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.rift.BaseRiftScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.rift.MainRiftScreen
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -31,6 +33,7 @@ enum class PvTab(
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
+    RIFT(BaseRiftScreen::class, ::MainRiftScreen, Items.ENDER_EYE.defaultInstance), // TODO ICON
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
     CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.createSkull())
     ;
