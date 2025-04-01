@@ -32,7 +32,7 @@ enum class PvTab(
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
-    CF(ChocolateFactoryScreen::class, SkullTextures.CF.createSkull())
+    CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.createSkull())
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(

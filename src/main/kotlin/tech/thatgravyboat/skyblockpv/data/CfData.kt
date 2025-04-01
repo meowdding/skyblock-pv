@@ -174,7 +174,7 @@ object CfCodecs {
         val id: String,
         val texture: String,
     ) {
-        fun createSkull() = createSkull(texture)
+        val skull by lazy { createSkull(texture) }
     }
 
     data class CfMiscRepo(

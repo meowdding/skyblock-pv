@@ -6,7 +6,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.level.ItemLike
-import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
@@ -35,16 +34,7 @@ import java.time.Instant
 
 val coachSkull by lazy { SkullTextures.COACH_JACKRABBIT.createSkull() }
 
-class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("CF", gameProfile, profile) {
-
-    private val rabbitRarities = listOf(
-        SkyBlockRarity.COMMON,
-        SkyBlockRarity.UNCOMMON,
-        SkyBlockRarity.RARE,
-        SkyBlockRarity.EPIC,
-        SkyBlockRarity.LEGENDARY,
-        SkyBlockRarity.MYTHIC,
-    )
+class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("CHOCOLATE_FACTORY", gameProfile, profile) {
 
     override fun create(bg: DisplayWidget) {
         val profile = profile ?: return
@@ -82,7 +72,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     private fun getUpgrades(cf: CfData) = PvWidgets.label(
         "Upgrades",
         buildList {
-            val cookie = createUpgradeItem(Items.COOKIE, "Click Upgrade", cf.clickUpgrades + 1) {
+            createUpgradeItem(Items.COOKIE, "Click Upgrade", cf.clickUpgrades + 1) {
                 add("Increases the amount of ") {
                     italic = false
                     color = TextColor.GRAY
@@ -96,7 +86,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                     color = TextColor.GRAY
                 }
             }
-            val timeTower = createUpgradeItem(Items.CLOCK, "Time Tower", cf.timeTower?.level ?: 0) {
+            createUpgradeItem(Items.CLOCK, "Time Tower", cf.timeTower?.level ?: 0) {
                 add("Increases your ") {
                     italic = false
                     color = TextColor.GRAY
@@ -127,7 +117,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                     }
                 }
             }
-            val shrine = createUpgradeItem(Items.RABBIT_FOOT, "Rabbit Shrine", cf.rabbitRarityUpgrades) {
+            createUpgradeItem(Items.RABBIT_FOOT, "Rabbit Shrine", cf.rabbitRarityUpgrades) {
                 add("Increases the chance of getting ") {
                     italic = false
                     color = TextColor.GRAY
@@ -146,7 +136,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                     }
                 }
             }
-            val coach = createUpgradeItem(coachSkull.copy(), "Coach Jackrabbit", cf.chocolateMultiplierUpgrades) {
+            createUpgradeItem(coachSkull.copy(), "Coach Jackrabbit", cf.chocolateMultiplierUpgrades) {
                 add("Increases the amount of ") {
                     italic = false
                     color = TextColor.GRAY
@@ -159,22 +149,19 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                     }
                 }
             }
-
-            add(cookie)
-            add(timeTower)
-            add(shrine)
-            add(coach)
         }.map { Displays.padding(2, Displays.item(it, showTooltip = true)) }.toRow(2).let {
             Displays.background(SkyBlockPv.id("inventory/inventory-4x1"), Displays.padding(2, it))
         }.asWidget(),
     )
 
-    private fun createUpgradeItem(item: ItemStack, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) = item.apply {
-        set(DataComponents.CUSTOM_NAME, Text.join(name, " $level") { italic = false; color = TextColor.LIGHT_PURPLE })
-        set(DataComponents.LORE, ItemLore(TooltipBuilder().apply(tooltipBuilder).build().split("\n")))
-    }
+    private fun MutableList<ItemStack>.createUpgradeItem(item: ItemStack, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) = add(
+        item.apply {
+            set(DataComponents.CUSTOM_NAME, Text.join(name, " $level") { italic = false; color = TextColor.LIGHT_PURPLE })
+            set(DataComponents.LORE, ItemLore(TooltipBuilder().apply(tooltipBuilder).build().split("\n")))
+        },
+    )
 
-    private fun createUpgradeItem(base: ItemLike, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) =
+    private fun MutableList<ItemStack>.createUpgradeItem(base: ItemLike, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) =
         createUpgradeItem(ItemStack(base), name, level, tooltipBuilder)
 
     private fun getInfo(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
@@ -269,7 +256,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             .reversed()
             .associateWith { repo -> cf.rabbits.entries.filter { repo.value.contains(it.key) } }
             .map { (repo, entries) ->
-                val item = data.textures.find { it.id == repo.key.name }?.createSkull() ?: Items.BARRIER.defaultInstance
+                val item = data.textures.find { it.id == repo.key.name }?.skull ?: Items.BARRIER.defaultInstance
 
                 PvWidgets.iconNumberElement(item, Text.of("${entries.size}") { color = repo.key.color }).withTooltip {
                     add(repo.key.name) {
@@ -300,7 +287,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     private fun getEmployees(cf: CfData, data: CfCodecs.CfRepoData) = data.employees.map { repoEmployee ->
         val employee = cf.employees.find { it.id == repoEmployee.id } ?: RabbitEmployee(repoEmployee.id, 0)
-        val item = (CfCodecs.data?.textures?.find { it.id == employee.id }?.createSkull() ?: Items.BARRIER.defaultInstance).takeIf { employee.level > 0 }
+        val item = (CfCodecs.data?.textures?.find { it.id == employee.id }?.skull ?: Items.BARRIER.defaultInstance).takeIf { employee.level > 0 }
             ?: Items.GRAY_DYE.defaultInstance
 
         PvWidgets.iconNumberElement(item, Text.of("${employee.level}") { color = employee.color }).withTooltip {

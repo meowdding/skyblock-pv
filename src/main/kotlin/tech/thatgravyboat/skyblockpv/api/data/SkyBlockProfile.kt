@@ -117,7 +117,7 @@ data class SkyBlockProfile(
                     )
                 },
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
-                chocolateFactoryData = member.getAsJsonObject("events")?.getAsJsonObject("easter")?.let { CfData.fromJson(it) },
+                chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
             )
         }
 
