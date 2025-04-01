@@ -8,7 +8,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.EssenceData.addMiningPerk
@@ -81,8 +80,8 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             Displays.padding(2, Displays.item(item).withTooltip(hover))
         }.chunked(4).asTable(2).let {
-            Displays.background(
-                SkyBlockPv.id("inventory/inventory-4x2"),
+            Displays.inventoryBackground(
+                4, 2,
                 Displays.padding(2, it),
             )
         }.asWidget()

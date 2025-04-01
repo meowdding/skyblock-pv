@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.utils.displays
 import com.mojang.blaze3d.vertex.PoseStack
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils
+import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.PlayerFaceRenderer
 import net.minecraft.client.gui.components.Renderable
@@ -73,6 +74,50 @@ object Displays {
 
     fun placeholder(width: Int, height: Int): Display {
         return fixed(width, height, empty())
+    }
+
+    fun inventoryBackground(size: Int, orientation: Orientation, display: Display): Display {
+        return object : Display {
+            override fun getWidth() = display.getWidth()
+            override fun getHeight() = display.getHeight()
+
+            override fun render(graphics: GuiGraphics) {
+                tech.thatgravyboat.skyblockpv.utils.RenderUtils.drawInventory(
+                    graphics,
+                    0,
+                    0,
+                    display.getWidth(),
+                    display.getHeight(),
+                    size,
+                    orientation
+                )
+                display.render(graphics)
+            }
+        }
+    }
+
+    fun inventoryBackground(columns: Int, rows: Int, display: Display): Display {
+        if (rows == 1 || columns == 1) {
+            throw UnsupportedOperationException("Use inventoryBackground(size, orientation)")
+        }
+
+        return object : Display {
+            override fun getWidth() = display.getWidth()
+            override fun getHeight() = display.getHeight()
+
+            override fun render(graphics: GuiGraphics) {
+                tech.thatgravyboat.skyblockpv.utils.RenderUtils.drawInventory(
+                    graphics,
+                    0,
+                    0,
+                    display.getWidth(),
+                    display.getHeight(),
+                    columns,
+                    rows
+                )
+                display.render(graphics)
+            }
+        }
     }
 
     fun background(color: UInt, display: Display): Display {

@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -354,8 +355,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             ItemPredicates.AnySkyblockID(FishingGear.trophyArmor),
         ) ?: emptyList()
 
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-1x4"),
+        return Displays.inventoryBackground(
+            4,
+            Orientation.VERTICAL,
             Displays.padding(2, PvWidgets.armorDisplay(trophyArmor)),
         ).asWidget()
     }
@@ -376,8 +378,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         val chunked = trophyFishItems.chunked(6)
 
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-6x3"),
+        return Displays.inventoryBackground(
+            6, 3,
             Displays.padding(2, chunked.map { row -> row.map { Displays.padding(2, it) }.toRow() }.toColumn()),
         ).asWidget()
     }
