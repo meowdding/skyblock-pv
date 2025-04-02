@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -34,8 +35,8 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val profile = profile ?: return LayoutBuild.frame {}
 
         val resourcesDisplay = GardenResource.actualValues.map {
-            Displays.background(
-                SkyBlockPv.id("inventory/inventory-1x3"),
+            Displays.inventoryBackground(
+                3, Orientation.VERTICAL,
                 Displays.padding(
                     2,
                     Displays.column(

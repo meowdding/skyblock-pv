@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
@@ -11,7 +12,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.skills.farming.ComposterUpgrade
@@ -84,8 +84,8 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         "Upgrades",
         LayoutBuild.frame {
             display(
-                Displays.background(
-                    SkyBlockPv.id("inventory/inventory-5x1"),
+                Displays.inventoryBackground(
+                    5, Orientation.HORIZONTAL,
                     Displays.padding(
                         2,
                         StaticGardenData.composterData.map { (upgrade, data) ->
@@ -256,8 +256,8 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
             val plots = map.map { it.reversed().map { Displays.padding(2, it) }.toColumn() }.toRow()
             display(
-                Displays.background(
-                    SkyBlockPv.id("inventory/inventory-5x5"),
+                Displays.inventoryBackground(
+                    5,5,
                     Displays.padding(2, plots),
                 ),
             )

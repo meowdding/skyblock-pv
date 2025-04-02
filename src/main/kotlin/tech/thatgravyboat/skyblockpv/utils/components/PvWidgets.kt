@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.utils.components
 
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -57,8 +58,8 @@ object PvWidgets {
             }.let { Displays.padding(2, it) }
         }.toColumn()
 
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-1x$maxAmount"),
+        return Displays.inventoryBackground(
+            maxAmount, Orientation.VERTICAL,
             Displays.padding(2, column),
         ).asWidget()
     }
@@ -99,8 +100,8 @@ object PvWidgets {
             armorDisplay(armorAndEquipment),
             displayEquipment.toColumn(),
         ).toRow()
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-2x4"),
+        return Displays.inventoryBackground(
+            2, 4,
             Displays.padding(2, armorEquipment),
         ).asWidget()
     }

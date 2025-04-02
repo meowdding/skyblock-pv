@@ -9,11 +9,10 @@ import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.skills.Pet
 import tech.thatgravyboat.skyblockpv.data.SortedEntry
+import tech.thatgravyboat.skyblockpv.data.skills.Pet
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -54,8 +53,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createPetLayout(pet: Pet): AbstractWidget {
         val itemDisplay = Displays.item(pet.itemStack, showTooltip = true, customStackText = Text.of(pet.level.toString()).withColor(pet.rarity.color))
-        val display = Displays.background(
-            SkyBlockPv.id("inventory/inventory-1x1"),
+        val display = Displays.inventorySlot(
             Displays.padding(3, itemDisplay),
             (-1).takeUnless { pet == selectedPet } ?: TextColor.GREEN,
         )
