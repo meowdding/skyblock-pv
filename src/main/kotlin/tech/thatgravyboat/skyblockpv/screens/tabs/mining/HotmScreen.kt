@@ -15,7 +15,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.skills.mining.*
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -70,13 +69,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 return@let it
             }
             gridLayout.addChild(
-                Displays.background(
-                    SkyBlockPv.id("inventory/inventory-1x1"),
-                    Displays.padding(
-                        2,
-                        getNode(node, level, disabled, mining),
-                    ),
-                ).asWidget(),
+                Displays.inventorySlot(Displays.padding(2, getNode(node, level, disabled, mining))).asWidget(),
                 9 - node.location.y,
                 node.location.x + 2,
             )

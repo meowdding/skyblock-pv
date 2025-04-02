@@ -2,7 +2,6 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
@@ -19,8 +18,8 @@ abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockPr
                 Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
         }
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-9x${itemDisplays.size}"),
+        return Displays.inventoryBackground(
+            9, itemDisplays.size,
             Displays.padding(2, itemDisplays.asTable()),
         )
     }

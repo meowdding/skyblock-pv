@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
@@ -198,7 +199,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         .rightPad(4, Displays.background(SkyBlockPv.id("icon/slot/bone"), Displays.empty(16, 16)))
         .map { Displays.padding(2, it) }
         .toColumn()
-        .let { Displays.background(SkyBlockPv.id("inventory/inventory-1x4"), Displays.padding(2, it)) }
+        .let { Displays.inventoryBackground(4, Orientation.VERTICAL, Displays.padding(2, it)) }
 
     private fun getGear(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
@@ -215,7 +216,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             spacer(width = 5)
             display(getPets(profile))
             spacer(width = 5)
-            widget(Displays.background(SkyBlockPv.id("inventory/inventory-1x1"), getVacuum(profile)).asWidget()) { alignVerticallyMiddle() }
+            widget(Displays.inventorySlot(getVacuum(profile)).asWidget()) { alignVerticallyMiddle() }
         },
     )
 
@@ -326,7 +327,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
         }.map { Displays.padding(2, it) }.chunked(5)
             .map { it.toColumn() }
-            .toRow().let { Displays.background(SkyBlockPv.id("inventory/inventory-2x5"), Displays.padding(2, it)) }.asWidget(),
+            .toRow().let { Displays.inventoryBackground(2, 5, Displays.padding(2, it)) }.asWidget(),
     )
 }
 

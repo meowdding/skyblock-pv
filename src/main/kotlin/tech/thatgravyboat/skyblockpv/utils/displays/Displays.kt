@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.utils.displays
 import com.mojang.blaze3d.vertex.PoseStack
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils
+import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.PlayerFaceRenderer
 import net.minecraft.client.gui.components.Renderable
@@ -34,6 +35,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.translate
 import kotlin.math.atan
 import kotlin.math.cos
 import kotlin.math.sin
+import tech.thatgravyboat.skyblockpv.utils.RenderUtils as SbPvRenderUtils
 
 private const val NO_SPLIT = -1
 
@@ -73,6 +75,44 @@ object Displays {
 
     fun placeholder(width: Int, height: Int): Display {
         return fixed(width, height, empty())
+    }
+
+    fun inventorySlot(display: Display, color: Int = -1): Display {
+        return object : Display {
+            override fun getWidth() = display.getWidth()
+            override fun getHeight() = display.getHeight()
+
+            override fun render(graphics: GuiGraphics) {
+                SbPvRenderUtils.drawSlot(graphics, 0, 0, display.getWidth(), display.getHeight(), color)
+                display.render(graphics)
+            }
+        }
+    }
+
+    fun inventoryBackground(size: Int, orientation: Orientation, display: Display, color: Int = -1): Display {
+        return object : Display {
+            override fun getWidth() = display.getWidth()
+            override fun getHeight() = display.getHeight()
+
+            override fun render(graphics: GuiGraphics) {
+                SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
+                display.render(graphics)
+            }
+        }
+    }
+
+    fun inventoryBackground(columns: Int, rows: Int, display: Display, color: Int = -1): Display {
+        require(columns > 1) { "Columns must be > 1, use inventoryBackground(size, Orientation) if you want a x by 1 sized inventory!" }
+        require(rows > 1) { "Rows must be > 1, use inventoryBackground(size, Orientation) if you want a 1 by x sized inventory!" }
+        return object : Display {
+            override fun getWidth() = display.getWidth()
+            override fun getHeight() = display.getHeight()
+
+            override fun render(graphics: GuiGraphics) {
+                SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
+                display.render(graphics)
+            }
+        }
     }
 
     fun background(color: UInt, display: Display): Display {

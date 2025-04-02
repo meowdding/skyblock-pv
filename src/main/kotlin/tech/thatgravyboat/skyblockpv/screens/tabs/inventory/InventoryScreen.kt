@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.center
@@ -20,8 +19,8 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         ).toRow()
 
         display(
-            Displays.background(
-                SkyBlockPv.id("inventory/inventory-2x4"),
+            Displays.inventoryBackground(
+                2, 4,
                 Displays.padding(2, armorAndEquipment),
             ).centerIn(-1, height),
         )
