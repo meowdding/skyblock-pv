@@ -6,7 +6,6 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.skills.farming.Commission
 import tech.thatgravyboat.skyblockpv.data.skills.farming.StaticGardenData
@@ -26,8 +25,7 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             .map {
                 it.chunked(uiWidth / 24).map {
                     it.map {
-                        Displays.background(
-                            SkyBlockPv.id("inventory/inventory-1x1"),
+                        Displays.inventorySlot(
                             Displays.padding(2, toDisplay(it, visitors[it])),
                             this.getRarity(it.rarity, visitors[it]),
                         )
