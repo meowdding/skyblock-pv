@@ -216,7 +216,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             spacer(width = 5)
             display(getPets(profile))
             spacer(width = 5)
-            widget(Displays.background(SkyBlockPv.id("inventory/inventory-1x1"), getVacuum(profile)).asWidget()) { alignVerticallyMiddle() }
+            widget(Displays.inventorySlot(getVacuum(profile)).asWidget()) { alignVerticallyMiddle() }
         },
     )
 

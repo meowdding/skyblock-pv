@@ -8,6 +8,7 @@ import com.mojang.blaze3d.shaders.UniformType
 import com.mojang.blaze3d.systems.RenderPass
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.textures.GpuTexture
+import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.Tesselator
 import com.mojang.blaze3d.vertex.VertexFormat
@@ -32,7 +33,7 @@ object RenderUtils {
             .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
             .withColorLogic(LogicOp.NONE)
             .withBlend(BlendFunction.TRANSLUCENT)
-            .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
+            .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
             .withSampler("Sampler0")
             .withUniform("ModelViewMat", UniformType.MATRIX4X4)
             .withUniform("ProjMat", UniformType.MATRIX4X4)
@@ -48,7 +49,7 @@ object RenderUtils {
             .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
             .withColorLogic(LogicOp.NONE)
             .withBlend(BlendFunction.TRANSLUCENT)
-            .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
+            .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
             .withSampler("Sampler0")
             .withUniform("ModelViewMat", UniformType.MATRIX4X4)
             .withUniform("ProjMat", UniformType.MATRIX4X4)
@@ -56,6 +57,19 @@ object RenderUtils {
             .withUniform("Vertical", UniformType.INT)
             .build(),
     )
+
+    private fun drawBuffer(graphics: GuiGraphics, x: Int, y: Int, width: Int, height: Int, color: Int): BufferBuilder {
+        val matrix = graphics.pose().last().pose()
+        val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
+        buffer.addVertex(matrix, (x).toFloat(), (y).toFloat(), 1.0f).setUv(0f, 0f).setColor(color)
+        buffer.addVertex(matrix, (x).toFloat(), (y + height).toFloat(), 1.0f).setUv(0f, 1f).setColor(color)
+        buffer.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 1.0f).setUv(1f, 1f).setColor(color)
+        buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 1.0f).setUv(1f, 0f).setColor(color)
+        return buffer
+    }
+
+    fun drawSlot(graphics: GuiGraphics, x: Int, y: Int, width: Int, height: Int, color: Int) =
+        drawInventory(graphics, x, y, width, height, 1, Orientation.HORIZONTAL, color)
 
     fun drawInventory(
         graphics: GuiGraphics,
@@ -65,18 +79,11 @@ object RenderUtils {
         height: Int,
         size: Int,
         orientation: Orientation,
+        color: Int
     ) {
-        val matrix = graphics.pose().last().pose()
-        val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-        buffer.addVertex(matrix, (x).toFloat(), (y).toFloat(), 1.0f).setUv(0f, 0f)
-        buffer.addVertex(matrix, (x).toFloat(), (y + height).toFloat(), 1.0f).setUv(0f, 1f)
-        buffer.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 1.0f).setUv(1f, 1f)
-        buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 1.0f).setUv(1f, 0f)
-
-
         val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(MONO_TEXTURE).texture
         RenderSystem.setShaderTexture(0, gpuTexture)
-        PipelineRenderer.draw(MONO_INVENTORY_BACKGROUND, buffer.buildOrThrow()) { pass: RenderPass ->
+        PipelineRenderer.draw(MONO_INVENTORY_BACKGROUND, drawBuffer(graphics, x, y, width, height, color).buildOrThrow()) { pass: RenderPass ->
             pass.bindSampler("Sampler0", gpuTexture)
             pass.setUniform("Size", size)
             pass.setUniform("Vertical", orientation.getValue(0, 1))
@@ -91,17 +98,11 @@ object RenderUtils {
         height: Int,
         columns: Int,
         rows: Int,
+        color: Int
     ) {
-        val matrix = graphics.pose().last().pose()
-        val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-        buffer.addVertex(matrix, (x).toFloat(), (y).toFloat(), 1.0f).setUv(0f, 0f)
-        buffer.addVertex(matrix, (x).toFloat(), (y + height).toFloat(), 1.0f).setUv(0f, 1f)
-        buffer.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 1.0f).setUv(1f, 1f)
-        buffer.addVertex(matrix, (x + width).toFloat(), (y).toFloat(), 1.0f).setUv(1f, 0f)
-
         val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(POLY_TEXTURE).texture
         RenderSystem.setShaderTexture(0, gpuTexture)
-        PipelineRenderer.draw(INVENTORY_BACKGROUND, buffer.buildOrThrow()) { pass: RenderPass ->
+        PipelineRenderer.draw(INVENTORY_BACKGROUND, drawBuffer(graphics, x, y, width, height, color).buildOrThrow()) { pass: RenderPass ->
             pass.bindSampler("Sampler0", gpuTexture)
             pass.setUniform("Size", columns.toFloat(), rows.toFloat())
         }

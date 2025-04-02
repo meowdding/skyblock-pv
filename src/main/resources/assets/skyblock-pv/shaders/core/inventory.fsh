@@ -48,5 +48,5 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
-    fragColor = color;
+    fragColor = color * vec4(vertexColor.xyz, 1);
 }

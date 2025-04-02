@@ -16,7 +16,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
@@ -425,10 +424,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             )
         }
 
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-1x1"),
-            Displays.padding(3, item),
-        ).let {
+        return Displays.inventorySlot(Displays.padding(3, item)).let {
             if (trophyFish.tier == TrophyFishTiers.NONE) {
                 return@let Displays.padding(0, 0, 0, 0, it)
             }
