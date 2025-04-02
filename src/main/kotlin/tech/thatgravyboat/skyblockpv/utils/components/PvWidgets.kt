@@ -154,8 +154,8 @@ object PvWidgets {
                 Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
         }
-        return Displays.background(
-            SkyBlockPv.id("inventory/inventory-9x${itemDisplays.size}"),
+        return Displays.inventoryBackground(
+            9, itemDisplays.size,
             Displays.padding(2, itemDisplays.asTable()),
         )
     }
