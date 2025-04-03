@@ -79,12 +79,6 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     color = TextColor.LIGHT_PURPLE
                 }
             }
-            string("Last visit: ") {
-                color = TextColor.DARK_GRAY
-                append(rift.lastAccess.toReadableString()) {
-                    color = TextColor.DARK_PURPLE
-                }
-            }
             string("Time sitting with Ävaeìkx: ") {
                 color = TextColor.DARK_GRAY
                 append(rift.secondsSitting.formatReadableTime()) {
