@@ -15,6 +15,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.TooltipBuilder
 import tech.thatgravyboat.skyblockpv.utils.displays.toRow
@@ -22,7 +23,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.withTooltip
 import java.time.Instant
 
 class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
-    override fun getLayout() = LayoutBuild.vertical {
+    override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
         val rift = profile?.rift ?: return@vertical
         val data = RiftCodecs.data ?: return@vertical
 

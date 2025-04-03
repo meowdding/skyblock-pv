@@ -13,13 +13,14 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
 class RiftEnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
 
     private var carousel: CarouselWidget? = null
 
-    override fun getLayout() = LayoutBuild.vertical {
+    override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
         val inventories = profile?.rift?.inventory?.enderChest?.map { PvWidgets.createInventory(it) } ?: return@vertical
         val icons = List(inventories.size) { Items.ENDER_CHEST.defaultInstance }
 

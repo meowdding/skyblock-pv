@@ -8,7 +8,7 @@ import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class RiftInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
-    override fun getLayout() = LayoutBuild.horizontal {
+    override fun getLayout(bg: DisplayWidget) = LayoutBuild.horizontal {
         val inventory = profile?.rift?.inventory ?: return@horizontal
         val armor = inventory.armor
         val equipment = inventory.equipment
