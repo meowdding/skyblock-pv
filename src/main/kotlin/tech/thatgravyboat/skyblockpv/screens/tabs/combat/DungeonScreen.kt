@@ -7,8 +7,10 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.skills.combat.DungeonData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -30,8 +32,33 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }?.toMap()
     }
 
-    override fun getLayout(): Layout {
-        val dungeonData = profile?.dungeonData!!
+    override fun getLayout(bg: DisplayWidget): Layout {
+        val dungeonData = profile?.dungeonData ?: return LayoutBuild.vertical {
+            string("No Dungeon Data")
+        }
+
+        val info = createInfoBoxDisplay(dungeonData)
+        val leveling = createLevelingDisplay(dungeonData)
+        val runs = createRunsDisplay(dungeonData)
+
+        return LayoutBuild.frame(bg.width, bg.height) {
+            if (info.width + leveling.width + runs.width + 10 > bg.width) {
+                widget(
+                    LayoutBuild.vertical(5) {
+                        widget(createInfoBoxDisplay(dungeonData))
+                        widget(createLevelingDisplay(dungeonData))
+                        widget(createRunsDisplay(dungeonData))
+                    }.asScrollable(bg.width, bg.height),
+                )
+            } else {
+                horizontal(5) {
+                    widget(createInfoBoxDisplay(dungeonData))
+                    widget(createLevelingDisplay(dungeonData))
+                    widget(createRunsDisplay(dungeonData))
+                }
+            }
+        }
+
         return LayoutBuild.horizontal(5) {
             widget(createInfoBoxDisplay(dungeonData))
             widget(createLevelingDisplay(dungeonData))

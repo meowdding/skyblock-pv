@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.screens.tabs.inventory
+package tech.thatgravyboat.skyblockpv.screens.tabs.rift
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.buttons.Button
@@ -6,29 +6,23 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import earth.terrarium.olympus.client.ui.UIConstants
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Display
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 
-abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
+class RiftEnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
 
-    protected var carousel: CarouselWidget? = null
-
-    abstract fun getInventories(): List<Display>
-    abstract fun getIcons(): List<ItemStack>
-    open fun getExtraLine(): Display? = null
-
+    private var carousel: CarouselWidget? = null
 
     override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
-        val inventories = getInventories()
-        val icons = getIcons()
+        val inventories = profile?.rift?.inventory?.enderChest?.map { PvWidgets.createInventory(it) } ?: return@vertical
+        val icons = List(inventories.size) { Items.ENDER_CHEST.defaultInstance }
 
         carousel = CarouselWidget(
             inventories,
@@ -64,10 +58,5 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
         widget(buttonContainer.centerHorizontally(uiWidth))
         spacer(height = 10)
         widget(carousel!!.centerHorizontally(uiWidth))
-
-        getExtraLine()?.let {
-            spacer(height = 5)
-            widget(it.asWidget().centerHorizontally(uiWidth))
-        }
     }
 }
