@@ -50,21 +50,6 @@ TODO:
 </details>
 
 <details>
-<summary>Rift</summary>
-
-- [ ] Montezuna
-- [ ] Armor
-- [ ] Equippment
-- [ ] Inventory
-- [ ] Ender Chest
-- [ ] Timecharms
-- [ ] Vampire
-- [ ] Burger
-- [ ] Enigma Souls
-
-</details>
-
-<details>
 <summary>Garden</summary>
 
 ## Main page

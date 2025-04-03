@@ -139,6 +139,16 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     }
                 },
             )
+            string("Grubber Stacks: ") {
+                color = TextColor.DARK_GRAY
+                append(rift.grubberStacks.toFormattedString()) {
+                    color = TextColor.LIGHT_PURPLE
+                }
+                append("/")
+                append("5") {
+                    color = TextColor.DARK_PURPLE
+                }
+            }
         },
     )
 
