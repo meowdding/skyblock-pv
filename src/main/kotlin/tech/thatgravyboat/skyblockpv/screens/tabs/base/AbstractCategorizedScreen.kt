@@ -18,12 +18,12 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
 
     abstract val categories: List<Category>
 
-    abstract fun getLayout(): Layout
+    abstract fun getLayout(bg: DisplayWidget): Layout
 
     final override fun create(bg: DisplayWidget) {
         profile ?: return
 
-        val layout = getLayout()
+        val layout = getLayout(bg)
         layout.arrangeElements()
         FrameLayout.centerInRectangle(layout, bg.x, bg.y, uiWidth, uiHeight)
         layout.visitWidgets(this::addRenderableWidget)

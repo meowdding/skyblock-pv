@@ -7,7 +7,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.center
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
-    override fun getLayout() = LayoutBuild.horizontal {
+    override fun getLayout(bg: DisplayWidget) = LayoutBuild.horizontal {
         val inventory = profile?.inventory ?: return@horizontal
         val armor = inventory.armorItems?.inventory.orEmpty(4)
         val equipment = inventory.equipmentItems?.inventory.orEmpty(4)
