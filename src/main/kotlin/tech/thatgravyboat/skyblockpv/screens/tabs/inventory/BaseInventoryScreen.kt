@@ -11,6 +11,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("INVENTORY", gameProfile, profile) {
     override val categories get() = InventoryCategory.entries
 
+    @Deprecated("Use the one in PvWidgets", ReplaceWith("PvWidgets.createInventory(items)"))
     protected fun createInventory(items: List<ItemStack>): Display {
         val itemDisplays = items.chunked(9).map { chunk ->
             val updatedChunk = chunk + List(9 - chunk.size) { ItemStack.EMPTY }

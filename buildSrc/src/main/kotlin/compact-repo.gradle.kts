@@ -13,6 +13,7 @@ val museumDataTask = tasks.register<CreateMuseumDataTask>("createMuseumData")
 
 tasks.withType<ProcessResources>().configureEach {
     dependsOn(museumDataTask.get())
+    outputs.upToDateWhen { false }
     val configuration = project.extensions.getByType<CompactingResourcesExtension>()
     val sourceSets = project.extensions.getByType<SourceSetContainer>()
     val listOfPaths = configuration.compactors.flatMap { it.getPath().toList() }.map { "${configuration.basePath}/$it" }
