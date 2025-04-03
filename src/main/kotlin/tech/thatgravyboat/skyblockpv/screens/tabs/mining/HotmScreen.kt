@@ -22,6 +22,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.withScrollToBottom
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.withTooltip
@@ -31,7 +32,7 @@ import kotlin.math.roundToInt
 
 class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
-    override fun getLayout(): Layout {
+    override fun getLayout(bg: DisplayWidget): Layout {
         val mining = profile?.mining ?: return LayoutBuild.horizontal { }
         val gridLayout = GridLayout()
 

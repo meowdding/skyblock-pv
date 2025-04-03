@@ -14,7 +14,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.split
-import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.CfCodecs
 import tech.thatgravyboat.skyblockpv.data.CfData
@@ -141,7 +140,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 }
             }
         }.map { Displays.padding(2, Displays.item(it, showTooltip = true)) }.toRow(2).let {
-            Displays.background(SkyBlockPv.id("inventory/inventory-4x1"), Displays.padding(2, it))
+            Displays.inventoryBackground(4, 1, Displays.padding(2, it))
         }.asWidget(),
     )
 
