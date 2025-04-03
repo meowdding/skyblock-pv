@@ -20,6 +20,7 @@ import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.data.CfCodecs
 import tech.thatgravyboat.skyblockpv.data.EssenceData
+import tech.thatgravyboat.skyblockpv.data.RiftCodecs
 import tech.thatgravyboat.skyblockpv.data.skills.mining.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.skills.mining.FossilTypes
 import tech.thatgravyboat.skyblockpv.feature.debug.RabbitParser
@@ -47,6 +48,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             RemindersAPI,
             RabbitParser,
             CfCodecs,
+            RiftCodecs,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }
