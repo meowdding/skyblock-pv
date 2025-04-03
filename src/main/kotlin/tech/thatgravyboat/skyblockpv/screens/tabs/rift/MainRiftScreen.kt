@@ -14,8 +14,10 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.RiftCodecs
 import tech.thatgravyboat.skyblockpv.data.RiftData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
+import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.time.Instant
@@ -35,8 +37,22 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             return@horizontal
         }
 
-        widget(getTrophy(rift, data))
-        widget(getInformation(profile!!, data))
+        val trophy = getTrophy(rift, data)
+        val info = getInformation(profile!!, data)
+
+        if (trophy.width + info.width + 5 > bg.width) {
+            widget(
+                LayoutBuild.vertical(3, 0.5f) {
+                    widget(info)
+                    widget(trophy)
+                }.asScrollable(bg.width, bg.height),
+            )
+        } else {
+            horizontal(3, 0.5f) {
+                widget(info)
+                widget(trophy)
+            }
+        }
     }
 
     private fun getInformation(profile: SkyBlockProfile, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
@@ -64,7 +80,9 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             }
             string("Last visit: ") {
                 color = TextColor.DARK_GRAY
-                append(rift.lastAccess.toReadableString())
+                append(rift.lastAccess.toReadableString()) {
+                    color = TextColor.DARK_PURPLE
+                }
             }
             string("Enigma Souls: ") {
                 color = TextColor.DARK_GRAY
@@ -87,10 +105,34 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     }
                     if (missingCats.isEmpty()) return@withTooltip
                     add("Missing Cats (${missingCats.size}): ") {
-                        color = TextColor.DARK_GRAY
+                        color = TextColor.GRAY
                     }
                     missingCats.forEach { cat ->
-                        add(cat) {
+                        add(cat.toTitleCase()) {
+                            color = TextColor.DARK_PURPLE
+                        }
+                    }
+                },
+            )
+            display(
+                Displays.text(
+                    Text.of("Unlocked Eyes: ") {
+                        color = TextColor.DARK_GRAY
+                        append("${rift.unlockedEyes.size}/${data.eyes.size}") {
+                            color = TextColor.DARK_PURPLE
+                        }
+                    },
+                    shadow = false,
+                ).withTooltip {
+                    val missingEyes = data.eyes.filter { eye ->
+                        !rift.unlockedEyes.contains(eye)
+                    }
+                    if (missingEyes.isEmpty()) return@withTooltip
+                    add("Locked Eyes (${missingEyes.size}): ") {
+                        color = TextColor.GRAY
+                    }
+                    missingEyes.forEach { eye ->
+                        add(eye.toTitleCase()) {
                             color = TextColor.DARK_PURPLE
                         }
                     }

@@ -114,6 +114,7 @@ object RiftCodecs {
             it.group(
                 trophyCodec.listOf().fieldOf("trophies").forGetter(RiftRepoData::trophies),
                 Codec.STRING.listOf().fieldOf("montezuma").forGetter(RiftRepoData::montezuma),
+                Codec.STRING.listOf().fieldOf("eyes").forGetter(RiftRepoData::eyes),
             ).apply(it, ::RiftRepoData)
         }
 
@@ -130,6 +131,7 @@ object RiftCodecs {
     data class RiftRepoData(
         val trophies: List<TrophyRepo>,
         val montezuma: List<String>,
+        val eyes: List<String>,
     )
 
     data class TrophyRepo(
