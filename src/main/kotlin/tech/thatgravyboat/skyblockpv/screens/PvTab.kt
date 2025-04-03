@@ -33,9 +33,9 @@ enum class PvTab(
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
-    RIFT(BaseRiftScreen::class, ::MainRiftScreen, Items.ENDER_EYE.defaultInstance), // TODO ICON
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
-    CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.createSkull())
+    CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.createSkull()),
+    RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.createSkull()),
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(

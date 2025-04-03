@@ -152,11 +152,12 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 val lore = TooltipBuilder(trophy.item.getTooltipLines(Item.TooltipContext.EMPTY, null, TooltipFlag.NORMAL)).apply {
                     if (!unlocked) return@apply
                     add(CommonText.EMPTY)
-                    add("Found at visits: ") {
+                    add("Found after ") {
                         color = TextColor.GRAY
-                        append("${ingameTrophy.visits}") {
+                        append("${ingameTrophy.visits} ") {
                             color = TextColor.GREEN
                         }
+                        append("visits")
                     }
                     add("Timestamp: ") {
                         color = TextColor.GRAY
