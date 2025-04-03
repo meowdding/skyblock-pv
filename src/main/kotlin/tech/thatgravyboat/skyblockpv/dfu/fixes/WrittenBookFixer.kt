@@ -10,8 +10,8 @@ object WrittenBookFixer : DataComponentFixer<WrittenBookContent> {
     override fun getComponentType(): DataComponentType<WrittenBookContent> = DataComponents.WRITTEN_BOOK_CONTENT
 
     override fun getData(compoundTag: CompoundTag): WrittenBookContent? {
-        compoundTag.getAndRemoveInt("generation")?: return null
-        compoundTag.getAndRemoveBoolean("resolved")?: return null
+        compoundTag.getAndRemoveInt("generation") ?: return null
+        compoundTag.getAndRemoveBoolean("resolved") ?: return null
 
         return WrittenBookContent.EMPTY
     }

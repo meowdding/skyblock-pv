@@ -90,7 +90,7 @@ object BannerItemFixer : DataComponentFixer<BannerPatternLayers> {
     }
 
     private fun fixBannerColor(id: Int): DyeColor {
-        return DyeColor.byName(ExtraDataFixUtils.dyeColorIdToName(15 - id), null)?: DyeColor.WHITE
+        return DyeColor.byName(ExtraDataFixUtils.dyeColorIdToName(15 - id), null) ?: DyeColor.WHITE
     }
 
     override fun shouldApply(itemStack: ItemStack) = itemStack.`is`(ItemTags.BANNERS)

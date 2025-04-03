@@ -1,8 +1,11 @@
 package tech.thatgravyboat.skyblockpv.dfu
 
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtUtils
 import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.utils.Logger
+import tech.thatgravyboat.skyblockapi.utils.extentions.getStringOrNull
 import tech.thatgravyboat.skyblockpv.dfu.base.BaseItem
 import tech.thatgravyboat.skyblockpv.dfu.fixes.*
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.ColorFixer
@@ -31,7 +34,12 @@ object LegacyDataFixer {
 
         if (tag.isEmpty) return ItemStack.EMPTY
 
-        val base = BaseItem.getBase(tag) ?: error("Base item not found")
+        val base = BaseItem.getBase(tag)
+
+        if (base == null) {
+            Logger.error("Base item not found for ${tag.getStringOrNull("id")} (${tag.getStringOrNull("Damage")})\n${NbtUtils.prettyPrint(tag)}")
+            return null
+        }
 
         fixers.forEach {
             if (it.shouldApply(base)) {

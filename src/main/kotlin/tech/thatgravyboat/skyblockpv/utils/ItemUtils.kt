@@ -27,7 +27,7 @@ fun createSkull(profile: GameProfile): ItemStack {
 
 fun ItemStack.getLore(): List<Component> = this[DataComponents.LORE]?.lines ?: emptyList()
 
-fun Tag.legacyStack() = LegacyDataFixer.fromTag(this.copy())?: Items.BARRIER.defaultInstance
+fun Tag.legacyStack() = LegacyDataFixer.fromTag(this.copy()) ?: Items.BARRIER.defaultInstance
 
 fun JsonObject.itemStack(): ItemStack {
     return this.getNbt().legacyStack()

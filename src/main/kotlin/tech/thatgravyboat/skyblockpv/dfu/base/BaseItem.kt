@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.saveddata.maps.MapId
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 
 object BaseItem {
 
@@ -538,36 +539,53 @@ object BaseItem {
         registerNormal(381, Items.ENDER_EYE)
         registerNormal(382, Items.GLISTERING_MELON_SLICE)
 
-        registerComplex(383, 65, Items.BAT_SPAWN_EGG)
-        registerComplex(383, 61, Items.BLAZE_SPAWN_EGG)
-        registerComplex(383, 59, Items.CAVE_SPIDER_SPAWN_EGG)
-        registerComplex(383, 93, Items.CHICKEN_SPAWN_EGG)
-        registerComplex(383, 92, Items.COW_SPAWN_EGG)
+        registerNormal(383, Items.POLAR_BEAR_SPAWN_EGG)
+        registerComplex(383, 4, Items.ELDER_GUARDIAN_SPAWN_EGG)
+        registerComplex(383, 5, Items.WITHER_SKELETON_SPAWN_EGG)
+        registerComplex(383, 6, Items.STRAY_SPAWN_EGG)
+        registerComplex(383, 23, Items.HUSK_SPAWN_EGG)
+        registerComplex(383, 27, Items.ZOMBIE_VILLAGER_SPAWN_EGG)
+        registerComplex(383, 28, Items.SKELETON_HORSE_SPAWN_EGG)
+        registerComplex(383, 29, Items.ZOMBIE_HORSE_SPAWN_EGG)
+        registerComplex(383, 31, Items.DONKEY_SPAWN_EGG)
+        registerComplex(383, 32, Items.MULE_SPAWN_EGG)
+        registerComplex(383, 35, Items.VEX_SPAWN_EGG)
+        registerComplex(383, 36, Items.VINDICATOR_SPAWN_EGG)
         registerComplex(383, 50, Items.CREEPER_SPAWN_EGG)
-        registerComplex(383, 63, Items.ENDER_DRAGON_SPAWN_EGG)
-        registerComplex(383, 58, Items.ENDERMAN_SPAWN_EGG)
-        registerComplex(383, 67, Items.ENDERMITE_SPAWN_EGG)
-        registerComplex(383, 56, Items.GHAST_SPAWN_EGG)
-        registerComplex(383, 68, Items.GUARDIAN_SPAWN_EGG)
-        registerComplex(383, 62, Items.MAGMA_CUBE_SPAWN_EGG)
-        registerComplex(383, 96, Items.MOOSHROOM_SPAWN_EGG)
-        registerComplex(383, 98, Items.OCELOT_SPAWN_EGG)
-        registerComplex(383, 90, Items.PIG_SPAWN_EGG)
-        registerComplex(383, 0, Items.POLAR_BEAR_SPAWN_EGG)
-        registerComplex(383, 101, Items.RABBIT_SPAWN_EGG)
-        registerComplex(383, 91, Items.SHEEP_SPAWN_EGG)
-        registerComplex(383, 69, Items.SHULKER_SPAWN_EGG)
-        registerComplex(383, 60, Items.SILVERFISH_SPAWN_EGG)
         registerComplex(383, 51, Items.SKELETON_SPAWN_EGG)
-        registerComplex(383, 55, Items.SLIME_SPAWN_EGG)
         registerComplex(383, 52, Items.SPIDER_SPAWN_EGG)
-        registerComplex(383, 94, Items.SQUID_SPAWN_EGG)
-        registerComplex(383, 120, Items.VILLAGER_SPAWN_EGG)
-        registerComplex(383, 66, Items.WITCH_SPAWN_EGG)
-        registerComplex(383, 64, Items.WITHER_SPAWN_EGG)
-        registerComplex(383, 95, Items.WOLF_SPAWN_EGG)
         registerComplex(383, 54, Items.ZOMBIE_SPAWN_EGG)
+        registerComplex(383, 55, Items.SLIME_SPAWN_EGG)
+        registerComplex(383, 56, Items.GHAST_SPAWN_EGG)
         registerComplex(383, 57, Items.ZOMBIFIED_PIGLIN_SPAWN_EGG)
+        registerComplex(383, 58, Items.ENDERMAN_SPAWN_EGG)
+        registerComplex(383, 59, Items.CAVE_SPIDER_SPAWN_EGG)
+        registerComplex(383, 60, Items.SILVERFISH_SPAWN_EGG)
+        registerComplex(383, 61, Items.BLAZE_SPAWN_EGG)
+        registerComplex(383, 62, Items.MAGMA_CUBE_SPAWN_EGG)
+        registerComplex(383, 63, Items.ENDER_DRAGON_SPAWN_EGG)
+        registerComplex(383, 64, Items.WITHER_SPAWN_EGG)
+        registerComplex(383, 65, Items.BAT_SPAWN_EGG)
+        registerComplex(383, 66, Items.WITCH_SPAWN_EGG)
+        registerComplex(383, 67, Items.ENDERMITE_SPAWN_EGG)
+        registerComplex(383, 68, Items.GUARDIAN_SPAWN_EGG)
+        registerComplex(383, 69, Items.SHULKER_SPAWN_EGG)
+        registerComplex(383, 90, Items.PIG_SPAWN_EGG)
+        registerComplex(383, 91, Items.SHEEP_SPAWN_EGG)
+        registerComplex(383, 92, Items.COW_SPAWN_EGG)
+        registerComplex(383, 93, Items.CHICKEN_SPAWN_EGG)
+        registerComplex(383, 94, Items.SQUID_SPAWN_EGG)
+        registerComplex(383, 95, Items.WOLF_SPAWN_EGG)
+        registerComplex(383, 96, Items.MOOSHROOM_SPAWN_EGG)
+        registerComplex(383, 97, Items.SNOW_GOLEM_SPAWN_EGG)
+        registerComplex(383, 98, Items.OCELOT_SPAWN_EGG)
+        registerComplex(383, 99, Items.IRON_GOLEM_SPAWN_EGG)
+        registerComplex(383, 100, Items.HORSE_SPAWN_EGG)
+        registerComplex(383, 101, Items.RABBIT_SPAWN_EGG)
+        registerComplex(383, 102, Items.POLAR_BEAR_SPAWN_EGG)
+        registerComplex(383, 103, Items.LLAMA_SPAWN_EGG)
+        registerComplex(383, 105, Items.PARROT_SPAWN_EGG)
+        registerComplex(383, 120, Items.VILLAGER_SPAWN_EGG)
 
 
         registerNormal(384, Items.EXPERIENCE_BOTTLE)
@@ -722,15 +740,18 @@ object BaseItem {
         val meta = tag.getIntOr("Damage", 0)
         val count = tag.getIntOr("Count", 1)
 
+        val item = this.items[id][meta] ?: return null
+
         tag.remove("id")
         tag.remove("Damage")
         tag.remove("Count")
 
-        val item = this.items[id][meta] ?: return null
+
         val stack = when {
             item === Items.POTION -> BasePotionItem.getBase(meta)
             item === Items.FILLED_MAP -> ItemStack(item).apply { set(DataComponents.MAP_ID, MapId(meta)) }
             item in damagable -> ItemStack(item).apply { set(DataComponents.DAMAGE, meta) }
+            item === Items.POLAR_BEAR_SPAWN_EGG && meta == 0 -> ItemStack(item).apply { set(DataComponents.ITEM_MODEL, SkyBlockPv.id("blank_spawn_egg")) }
             else -> ItemStack(item)
         }
         stack.count = count
