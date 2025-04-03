@@ -1,0 +1,8 @@
+{
+    "name": "Misc",
+    "display": "skyblock:enchanted_time_clock",
+    "categories": [
+        "*"
+    ],
+    "priority": -1000000
+}

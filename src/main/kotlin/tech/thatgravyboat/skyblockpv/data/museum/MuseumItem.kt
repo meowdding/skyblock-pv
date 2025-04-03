@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-data class MuseumItem(val id: String, val parent: String?, val mappedIds: List<String>)
+data class MuseumItem(override val id: String, override val parentId: String?, val mappedIds: List<String>) : MuseumRepoEntry
 
 private val COMPACT_MUSEUM_ITEM_CODEC = Codec.STRING.xmap(
     { MuseumItem(it, null, emptyList()) },
@@ -21,10 +21,10 @@ private val DEFAULT_MUSEUM_ITEM_CODEC = RecordCodecBuilder.create {
 }
 val MUSEUM_ITEM_CODEC = Codec.either(
     COMPACT_MUSEUM_ITEM_CODEC,
-    DEFAULT_MUSEUM_ITEM_CODEC
+    DEFAULT_MUSEUM_ITEM_CODEC,
 ).xmap(
     { Either.unwrap(it) },
-    { if (it.parent == null && it.mappedIds.isEmpty()) Either.left(it) else Either.right(it) }
+    { if (it.parentId == null && it.mappedIds.isEmpty()) Either.left(it) else Either.right(it) },
 )
 
 private fun initItem(id: String, parent: Optional<String>, mappedIds: List<String>): MuseumItem {

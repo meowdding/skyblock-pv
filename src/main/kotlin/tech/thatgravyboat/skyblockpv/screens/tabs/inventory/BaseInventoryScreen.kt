@@ -18,6 +18,7 @@ abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockPr
                 Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
         }
+
         return Displays.inventoryBackground(
             9, itemDisplays.size,
             Displays.padding(2, itemDisplays.asTable()),

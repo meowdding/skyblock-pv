@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.data
 import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.level.ItemLike
 import tech.thatgravyboat.skyblockpv.utils.legacyStack
 
 interface LegacyItemStack {
@@ -16,6 +17,7 @@ interface LegacyItemStack {
         }
 
         fun wrap(defaultInstance: ItemStack): LegacyItemStack = WrappedLegacyItemStack(defaultInstance)
+        fun wrapItem(defaultInstance: ItemLike): LegacyItemStack = WrappedLegacyItemStack(defaultInstance.asItem().defaultInstance)
     }
 }
 

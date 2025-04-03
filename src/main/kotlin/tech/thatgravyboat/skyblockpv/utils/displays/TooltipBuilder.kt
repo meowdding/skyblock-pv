@@ -6,7 +6,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 class TooltipBuilder {
-
     private val lines = mutableListOf<Any>()
 
     fun add(line: Component) = lines.add(line)

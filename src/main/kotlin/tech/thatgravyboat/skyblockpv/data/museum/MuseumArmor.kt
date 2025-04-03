@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-data class MuseumArmor(val id: String, val parentId: String?, val armorIds: List<String>)
+data class MuseumArmor(override val id: String, override val parentId: String?, val armorIds: List<String>): MuseumRepoEntry
 
 val MUSEUM_ARMOR_CODEC = RecordCodecBuilder.create {
     it.group(

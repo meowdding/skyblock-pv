@@ -18,6 +18,17 @@ data class MuseumData(val items: List<MuseumEntry>) {
             return MuseumData(map)
         }
     }
+
+    fun isParentDonated(entry: MuseumRepoEntry): Boolean {
+        val parentId = entry.parentId
+        if (items.any { it.id == parentId }) {
+            return true
+        } else if (parentId != null) {
+            return RepoMuseumData.getById(parentId)?.let { isParentDonated(it) } ?: false
+        }
+
+        return false
+    }
 }
 
 data class MuseumEntry(val id: String, val stacks: List<LegacyItemStack>)

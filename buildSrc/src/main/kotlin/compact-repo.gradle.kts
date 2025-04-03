@@ -12,6 +12,7 @@ val downloadCache = FileCache(project.gradle.gradleUserHomeDir.toPath().resolve(
 val museumDataTask = tasks.register<CreateMuseumDataTask>("createMuseumData")
 
 tasks.withType<ProcessResources>().configureEach {
+    this.outputs.upToDateWhen { false }
     dependsOn(museumDataTask.get())
     val configuration = project.extensions.getByType<CompactingResourcesExtension>()
     val sourceSets = project.extensions.getByType<SourceSetContainer>()

@@ -106,8 +106,13 @@ object Displays {
     }
 
     fun inventoryBackground(columns: Int, rows: Int, display: Display, color: Int = -1): Display {
-        require(columns > 1) { "Columns must be > 1, use inventoryBackground(size, Orientation) if you want a x by 1 sized inventory!" }
-        require(rows > 1) { "Rows must be > 1, use inventoryBackground(size, Orientation) if you want a 1 by x sized inventory!" }
+        if (rows == 1) {
+            return inventoryBackground(columns, Orientation.HORIZONTAL, display, color)
+        }
+        if (columns == 1) {
+            return inventoryBackground(rows, Orientation.VERTICAL, display, color)
+        }
+
         return object : Display {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
