@@ -2,7 +2,6 @@ package tech.thatgravyboat.skyblockpv.dfu.fixes
 
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
@@ -14,7 +13,7 @@ import kotlin.jvm.optionals.getOrNull
 
 object SkullTextureFixer : DataComponentFixer<ResolvableProfile> {
 
-    private val cache = Object2ObjectOpenHashMap<String?, ResolvableProfile>()
+    private val cache = mutableMapOf<String, ResolvableProfile>()
 
     private const val TAG = "SkullOwner"
 
