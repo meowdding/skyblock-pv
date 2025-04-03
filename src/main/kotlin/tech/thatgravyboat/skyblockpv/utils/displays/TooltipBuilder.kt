@@ -14,6 +14,7 @@ class TooltipBuilder() {
     private val lines = mutableListOf<Any>()
 
     fun add(line: Component) = lines.add(line)
+    fun addAll(lines: List<Any>) = this.lines.addAll(lines)
 
     fun space() = lines.add(CommonText.EMPTY)
 
@@ -22,5 +23,6 @@ class TooltipBuilder() {
     fun add(text: String, init: MutableComponent.() -> Unit = {}) = lines.add(Text.of(text, init))
     fun add(init: MutableComponent.() -> Unit) = lines.add(Text.of("", init))
 
+    fun isEmpty() = lines.isEmpty()
     fun build(): Component = Text.multiline(*lines.toTypedArray())
 }
