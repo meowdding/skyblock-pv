@@ -16,10 +16,7 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.toColumn
-import tech.thatgravyboat.skyblockpv.utils.displays.toRow
+import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 object PvWidgets {
 
@@ -148,5 +145,18 @@ object PvWidgets {
             contents.addChild(contentWithSpacer.centerHorizontally(width))
         }
         compoundWidget.withStretchToContentSize()
+    }
+
+    fun createInventory(items: List<ItemStack>): Display {
+        val itemDisplays = items.chunked(9).map { chunk ->
+            val updatedChunk = chunk + List(9 - chunk.size) { ItemStack.EMPTY }
+            updatedChunk.map { item ->
+                Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
+            }
+        }
+        return Displays.inventoryBackground(
+            9, itemDisplays.size,
+            Displays.padding(2, itemDisplays.asTable()),
+        )
     }
 }

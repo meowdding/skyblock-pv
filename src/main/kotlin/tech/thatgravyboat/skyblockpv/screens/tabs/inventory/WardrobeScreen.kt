@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.inventory
 import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
@@ -29,7 +30,7 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             }.flatten()
         } else {
             inventory
-        }.let { createInventory(it) }
+        }.let { PvWidgets.createInventory(it) }
     }
 
     override fun getIcons() = List(armor.size) { Items.LEATHER_CHESTPLATE.defaultInstance }

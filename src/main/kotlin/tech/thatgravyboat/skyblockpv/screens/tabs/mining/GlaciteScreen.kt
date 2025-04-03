@@ -16,6 +16,7 @@ import tech.thatgravyboat.skyblockpv.data.skills.mining.GlaciteData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
@@ -23,7 +24,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.withTooltip
 
 class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
-    override fun getLayout(): Layout {
+    override fun getLayout(bg: DisplayWidget): Layout {
         val profile = profile ?: return LayoutBuild.horizontal { }
         val glacite = profile.glacite ?: return LayoutBuild.horizontal { }
         val columnWidth = uiWidth / 2

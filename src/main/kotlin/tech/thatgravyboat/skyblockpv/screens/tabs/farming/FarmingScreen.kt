@@ -29,7 +29,7 @@ import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
-    override fun getLayout(): Layout {
+    override fun getLayout(bg: DisplayWidget): Layout {
         val profile = profile ?: return LayoutBuild.frame {}
 
         return LayoutBuild.frame {

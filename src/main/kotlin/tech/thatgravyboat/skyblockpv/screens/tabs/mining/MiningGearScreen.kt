@@ -10,10 +10,11 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.skills.mining.MiningGear
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
 
 class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
-    override fun getLayout(): Layout {
+    override fun getLayout(bg: DisplayWidget): Layout {
         val profile = profile ?: return LayoutBuild.horizontal { }
 
         return LayoutBuild.horizontal(5, 0.5f) {
