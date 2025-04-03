@@ -22,6 +22,7 @@ import tech.thatgravyboat.skyblockpv.data.CfCodecs
 import tech.thatgravyboat.skyblockpv.data.EssenceData
 import tech.thatgravyboat.skyblockpv.data.skills.mining.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.data.skills.mining.FossilTypes
+import tech.thatgravyboat.skyblockpv.dfu.LegacyDataFixer
 import tech.thatgravyboat.skyblockpv.feature.debug.RabbitParser
 import tech.thatgravyboat.skyblockpv.screens.PvTab
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
@@ -47,6 +48,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             RemindersAPI,
             RabbitParser,
             CfCodecs,
+            LegacyDataFixer
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }

@@ -20,6 +20,7 @@ import net.minecraft.world.item.component.ItemAttributeModifiers
 import net.minecraft.world.item.component.ResolvableProfile
 import net.minecraft.world.item.component.TooltipDisplay
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockpv.dfu.LegacyDataFixer
 import java.util.*
 
 
@@ -66,6 +67,7 @@ fun createSkull(profile: GameProfile): ItemStack {
 fun ItemStack.getLore(): List<Component> = this[DataComponents.LORE]?.lines ?: emptyList()
 
 fun Tag.legacyStack(): ItemStack {
+    LegacyDataFixer.fromTag(this.copy())
     val ops: RegistryOps<Tag> = McClient.self.connection?.registryAccess()?.createSerializationContext(NbtOps.INSTANCE) ?: return ItemStack.EMPTY
     val fixed: Dynamic<Tag> = LegacyItemStackFixer.getFixer().update(
         TypeReferences.LEGACY_ITEM_STACK, Dynamic(ops, this),
