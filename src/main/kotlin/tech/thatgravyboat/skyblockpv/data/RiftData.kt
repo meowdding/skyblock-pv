@@ -124,7 +124,7 @@ object RiftCodecs {
             if (it.isError) {
                 throw RuntimeException(it.error().get().message())
             }
-            data = it.getOrThrow().also { println(it) }
+            data = it.getOrThrow()
         }
     }
 
