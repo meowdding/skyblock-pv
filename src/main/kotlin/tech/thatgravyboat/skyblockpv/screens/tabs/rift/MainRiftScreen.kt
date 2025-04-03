@@ -5,6 +5,7 @@ import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.TooltipFlag
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -30,10 +31,48 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         string("meow :3")
 
         widget(getTrophy(rift, data))
+        widget(getInformation(profile!!, data))
+        widget(getCat(rift, data))
     }
 
+    private fun getInformation(profile: SkyBlockProfile, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
+        "Information",
+        LayoutBuild.vertical {
+            val rift = profile.rift!!
+
+            string("Motes: ") {
+                color = TextColor.DARK_GRAY
+                append((profile.currency?.motes ?: 0).toFormattedString()) {
+                    color = TextColor.LIGHT_PURPLE
+                }
+            }
+            string("Lifetime Motes: ") {
+                color = TextColor.DARK_GRAY
+                append(rift.lifetimeMotes.toFormattedString()) {
+                    color = TextColor.LIGHT_PURPLE
+                }
+            }
+            string("Visits: ") {
+                color = TextColor.DARK_GRAY
+                append(rift.visits.toFormattedString()) {
+                    color = TextColor.LIGHT_PURPLE
+                }
+            }
+            string("Last visit: ") {
+                color = TextColor.DARK_GRAY
+                append(rift.lastAccess.toReadableString())
+            }
+            string("Enigma Souls: ") {
+                color = TextColor.DARK_GRAY
+                append("${rift.foundSouls.size}") {
+                    color = TextColor.DARK_PURPLE
+                }
+            }
+        },
+    )
+
     private fun getTrophy(rift: RiftData, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
-        "Trophies",
+        "Timecharms",
         LayoutBuild.horizontal {
             data.trophies.map { trophy ->
                 val ingameTrophy = rift.trophies.find { it.type == trophy.id }
@@ -57,6 +96,16 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 }.build()
                 Displays.padding(2, Displays.item(item).withTooltip(lore))
             }.toRow().let { display(Displays.inventoryBackground(8, Orientation.HORIZONTAL, Displays.padding(2, it))) }
+        },
+    )
+
+    private fun getCat(rift: RiftData, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
+        "Montezuma",
+        LayoutBuild.vertical {
+            string("Found parts: ") {
+                color = TextColor.DARK_GRAY
+                append("${rift.deadCat.foundCats.size}/${data.montezuma.size}")
+            }
         },
     )
 }

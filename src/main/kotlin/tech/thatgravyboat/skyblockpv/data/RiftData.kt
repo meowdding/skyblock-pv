@@ -7,42 +7,42 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
-import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.data.skills.Pet
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.getNbt
 import tech.thatgravyboat.skyblockpv.utils.getPath
 import tech.thatgravyboat.skyblockpv.utils.legacyStack
+import java.time.Instant
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 
 data class RiftData(
     // MEMBER
-    val secondsSitting: Int,
-    val unlockedEyes: List<String>,
-    val deadCat: DeadCat,
+    val secondsSitting: Duration,
+    val unlockedEyes: List<String>, // TODO
+    val deadCat: DeadCat, // TODO
     val foundSouls: List<String>,
     val trophies: List<Trophy>,
-    val lastAccess: Long,
+    val lastAccess: Instant,
     val inventory: RiftInventory?,
     // PLAYER-STATS
     val visits: Int,
     val lifetimeMotes: Int,
-    val verminVacuumed: Map<String, Int>,
 ) {
     companion object {
         fun fromJson(member: JsonObject, playerStats: JsonObject): RiftData {
             return RiftData(
-                secondsSitting = member.getPath("village_plaza.lonely.seconds_sitting").asInt(0),
+                secondsSitting = member.getPath("village_plaza.lonely.seconds_sitting").asInt(0).seconds,
                 unlockedEyes = member.getPath("wither_cage.killed_eyes")?.asJsonArray?.map { it.asString } ?: emptyList(),
                 deadCat = member.getPath("dead_cats")?.let { DeadCat.fromJson(it.asJsonObject) } ?: DeadCat(null, emptyList()),
                 foundSouls = member.getPath("enigma.found_souls")?.asJsonArray?.map { it.asString } ?: emptyList(),
                 trophies = member.getPath("gallery.secured_trophies")?.asJsonArray?.map { Trophy.fromJson(it.asJsonObject) } ?: emptyList(),
-                lastAccess = member.getPath("access.last_free").asLong(0),
+                lastAccess = Instant.ofEpochMilli(member.getPath("access.last_free").asLong(0)),
                 inventory = member.getPath("inventory")?.let { RiftInventory.fromJson(it.asJsonObject) },
                 visits = playerStats.getPath("visits").asInt(0),
                 lifetimeMotes = playerStats.getPath("lifetime_motes_earned").asInt(0),
-                verminVacuumed = playerStats.getPath("west_vermin_vacuumed").asMap { k, v -> k to v.asInt },
             )
         }
     }
@@ -113,6 +113,7 @@ object RiftCodecs {
         val CODEC = RecordCodecBuilder.create {
             it.group(
                 trophyCodec.listOf().fieldOf("trophies").forGetter(RiftRepoData::trophies),
+                Codec.STRING.listOf().fieldOf("montezuma").forGetter(RiftRepoData::montezuma),
             ).apply(it, ::RiftRepoData)
         }
 
@@ -128,6 +129,7 @@ object RiftCodecs {
 
     data class RiftRepoData(
         val trophies: List<TrophyRepo>,
+        val montezuma: List<String>,
     )
 
     data class TrophyRepo(
