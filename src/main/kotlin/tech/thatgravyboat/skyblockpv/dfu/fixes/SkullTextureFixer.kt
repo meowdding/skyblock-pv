@@ -25,14 +25,10 @@ object SkullTextureFixer : DataComponentFixer<ResolvableProfile> {
         val textures = properties.getList("textures").getOrNull() ?: return null
         val texture = textures.first().asCompound().getOrNull()?.getStringOrNull("Value") ?: return null
 
-        if (cache.containsKey(texture)) {
-            return cache[texture]
+        return cache.getOrPut(texture) {
+            val profile = GameProfile(UUID.randomUUID(), "a")
+            profile.properties.put("textures", Property("textures", texture))
+            ResolvableProfile(profile)
         }
-
-        val profile = GameProfile(UUID.randomUUID(), "a")
-        profile.properties.put("textures", Property("textures", texture))
-        val data = ResolvableProfile(profile)
-        cache[texture] = data
-        return data
     }
 }
