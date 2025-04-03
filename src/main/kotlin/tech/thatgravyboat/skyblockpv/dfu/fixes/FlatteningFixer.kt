@@ -644,6 +644,8 @@ object FlatteningFixer {
         registerNormal(2265, "music_disc_ward")
         registerNormal(2266, "music_disc_11")
         registerNormal(2267, "music_disc_wait")
+
+        defaultReturnValue(ResourceLocation.withDefaultNamespace("air"))
     }
 
     private fun Int2ObjectOpenHashMap<ResourceLocation>.put(id: Int, value: String) {
