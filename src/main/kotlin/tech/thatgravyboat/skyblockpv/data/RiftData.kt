@@ -32,10 +32,10 @@ data class RiftData(
         fun fromJson(member: JsonObject, playerStats: JsonObject): RiftData {
             return RiftData(
                 secondsSitting = member.getPath("village_plaza.lonely.seconds_sitting").asInt(0).seconds,
-                unlockedEyes = member.getPath("wither_cage.killed_eyes")?.asJsonArray?.map { it.asString } ?: emptyList(),
+                unlockedEyes = member.getPath("wither_cage.killed_eyes").asList { it.asString },
                 deadCat = member.getPath("dead_cats")?.let { DeadCat.fromJson(it.asJsonObject) } ?: DeadCat(null, emptyList()),
-                foundSouls = member.getPath("enigma.found_souls")?.asJsonArray?.map { it.asString } ?: emptyList(),
-                trophies = member.getPath("gallery.secured_trophies")?.asJsonArray?.map { Trophy.fromJson(it.asJsonObject) } ?: emptyList(),
+                foundSouls = member.getPath("enigma.found_souls").asList { it.asString },
+                trophies = member.getPath("gallery.secured_trophies").asList { Trophy.fromJson(it.asJsonObject) },
                 inventory = member.getPath("inventory")?.let { RiftInventory.fromJson(it.asJsonObject) },
                 visits = playerStats.getPath("visits").asInt(0),
                 lifetimeMotes = playerStats.getPath("lifetime_motes_earned").asInt(0),
