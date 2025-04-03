@@ -16,6 +16,7 @@ import tech.thatgravyboat.skyblockpv.data.RiftData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
+import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
@@ -81,6 +82,12 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             string("Last visit: ") {
                 color = TextColor.DARK_GRAY
                 append(rift.lastAccess.toReadableString()) {
+                    color = TextColor.DARK_PURPLE
+                }
+            }
+            string("Time sitting with Ävaeìkx: ") {
+                color = TextColor.DARK_GRAY
+                append(rift.secondsSitting.formatReadableTime()) {
                     color = TextColor.DARK_PURPLE
                 }
             }
