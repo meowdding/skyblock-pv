@@ -25,6 +25,7 @@ data class RiftData(
     val foundSouls: List<String>,
     val trophies: List<Trophy>,
     val inventory: RiftInventory?,
+    val grubberStacks: Int,
     // PLAYER-STATS
     val visits: Int,
     val lifetimeMotes: Int,
@@ -38,6 +39,7 @@ data class RiftData(
                 foundSouls = member.getPath("enigma.found_souls").asList { it.asString },
                 trophies = member.getPath("gallery.secured_trophies").asList { Trophy.fromJson(it.asJsonObject) },
                 inventory = member.getPath("inventory")?.let { RiftInventory.fromJson(it.asJsonObject) },
+                grubberStacks = member.getPath("castle.grubber_stacks").asInt(0),
                 visits = playerStats.getPath("visits").asInt(0),
                 lifetimeMotes = playerStats.getPath("lifetime_motes_earned").asInt(0),
             )
