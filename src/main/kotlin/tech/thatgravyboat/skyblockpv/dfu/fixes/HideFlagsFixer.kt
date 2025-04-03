@@ -26,7 +26,6 @@ object HideFlagsFixer : DataComponentFixer<TooltipDisplay> {
     override fun getData(compoundTag: CompoundTag): TooltipDisplay? {
         val hideFlags = compoundTag.getAndRemoveByte(TAG)?.toUByte() ?: return null
 
-        compoundTag.remove(TAG)
         if (cache.containsKey(hideFlags.toByte())) {
             return cache[hideFlags.toByte()]
         }
