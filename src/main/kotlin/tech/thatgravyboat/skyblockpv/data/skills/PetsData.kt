@@ -11,7 +11,7 @@ import java.util.*
 
 data class Pet(
     val uuid: UUID?, // Item UUID (can be null if it wasn't an item before)
-    val uniqueId: UUID, // Pet UUID
+    val uniqueId: UUID?, // Pet UUID (can be null if montezuma)
     val type: String,
     val exp: Long,
     val active: Boolean,
@@ -40,7 +40,7 @@ data class Pet(
     companion object {
         fun fromJson(obj: JsonObject) = Pet(
             uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },
-            uniqueId = obj["uniqueId"].asString.let { UUID.fromString(it) },
+            uniqueId = obj["uniqueId"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },
             type = obj["type"].asString,
             exp = obj["exp"]?.asLong(0) ?: 0,
             active = obj["active"].asBoolean(false),

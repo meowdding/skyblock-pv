@@ -76,7 +76,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
 
             string("Purse: ${profile.currency?.purse?.toFormattedString()}")
-            string("Motes: ${profile.currency?.motes?.toFormattedString()}")
             string(
                 buildString {
                     append("Bank: ")
