@@ -7,7 +7,6 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
-import net.minecraft.util.datafix.ExtraDataFixUtils
 import net.minecraft.world.item.DyeColor
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.entity.BannerPattern
@@ -89,8 +88,23 @@ object BannerItemFixer : DataComponentFixer<BannerPatternLayers> {
         return BannerPatternLayers(layers)
     }
 
-    private fun fixBannerColor(id: Int): DyeColor {
-        return DyeColor.byName(ExtraDataFixUtils.dyeColorIdToName(15 - id), null) ?: DyeColor.WHITE
+    private fun fixBannerColor(id: Int): DyeColor = when (15 - id) {
+        1 -> DyeColor.ORANGE
+        2 -> DyeColor.MAGENTA
+        3 -> DyeColor.LIGHT_BLUE
+        4 -> DyeColor.YELLOW
+        5 -> DyeColor.LIME
+        6 -> DyeColor.PINK
+        7 -> DyeColor.GRAY
+        8 -> DyeColor.LIGHT_GRAY
+        9 -> DyeColor.CYAN
+        10 -> DyeColor.PURPLE
+        11 -> DyeColor.BLUE
+        12 -> DyeColor.BROWN
+        13 -> DyeColor.GREEN
+        14 -> DyeColor.RED
+        15 -> DyeColor.BLACK
+        else -> DyeColor.WHITE
     }
 
     override fun shouldApply(stack: ItemStack) = stack.`is`(ItemTags.BANNERS)
