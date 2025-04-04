@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills.mining
+package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.JsonArray
 import com.mojang.datafixers.util.Either
@@ -16,6 +16,7 @@ import net.minecraft.util.ExtraCodecs.LateBoundIdMapper
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockpv.data.api.skills.PowderType
 import tech.thatgravyboat.skyblockpv.utils.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
@@ -184,7 +185,7 @@ class LevelingMiningNode(
                 Codec.STRING.fieldOf("name").forGetter(LevelingMiningNode::name),
                 CodecUtils.VECTOR_2I.fieldOf("location").forGetter(LevelingMiningNode::location),
                 Codec.INT.fieldOf("max_level").forGetter(LevelingMiningNode::maxLevel),
-                PowderType.CODEC.fieldOf("powder_type").forGetter(LevelingMiningNode::powderType),
+                PowderType.Companion.CODEC.fieldOf("powder_type").forGetter(LevelingMiningNode::powderType),
                 Codec.STRING.fieldOf("cost_formula").forGetter(LevelingMiningNode::costFormula),
                 rewardFormulaCodec.fieldOf("reward_formula").forGetter(LevelingMiningNode::rewards),
                 Codec.STRING.listOf().fieldOf("tooltip").forGetter(LevelingMiningNode::tooltip),
@@ -260,7 +261,7 @@ class CoreMiningNode(
         companion object {
             val CODEC: Codec<CotmCost> = RecordCodecBuilder.create {
                 it.group(
-                    PowderType.CODEC.optionalFieldOf("type", PowderType.MITHRIL).forGetter(CotmCost::type),
+                    PowderType.Companion.CODEC.optionalFieldOf("type", PowderType.MITHRIL).forGetter(CotmCost::type),
                     Codec.INT.optionalFieldOf("amount", 0).forGetter(CotmCost::amount),
                 ).apply(it, CoreMiningNode::CotmCost)
             }

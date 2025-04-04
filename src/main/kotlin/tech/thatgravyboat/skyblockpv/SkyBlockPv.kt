@@ -19,10 +19,10 @@ import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.data.CfCodecs
-import tech.thatgravyboat.skyblockpv.data.EssenceData
-import tech.thatgravyboat.skyblockpv.data.RiftCodecs
-import tech.thatgravyboat.skyblockpv.data.skills.mining.ForgeTimeData
-import tech.thatgravyboat.skyblockpv.data.skills.mining.FossilTypes
+import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
+import tech.thatgravyboat.skyblockpv.data.repo.EssenceData
+import tech.thatgravyboat.skyblockpv.data.repo.ForgeTimeData
+import tech.thatgravyboat.skyblockpv.data.repo.RiftCodecs
 import tech.thatgravyboat.skyblockpv.dfu.LegacyDataFixer
 import tech.thatgravyboat.skyblockpv.feature.debug.RabbitParser
 import tech.thatgravyboat.skyblockpv.screens.PvTab
@@ -50,7 +50,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             RabbitParser,
             CfCodecs,
             RiftCodecs,
-            LegacyDataFixer
+            LegacyDataFixer,
         )
 
         modules.forEach { SkyBlockAPI.eventBus.register(it) }

@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills.farming
+package tech.thatgravyboat.skyblockpv.data.api.skills.farming
 
 import com.google.gson.JsonObject
 import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
@@ -6,6 +6,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockpv.data.repo.GardenResource
 
 data class FarmingData(
     val medalInventory: Map<MedalType, Int>,

@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills.combat
+package tech.thatgravyboat.skyblockpv.data.api.skills.combat
 
 import com.google.gson.JsonObject
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong

@@ -12,7 +12,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.SortedEntry
-import tech.thatgravyboat.skyblockpv.data.skills.Pet
+import tech.thatgravyboat.skyblockpv.data.api.skills.Pet
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild

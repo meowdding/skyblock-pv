@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills
+package tech.thatgravyboat.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
 import net.minecraft.ChatFormatting
@@ -122,7 +122,7 @@ enum class FishingGear {
     companion object {
         init {
             Utils.loadFromRepo<Map<String, List<String>>>("gear/fishing")?.forEach { (key, value) ->
-                runCatching { FishingGear.valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
+                runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }
 
@@ -297,7 +297,7 @@ enum class TrophyFishTypes(
             val textures = Utils.loadFromRepo<Map<String, Map<String, String>>>("trophy_fish_skins") ?: emptyMap()
 
             textures.entries.forEach { (key, tiers) ->
-                val type = TrophyFishTypes.valueOf(key.uppercase())
+                val type = valueOf(key.uppercase())
 
                 tiers.entries.forEach { (tier, skin) ->
                     type.setTexture(TrophyFishTiers.valueOf(tier.uppercase()), skin)

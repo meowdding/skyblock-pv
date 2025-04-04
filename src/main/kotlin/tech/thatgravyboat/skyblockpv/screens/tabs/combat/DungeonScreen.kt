@@ -5,7 +5,7 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.skills.combat.DungeonData
+import tech.thatgravyboat.skyblockpv.data.api.skills.combat.DungeonData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.round

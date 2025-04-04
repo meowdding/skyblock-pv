@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills.mining
+package tech.thatgravyboat.skyblockpv.data.api.skills
 
 
 import com.google.gson.JsonObject
@@ -156,7 +156,7 @@ enum class MiningGear {
     companion object {
         init {
             Utils.loadFromRepo<Map<String, List<String>>>("gear/mining")?.forEach { (key, value) ->
-                runCatching { MiningGear.valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
+                runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }
 
