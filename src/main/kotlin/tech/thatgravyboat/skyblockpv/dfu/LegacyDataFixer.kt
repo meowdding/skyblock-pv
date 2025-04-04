@@ -9,6 +9,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.getStringOrNull
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toJson
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.dfu.base.BaseItem
 import tech.thatgravyboat.skyblockpv.dfu.fixes.*
@@ -41,7 +42,7 @@ object LegacyDataFixer {
         val base = BaseItem.getBase(tag)
 
         if (base == null) {
-            Logger.error("Base item not found for ${tag.getStringOrNull("id")} (${tag.getStringOrNull("Damage")})\n${NbtUtils.prettyPrint(tag)}")
+            SkyBlockPv.error("Base item not found for ${tag.getStringOrNull("id")} (${tag.getStringOrNull("Damage")})\n${NbtUtils.prettyPrint(tag)}")
             return null
         }
 
