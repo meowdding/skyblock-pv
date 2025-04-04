@@ -19,9 +19,11 @@ import tech.thatgravyboat.skyblockpv.data.skills.mining.MiningCore
 import tech.thatgravyboat.skyblockpv.data.skills.mining.RockBrackets
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.Utils.sortByKey
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
@@ -36,20 +38,37 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     override fun getLayout(bg: DisplayWidget): Layout {
         val profile = profile ?: return LayoutBuild.horizontal { }
         val mining = profile.mining ?: return LayoutBuild.horizontal { }
-        val columnWidth = uiWidth / 2
 
-        return LayoutBuild.horizontal(5) {
-            spacer(height = uiHeight)
-            widget(createLeftColumn(profile, columnWidth))
-            widget(createRightColumn(mining, columnWidth))
+        val info = getInformation(profile)
+        val powder = getPowder(mining)
+        val crystal = getCrystal(mining)
+        val forge = getForge()
+
+        return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) > uiWidth) {
+            LayoutBuild.vertical(5, 0.5f) {
+                widget(info)
+                widget(powder)
+                widget(crystal)
+                forge?.let { widget(it) }
+            }.asScrollable(uiWidth, uiHeight)
+        } else {
+            LayoutBuild.horizontal(5, 0.5f) {
+                vertical(5, 0.5f) {
+                    widget(info)
+                    widget(powder)
+                }
+                vertical(5, 0.5f) {
+                    widget(crystal)
+                    forge?.let { widget(it) }
+                }
+            }
         }
     }
 
-    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
-        val mining = profile.mining ?: return@vertical
-        spacer(width, 5)
-
-        val info = LayoutBuild.vertical(3) {
+    private fun getInformation(profile: SkyBlockProfile) = PvWidgets.label(
+        "Information",
+        LayoutBuild.vertical(3) {
+            val mining = profile.mining ?: return@vertical
             fun grayText(text: String) = display(Displays.text(text, color = { 0x555555u }, shadow = false))
             val nucleusRunCrystals = listOf(
                 "jade_crystal",
@@ -108,46 +127,49 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             addMiningPerk(profile, "rhinestone_infusion")
             addMiningPerk(profile, "high_roller")
             addMiningPerk(profile, "return_to_sender")
-        }
+        },
+        padding = 10,
+    )
 
-        widget(PvWidgets.getTitleWidget("Info", width - 5))
-        widget(PvWidgets.getMainContentWidget(info, width - 5))
+    private fun getPowder(mining: MiningCore) = PvWidgets.label(
+        "Powder",
+        LayoutBuild.vertical(3) {
+            display(
+                listOf(
+                    listOf("", "Current", "Total"),
+                    listOf("§2Mithril", mining.powderMithril.shorten(), (mining.powderSpentMithril + mining.powderMithril).shorten()),
+                    listOf("§dGemstone", mining.powderGemstone.shorten(), (mining.powderSpentGemstone + mining.powderGemstone).shorten()),
+                    listOf("§bGlacite", mining.powderGlacite.shorten(), (mining.powderSpentGlacite + mining.powderGlacite).shorten()),
+                ).asTable(5),
+            )
+        },
+        padding = 10,
+    )
 
-        spacer(height = 5)
+    private fun getCrystal(mining: MiningCore) = PvWidgets.label(
+        "Crystals",
+        LayoutBuild.vertical(5) {
+            val width = uiWidth / 3
 
-        val powderTable = listOf(
-            listOf("", "Current", "Total"),
-            listOf("§2Mithril", mining.powderMithril.shorten(), (mining.powderSpentMithril + mining.powderMithril).shorten()),
-            listOf("§dGemstone", mining.powderGemstone.shorten(), (mining.powderSpentGemstone + mining.powderGemstone).shorten()),
-            listOf("§bGlacite", mining.powderGlacite.shorten(), (mining.powderSpentGlacite + mining.powderGlacite).shorten()),
-        ).asTable(5).asWidget()
-        widget(PvWidgets.getTitleWidget("Powder", width - 5))
-        widget(PvWidgets.getMainContentWidget(powderTable, width - 5))
-    }
-
-    private fun createRightColumn(mining: MiningCore, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
-        spacer(width, 5)
-
-        val crystalContent = LayoutBuild.vertical(5) {
             val convertedElements = mining.crystals.map { (name, crystal) ->
                 val icon = ItemAPI.getItem(name.uppercase()).let { Displays.item(it) }
                 val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
                 }
 
-                val display = listOf(icon, state).toRow(1)
-                val widget = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, display)).asWidget()
-                widget.withTooltip(
-                    Text.multiline(
-                        "§l${name.toTitleCase()}",
-                        "§7State: ${crystal.state.toTitleCase()}",
-                        "§7Found: ${crystal.totalFound.toFormattedString()}",
-                        "§7Placed: ${crystal.totalPlaced.toFormattedString()}",
-                    ),
-                )
+                val display = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, listOf(icon, state).toRow(1)))
+                display.withTooltip {
+                    add("§l${name.toTitleCase()}")
+                    add("§7State: ${crystal.state.toTitleCase()}")
+                    add("§7Found: ${crystal.totalFound.toFormattedString()}")
+                    if (crystal.totalPlaced > 0) {
+                        add("§7Placed: ${crystal.totalPlaced.toFormattedString()}")
+                    }
+                }
+                display.asWidget()
             }
 
-            val elementsPerRow = width / (convertedElements.first().width + 15)
+            val elementsPerRow = width / (convertedElements.first().width + 5)
             if (elementsPerRow < 1) return@vertical
 
             convertedElements.chunked(elementsPerRow).forEach { chunk ->
@@ -155,48 +177,45 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 chunk.forEach { element.addChild(it) }
                 widget(element.centerHorizontally(width))
             }
-        }
+        },
+        padding = 10,
+    )
 
-        widget(PvWidgets.getTitleWidget("Placed Crystals", width - 5))
-        widget(PvWidgets.getMainContentWidget(crystalContent, width - 5))
-
-
-        val forgeSlots = profile?.forge?.slots ?: return@vertical
-        if (forgeSlots.isEmpty()) return@vertical
+    private fun getForge(): Layout? {
+        val forgeSlots = profile?.forge?.slots ?: return null
+        if (forgeSlots.isEmpty()) return null
         val quickForgeLevel = profile?.mining?.nodes?.entries?.find { it.key == "forge_time" }?.value ?: 0
 
-        spacer(height = 5)
+        return PvWidgets.label(
+            "Forge",
+            LayoutBuild.vertical(5) {
+                forgeSlots.sortByKey().forEach { (index, slot) ->
+                    val itemDisplay = Displays.item(slot.itemStack)
 
-        val forgeContent = LayoutBuild.vertical(5) {
-            forgeSlots.forEach { (index, slot) ->
-                val itemDisplay = Displays.item(slot.itemStack)
+                    val timeRemaining = ForgeTimeData.getForgeTime(
+                        slot.id,
+                        quickForgeLevel,
+                    ) + (slot.startTime - System.currentTimeMillis()).toDuration(DurationUnit.MILLISECONDS)
 
-                val timeRemaining =
-                    ForgeTimeData.getForgeTime(slot.id, quickForgeLevel) + (slot.startTime - System.currentTimeMillis()).toDuration(DurationUnit.MILLISECONDS)
-                val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) {
-                    "§aReady"
-                } else {
-                    "§8${timeRemaining.formatReadableTime(DurationUnit.DAYS, 2)}"
-                }
+                    val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) "§aReady"
+                    else "§8${timeRemaining.formatReadableTime(DurationUnit.DAYS, 2)}"
 
-                val display = listOf(
-                    Displays.text("§8§lSlot $index", shadow = false),
-                    Displays.padding(0, 0, -4, 0, itemDisplay),
-                    Displays.text("§8${timeDisplay}", shadow = false),
-                ).toRow(1).withTooltip {
-                    add("§l${slot.itemStack.hoverName?.stripped}")
-                    add("§7Time Remaining: $timeDisplay")
-                    add("§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}")
-                    if (isProfileOfUser()) {
-                        add("")
-                        add("§aClick to set a reminder")
+                    val display = listOf(
+                        Displays.text("§8§lSlot $index", shadow = false),
+                        Displays.padding(0, 0, -4, 0, itemDisplay),
+                        Displays.text("§8${timeDisplay}", shadow = false),
+                    ).toRow(1).withTooltip {
+                        add("§l${slot.itemStack.hoverName?.stripped}")
+                        add("§7Time Remaining: $timeDisplay")
+                        add("§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}")
+                        if (isProfileOfUser()) {
+                            add("")
+                            add("§aClick to set a reminder")
+                        }
                     }
-                }
 
-                val widget = if (!isProfileOfUser()) {
-                    display.asWidget()
-                } else {
-                    display.asButton {
+                    val widget = if (!isProfileOfUser()) display.asWidget()
+                    else display.asButton {
                         ChatUtils.chat("Reminder set for ${slot.itemStack.hoverName?.stripped} to be ready in $timeDisplay")
                         RemindersAPI.addReminder(
                             "forge_slot_$index",
@@ -204,13 +223,11 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                             System.currentTimeMillis() + timeRemaining.inWholeMilliseconds,
                         )
                     }
+
+                    widget(widget)
                 }
-
-                widget(widget)
-            }
-        }
-
-        widget(PvWidgets.getTitleWidget("Forge", width - 5))
-        widget(PvWidgets.getMainContentWidget(forgeContent, width - 5))
+            },
+            padding = 10,
+        )
     }
 }

@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "skyblock-pv:item/blank_spawn_egg"
+    }
+}

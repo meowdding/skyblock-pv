@@ -170,4 +170,6 @@ object Utils {
     }
 
     fun UUID.toDashlessString(): String = this.toString().replace("-", "")
+
+    fun <T> Map<out Number, T>.sortByKey(): Map<Number, T> = this.entries.sortedBy { it.key.toLong() }.associate { it.toPair() }
 }
