@@ -735,6 +735,8 @@ object BaseItem {
         this.items[id].defaultReturnValue(item)
     }
 
+    private val blankEggModel = SkyBlockPv.id("blank_spawn_egg")
+
     fun getBase(tag: CompoundTag): ItemStack? {
         val id = tag.getIntOr("id", 0)
         val meta = tag.getIntOr("Damage", 0)
@@ -751,7 +753,7 @@ object BaseItem {
             item === Items.POTION -> BasePotionItem.getBase(meta)
             item === Items.FILLED_MAP -> ItemStack(item).apply { set(DataComponents.MAP_ID, MapId(meta)) }
             item in damagable -> ItemStack(item).apply { set(DataComponents.DAMAGE, meta) }
-            item === Items.POLAR_BEAR_SPAWN_EGG && meta == 0 -> ItemStack(item).apply { set(DataComponents.ITEM_MODEL, SkyBlockPv.id("blank_spawn_egg")) }
+            item === Items.POLAR_BEAR_SPAWN_EGG && meta == 0 -> ItemStack(item).apply { set(DataComponents.ITEM_MODEL, blankEggModel) }
             else -> ItemStack(item)
         }
         stack.count = count
