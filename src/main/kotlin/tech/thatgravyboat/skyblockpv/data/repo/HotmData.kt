@@ -17,7 +17,7 @@ import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.data.api.skills.PowderType
-import tech.thatgravyboat.skyblockpv.utils.CodecUtils
+import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object MiningNodes {

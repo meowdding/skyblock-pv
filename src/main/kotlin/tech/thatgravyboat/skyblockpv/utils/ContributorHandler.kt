@@ -9,6 +9,7 @@ import net.minecraft.core.ClientAsset
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.animal.Parrot
+import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
