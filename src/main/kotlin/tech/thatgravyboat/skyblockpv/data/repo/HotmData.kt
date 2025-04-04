@@ -185,7 +185,7 @@ class LevelingMiningNode(
                 Codec.STRING.fieldOf("name").forGetter(LevelingMiningNode::name),
                 CodecUtils.VECTOR_2I.fieldOf("location").forGetter(LevelingMiningNode::location),
                 Codec.INT.fieldOf("max_level").forGetter(LevelingMiningNode::maxLevel),
-                PowderType.Companion.CODEC.fieldOf("powder_type").forGetter(LevelingMiningNode::powderType),
+                PowderType.CODEC.fieldOf("powder_type").forGetter(LevelingMiningNode::powderType),
                 Codec.STRING.fieldOf("cost_formula").forGetter(LevelingMiningNode::costFormula),
                 rewardFormulaCodec.fieldOf("reward_formula").forGetter(LevelingMiningNode::rewards),
                 Codec.STRING.listOf().fieldOf("tooltip").forGetter(LevelingMiningNode::tooltip),
@@ -261,7 +261,7 @@ class CoreMiningNode(
         companion object {
             val CODEC: Codec<CotmCost> = RecordCodecBuilder.create {
                 it.group(
-                    PowderType.Companion.CODEC.optionalFieldOf("type", PowderType.MITHRIL).forGetter(CotmCost::type),
+                    PowderType.CODEC.optionalFieldOf("type", PowderType.MITHRIL).forGetter(CotmCost::type),
                     Codec.INT.optionalFieldOf("amount", 0).forGetter(CotmCost::amount),
                 ).apply(it, CoreMiningNode::CotmCost)
             }
