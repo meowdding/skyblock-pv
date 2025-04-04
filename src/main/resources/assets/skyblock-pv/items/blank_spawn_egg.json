@@ -1,0 +1,6 @@
+{
+    "model": {
+        "type": "minecraft:model",
+        "model": "skyblock-pv:item/blank_spawn_egg"
+    }
+}
