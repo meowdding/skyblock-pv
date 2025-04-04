@@ -6,8 +6,8 @@ import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.notkamui.keval.keval
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockpv.utils.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 
 object CfCodecs {
