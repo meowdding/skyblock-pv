@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tech.thatgravyboat.skyblockpv.utils.CatOnShoulderLayer;
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer;
+import tech.thatgravyboat.skyblockpv.utils.PlayerRenderStateAccessor;
 
 @Mixin(PlayerRenderer.class)
 public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractClientPlayer, PlayerRenderState, PlayerModel> {
@@ -28,6 +29,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
         @Local(argsOnly = true) PlayerRenderState renderState,
         @Local(argsOnly = true) float partial
     ) {
+        ((PlayerRenderStateAccessor) renderState).setSkyblockpv$catOnShoulder(null);
         if (player instanceof FakePlayer fakePlayer) {
             fakePlayer.setupRenderState(renderState, partial);
         }
