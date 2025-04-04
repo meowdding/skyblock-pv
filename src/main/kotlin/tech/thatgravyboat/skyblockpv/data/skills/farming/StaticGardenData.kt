@@ -25,7 +25,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
-import tech.thatgravyboat.skyblockpv.utils.CodecUtils
+import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.createSkull
