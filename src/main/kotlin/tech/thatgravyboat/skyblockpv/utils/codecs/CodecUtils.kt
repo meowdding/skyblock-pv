@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.utils
+package tech.thatgravyboat.skyblockpv.utils.codecs
 
 import com.mojang.serialization.Codec
 import eu.pb4.placeholders.api.ParserContext
@@ -14,7 +14,7 @@ object CodecUtils {
         { it.mapKeys { entry -> entry.key.toString() } },
     )
 
-    val SKYBLOCK_RARITY_CODEC: Codec<SkyBlockRarity> = EnumCodec.of(SkyBlockRarity.entries.toTypedArray())
+    val SKYBLOCK_RARITY_CODEC: Codec<SkyBlockRarity> = EnumCodec.Companion.of(SkyBlockRarity.entries.toTypedArray())
 
     val CUMULATIVE_INT_LIST: Codec<List<Int>> =
         Codec.INT.listOf().xmap(
