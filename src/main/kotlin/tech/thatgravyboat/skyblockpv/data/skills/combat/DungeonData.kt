@@ -5,15 +5,15 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 
 data class DungeonData(
-    val dungeonTypes: Map<String, DungeonTypeData>,
+    val dungeonTypes: Map<String, DungeonTypeData?>,
     val classExperience: Map<String, Long>,
     val secrets: Long,
 ) {
     companion object {
         fun fromJson(json: JsonObject): DungeonData {
             val dungeonsTypes = json.getAsJsonObject("dungeon_types")
-            val catacombs = dungeonsTypes.getAsJsonObject("catacombs").parseDungeonType()
-            val catacombsMaster = dungeonsTypes.getAsJsonObject("master_catacombs").parseDungeonType()
+            val catacombs = dungeonsTypes?.getAsJsonObject("catacombs")?.parseDungeonType()
+            val catacombsMaster = dungeonsTypes?.getAsJsonObject("master_catacombs")?.parseDungeonType()
             val classExperience = json.getAsJsonObject("player_classes").parseClassExperience()
             val secrets = json["secrets"].asLong(0)
 
