@@ -14,10 +14,6 @@ object UnbreakableFixer : DataComponentFixer<Unit> {
     override fun getData(tag: CompoundTag): Unit? {
         val isUnbreakable = tag.getAndRemoveBoolean(TAG) ?: return null
 
-        return if (isUnbreakable) {
-            Unit.INSTANCE
-        } else {
-            return null
-        }
+        return Unit.INSTANCE.takeIf { isUnbreakable }
     }
 }
