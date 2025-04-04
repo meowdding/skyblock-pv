@@ -7,15 +7,20 @@ import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import earth.terrarium.olympus.client.ui.UIConstants
 import net.minecraft.core.component.DataComponents
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.item.component.TooltipDisplay
+import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
+import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumItem
+import tech.thatgravyboat.skyblockpv.data.museum.MuseumRepoEntry
+import tech.thatgravyboat.skyblockpv.data.museum.RepoMuseumCategory
+import tech.thatgravyboat.skyblockpv.data.museum.RepoMuseumData
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
@@ -23,12 +28,48 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import tech.thatgravyboat.skyblockpv.utils.tooltipDataComponents
+import kotlin.math.ceil
 
-abstract class AbstractMuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMuseumScreen(gameProfile, profile) {
+abstract class AbstractMuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
+    BaseMuseumScreen(gameProfile, profile) {
     protected var carousel: CarouselWidget? = null
 
-    abstract fun getInventories(): List<Display>
-    abstract fun getIcons(): List<ItemStack>
+    fun getInventories() = RepoMuseumData.museumCategoryMap.entries.flatMap { (_, entries) ->
+        entries.asSequence().sortedWith(
+            Comparator.comparingInt<MuseumRepoEntry> { ItemAPI.getItem(it.id).getData(DataTypes.RARITY)?.ordinal ?: 0 }
+                .thenComparing({ ItemAPI.getItemName(it.id).stripped }, String::compareTo),
+        ).map { item ->
+            loaded(
+                whileLoading = listOf(Items.ORANGE_DYE.defaultInstance),
+                onError = listOf(Items.BEDROCK.defaultInstance),
+            ) {
+                it.items.find { it.id == item.id }?.stacks
+                    ?: listOf(
+                        run {
+                            val defaultInstance =
+                                (if (it.isParentDonated(item)) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance
+                            defaultInstance.set(DataComponents.CUSTOM_NAME, ItemAPI.getItemName(item.id))
+                            defaultInstance.set(DataComponents.LORE, ItemLore(listOf(ItemAPI.getItemName(item.id))))
+                            defaultInstance
+                        },
+                    )
+            }
+        }.flatMap { it.map { Displays.item(it, showTooltip = true) } }.chunked(54)
+            .map {
+                it.toMutableList().rightPad(54, Displays.empty(16, 16))
+                    .map { Displays.padding(2, it) }
+                    .chunked(9)
+                    .map { it.toRow() }
+                    .toColumn()
+            }.toList()
+    }.map { Displays.inventoryBackground(9, 6, Displays.padding(2, it)) }
+
+    private fun getIcons(): List<RepoMuseumCategory> =
+        RepoMuseumData.museumCategoryMap.entries.flatMap { (category, entries) ->
+            val nextUp = ceil(entries.size / 54.0).toInt()
+            mutableListOf<RepoMuseumCategory>().rightPad(nextUp, category)
+        }
+
     open fun getExtraLine(): Display? = null
 
     override fun getLayout() = LayoutBuild.vertical {
@@ -41,10 +82,16 @@ abstract class AbstractMuseumItemScreen(gameProfile: GameProfile, profile: SkyBl
             246,
         )
 
+        val map = mutableMapOf<RepoMuseumCategory, Int>()
         val buttons = List(inventories.size) { index ->
             val icon = icons[index]
-            icon.count = index + 1
-            val itemDisplay = Displays.item(icon, showStackSize = true)
+            val compute = map.compute(icon) { _, i -> i?.plus(1) ?: 0 }
+            val itemDisplay = Displays.item(
+                icon.item.value,
+                customStackText = (compute ?: 0).takeIf { it != 0 }?.let { Text.of(it.plus(1).toString()) }
+            ).withTooltip {
+                    add(icon.name)
+                }
 
             Button()
                 .withSize(20, 20)
@@ -93,7 +140,8 @@ abstract class AbstractMuseumItemScreen(gameProfile: GameProfile, profile: SkyBl
                     defaultInstance.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay(false, tooltipDataComponents))
                     TooltipBuilder().apply {
 
-                    }.lines().map { Text.multiline(it) }.let {  defaultInstance.set(DataComponents.LORE, ItemLore(it, it)) }
+                    }.lines().map { Text.multiline(it) }
+                        .let { defaultInstance.set(DataComponents.LORE, ItemLore(it, it)) }
 
                     defaultInstance
                 }
@@ -102,7 +150,7 @@ abstract class AbstractMuseumItemScreen(gameProfile: GameProfile, profile: SkyBl
         }.map { Displays.padding(2, it) }.chunked(54).map { it.toMutableList() }.map {
             it.rightPad(54, Displays.placeholder(20, 20))
             Displays.inventoryBackground(9, 6, Displays.padding(2, it.chunked(9).map { it.toRow() }.toColumn()))
-        }.toList().let { CarouselWidget(it,0, 246) }.let { widget(it) }
+        }.toList().let { CarouselWidget(it, 0, 246) }.let { widget(it) }
     }
 
     abstract fun getMuseumData(): List<MuseumItem>
