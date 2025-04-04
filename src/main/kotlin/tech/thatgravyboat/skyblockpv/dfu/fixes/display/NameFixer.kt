@@ -12,7 +12,7 @@ object NameFixer : DataComponentFixer<Component> {
     private const val DISPLAY_TAG = "display"
     private const val TAG = "Name"
 
-    override fun getComponentType(): DataComponentType<Component> = DataComponents.CUSTOM_NAME
+    override val type: DataComponentType<Component> = DataComponents.CUSTOM_NAME
 
     override fun getData(tag: CompoundTag): Component? {
         val display = tag.getCompound(DISPLAY_TAG).getOrNull() ?: return null

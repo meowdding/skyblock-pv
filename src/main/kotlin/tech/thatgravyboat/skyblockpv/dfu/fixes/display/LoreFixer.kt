@@ -12,7 +12,7 @@ object LoreFixer : DataComponentFixer<ItemLore> {
     private const val DISPLAY_TAG = "display"
     private const val TAG = "Lore"
 
-    override fun getComponentType(): DataComponentType<ItemLore> = DataComponents.LORE
+    override val type: DataComponentType<ItemLore> = DataComponents.LORE
 
     override fun getData(tag: CompoundTag): ItemLore? {
         val display = tag.getCompound(DISPLAY_TAG).getOrNull() ?: return null
