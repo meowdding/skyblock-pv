@@ -53,9 +53,9 @@ All fishing related information, so Essence Upgrades, Trophy Fish, Gear, Stats, 
 
 #### SkyBlockMod
 
-- **Issue**: [SkyBlockMod](https://github.com/kevinthegreat1/SkyblockMod-Fabric) is unsupported and introduces command shortcuts. While you can disable these
-  shortcuts, doing so disables **all** of them.
-- **Conflict**: The mod abbreviates `/party leave` to `pv`, which conflicts with our command.
+- **Issue**: [SkyBlockMod](https://github.com/kevinthegreat1/SkyblockMod-Fabric) abbreviates `/party leave` to `pv`, which conflicts with our command.
+- **Resolution**: We remove the `/pv` shortcut so that our command is used.
+- **Note**: We do not provide an option to disable this behaviour, as using our mod implies you want the pv shortcut for profile viewer.
 
 #### SkyBlocker
 
