@@ -77,17 +77,7 @@ object Displays {
         return fixed(width, height, empty())
     }
 
-    fun inventorySlot(display: Display, color: Int = -1): Display {
-        return object : Display {
-            override fun getWidth() = display.getWidth()
-            override fun getHeight() = display.getHeight()
-
-            override fun render(graphics: GuiGraphics) {
-                SbPvRenderUtils.drawSlot(graphics, 0, 0, display.getWidth(), display.getHeight(), color)
-                display.render(graphics)
-            }
-        }
-    }
+    fun inventorySlot(display: Display, color: Int = -1) = inventoryBackground(1, Orientation.HORIZONTAL, display, color)
 
     fun inventoryBackground(size: Int, orientation: Orientation, display: Display, color: Int = -1): Display {
         return object : Display {
@@ -96,7 +86,10 @@ object Displays {
 
             override fun render(graphics: GuiGraphics) {
                 SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
-                display.render(graphics)
+                graphics.pushPop {
+                    this.translate(0,0, 2)
+                    display.render(graphics)
+                }
             }
         }
     }
@@ -114,7 +107,10 @@ object Displays {
 
             override fun render(graphics: GuiGraphics) {
                 SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
-                display.render(graphics)
+                graphics.pushPop {
+                    this.translate(0,0, 2)
+                    display.render(graphics)
+                }
             }
         }
     }
