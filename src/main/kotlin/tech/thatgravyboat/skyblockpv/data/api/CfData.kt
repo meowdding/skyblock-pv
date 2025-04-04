@@ -6,9 +6,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
-import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
-import tech.thatgravyboat.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockpv.utils.createSkull
 
 data class CfData(
     val chocolate: Long,
@@ -33,7 +30,8 @@ data class CfData(
                 chocolate = json["chocolate"].asLong(0),
                 totalChocolate = json["total_chocolate"].asLong(0),
                 chocolateSincePrestige = json["chocolate_since_prestige"].asLong(0),
-                employees = json["employees"].asMap { k, v -> k to v.asInt(0) }.map { RabbitEmployee(it.key, it.value) },
+                employees = json["employees"].asMap { k, v -> k to v.asInt(0) }
+                    .map { RabbitEmployee(it.key, it.value) },
                 rabbits = json["rabbits"].asMap { k, v ->
                     if (v is JsonPrimitive) k to v.asInt
                     else k to -1
