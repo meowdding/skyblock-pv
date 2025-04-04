@@ -146,11 +146,13 @@ object BasePotionItem {
         potions.defaultReturnValue(Potions.WATER)
     }
 
+    private val cache = Int2ObjectOpenHashMap<PotionContents>()
+
     fun getBase(meta: Int): ItemStack {
         val item = if (meta.and(16384) == 16384) Items.SPLASH_POTION else Items.POTION
-        val potion = potions[meta.and(127)] ?: Potions.WATER
-        return ItemStack(item).apply {
-            set(DataComponents.POTION_CONTENTS, PotionContents(potion))
+        val contents = cache.getOrPut(meta.and(127)) {
+            PotionContents(potions[meta.and(127)] ?: Potions.WATER)
         }
+        return ItemStack(item).apply { set(DataComponents.POTION_CONTENTS, contents) }
     }
 }
