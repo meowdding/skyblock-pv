@@ -4,5 +4,6 @@
     "categories": [
         "helmet",
         "carnival_mask"
-    ]
+    ],
+    "priority": 15
 }

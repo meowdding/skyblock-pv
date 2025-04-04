@@ -10,5 +10,6 @@
     "items": [
         "DIVAN_PENDANT",
         "DWARVEN_HANDWARMERS"
-    ]
+    ],
+    "priority": 17
 }

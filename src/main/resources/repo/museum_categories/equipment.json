@@ -11,5 +11,6 @@
         "dungeon_glove",
         "cloak",
         "bracelet"
-    ]
+    ],
+    "priority": 12
 }

@@ -6,5 +6,6 @@
         "dungeon_sword",
         "dungeon_longsword",
         "longsword"
-    ]
+    ],
+    "priority": 20
 }

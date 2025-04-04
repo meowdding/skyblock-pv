@@ -3,5 +3,6 @@
     "display": "skyblock:overflux_power_orb",
     "categories": [
         "deployable"
-    ]
+    ],
+    "priority": 10
 }

@@ -16,7 +16,7 @@ import tech.thatgravyboat.skyblockpv.screens.tabs.inventory.InventoryScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.mining.BaseMiningScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.mining.MainMiningScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.museum.BaseMuseumScreen
-import tech.thatgravyboat.skyblockpv.screens.tabs.museum.MuseumScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.museum.MuseumItemScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.rift.BaseRiftScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.rift.MainRiftScreen
 import tech.thatgravyboat.skyblockpv.utils.createSkull
@@ -36,7 +36,7 @@ enum class PvTab(
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
-    MUSEUM(BaseMuseumScreen::class, ::MuseumScreen, Items.GOLD_BLOCK.defaultInstance),
+    MUSEUM(BaseMuseumScreen::class, ::MuseumItemScreen, Items.GOLD_BLOCK.defaultInstance),
     CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.createSkull()),
     RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.createSkull()),
     ;

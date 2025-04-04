@@ -20,15 +20,15 @@ data class MuseumData(val items: List<MuseumEntry>) {
         }
     }
 
-    fun isParentDonated(entry: MuseumRepoEntry): Boolean {
+    fun isParentDonated(entry: MuseumRepoEntry): String? {
         val parentId = entry.parentId
         if (items.any { it.id == parentId }) {
-            return true
+            return parentId
         } else if (parentId != null) {
-            return RepoMuseumData.getById(parentId)?.let { isParentDonated(it) } ?: false
+            return RepoMuseumData.getById(parentId)?.let { isParentDonated(it) }
         }
 
-        return false
+        return null
     }
 }
 

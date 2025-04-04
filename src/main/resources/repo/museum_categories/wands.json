@@ -3,5 +3,6 @@
     "display": "skyblock:gyrokinetic_wand",
     "categories": [
         "wand"
-    ]
+    ],
+    "priority": 18
 }

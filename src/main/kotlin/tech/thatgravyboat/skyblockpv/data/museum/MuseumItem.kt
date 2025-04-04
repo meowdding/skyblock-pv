@@ -12,6 +12,7 @@ private val COMPACT_MUSEUM_ITEM_CODEC = Codec.STRING.xmap(
     { MuseumItem(it, null, emptyList()) },
     { it.id },
 )
+
 private val DEFAULT_MUSEUM_ITEM_CODEC = RecordCodecBuilder.create {
     it.group(
         Codec.STRING.fieldOf("id").forGetter(MuseumItem::id),
@@ -19,6 +20,7 @@ private val DEFAULT_MUSEUM_ITEM_CODEC = RecordCodecBuilder.create {
         Codec.STRING.listOf().optionalFieldOf("mapped_item_ids", emptyList()).forGetter(MuseumItem::mappedIds),
     ).apply(it, ::initItem)
 }
+
 val MUSEUM_ITEM_CODEC = Codec.either(
     COMPACT_MUSEUM_ITEM_CODEC,
     DEFAULT_MUSEUM_ITEM_CODEC,

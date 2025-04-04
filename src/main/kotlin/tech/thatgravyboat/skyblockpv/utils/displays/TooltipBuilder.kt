@@ -5,9 +5,12 @@ import net.minecraft.network.chat.MutableComponent
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
-class TooltipBuilder() {constructor(lines: List<Any>) : this() {
+class TooltipBuilder() {
+
+    constructor(lines: List<Any>) : this() {
         this.lines.addAll(lines)
     }
+
     private val lines = mutableListOf<Any>()
 
     fun add(line: Component) = lines.add(line)

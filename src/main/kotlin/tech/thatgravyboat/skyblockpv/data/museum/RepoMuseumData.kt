@@ -76,7 +76,7 @@ object RepoMuseumData {
                 emptyList(),
                 0
             )
-        })
+        }.toSortedMap(Comparator.comparingInt<RepoMuseumCategory> { it.priority }.reversed()))
     }
 
     fun getById(id: String): MuseumRepoEntry? = listOf(armor, rarities, weapons).flatten().firstOrNull { it.id == id }
