@@ -108,7 +108,7 @@ object Utils {
     private val formatter = NumberFormat.getCompactNumberInstance()
     fun Number.shorten(decimalDigits: Int = 1): String = formatter.apply { maximumFractionDigits = decimalDigits }.format(this)
 
-    fun Duration.formatReadableTime(biggestUnit: DurationUnit, maxUnits: Int = -1): String {
+    fun Duration.formatReadableTime(biggestUnit: DurationUnit = DurationUnit.DAYS, maxUnits: Int = 2): String {
         val units = listOf(
             DurationUnit.DAYS to this.inWholeDays,
             DurationUnit.HOURS to this.inWholeHours % 24,

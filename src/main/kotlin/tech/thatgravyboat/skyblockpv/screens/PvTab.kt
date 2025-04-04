@@ -17,6 +17,8 @@ import tech.thatgravyboat.skyblockpv.screens.tabs.mining.BaseMiningScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.mining.MainMiningScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.museum.BaseMuseumScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.museum.MuseumScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.rift.BaseRiftScreen
+import tech.thatgravyboat.skyblockpv.screens.tabs.rift.MainRiftScreen
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -35,7 +37,8 @@ enum class PvTab(
     PETS(PetScreen::class, Items.BONE.defaultInstance),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
     MUSEUM(BaseMuseumScreen::class, ::MuseumScreen, Items.GOLD_BLOCK.defaultInstance),
-    CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.createSkull())
+    CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.createSkull()),
+    RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.createSkull()),
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(

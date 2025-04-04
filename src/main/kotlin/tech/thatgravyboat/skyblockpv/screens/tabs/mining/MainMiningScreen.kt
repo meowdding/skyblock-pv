@@ -33,7 +33,7 @@ import kotlin.time.toDuration
 
 class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
-    override fun getLayout(): Layout {
+    override fun getLayout(bg: DisplayWidget): Layout {
         val profile = profile ?: return LayoutBuild.horizontal { }
         val mining = profile.mining ?: return LayoutBuild.horizontal { }
         val columnWidth = uiWidth / 2

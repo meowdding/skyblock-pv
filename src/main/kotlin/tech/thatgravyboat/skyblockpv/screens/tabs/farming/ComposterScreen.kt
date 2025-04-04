@@ -27,7 +27,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.time.Instant
 
 class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
-    override fun getLayout() = LayoutBuild.horizontal {
+    override fun getLayout(bg: DisplayWidget) = LayoutBuild.horizontal {
         widget(getPlots())
         widget(
             LayoutBuild.vertical {

@@ -16,7 +16,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
-    override fun getLayout(): Layout {
+    override fun getLayout(bg: DisplayWidget): Layout {
         val visitors = data?.map { it.commissionData.commissions.associateBy { it.visitor } }?.getOrNull() ?: emptyMap()
 
         return StaticGardenData.visitors

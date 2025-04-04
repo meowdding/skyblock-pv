@@ -11,6 +11,7 @@ import tech.thatgravyboat.skyblockpv.data.CfData
 import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.Currency
 import tech.thatgravyboat.skyblockpv.data.EssenceData
+import tech.thatgravyboat.skyblockpv.data.RiftData
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
@@ -59,6 +60,7 @@ data class SkyBlockProfile(
     val gardenData: GardenData,
     val farmingData: FarmingData,
     val chocolateFactoryData: CfData?,
+    val rift: RiftData?,
 ) {
     companion object {
 
@@ -121,6 +123,7 @@ data class SkyBlockProfile(
                 },
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
+                rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
             )
         }
 
