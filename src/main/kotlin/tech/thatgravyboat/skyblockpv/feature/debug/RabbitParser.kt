@@ -11,11 +11,12 @@ import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerCloseEvent
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
-import tech.thatgravyboat.skyblockpv.config.Config
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockpv.config.DevConfig
 import java.nio.file.Files
 
 object RabbitParser {
-    var data: MutableMap<String, MutableSet<String>> = mutableMapOf()
+    private var data: MutableMap<String, MutableSet<String>> = mutableMapOf()
 
     private val incorrectApiNames = mapOf(
         "fish_the_rabbit" to "fish",
@@ -23,7 +24,7 @@ object RabbitParser {
 
     @Subscription
     fun onInv(event: ContainerChangeEvent) {
-        if (!Config.devMode) return
+        if (!shouldParse()) return
         if (!event.title.contains("Hoppity's Collection")) return
         if (event.slot !in 9..44) return
         if (!listOf(Items.PLAYER_HEAD, Items.GRAY_DYE).any { event.item.`is`(it) }) return
@@ -38,7 +39,7 @@ object RabbitParser {
 
     @Subscription
     fun onInvGone(event: ContainerCloseEvent) {
-        if (!Config.devMode) return
+        if (!shouldParse()) return
         if (data.isEmpty()) return
         Text.of("Storing Rabbit Data in config").send()
 
@@ -51,4 +52,6 @@ object RabbitParser {
 
         data.clear()
     }
+
+    fun shouldParse() = SkyBlockPv.isDevMode && DevConfig.hoppityParser
 }

@@ -2,8 +2,12 @@
     "@metadata": {
         "allowArrays": true
     },
-    "sbpv.dev": "Dev Mode",
-    "sbpv.dev.desc": "Enable Debug Dev Features. \n§cMight bring unwanted consequences like crashes.",
+    "//comment/config": "",
+    "sbpv.dev.devMode": "Dev Mode",
+    "sbpv.dev.devMode.desc": "Enable Debug Dev Features. \n§cMight bring unwanted consequences like crashes.",
+    "sbpv.dev.hoppityParser": "Parse Hoppity Rabbits",
+    "sbpv.dev.hoppityParser.desc": "Parse all Hoppity Rabbits from Hypixels Rabbits UI in an rarity to api name format.",
+    "//comment/tabs": "",
 
     "skyblockpv.tab.main": "General",
     "skyblockpv.tab.combat": "Combat",
