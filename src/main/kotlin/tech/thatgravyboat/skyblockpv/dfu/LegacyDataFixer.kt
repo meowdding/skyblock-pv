@@ -10,7 +10,6 @@ import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.getStringOrNull
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toJson
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
-import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.dfu.base.BaseItem
 import tech.thatgravyboat.skyblockpv.dfu.fixes.*
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.ColorFixer
@@ -50,7 +49,7 @@ object LegacyDataFixer {
             fixers.forEach { it.apply(base, tag) }
         }
 
-        if (Config.devMode && !tag.isEmpty && !tag.getCompoundOrEmpty("tag").isEmpty) {
+        if (SkyBlockPv.isDevMode && !tag.isEmpty && !tag.getCompoundOrEmpty("tag").isEmpty) {
             Logger.warn("""
             Item tag is not empty after applying fixers for ${base.getData(DataTypes.ID)}:
             ${NbtUtils.prettyPrint(tag)}

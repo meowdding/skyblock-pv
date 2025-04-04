@@ -30,10 +30,10 @@ import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.GardenApi
 import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -128,7 +128,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         dropdown.visitWidgets(this::addRenderableWidget)
 
 
-        if (McClient.isDev || Config.devMode) createDevRow(bg).visitWidgets(this::addRenderableWidget)
+        if (SkyBlockPv.isDevMode) createDevRow(bg).visitWidgets(this::addRenderableWidget)
 
 
         addRenderableOnly(
@@ -222,19 +222,22 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         Files.writeString(
             file,
             GsonBuilder()
-                .registerTypeAdapter(ItemStack::class.java, object: JsonSerializer<ItemStack> {
-                    override fun serialize(src: ItemStack?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
-                        if (src == null) {
-                            return com.google.gson.JsonNull.INSTANCE
-                        }
+                .registerTypeAdapter(
+                    ItemStack::class.java,
+                    object : JsonSerializer<ItemStack> {
+                        override fun serialize(src: ItemStack?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+                            if (src == null) {
+                                return com.google.gson.JsonNull.INSTANCE
+                            }
 
-                        val encodeStart = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, src)
-                        if (encodeStart.isError) {
-                            return com.google.gson.JsonPrimitive(encodeStart.error().get().messageSupplier.get())
+                            val encodeStart = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, src)
+                            if (encodeStart.isError) {
+                                return com.google.gson.JsonPrimitive(encodeStart.error().get().messageSupplier.get())
+                            }
+                            return encodeStart.getOrThrow()
                         }
-                        return encodeStart.getOrThrow()
-                    }
-                }).create().toJson(profiles),
+                    },
+                ).create().toJson(profiles),
         )
 
         ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
