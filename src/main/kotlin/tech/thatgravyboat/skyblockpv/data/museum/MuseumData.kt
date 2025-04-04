@@ -1,11 +1,12 @@
 package tech.thatgravyboat.skyblockpv.data.museum
 
 import com.google.gson.JsonObject
+import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.LegacyItemStack
 import tech.thatgravyboat.skyblockpv.utils.Utils.toDashlessString
 import tech.thatgravyboat.skyblockpv.utils.getNbt
 import tech.thatgravyboat.skyblockpv.utils.getPath
+import tech.thatgravyboat.skyblockpv.utils.legacyStack
 
 data class MuseumData(val items: List<MuseumEntry>) {
     companion object {
@@ -14,7 +15,7 @@ data class MuseumData(val items: List<MuseumEntry>) {
                 ?.let { if (it is JsonObject) it else null } ?: return null
             val map = asJsonObject.entrySet().map { it.key to it.value as JsonObject }.mapNotNull {
                 it.second.getPath("items.data")?.getNbt()?.getListOrEmpty("i")?.let { value -> it.first to value }
-            }.map { MuseumEntry(it.first, it.second.map { item -> LegacyItemStack.fromTag(item) }) }
+            }.map { MuseumEntry(it.first, it.second.map { item -> item.legacyStack() }) }
             return MuseumData(map)
         }
     }
@@ -31,4 +32,4 @@ data class MuseumData(val items: List<MuseumEntry>) {
     }
 }
 
-data class MuseumEntry(val id: String, val stacks: List<LegacyItemStack>)
+data class MuseumEntry(val id: String, val stacks: List<ItemStack>)

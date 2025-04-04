@@ -15,7 +15,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.LegacyItemStack
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumItem
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -80,8 +79,8 @@ abstract class AbstractMuseumItemScreen(gameProfile: GameProfile, profile: SkyBl
     fun meow() = LayoutBuild.frame {
         getMuseumData().asSequence().sortedBy { it.id }.map { repoData ->
             val item = loaded(
-                whileLoading = LegacyItemStack.wrap(Items.ORANGE_DYE.defaultInstance),
-                onError = LegacyItemStack.wrap(Items.BEDROCK.defaultInstance),
+                whileLoading = Items.ORANGE_DYE.defaultInstance,
+                onError = Items.BEDROCK.defaultInstance,
             ) {
                 it.items.find { it.id == repoData.id }?.let { museumItem ->
                     if (museumItem.stacks.size > 1) {
@@ -96,7 +95,7 @@ abstract class AbstractMuseumItemScreen(gameProfile: GameProfile, profile: SkyBl
 
                     }.lines().map { Text.multiline(it) }.let {  defaultInstance.set(DataComponents.LORE, ItemLore(it, it)) }
 
-                    LegacyItemStack.wrap(defaultInstance)
+                    defaultInstance
                 }
             }
             Displays.item(item, showTooltip = true)

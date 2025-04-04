@@ -10,7 +10,6 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.LegacyItemStack
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumRepoEntry
 import tech.thatgravyboat.skyblockpv.data.museum.RepoMuseumData
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
@@ -28,16 +27,16 @@ class RaritiesMuseumData(gameProfile: GameProfile, profile: SkyBlockProfile? = n
                         .thenComparing({ ItemAPI.getItemName(it.id).stripped }, String::compareTo),
                 ).map { item ->
                     loaded(
-                        whileLoading = listOf(LegacyItemStack.wrap(Items.ORANGE_DYE.defaultInstance)),
-                        onError = listOf(LegacyItemStack.wrapItem(Items.BEDROCK)),
+                        whileLoading = listOf(Items.ORANGE_DYE.defaultInstance),
+                        onError = listOf(Items.BEDROCK.defaultInstance),
                     ) {
                         it.items.find { it.id == item.id }?.stacks
-                            ?: listOf(LegacyItemStack.wrap(run {
+                            ?: listOf(run {
                                 val defaultInstance = (if (it.isParentDonated(item)) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance
                                 defaultInstance.set(DataComponents.CUSTOM_NAME, ItemAPI.getItemName(item.id))
                                 defaultInstance.set(DataComponents.LORE, ItemLore(listOf(ItemAPI.getItemName(item.id))))
                                 defaultInstance
-                            }))
+                            })
                     }
                 }.flatMap { it.map { Displays.item(it, showTooltip = true) } }.chunked(54)
                     .map {
