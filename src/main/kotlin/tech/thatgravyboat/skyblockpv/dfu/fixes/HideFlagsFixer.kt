@@ -43,7 +43,8 @@ object HideFlagsFixer : DataComponentFixer<TooltipDisplay> {
         DataComponents.STORED_ENCHANTMENTS,
     )
 
-    override fun getComponentType(): DataComponentType<TooltipDisplay> = DataComponents.TOOLTIP_DISPLAY
+    override val type: DataComponentType<TooltipDisplay> = DataComponents.TOOLTIP_DISPLAY
+
     override fun getData(tag: CompoundTag): TooltipDisplay? {
         val hideFlags = tag.getAndRemoveByte(TAG)?.toUByte() ?: return null
 

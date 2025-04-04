@@ -29,7 +29,6 @@ object LegacyDataFixer {
         WrittenBookFixer,
         BannerItemFixer,
         ExtraAttributesFixer,
-        CustomPotionEffectsFixer,
     )
 
     fun fromTag(tag: Tag): ItemStack? {
@@ -47,11 +46,7 @@ object LegacyDataFixer {
         }
 
         tag.getCompound("tag").ifPresent { tag ->
-            fixers.forEach {
-                if (it.shouldApply(base)) {
-                    it.fix(base, tag)
-                }
-            }
+            fixers.forEach { it.apply(base, tag) }
         }
 
         if (Config.devMode && !tag.isEmpty && !tag.getCompoundOrEmpty("tag").isEmpty) {

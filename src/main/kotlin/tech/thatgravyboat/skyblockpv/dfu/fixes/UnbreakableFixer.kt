@@ -10,7 +10,8 @@ object UnbreakableFixer : DataComponentFixer<Unit> {
 
     private const val TAG = "Unbreakable"
 
-    override fun getComponentType(): DataComponentType<Unit> = DataComponents.UNBREAKABLE
+    override val type: DataComponentType<Unit> = DataComponents.UNBREAKABLE
+
     override fun getData(tag: CompoundTag): Unit? {
         val isUnbreakable = tag.getAndRemoveBoolean(TAG) ?: return null
 

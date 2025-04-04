@@ -15,7 +15,7 @@ object ColorFixer: DataComponentFixer<DyedItemColor> {
     private const val DISPLAY_TAG = "display"
     private const val TAG = "color"
 
-    override fun getComponentType(): DataComponentType<DyedItemColor> = DataComponents.DYED_COLOR
+    override val type: DataComponentType<DyedItemColor> = DataComponents.DYED_COLOR
 
     override fun getData(tag: CompoundTag): DyedItemColor? {
         val display = tag.getCompound(DISPLAY_TAG).getOrNull() ?: return null

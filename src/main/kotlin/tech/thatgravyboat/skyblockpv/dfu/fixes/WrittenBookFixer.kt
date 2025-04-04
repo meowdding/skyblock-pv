@@ -7,7 +7,8 @@ import net.minecraft.world.item.component.WrittenBookContent
 import tech.thatgravyboat.skyblockpv.dfu.DataComponentFixer
 
 object WrittenBookFixer : DataComponentFixer<WrittenBookContent> {
-    override fun getComponentType(): DataComponentType<WrittenBookContent> = DataComponents.WRITTEN_BOOK_CONTENT
+
+    override val type: DataComponentType<WrittenBookContent> = DataComponents.WRITTEN_BOOK_CONTENT
 
     override fun getData(tag: CompoundTag): WrittenBookContent? {
         tag.getAndRemoveInt("generation") ?: return null

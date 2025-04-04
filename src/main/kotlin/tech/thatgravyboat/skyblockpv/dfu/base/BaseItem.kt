@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.saveddata.maps.MapId
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
+import kotlin.jvm.optionals.getOrNull
 
 object BaseItem {
 
@@ -748,9 +749,8 @@ object BaseItem {
         tag.remove("Damage")
         tag.remove("Count")
 
-
         val stack = when {
-            item === Items.POTION -> BasePotionItem.getBase(meta)
+            item === Items.POTION -> BasePotionItem.getBase(meta, tag.getCompound("tag").getOrNull())
             item === Items.FILLED_MAP -> ItemStack(item).apply { set(DataComponents.MAP_ID, MapId(meta)) }
             item in damagable -> ItemStack(item).apply { set(DataComponents.DAMAGE, meta) }
             item === Items.POLAR_BEAR_SPAWN_EGG && meta == 0 -> ItemStack(item).apply { set(DataComponents.ITEM_MODEL, blankEggModel) }

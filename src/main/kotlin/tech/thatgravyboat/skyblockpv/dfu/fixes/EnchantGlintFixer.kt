@@ -8,7 +8,7 @@ import tech.thatgravyboat.skyblockpv.dfu.DataComponentFixer
 object EnchantGlintFixer : DataComponentFixer<Boolean> {
     private const val TAG = "ench"
 
-    override fun getComponentType(): DataComponentType<Boolean> = DataComponents.ENCHANTMENT_GLINT_OVERRIDE
+    override val type: DataComponentType<Boolean> = DataComponents.ENCHANTMENT_GLINT_OVERRIDE
 
     override fun getData(tag: CompoundTag): Boolean? {
         tag.getAndRemoveList(TAG) ?: return null

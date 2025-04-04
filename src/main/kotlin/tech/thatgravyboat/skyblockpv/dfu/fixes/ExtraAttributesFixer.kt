@@ -7,7 +7,8 @@ import net.minecraft.world.item.component.CustomData
 import tech.thatgravyboat.skyblockpv.dfu.DataComponentFixer
 
 object ExtraAttributesFixer : DataComponentFixer<CustomData> {
-    override fun getComponentType(): DataComponentType<CustomData> = DataComponents.CUSTOM_DATA
+
+    override val type: DataComponentType<CustomData> = DataComponents.CUSTOM_DATA
 
     override fun getData(tag: CompoundTag): CustomData? {
         val extraAttributes = tag.getAndRemoveCompound("ExtraAttributes") ?: return null

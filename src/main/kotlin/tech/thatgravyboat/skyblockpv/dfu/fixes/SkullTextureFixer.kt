@@ -14,10 +14,10 @@ import kotlin.jvm.optionals.getOrNull
 object SkullTextureFixer : DataComponentFixer<ResolvableProfile> {
 
     private val cache = mutableMapOf<String, ResolvableProfile>()
-
     private const val TAG = "SkullOwner"
 
-    override fun getComponentType(): DataComponentType<ResolvableProfile> = DataComponents.PROFILE
+    override val type: DataComponentType<ResolvableProfile> = DataComponents.PROFILE
+
     override fun getData(tag: CompoundTag): ResolvableProfile? {
         val skullOwner = tag.getAndRemoveCompound(TAG) ?: return null
 

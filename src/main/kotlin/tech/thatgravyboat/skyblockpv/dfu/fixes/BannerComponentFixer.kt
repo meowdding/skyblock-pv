@@ -71,7 +71,7 @@ const val TAG = "BlockEntityTag"
 
 object BannerItemFixer : DataComponentFixer<BannerPatternLayers> {
 
-    override fun getComponentType(): DataComponentType<BannerPatternLayers> = DataComponents.BANNER_PATTERNS
+    override val type: DataComponentType<BannerPatternLayers> = DataComponents.BANNER_PATTERNS
 
     override fun getData(compoundTag: CompoundTag): BannerPatternLayers? {
         val tag = compoundTag.getAndRemoveCompound(TAG) ?: return null
@@ -107,5 +107,5 @@ object BannerItemFixer : DataComponentFixer<BannerPatternLayers> {
         else -> DyeColor.WHITE
     }
 
-    override fun shouldApply(stack: ItemStack) = stack.`is`(ItemTags.BANNERS)
+    override fun canApply(stack: ItemStack) = stack.`is`(ItemTags.BANNERS)
 }
