@@ -8,8 +8,8 @@ import kotlin.jvm.optionals.getOrNull
 
 interface ItemFixer {
 
-    fun fixItem(itemStack: ItemStack, compoundTag: CompoundTag)
-    fun shouldApply(itemStack: ItemStack): Boolean = true
+    fun fix(stack: ItemStack, tag: CompoundTag)
+    fun shouldApply(stack: ItemStack): Boolean = true
 
     fun CompoundTag.removeIfEmpty(path: String) {
         if (this.getCompoundOrEmpty(path).isEmpty) {

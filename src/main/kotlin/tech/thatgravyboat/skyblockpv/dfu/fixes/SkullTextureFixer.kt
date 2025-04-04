@@ -1,7 +1,7 @@
 package tech.thatgravyboat.skyblockpv.dfu.fixes
 
-import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
+import com.mojang.authlib.properties.PropertyMap
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
@@ -26,9 +26,9 @@ object SkullTextureFixer : DataComponentFixer<ResolvableProfile> {
         val texture = textures.first().asCompound().getOrNull()?.getStringOrNull("Value") ?: return null
 
         return cache.getOrPut(texture) {
-            val profile = GameProfile(UUID.randomUUID(), "a")
-            profile.properties.put("textures", Property("textures", texture))
-            ResolvableProfile(profile)
+            ResolvableProfile(Optional.empty(), Optional.empty(), PropertyMap().apply {
+                put("textures", Property("textures", texture))
+            })
         }
     }
 }

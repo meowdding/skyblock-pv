@@ -14,13 +14,34 @@ object HideFlagsFixer : DataComponentFixer<TooltipDisplay> {
 
     private const val ZERO: UByte = 0u
     private const val HIDE_ENCHANTMENTS_FLAG: UByte = 1u
-    private const val HIDE_MODIFIERS_FLAG: UByte = 2u
+    private const val HIDE_ATTRIBUTES_FLAG: UByte = 2u
     private const val HIDE_UNBREAKABLE_FLAG: UByte = 4u
     private const val HIDE_CAN_DESTROY_FLAG: UByte = 8u
     private const val HIDE_CAN_PLACE_FLAG: UByte = 16u
     private const val HIDE_ADDITIONAL_FLAG: UByte = 32u
     private const val HIDE_DYED_FLAG: UByte = 64u
     private const val HIDE_UPGRADE_FLAG: UByte = 128u
+
+    private val additionalTooltipComponents = setOf(
+        DataComponents.BANNER_PATTERNS,
+        DataComponents.BEES,
+        DataComponents.BLOCK_ENTITY_DATA,
+        DataComponents.BLOCK_STATE,
+        DataComponents.BUNDLE_CONTENTS,
+        DataComponents.CHARGED_PROJECTILES,
+        DataComponents.CONTAINER,
+        DataComponents.CONTAINER_LOOT,
+        DataComponents.FIREWORK_EXPLOSION,
+        DataComponents.FIREWORKS,
+        DataComponents.INSTRUMENT,
+        DataComponents.MAP_ID,
+        DataComponents.PAINTING_VARIANT,
+        DataComponents.POT_DECORATIONS,
+        DataComponents.POTION_CONTENTS,
+        DataComponents.TROPICAL_FISH_PATTERN,
+        DataComponents.WRITTEN_BOOK_CONTENT,
+        DataComponents.STORED_ENCHANTMENTS,
+    )
 
     override fun getComponentType(): DataComponentType<TooltipDisplay> = DataComponents.TOOLTIP_DISPLAY
     override fun getData(compoundTag: CompoundTag): TooltipDisplay? {
@@ -34,7 +55,7 @@ object HideFlagsFixer : DataComponentFixer<TooltipDisplay> {
             if (hideFlags.and(HIDE_ENCHANTMENTS_FLAG) != ZERO) {
                 add(DataComponents.ENCHANTMENTS)
             }
-            if (hideFlags.and(HIDE_MODIFIERS_FLAG) != ZERO) {
+            if (hideFlags.and(HIDE_ATTRIBUTES_FLAG) != ZERO) {
                 add(DataComponents.ATTRIBUTE_MODIFIERS)
             }
             if (hideFlags.and(HIDE_UNBREAKABLE_FLAG) != ZERO) {
@@ -47,28 +68,7 @@ object HideFlagsFixer : DataComponentFixer<TooltipDisplay> {
                 add(DataComponents.CAN_PLACE_ON)
             }
             if (hideFlags.and(HIDE_ADDITIONAL_FLAG) != ZERO) {
-                addAll(
-                    listOf(
-                        DataComponents.TROPICAL_FISH_PATTERN,
-                        DataComponents.INSTRUMENT,
-                        DataComponents.MAP_ID,
-                        DataComponents.BEES,
-                        DataComponents.CONTAINER_LOOT,
-                        DataComponents.CONTAINER,
-                        DataComponents.BANNER_PATTERNS,
-                        DataComponents.POT_DECORATIONS,
-                        DataComponents.WRITTEN_BOOK_CONTENT,
-                        DataComponents.CHARGED_PROJECTILES,
-                        DataComponents.FIREWORKS,
-                        DataComponents.FIREWORK_EXPLOSION,
-                        DataComponents.POTION_CONTENTS,
-                        DataComponents.JUKEBOX_PLAYABLE,
-                        DataComponents.STORED_ENCHANTMENTS,
-                        DataComponents.OMINOUS_BOTTLE_AMPLIFIER,
-                        DataComponents.SUSPICIOUS_STEW_EFFECTS,
-                        DataComponents.BLOCK_STATE,
-                    ),
-                )
+                addAll(additionalTooltipComponents)
             }
             if (hideFlags.and(HIDE_DYED_FLAG) != ZERO) {
                 add(DataComponents.DYED_COLOR)
