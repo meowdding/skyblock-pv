@@ -68,9 +68,6 @@ object RenderUtils {
         return buffer
     }
 
-    fun drawSlot(graphics: GuiGraphics, x: Int, y: Int, width: Int, height: Int, color: Int) =
-        drawInventory(graphics, x, y, width, height, 1, Orientation.HORIZONTAL, color)
-
     fun drawInventory(
         graphics: GuiGraphics,
         x: Int,

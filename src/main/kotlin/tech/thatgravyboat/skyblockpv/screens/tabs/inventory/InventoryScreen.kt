@@ -15,8 +15,8 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
         spacer(10)
         val armorAndEquipment = listOf(
-            armor.reversed().map { Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true)) }.toColumn(),
-            equipment.map { Displays.padding(2, Displays.item(it, showTooltip = true, showStackSize = true)) }.toColumn(),
+            PvWidgets.orderedArmorDisplay(armor.reversed()),
+            PvWidgets.orderedEquipmentDisplay(equipment),
         ).toRow()
 
         display(
