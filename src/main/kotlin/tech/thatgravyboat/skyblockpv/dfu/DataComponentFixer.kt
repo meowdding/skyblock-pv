@@ -38,6 +38,7 @@ interface DataComponentFixer<T> {
     fun CompoundTag.getAndRemoveString(key: String): String? = this.getAndRemove(key)?.asString()?.getOrNull()
     fun CompoundTag.getAndRemoveList(key: String): ListTag? = this.getAndRemove(key)?.asList()?.getOrNull()
     fun CompoundTag.getAndRemoveByte(key: String): Byte? = this.getAndRemove(key)?.asByte()?.getOrNull()
+    fun CompoundTag.getAndRemoveIntArray(key: String): IntArray? = this.getAndRemove(key)?.asIntArray()?.getOrNull()
     fun CompoundTag.getAndRemoveInt(key: String): Int? = this.getAndRemove(key)?.asInt()?.getOrNull()
     fun CompoundTag.getAndRemoveBoolean(key: String): Boolean? = this.getAndRemove(key)?.asBoolean()?.getOrNull()
     fun CompoundTag.getAndRemoveCompound(key: String): CompoundTag? = this.getAndRemove(key)?.asCompound()?.getOrNull()
