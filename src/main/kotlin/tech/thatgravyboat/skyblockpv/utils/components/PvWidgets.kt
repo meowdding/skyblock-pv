@@ -16,6 +16,7 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
+import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 object PvWidgets {
@@ -101,6 +102,44 @@ object PvWidgets {
             2, 4,
             Displays.padding(2, armorEquipment),
         ).asWidget()
+    }
+
+    private val ARMOR_BACKGROUND_IDS = listOf<ResourceLocation>(
+        ResourceLocation.withDefaultNamespace("container/slot/helmet"),
+        ResourceLocation.withDefaultNamespace("container/slot/chestplate"),
+        ResourceLocation.withDefaultNamespace("container/slot/leggings"),
+        ResourceLocation.withDefaultNamespace("container/slot/boots"),
+    )
+
+    fun orderedArmorDisplay(list: List<ItemStack>): Display {
+        val armor = list.take(4).toMutableList().rightPad(4, ItemStack.EMPTY)
+
+        return armor.mapIndexed { index, item ->
+            if (item.isEmpty) {
+                Displays.background(ARMOR_BACKGROUND_IDS[index], 16, 16)
+            } else {
+                Displays.item(item, showTooltip = true)
+            }
+        }.map { Displays.padding(2, it) }.toColumn()
+    }
+
+    private val EQUIPMENT_BACKGROUND_IDS = listOf<ResourceLocation>(
+        SkyBlockPv.id("icon/slot/necklace"),
+        SkyBlockPv.id("icon/slot/cloak"),
+        SkyBlockPv.id("icon/slot/belt"),
+        SkyBlockPv.id("icon/slot/glove"),
+    )
+
+    fun orderedEquipmentDisplay(list: List<ItemStack>): Display {
+        val armor = list.take(4).toMutableList().rightPad(4, ItemStack.EMPTY)
+
+        return armor.mapIndexed { index, item ->
+            if (item.isEmpty) {
+                Displays.background(EQUIPMENT_BACKGROUND_IDS[index], 16, 16)
+            } else {
+                Displays.item(item, showTooltip = true)
+            }
+        }.map { Displays.padding(2, it) }.toColumn()
     }
 
     fun armorDisplay(list: List<ItemStack>) = Displays.column(
