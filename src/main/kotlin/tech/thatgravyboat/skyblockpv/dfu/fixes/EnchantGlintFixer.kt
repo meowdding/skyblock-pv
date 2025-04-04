@@ -10,8 +10,8 @@ object EnchantGlintFixer : DataComponentFixer<Boolean> {
 
     override fun getComponentType(): DataComponentType<Boolean> = DataComponents.ENCHANTMENT_GLINT_OVERRIDE
 
-    override fun getData(compoundTag: CompoundTag): Boolean? {
-        compoundTag.getAndRemoveList(TAG) ?: return null
+    override fun getData(tag: CompoundTag): Boolean? {
+        tag.getAndRemoveList(TAG) ?: return null
 
         return true
     }

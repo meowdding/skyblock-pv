@@ -14,10 +14,10 @@ object LoreFixer : DataComponentFixer<ItemLore> {
 
     override fun getComponentType(): DataComponentType<ItemLore> = DataComponents.LORE
 
-    override fun getData(compoundTag: CompoundTag): ItemLore? {
-        val display = compoundTag.getCompound(DISPLAY_TAG).getOrNull() ?: return null
+    override fun getData(tag: CompoundTag): ItemLore? {
+        val display = tag.getCompound(DISPLAY_TAG).getOrNull() ?: return null
         val loreTag = display.getAndRemoveList(TAG) ?: return null
-        compoundTag.removeIfEmpty(DISPLAY_TAG)
+        tag.removeIfEmpty(DISPLAY_TAG)
 
         val lore = loreTag.mapNotNull { it.asString().getOrNull() }.map { Text.of(it) }
         return ItemLore(lore, lore)

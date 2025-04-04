@@ -44,42 +44,38 @@ object HideFlagsFixer : DataComponentFixer<TooltipDisplay> {
     )
 
     override fun getComponentType(): DataComponentType<TooltipDisplay> = DataComponents.TOOLTIP_DISPLAY
-    override fun getData(compoundTag: CompoundTag): TooltipDisplay? {
-        val hideFlags = compoundTag.getAndRemoveByte(TAG)?.toUByte() ?: return null
+    override fun getData(tag: CompoundTag): TooltipDisplay? {
+        val hideFlags = tag.getAndRemoveByte(TAG)?.toUByte() ?: return null
 
-        if (cache.containsKey(hideFlags.toByte())) {
-            return cache[hideFlags.toByte()]
-        }
-
-        val tooltipDisplay = buildList<DataComponentType<*>> {
+        return cache.getOrPut(hideFlags.toByte()) {
+            val components = LinkedHashSet<DataComponentType<*>>()
             if (hideFlags.and(HIDE_ENCHANTMENTS_FLAG) != ZERO) {
-                add(DataComponents.ENCHANTMENTS)
+                components.add(DataComponents.ENCHANTMENTS)
             }
             if (hideFlags.and(HIDE_ATTRIBUTES_FLAG) != ZERO) {
-                add(DataComponents.ATTRIBUTE_MODIFIERS)
+                components.add(DataComponents.ATTRIBUTE_MODIFIERS)
             }
             if (hideFlags.and(HIDE_UNBREAKABLE_FLAG) != ZERO) {
-                add(DataComponents.UNBREAKABLE)
+                components.add(DataComponents.UNBREAKABLE)
             }
             if (hideFlags.and(HIDE_CAN_DESTROY_FLAG) != ZERO) {
-                add(DataComponents.CAN_BREAK)
+                components.add(DataComponents.CAN_BREAK)
             }
             if (hideFlags.and(HIDE_CAN_PLACE_FLAG) != ZERO) {
-                add(DataComponents.CAN_PLACE_ON)
+                components.add(DataComponents.CAN_PLACE_ON)
             }
             if (hideFlags.and(HIDE_ADDITIONAL_FLAG) != ZERO) {
-                addAll(additionalTooltipComponents)
+                components.addAll(additionalTooltipComponents)
             }
             if (hideFlags.and(HIDE_DYED_FLAG) != ZERO) {
-                add(DataComponents.DYED_COLOR)
+                components.add(DataComponents.DYED_COLOR)
             }
             if (hideFlags.and(HIDE_UPGRADE_FLAG) != ZERO) {
-                add(DataComponents.TRIM)
+                components.add(DataComponents.TRIM)
             }
-        }.let { TooltipDisplay(false, LinkedHashSet(it)) }
 
-        cache[hideFlags.toByte()] = tooltipDisplay
-        return tooltipDisplay
+            TooltipDisplay(false, components)
+        }
     }
 
 

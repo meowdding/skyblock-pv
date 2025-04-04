@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack
 
 interface DataComponentFixer<T> : ItemFixer {
     fun getComponentType(): DataComponentType<T>
-    fun getData(compoundTag: CompoundTag): T?
+    fun getData(tag: CompoundTag): T?
 
     override fun fix(stack: ItemStack, tag: CompoundTag) {
         stack.set(getComponentType(), getData(tag))

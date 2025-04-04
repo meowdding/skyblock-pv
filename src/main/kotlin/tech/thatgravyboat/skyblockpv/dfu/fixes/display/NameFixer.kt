@@ -14,10 +14,10 @@ object NameFixer : DataComponentFixer<Component> {
 
     override fun getComponentType(): DataComponentType<Component> = DataComponents.CUSTOM_NAME
 
-    override fun getData(compoundTag: CompoundTag): Component? {
-        val display = compoundTag.getCompound(DISPLAY_TAG).getOrNull() ?: return null
+    override fun getData(tag: CompoundTag): Component? {
+        val display = tag.getCompound(DISPLAY_TAG).getOrNull() ?: return null
         val name = display.getAndRemoveString(TAG) ?: return null
-        compoundTag.removeIfEmpty(DISPLAY_TAG)
+        tag.removeIfEmpty(DISPLAY_TAG)
 
         return Text.of(name)
     }

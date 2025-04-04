@@ -18,8 +18,8 @@ object SkullTextureFixer : DataComponentFixer<ResolvableProfile> {
     private const val TAG = "SkullOwner"
 
     override fun getComponentType(): DataComponentType<ResolvableProfile> = DataComponents.PROFILE
-    override fun getData(compoundTag: CompoundTag): ResolvableProfile? {
-        val skullOwner = compoundTag.getAndRemoveCompound(TAG) ?: return null
+    override fun getData(tag: CompoundTag): ResolvableProfile? {
+        val skullOwner = tag.getAndRemoveCompound(TAG) ?: return null
 
         val properties = skullOwner.getCompound("Properties").getOrNull() ?: return null
         val textures = properties.getList("textures").getOrNull() ?: return null

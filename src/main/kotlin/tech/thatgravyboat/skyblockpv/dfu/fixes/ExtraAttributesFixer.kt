@@ -9,8 +9,8 @@ import tech.thatgravyboat.skyblockpv.dfu.DataComponentFixer
 object ExtraAttributesFixer : DataComponentFixer<CustomData> {
     override fun getComponentType(): DataComponentType<CustomData> = DataComponents.CUSTOM_DATA
 
-    override fun getData(compoundTag: CompoundTag): CustomData? {
-        val extraAttributes = compoundTag.getAndRemoveCompound("ExtraAttributes") ?: return null
+    override fun getData(tag: CompoundTag): CustomData? {
+        val extraAttributes = tag.getAndRemoveCompound("ExtraAttributes") ?: return null
         return CustomData.of(extraAttributes)
     }
 }

@@ -17,17 +17,11 @@ object ColorFixer: DataComponentFixer<DyedItemColor> {
 
     override fun getComponentType(): DataComponentType<DyedItemColor> = DataComponents.DYED_COLOR
 
-    override fun getData(compoundTag: CompoundTag): DyedItemColor? {
-        val display = compoundTag.getCompound(DISPLAY_TAG).getOrNull() ?: return null
+    override fun getData(tag: CompoundTag): DyedItemColor? {
+        val display = tag.getCompound(DISPLAY_TAG).getOrNull() ?: return null
         val color = display.getAndRemoveInt(TAG) ?: return null
-        compoundTag.removeIfEmpty(DISPLAY_TAG)
+        tag.removeIfEmpty(DISPLAY_TAG)
 
-        if (cache.containsKey(color)) {
-            return cache[color]
-        }
-
-        val dyedItemColor = DyedItemColor(color)
-        cache[color] = dyedItemColor
-        return dyedItemColor
+        return cache.getOrPut(color) { DyedItemColor(color) }
     }
 }
