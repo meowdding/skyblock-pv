@@ -18,6 +18,7 @@ import tech.thatgravyboat.skyblockpv.api.RemindersAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.config.Config
+import tech.thatgravyboat.skyblockpv.config.DevConfig
 import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
 import tech.thatgravyboat.skyblockpv.data.repo.CfCodecs
 import tech.thatgravyboat.skyblockpv.data.repo.EssenceData
@@ -34,6 +35,8 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     val version = mod.metadata.version
 
     val configurator = Configurator("sbpv")
+
+    val isDevMode get() = McClient.isDev || DevConfig.devMode
 
     override fun onInitialize() {
         Config.register(configurator)
