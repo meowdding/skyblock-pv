@@ -27,8 +27,9 @@ object Config : ConfigKt("skyblockpv/config") {
             ),
         )
 
-    var devMode by boolean(false) {
-        name = Translated("sbpv.dev")
-        description = Translated("sbpv.dev.desc")
+    init {
+        category(DevConfig)
     }
+
+
 }

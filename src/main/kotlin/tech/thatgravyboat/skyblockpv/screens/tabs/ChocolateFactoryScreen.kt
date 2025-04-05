@@ -15,10 +15,10 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.split
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.CfCodecs
-import tech.thatgravyboat.skyblockpv.data.CfData
-import tech.thatgravyboat.skyblockpv.data.RabbitEmployee
-import tech.thatgravyboat.skyblockpv.data.SkullTextures
+import tech.thatgravyboat.skyblockpv.data.api.CfData
+import tech.thatgravyboat.skyblockpv.data.api.RabbitEmployee
+import tech.thatgravyboat.skyblockpv.data.repo.CfCodecs
+import tech.thatgravyboat.skyblockpv.data.repo.SkullTextures
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos

@@ -18,17 +18,13 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
-import tech.thatgravyboat.skyblockpv.data.skills.farming.GardenResource
-import tech.thatgravyboat.skyblockpv.data.skills.farming.StaticGardenData
+import tech.thatgravyboat.skyblockpv.data.repo.GardenResource
+import tech.thatgravyboat.skyblockpv.data.repo.StaticGardenData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
-import tech.thatgravyboat.skyblockpv.utils.displays.Display
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.toRow
-import tech.thatgravyboat.skyblockpv.utils.displays.withTooltip
+import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
 

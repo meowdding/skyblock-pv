@@ -16,8 +16,8 @@ import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getIconFromCollectionType
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToMax
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI.getProgressToNextLevel
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionCategoryOrder
+import tech.thatgravyboat.skyblockpv.data.api.CollectionItem
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.Utils.round

@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data
+package tech.thatgravyboat.skyblockpv.data.repo
 
 import tech.thatgravyboat.skyblockpv.utils.Utils
 

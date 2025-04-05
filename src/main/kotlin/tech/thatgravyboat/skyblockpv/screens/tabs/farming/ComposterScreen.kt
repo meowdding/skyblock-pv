@@ -14,10 +14,10 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.skills.farming.ComposterUpgrade
-import tech.thatgravyboat.skyblockpv.data.skills.farming.GardenProfile
-import tech.thatgravyboat.skyblockpv.data.skills.farming.StaticComposterData
-import tech.thatgravyboat.skyblockpv.data.skills.farming.StaticGardenData
+import tech.thatgravyboat.skyblockpv.data.api.skills.farming.ComposterUpgrade
+import tech.thatgravyboat.skyblockpv.data.api.skills.farming.GardenProfile
+import tech.thatgravyboat.skyblockpv.data.repo.StaticComposterData
+import tech.thatgravyboat.skyblockpv.data.repo.StaticGardenData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round

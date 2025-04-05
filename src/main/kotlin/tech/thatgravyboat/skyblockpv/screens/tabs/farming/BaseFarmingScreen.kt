@@ -8,7 +8,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockpv.api.GardenApi
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.skills.farming.GardenProfile
+import tech.thatgravyboat.skyblockpv.data.api.skills.farming.GardenProfile
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.AbstractCategorizedLoadingScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.Category
 import kotlin.reflect.KClass

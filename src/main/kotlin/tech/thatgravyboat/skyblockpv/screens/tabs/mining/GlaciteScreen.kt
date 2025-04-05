@@ -10,17 +10,13 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.EssenceData.addMiningPerk
-import tech.thatgravyboat.skyblockpv.data.skills.mining.FossilTypes
-import tech.thatgravyboat.skyblockpv.data.skills.mining.GlaciteData
+import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
+import tech.thatgravyboat.skyblockpv.data.api.skills.GlaciteData
+import tech.thatgravyboat.skyblockpv.data.repo.EssenceData.addMiningPerk
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asTable
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.withTooltip
+import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
