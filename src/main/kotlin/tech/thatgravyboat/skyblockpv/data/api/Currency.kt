@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data
+package tech.thatgravyboat.skyblockpv.data.api
 
 import com.google.gson.JsonObject
 import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean

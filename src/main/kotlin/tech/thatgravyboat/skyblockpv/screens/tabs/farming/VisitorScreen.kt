@@ -7,9 +7,9 @@ import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.skills.farming.Commission
-import tech.thatgravyboat.skyblockpv.data.skills.farming.StaticGardenData
-import tech.thatgravyboat.skyblockpv.data.skills.farming.StaticVisitorData
+import tech.thatgravyboat.skyblockpv.data.api.skills.farming.Commission
+import tech.thatgravyboat.skyblockpv.data.repo.StaticGardenData
+import tech.thatgravyboat.skyblockpv.data.repo.StaticVisitorData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append

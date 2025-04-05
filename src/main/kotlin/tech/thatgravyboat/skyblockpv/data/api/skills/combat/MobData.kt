@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills.combat
+package tech.thatgravyboat.skyblockpv.data.api.skills.combat
 
 data class MobData(
     val mobId: String,

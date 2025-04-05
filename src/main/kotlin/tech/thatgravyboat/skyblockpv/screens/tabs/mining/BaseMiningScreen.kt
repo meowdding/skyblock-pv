@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.SkullTextures
+import tech.thatgravyboat.skyblockpv.data.repo.SkullTextures
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.Category
 import kotlin.reflect.KClass

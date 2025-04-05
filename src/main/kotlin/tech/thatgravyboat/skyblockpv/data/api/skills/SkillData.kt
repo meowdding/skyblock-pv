@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills
+package tech.thatgravyboat.skyblockpv.data.api.skills
 
 data class SkillData(
     val name: String,

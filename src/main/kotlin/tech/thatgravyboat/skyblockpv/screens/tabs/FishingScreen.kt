@@ -19,8 +19,8 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
-import tech.thatgravyboat.skyblockpv.data.EssenceData.addFishingPerk
-import tech.thatgravyboat.skyblockpv.data.skills.*
+import tech.thatgravyboat.skyblockpv.data.api.skills.*
+import tech.thatgravyboat.skyblockpv.data.repo.EssenceData.addFishingPerk
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder

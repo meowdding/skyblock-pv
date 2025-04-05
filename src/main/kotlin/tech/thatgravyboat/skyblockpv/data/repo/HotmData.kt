@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills.mining
+package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.JsonArray
 import com.mojang.datafixers.util.Either
@@ -16,6 +16,7 @@ import net.minecraft.util.ExtraCodecs.LateBoundIdMapper
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockpv.data.api.skills.PowderType
 import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
