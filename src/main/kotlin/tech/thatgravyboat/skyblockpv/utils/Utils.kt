@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -167,6 +168,8 @@ object Utils {
     fun Instant.toReadableString(zoneId: ZoneId = ZoneOffset.systemDefault()): String {
         return dateTimeFormatter.format(LocalDateTime.ofInstant(this, zoneId))
     }
+
+    fun UUID.toDashlessString(): String = this.toString().replace("-", "")
 
     fun <T> Map<out Number, T>.sortByKey(): Map<Number, T> = this.entries.sortedBy { it.key.toLong() }.associate { it.toPair() }
 }

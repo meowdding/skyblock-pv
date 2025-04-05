@@ -1,0 +1,9 @@
+{
+    "name": "Swords",
+    "display": "skyblock:terminator",
+    "categories": [
+        "bow",
+        "dungeon_bow"
+    ],
+    "priority": 19
+}

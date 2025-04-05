@@ -1,0 +1,11 @@
+{
+    "name": "Swords",
+    "display": "minecraft:netherite_sword",
+    "categories": [
+        "sword",
+        "dungeon_sword",
+        "dungeon_longsword",
+        "longsword"
+    ],
+    "priority": 20
+}

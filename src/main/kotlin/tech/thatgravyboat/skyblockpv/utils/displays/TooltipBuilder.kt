@@ -24,4 +24,5 @@ class TooltipBuilder() {
 
     fun isEmpty() = lines.isEmpty()
     fun build(): Component = Text.multiline(*lines.toTypedArray())
+    fun lines() = lines
 }
