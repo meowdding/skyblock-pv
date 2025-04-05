@@ -5,7 +5,6 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockCategory
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
@@ -70,7 +69,6 @@ object RepoMuseumData {
         }.mapKeys {
             it.key ?: RepoMuseumCategory(
                 "unknown",
-                ResourceLocation.withDefaultNamespace("barrier"),
                 lazy { Items.BARRIER.defaultInstance },
                 emptyList(),
                 emptyList(),
