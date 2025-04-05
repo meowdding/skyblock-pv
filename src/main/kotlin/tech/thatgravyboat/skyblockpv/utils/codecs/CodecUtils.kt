@@ -3,9 +3,20 @@ package tech.thatgravyboat.skyblockpv.utils.codecs
 import com.mojang.serialization.Codec
 import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
+import net.minecraft.core.component.DataComponents
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
+import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 
 object CodecUtils {
 
@@ -53,5 +64,35 @@ object CodecUtils {
             }.drop(1)
         },
         { it },
+    )
+
+    val ITEM_REFRENCE = ResourceLocation.CODEC.xmap(
+        {
+            lazy {
+                if (it.namespace.equals("skyblock")) {
+                    ItemAPI.getItem(it.path)
+                } else {
+                    BuiltInRegistries.ITEM.get(it).map { it.value().defaultInstance }
+                        .orElseGet {
+                            val defaultInstance = Items.BARRIER.defaultInstance
+                            defaultInstance.set(DataComponents.ITEM_NAME, Text.of(it.toString()) { this.color = TextColor.RED })
+                            defaultInstance
+                        }
+                }
+            }
+        },
+        {
+            val value = it.value
+            val id = value.getData(DataTypes.ID)
+            if (id != null) {
+                ResourceLocation.fromNamespaceAndPath("skyblock", id.lowercase())
+            } else {
+                if (value.`is`(Items.BARRIER) && !value.componentsPatch.isEmpty) {
+                    ResourceLocation.parse(value.get(DataComponents.ITEM_NAME)?.stripped?: "barrier")
+                } else {
+                    BuiltInRegistries.ITEM.getKey(value.item)
+                }
+            }
+        },
     )
 }
