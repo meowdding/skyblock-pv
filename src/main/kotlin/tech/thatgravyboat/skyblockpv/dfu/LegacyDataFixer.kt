@@ -29,6 +29,7 @@ object LegacyDataFixer {
         WrittenBookFixer,
         BannerItemFixer,
         ExtraAttributesFixer,
+        FireworkExplosionFixer,
     )
 
     fun fromTag(tag: Tag): ItemStack? {
