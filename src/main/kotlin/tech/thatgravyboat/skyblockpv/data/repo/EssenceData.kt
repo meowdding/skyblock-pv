@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data
+package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.annotations.SerializedName
 import tech.thatgravyboat.skyblockapi.utils.text.Text

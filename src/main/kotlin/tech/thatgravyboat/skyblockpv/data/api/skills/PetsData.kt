@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills
+package tech.thatgravyboat.skyblockpv.data.api.skills
 
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject

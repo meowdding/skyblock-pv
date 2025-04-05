@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills.farming
+package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
@@ -25,6 +25,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
+import tech.thatgravyboat.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
@@ -345,7 +346,7 @@ enum class FarmingGear() {
     companion object {
         init {
             Utils.loadFromRepo<Map<String, List<String>>>("gear/farming")?.forEach { (key, value) ->
-                runCatching { FarmingGear.valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
+                runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }
 

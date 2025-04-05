@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skyblockpv.data.skills.mining
+package tech.thatgravyboat.skyblockpv.data.repo
 
 import tech.thatgravyboat.skyblockapi.api.data.Perk
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
