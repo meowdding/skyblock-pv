@@ -20,10 +20,7 @@ import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.config.DevConfig
 import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
-import tech.thatgravyboat.skyblockpv.data.repo.CfCodecs
-import tech.thatgravyboat.skyblockpv.data.repo.EssenceData
-import tech.thatgravyboat.skyblockpv.data.repo.ForgeTimeData
-import tech.thatgravyboat.skyblockpv.data.repo.RiftCodecs
+import tech.thatgravyboat.skyblockpv.data.repo.*
 import tech.thatgravyboat.skyblockpv.dfu.LegacyDataFixer
 import tech.thatgravyboat.skyblockpv.feature.debug.RabbitParser
 import tech.thatgravyboat.skyblockpv.screens.PvTab
@@ -53,6 +50,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             RabbitParser,
             CfCodecs,
             RiftCodecs,
+            BestiaryCodecs,
             LegacyDataFixer,
         )
 

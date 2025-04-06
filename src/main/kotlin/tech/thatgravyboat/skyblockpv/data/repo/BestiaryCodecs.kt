@@ -1,15 +1,21 @@
-package tech.thatgravyboat.skyblockpv
+package tech.thatgravyboat.skyblockpv.data.repo
 
+import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
+import com.mojang.serialization.JsonOps
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.codecs.ReservedUnboundMapCodec
 
 typealias BestiaryIcon = Either<String, Pair<String, String>>
 typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, Map<String, BestiaryCategoryEntry>>
 
-object BestiaryData {
+object BestiaryCodecs {
+
+    var data: BestiaryRepoData? = null
+        private set
 
     private val ICON: MapCodec<BestiaryIcon> = Codec.mapEither(
         Codec.STRING.fieldOf("item"),
@@ -48,13 +54,13 @@ object BestiaryData {
         ReservedUnboundMapCodec(
             Codec.STRING,
             CATEGORY_ENTRY_CODEC,
-            "name", "icon", "hasSubcategories"
+            "name", "icon", "hasSubcategories",
         ).xmap(
             { Either.right(it) },
             { it.right().orElseThrow() },
         ),
     )
-    private val CATEGORY_CODEC: Codec<BestiaryCategoriesEntry> = Codec.BOOL.dispatch(
+    private val CATEGORY_CODEC: Codec<BestiaryCategoriesEntry> = Codec.BOOL.orElse(false).dispatch(
         "hasSubcategories",
         { it.right().isPresent },
         { if (it) COMPLEX_CATEGORY_CODEC else SIMPLE_CATEGORY_CODEC },
@@ -77,6 +83,18 @@ object BestiaryData {
             BRACKETS_CODEC.fieldOf("brackets").forGetter(BestiaryRepoData::brackets),
             CATEGORIES_CODEC.forGetter(BestiaryRepoData::categories),
         ).apply(it, ::BestiaryRepoData)
+    }
+
+    init {
+        val bestiaryData = Utils.loadFromRepo<JsonObject>("bestiary") ?: JsonObject()
+
+        CODEC.parse(JsonOps.INSTANCE, bestiaryData).let {
+            if (it.isError) {
+                throw RuntimeException(it.error().get().message())
+            }
+            data = it.getOrThrow()
+            println(data)
+        }
     }
 
 }
