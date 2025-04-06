@@ -3,10 +3,12 @@ package tech.thatgravyboat.skyblockpv.data.repo
 import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.codecs.DispatchedCodec
 import tech.thatgravyboat.skyblockpv.utils.codecs.ReservedUnboundMapCodec
 
 typealias BestiaryIcon = Either<String, Pair<String, String>>
@@ -60,11 +62,11 @@ object BestiaryCodecs {
             { it.right().orElseThrow() },
         ),
     )
-    private val CATEGORY_CODEC: Codec<BestiaryCategoriesEntry> = Codec.BOOL.orElse(false).dispatch(
-        "hasSubcategories",
+    private val CATEGORY_CODEC: Codec<BestiaryCategoriesEntry> = DispatchedCodec(
+        Codec.BOOL.optionalFieldOf("hasSubcategories", false),
         { it.right().isPresent },
-        { if (it) COMPLEX_CATEGORY_CODEC else SIMPLE_CATEGORY_CODEC },
-    )
+        { DataResult.success(if (it) COMPLEX_CATEGORY_CODEC else SIMPLE_CATEGORY_CODEC) },
+    ).codec()
 
     private val BRACKETS_CODEC: Codec<Map<Int, List<Int>>> = Codec.unboundedMap(
         Codec.STRING.xmap({ it.toIntOrNull() ?: 0 }, { it.toString() }),
