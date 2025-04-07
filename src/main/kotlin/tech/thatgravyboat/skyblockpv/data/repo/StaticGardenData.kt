@@ -11,7 +11,6 @@ import eu.pb4.placeholders.api.parsers.TagParser
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.ExtraCodecs
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.item.Item
@@ -26,9 +25,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.data.api.skills.farming.ComposterUpgrade
-import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
+import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import java.util.*
 
@@ -315,8 +314,7 @@ data class StaticVisitorData(
     }
 
     val itemStack: ItemStack by lazy {
-        skin?.let { createSkull(it) } ?: ItemAPI.getItem(item).takeUnless { it.item == Items.BARRIER }
-        ?: BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(item)).defaultInstance
+        skin?.let { createSkull(it) } ?: ItemAPI.getItem(item).takeUnless { it.item == Items.BARRIER } ?: Utils.getMinecraftItem(item)
     }
 }
 

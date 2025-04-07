@@ -80,7 +80,7 @@ object BestiaryCodecs {
         ),
     )
 
-    val CODEC: Codec<BestiaryRepoData> = RecordCodecBuilder.create {
+    private val CODEC: Codec<BestiaryRepoData> = RecordCodecBuilder.create {
         it.group(
             BRACKETS_CODEC.fieldOf("brackets").forGetter(BestiaryRepoData::brackets),
             CATEGORIES_CODEC.forGetter(BestiaryRepoData::categories),

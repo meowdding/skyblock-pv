@@ -6,7 +6,9 @@ import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
@@ -26,6 +28,8 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
 object Utils {
+
+    fun getMinecraftItem(id: String) = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
 
     var isFetchingGameProfile = false
         private set
