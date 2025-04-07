@@ -12,7 +12,7 @@ import tech.thatgravyboat.skyblockpv.utils.codecs.DispatchedCodec
 import tech.thatgravyboat.skyblockpv.utils.codecs.ReservedUnboundMapCodec
 
 typealias BestiaryIcon = Either<String, Pair<String, String>>
-typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, Map<String, BestiaryCategoryEntry>>
+typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, ComplexBestiaryCategoryEntry>
 
 object BestiaryCodecs {
 
@@ -109,6 +109,12 @@ data class BestiaryCategoryEntry(
     val name: String,
     val icon: BestiaryIcon,
     val mobs: List<BestiaryMobEntry>,
+)
+
+data class ComplexBestiaryCategoryEntry(
+    val name: String,
+    val icon: BestiaryIcon,
+    val subcategories: Map<String, BestiaryCategoryEntry>,
 )
 
 data class BestiaryMobEntry(
