@@ -15,8 +15,7 @@ import java.util.*
 
 fun createSkull(textureBase64: String): ItemStack {
     val profile = GameProfile(UUID.randomUUID(), "a")
-    val texture = Base64.getEncoder().encodeToString(Base64.getMimeDecoder().decode(textureBase64))
-    profile.properties.put("textures", Property("textures", texture))
+    profile.properties.put("textures", Property("textures", textureBase64))
     return createSkull(profile)
 }
 
