@@ -52,16 +52,23 @@ object BestiaryCodecs {
             { it.left().orElseThrow() },
         ),
     )
-    private val COMPLEX_CATEGORY_CODEC: MapCodec<BestiaryCategoriesEntry> = MapCodec.assumeMapUnsafe(
-        ReservedUnboundMapCodec(
-            Codec.STRING,
-            CATEGORY_ENTRY_CODEC,
-            "name", "icon", "hasSubcategories",
-        ).xmap(
-            { Either.right(it) },
-            { it.right().orElseThrow() },
-        ),
+    private val COMPLEX_CATEGORY_CODEC: MapCodec<BestiaryCategoriesEntry> = RecordCodecBuilder.mapCodec {
+        it.group(
+            Codec.STRING.fieldOf("name").forGetter(ComplexBestiaryCategoryEntry::name),
+            ICON.fieldOf("icon").forGetter(ComplexBestiaryCategoryEntry::icon),
+            MapCodec.assumeMapUnsafe(
+                ReservedUnboundMapCodec(
+                    Codec.STRING,
+                    CATEGORY_ENTRY_CODEC,
+                    "name", "icon", "hasSubcategories",
+                ),
+            ).forGetter(ComplexBestiaryCategoryEntry::subcategories),
+        ).apply(it, ::ComplexBestiaryCategoryEntry)
+    }.xmap(
+        { Either.right(it) },
+        { it.right().orElseThrow() },
     )
+
     private val CATEGORY_CODEC: Codec<BestiaryCategoriesEntry> = DispatchedCodec(
         Codec.BOOL.optionalFieldOf("hasSubcategories", false),
         { it.right().isPresent },
