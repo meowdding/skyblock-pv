@@ -36,6 +36,8 @@ class CarouselWidget(
         val last = displays.getOrNull((index - 1 + displays.size) % displays.size)
         val next = displays.getOrNull((index + 1) % displays.size)
 
+        this.height = curr.getHeight()
+
         val left = x + (width - curr.getWidth()) / 2
         val right = left + curr.getWidth()
 
@@ -108,7 +110,7 @@ class CarouselWidget(
                     ),
                 )
                 .withCallback {
-                    this.index == index
+                    this.index = index
                 }
         }
 
