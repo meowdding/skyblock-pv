@@ -2,8 +2,15 @@ package tech.thatgravyboat.skyblockpv.utils.components
 
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen
 import earth.terrarium.olympus.client.components.base.BaseWidget
+import earth.terrarium.olympus.client.components.buttons.Button
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.layouts.Layouts
+import earth.terrarium.olympus.client.layouts.LinearViewLayout
+import earth.terrarium.olympus.client.ui.UIConstants
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.helpers.McFont
+import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissorRange
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
@@ -12,7 +19,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 class CarouselWidget(
     private val displays: List<Display>,
     var index: Int = 0,
-    width: Int
+    width: Int,
 ) : BaseWidget() {
 
     private var cursor = CursorScreen.Cursor.DEFAULT
@@ -89,4 +96,27 @@ class CarouselWidget(
     }
 
     override fun getCursor(): CursorScreen.Cursor = cursor
+
+    fun getIcons(displays: () -> List<Display>): Layout {
+        val buttons = displays.invoke().mapIndexed { index, it ->
+            Button()
+                .withSize(20, 20)
+                .withRenderer(
+                    WidgetRenderers.layered(
+                        ExtraWidgetRenderers.conditional(
+                            WidgetRenderers.sprite(UIConstants.PRIMARY_BUTTON),
+                            WidgetRenderers.sprite(UIConstants.DARK_BUTTON),
+                        ) { this.index == index },
+                        WidgetRenderers.center(16, 20, ExtraWidgetRenderers.display(it)),
+                    ),
+                )
+                .withCallback {
+                    this.index == index
+                }
+        }
+
+        return buttons.chunked(9)
+            .map { it.fold(Layouts.row().withGap(1), LinearViewLayout::withChild) }
+            .fold(Layouts.column().withGap(1), LinearViewLayout::withChild)
+    }
 }
