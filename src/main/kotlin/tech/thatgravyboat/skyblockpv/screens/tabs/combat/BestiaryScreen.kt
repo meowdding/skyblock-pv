@@ -19,6 +19,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.fixBase64Padding
+import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import tech.thatgravyboat.skyblockpv.utils.displays.*
@@ -67,7 +68,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             set(DataComponents.CUSTOM_NAME, Text.join(it.name) { italic = false; color = TextColor.WHITE })
             set(DataComponents.LORE, ItemLore(lore, lore))
         }.let { Displays.item(it, showTooltip = true) }
-    }.toRow()
+    }.toMutableList().rightPad(5, Displays.empty(16, 16)).chunked(5).asTable(5)
 
     private fun ComplexBestiaryCategoryEntry.getCategory() = Displays.empty()
 
