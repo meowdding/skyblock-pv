@@ -11,8 +11,8 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
-import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissorRange
+import tech.thatgravyboat.skyblockpv.utils.Utils.translated
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
@@ -48,8 +48,7 @@ class CarouselWidget(
                 last?.render(graphics, x, midY)
             }
 
-            graphics.pushPop {
-                translate(0f, 0f, 300f)
+            graphics.translated(0f, 0f, 300f) {
                 graphics.fill(x, midY, left, bottom, 0x7F000000)
 
                 if (graphics.containsPointInScissor(mouseX, mouseY)) {
@@ -65,8 +64,7 @@ class CarouselWidget(
                 next?.render(graphics, x + width, midY, alignmentX = 1f)
             }
 
-            graphics.pushPop {
-                translate(0f, 0f, 300f)
+            graphics.translated(0f, 0f, 300f) {
                 graphics.fill(right, midY, x + width, bottom, 0x7F000000)
 
                 if (graphics.containsPointInScissor(mouseX, mouseY)) {
@@ -77,8 +75,7 @@ class CarouselWidget(
                 }
             }
         }
-        graphics.pushPop {
-            translate(0f, 0f, 150f)
+        graphics.translated(0f, 0f, 150f) {
             curr.render(graphics, x + width / 2, y + height, alignmentX = 0.5f, alignmentY = 1f)
         }
     }

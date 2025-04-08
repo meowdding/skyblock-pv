@@ -78,6 +78,17 @@ object Utils {
         this.popPose()
     }
 
+    inline fun GuiGraphics.translated(x: Number, y: Number, z: Number, action: PoseStack.() -> Unit) {
+        this.pose().translated(x, y, z, action)
+    }
+
+    inline fun PoseStack.translated(x: Number, y: Number, z: Number, action: PoseStack.() -> Unit) {
+        this.pushPop {
+            this.translate(x.toFloat(), y.toFloat(), z.toFloat())
+            this.action()
+        }
+    }
+
     fun Number.round(): String = DecimalFormat("#.##").format(this)
 
     fun <T> List<List<T>>.transpose(): List<List<T>> {
@@ -165,6 +176,7 @@ object Utils {
         }
         return this
     }
+
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss")
