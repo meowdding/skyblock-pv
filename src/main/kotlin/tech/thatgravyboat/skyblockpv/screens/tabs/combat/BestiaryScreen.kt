@@ -11,10 +11,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.split
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.repo.BestiaryCategoryEntry
-import tech.thatgravyboat.skyblockpv.data.repo.BestiaryCodecs
-import tech.thatgravyboat.skyblockpv.data.repo.BestiaryIcon
-import tech.thatgravyboat.skyblockpv.data.repo.ComplexBestiaryCategoryEntry
+import tech.thatgravyboat.skyblockpv.data.repo.*
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils
@@ -58,19 +55,41 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         )
     }?.toMap() ?: emptyMap()
 
-    private fun BestiaryCategoryEntry.getCategory() = mobs.map {
-        it.icon.getItem().apply {
-            val lore = TooltipBuilder().apply {
-                add(it.cap.toString())
-                add(it.bracket.toString())
-                add(it.mobs.joinToString(", "))
-            }.build().split("\n")
-            set(DataComponents.CUSTOM_NAME, Text.join(it.name) { italic = false; color = TextColor.WHITE })
-            set(DataComponents.LORE, ItemLore(lore, lore))
-        }.let { Displays.item(it, showTooltip = true) }
-    }.toMutableList().rightPad(5, Displays.empty(16, 16)).chunked(5).asTable(5)
+    private fun BestiaryCategoryEntry.getCategory() = mobs
+        .map { it.getItem() }
+        .toMutableList()
+        .rightPad(5, Displays.empty(16, 16))
+        .map { Displays.padding(2, it) }
+        .chunked(5)
+        .let {
+            Displays.inventoryBackground(
+                5, it.size,
+                Displays.padding(2, it.asTable()),
+            )
+        }
 
-    private fun ComplexBestiaryCategoryEntry.getCategory() = Displays.empty()
+    private fun ComplexBestiaryCategoryEntry.getCategory() = subcategories
+        .flatMap { it.value.mobs.map { it.getItem() } }
+        .toMutableList()
+        .rightPad(8, Displays.empty(16, 16))
+        .map { Displays.padding(2, it) }
+        .chunked(8)
+        .let {
+            Displays.inventoryBackground(
+                8, it.size,
+                Displays.padding(2, it.asTable()),
+            )
+        }
+
+    private fun BestiaryMobEntry.getItem() = icon.getItem().apply {
+        val lore = TooltipBuilder().apply {
+            add(cap.toString())
+            add(bracket.toString())
+            add(mobs.joinToString(", "))
+        }.build().split("\n")
+        set(DataComponents.CUSTOM_NAME, Text.join(name) { italic = false; color = TextColor.WHITE })
+        set(DataComponents.LORE, ItemLore(lore, lore))
+    }.let { Displays.item(it, showTooltip = true) }
 
     private fun BestiaryIcon.getItem(name: String = ""): ItemStack = Either.unwrap(
         this.mapBoth(
