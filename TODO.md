@@ -4,15 +4,10 @@ TODO:
 <details>
 <summary>Main screen</summary>
 
-- [ ] Networth + Weight
-
-</details>
-
-<details>
-<summary>All Stats</summary>
-
-- [ ] Guild
-- [ ] Auctions
+- Networth + Weight
+- Progress to next Slayer
+- Guild
+- Auctions
 
 </details>
 
@@ -24,19 +19,25 @@ TODO:
 </details>
 
 <details>
-<summary>Beastiary</summary>
+<summary>combat</summary>
 
-- [ ] different islands with mobs and progress bars
+- Bestiary
+- Kuudra
+- Crimson Isle
 
 </details>
 
 <details>
-<summary>Crimson isle</summary>
+<summary>Pets</summary>
 
-- [ ] Kundra stats
-- [ ] Dojo Stats
-- [ ] Faction stats
-- [ ] matriarch shit
+- gdrag lvl
+
+</details>
+
+<details>
+<summary>inventory</summary>
+
+- sacks
 
 </details>
 
