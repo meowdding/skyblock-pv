@@ -2,6 +2,7 @@
     "@metadata": {
         "allowArrays": true
     },
+
     "//comment/config": "",
     "sbpv.dev.devMode": "Dev Mode",
     "sbpv.dev.devMode.desc": "Enable Debug Dev Features. \n§cMight bring unwanted consequences like crashes.",
@@ -9,6 +10,8 @@
     "sbpv.dev.hoppityParser.desc": "Parse all Hoppity Rabbits from Hypixels Rabbits UI in an rarity to api name format.",
     "sbpv.dev.sacksParser": "Parse Sacks Contents",
     "sbpv.dev.sacksParser.desc": "Parse all Sack Items.",
+
+
     "//comment/tabs": "",
     "skyblockpv.tab.main": "General",
     "skyblockpv.tab.combat": "Combat",
@@ -20,6 +23,8 @@
     "skyblockpv.tab.farming": "Farming",
     "skyblockpv.tab.chocolate_factory": "Chocolate Factory",
     "skyblockpv.tab.rift": "Rift",
+
+
     "//comment/essence/fishing": "",
     "gui.skyblockpv.tab.fishing.information.drake_piper.desc": [
         "<white>Can be upgraded at the <light_purple>Ice Essence Shop</light_purple></white>",
@@ -35,7 +40,6 @@
         "<white>Increases your chances of fishing up a </white>",
         "<white><gold>Gold Trophy Fish</gold> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
     ],
-
     "gui.skyblockpv.tab.fishing.information.radiant_fisher.desc": [
         "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
         "<white>in the <dark_purple>Crystal Nucleus</dark_purple> in the <dark_purple>Crystal Hollows</dark_purple></white>",
@@ -43,6 +47,8 @@
         "<white>Increases your chances of fishing up a</white>",
         "<white><aqua>Diamond Trophy Fish</aqua> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
     ],
+
+
     "//comment/essence/mining": "",
     "gui.skyblockpv.tab.mining.information.fungus_fortuna.desc": [
         "<white>Can be upgraded at the <light_purple>Crimson Essence Shop</light_purple></white>",
