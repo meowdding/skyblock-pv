@@ -3,10 +3,10 @@
 package tech.thatgravyboat.skyblockpv.dfu.base
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import net.minecraft.core.component.DataComponentPatch
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.saveddata.maps.MapId
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -738,7 +738,7 @@ object BaseItem {
 
     private val blankEggModel = SkyBlockPv.id("blank_spawn_egg")
 
-    fun getBase(tag: CompoundTag): ItemStack? {
+    fun getBase(tag: CompoundTag): Triple<Item, Int, DataComponentPatch.Builder>? {
         val id = tag.getIntOr("id", 0)
         val meta = tag.getIntOr("Damage", 0)
         val count = tag.getIntOr("Count", 1)
@@ -749,16 +749,35 @@ object BaseItem {
         tag.remove("Damage")
         tag.remove("Count")
 
-        val stack = when {
-            item === Items.POTION -> BasePotionItem.getBase(meta, tag.getCompound("tag").getOrNull())
-            item === Items.FILLED_MAP -> ItemStack(item).apply { set(DataComponents.MAP_ID, MapId(meta)) }
-            item in damagable -> ItemStack(item).apply { set(DataComponents.DAMAGE, meta) }
-            item === Items.POLAR_BEAR_SPAWN_EGG && meta == 0 -> ItemStack(item).apply { set(DataComponents.ITEM_MODEL, blankEggModel) }
-            else -> ItemStack(item)
+        return when {
+            item === Items.POTION -> BasePotionItem.getBase(meta, tag.getCompound("tag").getOrNull()).let { (item, contents) ->
+                Triple(
+                    item,
+                    count,
+                    DataComponentPatch.builder().set(DataComponents.POTION_CONTENTS, contents)
+                )
+            }
+            item === Items.FILLED_MAP -> Triple(
+                item,
+                count,
+                DataComponentPatch.builder().set(DataComponents.MAP_ID, MapId(meta))
+            )
+            item in damagable -> Triple(
+                item,
+                count,
+                DataComponentPatch.builder().set(DataComponents.DAMAGE, meta)
+            )
+            item === Items.POLAR_BEAR_SPAWN_EGG && meta == 0 -> Triple(
+                Items.POLAR_BEAR_SPAWN_EGG,
+                count,
+                DataComponentPatch.builder().set(DataComponents.ITEM_MODEL, blankEggModel)
+            )
+            else -> Triple(
+                item,
+                count,
+                DataComponentPatch.builder()
+            )
         }
-        stack.count = count
-
-        return stack
     }
 
 }
