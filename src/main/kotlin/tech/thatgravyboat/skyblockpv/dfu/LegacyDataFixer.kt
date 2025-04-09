@@ -15,6 +15,7 @@ import tech.thatgravyboat.skyblockpv.dfu.fixes.*
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.ColorFixer
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.LoreFixer
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.NameFixer
+import tech.thatgravyboat.skyblockpv.utils.holder
 
 object LegacyDataFixer {
 
@@ -46,18 +47,25 @@ object LegacyDataFixer {
             return null
         }
 
+        val (item, count, builder) = base
+
         tag.getCompound("tag").ifPresent { tag ->
-            fixers.forEach { it.apply(base, tag) }
+            fixers.forEach {
+                if (!it.canApply(item)) return@forEach
+                it.apply(builder, tag)
+            }
         }
+
+        val stack = ItemStack(item.holder, count, builder.build())
 
         if (SkyBlockPv.isDevMode && !tag.isEmpty && !tag.getCompoundOrEmpty("tag").isEmpty) {
             Logger.warn("""
-            Item tag is not empty after applying fixers for ${base.getData(DataTypes.ID)}:
+            Item tag is not empty after applying fixers for ${stack.getData(DataTypes.ID)}:
             ${NbtUtils.prettyPrint(tag)}
-            ${base.toJson(ItemStack.CODEC)}
+            ${stack.toJson(ItemStack.CODEC)}
             """.trimIndent())
         }
 
-        return base
+        return stack
     }
 }
