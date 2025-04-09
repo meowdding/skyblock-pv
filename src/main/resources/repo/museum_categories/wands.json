@@ -4,5 +4,8 @@
     "categories": [
         "wand"
     ],
+    "items": [
+        "TACTICAL_INSERTION"
+    ],
     "priority": 18
 }

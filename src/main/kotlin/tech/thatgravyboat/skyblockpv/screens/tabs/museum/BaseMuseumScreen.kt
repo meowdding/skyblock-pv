@@ -22,7 +22,8 @@ abstract class BaseMuseumScreen(gameProfile: GameProfile, profile: SkyBlockProfi
 }
 
 enum class MuseumCategories(val screen: KClass<out BaseMuseumScreen>, override val icon: ItemStack) : Category {
-    WEAPONS(MuseumItemScreen::class, Items.EMERALD.defaultInstance)
+    WEAPONS(MuseumItemScreen::class, Items.EMERALD.defaultInstance),
+    ARMOR(MuseumArmorScreen::class, Items.NETHERITE_HELMET.defaultInstance)
     ;
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null

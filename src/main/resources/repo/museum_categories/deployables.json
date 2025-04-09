@@ -4,5 +4,5 @@
     "categories": [
         "deployable"
     ],
-    "priority": 10
+    "priority": -1000
 }

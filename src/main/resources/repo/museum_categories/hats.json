@@ -5,5 +5,5 @@
         "helmet",
         "carnival_mask"
     ],
-    "priority": 15
+    "priority": -700
 }

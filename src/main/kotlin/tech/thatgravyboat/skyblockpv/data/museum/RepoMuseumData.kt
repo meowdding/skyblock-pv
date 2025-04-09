@@ -29,7 +29,14 @@ object RepoMuseumData {
             MUSEUM_ITEM_CODEC.listOf().fieldOf("rarities").forGetter { rarities },
             Codec.STRING.listOf().fieldOf("special").forGetter { special },
         ).apply(it) { armor, weapons, rarities, special ->
-            RepoMuseumData.armor = armor
+            RepoMuseumData.armor = armor.sortedWith(
+                Comparator.comparingInt<MuseumArmor>(
+                    {
+                        it.armorIds.map { ItemAPI.getItem(it) }.maxOf { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }
+                    },
+                ).then(Comparator.comparing { it.id }),
+            )
+            //.sortedBy { ItemAPI.getItem(it.armorIds.first()).getData(DataTypes.RARITY)?.ordinal ?: 0 }
             RepoMuseumData.weapons = weapons
             RepoMuseumData.rarities = rarities
             RepoMuseumData.special = special
@@ -61,20 +68,22 @@ object RepoMuseumData {
         val ids = listOf(rarities, weapons).flatten()
 
         val sortedBy = museumCategories.sortedByDescending { it.priority }
-        museumCategoryMap.putAll(ids.groupBy {museumItem ->
-            val item = ItemAPI.getItem(museumItem.id)
-            val data = convertToId(item.getData(DataTypes.CATEGORY))
+        museumCategoryMap.putAll(
+            ids.groupBy { museumItem ->
+                val item = ItemAPI.getItem(museumItem.id)
+                val data = convertToId(item.getData(DataTypes.CATEGORY))
 
-            sortedBy.find { it.categories.contains(data) || it.items.contains(museumItem.id) || it.categories.contains("*") }
-        }.mapKeys {
-            it.key ?: RepoMuseumCategory(
-                "unknown",
-                lazy { Items.BARRIER.defaultInstance },
-                emptyList(),
-                emptyList(),
-                0
-            )
-        }.toSortedMap(Comparator.comparingInt<RepoMuseumCategory> { it.priority }.reversed()))
+                sortedBy.find { it.categories.contains(data) || it.items.contains(museumItem.id) || it.categories.contains("*") }
+            }.mapKeys {
+                it.key ?: RepoMuseumCategory(
+                    "unknown",
+                    lazy { Items.BARRIER.defaultInstance },
+                    emptyList(),
+                    emptyList(),
+                    0,
+                )
+            }.toSortedMap(Comparator.comparingInt<RepoMuseumCategory> { it.priority }.reversed()),
+        )
     }
 
     fun getById(id: String): MuseumRepoEntry? = listOf(armor, rarities, weapons).flatten().firstOrNull { it.id == id }

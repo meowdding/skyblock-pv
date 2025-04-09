@@ -14,7 +14,9 @@ import net.minecraft.world.item.component.ItemLore
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.museum.*
@@ -73,10 +75,14 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     defaultInstance.set(DataComponents.CUSTOM_NAME, ItemAPI.getItemName(museumItem.id))
                     val lines = TooltipBuilder().apply {
                         if (parent != null) {
-                            add(Text.of("Parent donated:"))
-                            add(parent)
+                            add("Parent donated: ") {
+                                this.color = TextColor.GRAY
+                                append(ItemAPI.getItemName(parent))
+                            }
                         } else {
-                            add(Text.of("This item has not been donated!"))
+                            add("This item has not been donated!") {
+                                this.color = TextColor.GRAY
+                            }
                         }
                     }.lines().filterIsInstance<Component>()
                     defaultInstance.set(DataComponents.LORE, ItemLore(lines, lines))

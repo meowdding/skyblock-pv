@@ -70,7 +70,7 @@ object CodecUtils {
         {
             lazy {
                 if (it.namespace.equals("skyblock")) {
-                    ItemAPI.getItem(it.path)
+                    ItemAPI.getItem(it.path.uppercase())
                 } else {
                     BuiltInRegistries.ITEM.get(it).map { it.value().defaultInstance }
                         .orElseGet {

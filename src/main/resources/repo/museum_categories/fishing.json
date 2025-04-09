@@ -8,5 +8,5 @@
     "items": [
         "HOTSPOT_RADAR"
     ],
-    "priority": 14
+    "priority": -500
 }
