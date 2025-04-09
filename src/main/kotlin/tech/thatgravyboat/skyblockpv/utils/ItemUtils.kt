@@ -7,7 +7,6 @@ import com.mojang.authlib.properties.Property
 import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.Tag
-import net.minecraft.network.chat.Component
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -27,16 +26,9 @@ fun createSkull(profile: GameProfile): ItemStack {
     return stack
 }
 
-fun ItemStack.getLore(): List<Component> = this[DataComponents.LORE]?.lines ?: emptyList()
-
 val Item.holder: Holder<Item> get() = this.builtInRegistryHolder()
 
 fun Tag.legacyStack() = LegacyDataFixer.fromTag(this.copy()) ?: Items.BARRIER.defaultInstance
 
-fun JsonObject.itemStack(): ItemStack {
-    return this.getNbt().legacyStack()
-}
-
-fun JsonElement.itemStack(): ItemStack {
-    return this.getNbt().legacyStack()
-}
+fun JsonObject.itemStack(): ItemStack = this.getNbt().legacyStack()
+fun JsonElement.itemStack(): ItemStack = this.getNbt().legacyStack()
