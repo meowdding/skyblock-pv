@@ -39,6 +39,7 @@ object SacksParser {
                 else -> listOf(id)
             }
 
+            // Get the Sack Item ID, some sacks don't have multiple scales, some do
             val sackId = listOf("", "LARGE_", "MEDIUM_", "SMALL_").firstNotNullOfOrNull {
                 ItemAPI.getItem("$it${title.replace(" ", "_").uppercase()}").takeUnless { it.item == Items.BARRIER }?.getData(DataTypes.ID)
             } ?: title
