@@ -7,6 +7,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerChangeEvent
 import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerCloseEvent
+import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -21,11 +22,22 @@ object SacksParser {
     @Subscription
     fun onInv(event: ContainerChangeEvent) {
         if (!shouldParse()) return
-        if (!titleRegex.matches(event.title)) return
         if (event.slot !in 9..44) return
 
         val id = event.item.getData(DataTypes.ID) ?: return
-        data.computeIfAbsent(event.title) { mutableSetOf() }.add(id)
+        titleRegex.match(event.title, "name") { (name) ->
+            val parsedIds = when (name) {
+                "Gemstone" -> {
+                    listOf("ROUGH", "FLAWED", "FINE").map {
+                        id.replace("ROUGH", it)
+                    }
+                }
+
+                else -> listOf(id)
+            }
+
+            data.computeIfAbsent(name) { mutableSetOf() }.addAll(parsedIds)
+        }
     }
 
     @Subscription
