@@ -7,6 +7,8 @@
     "sbpv.dev.devMode.desc": "Enable Debug Dev Features. \n§cMight bring unwanted consequences like crashes.",
     "sbpv.dev.hoppityParser": "Parse Hoppity Rabbits",
     "sbpv.dev.hoppityParser.desc": "Parse all Hoppity Rabbits from Hypixels Rabbits UI in an rarity to api name format.",
+    "sbpv.dev.sacksParser": "Parse Sacks Contents",
+    "sbpv.dev.sacksParser.desc": "Parse all Sack Items.",
     "//comment/tabs": "",
 
     "skyblockpv.tab.main": "General",
