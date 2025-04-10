@@ -21,7 +21,6 @@ object SackCodecs {
                 throw RuntimeException(it.error().get().message())
             }
             data = it.getOrThrow()
-            println(data)
         }
     }
 

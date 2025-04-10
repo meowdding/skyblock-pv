@@ -25,6 +25,7 @@ enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val 
     POTION_BAG(PotionBagScreen::class, Items.POTION.defaultInstance),
     FISHING_BAG(FishingBagScreen::class, Items.FISHING_ROD.defaultInstance),
     QUIVER_BAG(QuiverBagScreen::class, Items.ARROW.defaultInstance),
+    SACKS(SacksScreen::class, Items.BARRIER.defaultInstance),
     ;
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
