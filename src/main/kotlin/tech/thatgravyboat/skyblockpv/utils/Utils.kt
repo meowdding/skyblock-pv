@@ -73,6 +73,17 @@ object Utils {
         this.popPose()
     }
 
+    inline fun GuiGraphics.translated(x: Number = 0, y: Number = 0, z: Number = 0, action: PoseStack.() -> Unit) {
+        this.pose().translated(x, y, z, action)
+    }
+
+    inline fun PoseStack.translated(x: Number = 0, y: Number = 0, z: Number = 0, action: PoseStack.() -> Unit) {
+        this.pushPop {
+            this.translate(x.toFloat(), y.toFloat(), z.toFloat())
+            this.action()
+        }
+    }
+
     fun Number.round(): String = DecimalFormat("#.##").format(this)
 
     fun <T> List<List<T>>.transpose(): List<List<T>> {
