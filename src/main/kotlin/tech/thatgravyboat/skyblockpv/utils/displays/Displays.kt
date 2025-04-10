@@ -32,6 +32,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.drawRoundedRec
 import tech.thatgravyboat.skyblockpv.utils.Utils.pushPop
 import tech.thatgravyboat.skyblockpv.utils.Utils.scissor
 import tech.thatgravyboat.skyblockpv.utils.Utils.translate
+import tech.thatgravyboat.skyblockpv.utils.Utils.translated
 import kotlin.math.atan
 import kotlin.math.cos
 import kotlin.math.sin
@@ -86,8 +87,7 @@ object Displays {
 
             override fun render(graphics: GuiGraphics) {
                 SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
-                graphics.pushPop {
-                    this.translate(0,0, 2)
+                graphics.translated(0, 0, 2) {
                     display.render(graphics)
                 }
             }
@@ -107,8 +107,7 @@ object Displays {
 
             override fun render(graphics: GuiGraphics) {
                 SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
-                graphics.pushPop {
-                    this.translate(0,0, 2)
+                graphics.translated(0, 0, 2) {
                     display.render(graphics)
                 }
             }
@@ -284,22 +283,18 @@ object Displays {
             override fun getHeight() = displays.maxOfOrNull { it.getHeight() } ?: 0
             override fun render(graphics: GuiGraphics) {
                 val maxHeight = getHeight()
+                var currentX = 0
 
-                graphics.pushPop {
-                    var currentX = 0
+                displays.forEachIndexed { index, display ->
+                    val yOffset = when (alignment) {
+                        Alignment.START -> 0
+                        Alignment.CENTER -> (maxHeight - display.getHeight()) / 2
+                        Alignment.END -> maxHeight - display.getHeight()
+                    }
 
-                    displays.forEachIndexed { index, display ->
-                        graphics.pushPop {
-                            val yOffset = when (alignment) {
-                                Alignment.START -> 0
-                                Alignment.CENTER -> (maxHeight - display.getHeight()) / 2
-                                Alignment.END -> maxHeight - display.getHeight()
-                            }
-
-                            translate(currentX, yOffset, 0)
-                            display.render(graphics)
-                            currentX += display.getWidth() + spacing
-                        }
+                    graphics.translated(currentX, yOffset, 0) {
+                        display.render(graphics)
+                        currentX += display.getWidth() + spacing
                     }
                 }
             }
@@ -317,22 +312,17 @@ object Displays {
 
             override fun render(graphics: GuiGraphics) {
                 val maxWidth = getWidth()
+                var currentY = 0
 
-                graphics.pushPop {
-                    var currentY = 0
-
-                    displays.forEach { display ->
-                        graphics.pushPop {
-                            val xOffset = when (alignment) {
-                                Alignment.START -> 0
-                                Alignment.CENTER -> (maxWidth - display.getWidth()) / 2
-                                Alignment.END -> maxWidth - display.getWidth()
-                            }
-
-                            translate(xOffset, currentY, 0)
-                            display.render(graphics)
-                            currentY += display.getHeight() + spacing
-                        }
+                displays.forEach { display ->
+                    val xOffset = when (alignment) {
+                        Alignment.START -> 0
+                        Alignment.CENTER -> (maxWidth - display.getWidth()) / 2
+                        Alignment.END -> maxWidth - display.getWidth()
+                    }
+                    graphics.translated(xOffset, currentY) {
+                        display.render(graphics)
+                        currentY += display.getHeight() + spacing
                     }
                 }
             }
@@ -512,11 +502,9 @@ object Displays {
                     val rowHeight = row.maxOf { it.getHeight() }
                     var currentX = 0
 
-                    graphics.pushPop {
-                        translate(0, currentY, 0)
+                    graphics.translated(0, currentY) {
                         row.forEachIndexed { col, element ->
-                            graphics.pushPop {
-                                translate(currentX, 0, 0)
+                            graphics.translated(currentX) {
                                 element.render(graphics)
                             }
                             currentX += columnWidths[col] + spacing
