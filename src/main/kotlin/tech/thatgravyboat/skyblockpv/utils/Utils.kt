@@ -8,7 +8,6 @@ import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.level.block.entity.SkullBlockEntity
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -137,7 +136,7 @@ object Utils {
         try {
             SkyBlockPv.mod.findPath("repo/$file.json").orElseThrow()?.let(Files::readString)?.readJson<T>() ?: return@runBlocking null
         } catch (e: Exception) {
-            Logger.error("Failed to load $file from repo", e)
+            SkyBlockPv.error("Failed to load $file from repo", e)
             null
         }
     }

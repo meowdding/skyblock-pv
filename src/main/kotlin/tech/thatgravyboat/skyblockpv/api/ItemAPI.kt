@@ -15,10 +15,10 @@ import tech.thatgravyboat.repolib.api.recipes.ingredient.PetIngredient
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 
 object ItemAPI {
@@ -35,7 +35,7 @@ object ItemAPI {
         val id = id.takeUnless { it == "MUSHROOM_COLLECTION" } ?: "RED_MUSHROOM"
 
         val data = RepoAPI.items().getItem(id)
-        ItemStack.CODEC.parse(JsonOps.INSTANCE, data).ifError { Logger.error(it.message()) }.result().orElse(null) ?: fallbackItem(id)
+        ItemStack.CODEC.parse(JsonOps.INSTANCE, data).ifError { SkyBlockPv.error(it.message()) }.result().orElse(null) ?: fallbackItem(id)
     }
 
     fun getItemName(id: String): Component = getItem(id).hoverName
