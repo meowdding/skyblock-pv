@@ -32,7 +32,7 @@ object ItemAPI {
     }
 
     fun getItem(id: String): ItemStack = itemCache.getOrPut(id) {
-        val id = id.takeUnless { it == "MUSHROOM_COLLECTION" } ?: "RED_MUSHROOM"
+        val id = (id.takeUnless { it == "MUSHROOM_COLLECTION" } ?: "RED_MUSHROOM").replace(":", "-")
 
         val data = RepoAPI.items().getItem(id)
         ItemStack.CODEC.parse(JsonOps.INSTANCE, data).ifError { SkyBlockPv.error("Error getting item $id ${it.message()}") }.result().orElse(null)
