@@ -2,9 +2,8 @@ package tech.thatgravyboat.skyblockpv.dfu.base
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.minecraft.core.Holder
-import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.Potion
 import net.minecraft.world.item.alchemy.PotionContents
@@ -149,11 +148,11 @@ object BasePotionItem {
 
     private val cache = Int2ObjectOpenHashMap<PotionContents>()
 
-    fun getBase(meta: Int, tag: CompoundTag?): ItemStack {
+    fun getBase(meta: Int, tag: CompoundTag?): Pair<Item, PotionContents> {
         tag?.remove("CustomPotionEffects")
 
         val item = if (meta.and(16384) == 16384) Items.SPLASH_POTION else Items.POTION
         val contents = cache.getOrPut(meta.and(127)) { PotionContents(potions[meta.and(127)] ?: Potions.WATER) }
-        return ItemStack(item).apply { set(DataComponents.POTION_CONTENTS, contents) }
+        return item to contents
     }
 }

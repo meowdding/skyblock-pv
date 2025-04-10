@@ -4,8 +4,10 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
+import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.Tag
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ResolvableProfile
@@ -23,6 +25,8 @@ fun createSkull(profile: GameProfile): ItemStack {
     stack.set(DataComponents.PROFILE, ResolvableProfile(profile))
     return stack
 }
+
+val Item.holder: Holder<Item> get() = this.builtInRegistryHolder()
 
 fun Tag.legacyStack() = LegacyDataFixer.fromTag(this.copy()) ?: Items.BARRIER.defaultInstance
 

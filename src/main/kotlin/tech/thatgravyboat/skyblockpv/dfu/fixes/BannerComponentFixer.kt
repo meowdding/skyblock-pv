@@ -8,11 +8,12 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.DyeColor
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.entity.BannerPattern
 import net.minecraft.world.level.block.entity.BannerPatternLayers
 import net.minecraft.world.level.block.entity.BannerPatternLayers.Layer
 import tech.thatgravyboat.skyblockpv.dfu.DataComponentFixer
+import tech.thatgravyboat.skyblockpv.utils.holder
 import kotlin.jvm.optionals.getOrNull
 
 private val PATTERN_MAP = Object2ObjectOpenHashMap<String, Holder<BannerPattern>>().apply {
@@ -107,5 +108,5 @@ object BannerItemFixer : DataComponentFixer<BannerPatternLayers> {
         else -> DyeColor.WHITE
     }
 
-    override fun canApply(stack: ItemStack) = stack.`is`(ItemTags.BANNERS)
+    override fun canApply(item: Item) = item.holder.`is`(ItemTags.BANNERS)
 }
