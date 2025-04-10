@@ -38,7 +38,7 @@ object MiningNodes {
 
         val parse = CODEC.listOf().parse(JsonOps.INSTANCE, hotm!!)
         miningNodes = if (parse.isError) {
-            SkyBlockPv.error(parse.error().get().messageSupplier.get())
+            SkyBlockPv.error("Error parsing Mining Nodes: ${parse.error().get().messageSupplier.get()}")
             mutableListOf()
         } else {
             parse.partialOrThrow
