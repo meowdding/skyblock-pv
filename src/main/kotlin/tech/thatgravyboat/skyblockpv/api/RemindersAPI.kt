@@ -3,7 +3,6 @@ package tech.thatgravyboat.skyblockpv.api
 import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentSerialization
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
@@ -12,6 +11,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toJson
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 import kotlin.io.path.readText
@@ -21,7 +21,7 @@ object RemindersAPI {
 
     private val CODEC = Reminder.CODEC.listOf()
 
-    private val file = FabricLoader.getInstance().configDir.resolve("skyblockpv").resolve("reminders.json")
+    private val file = SkyBlockPv.configDir.resolve("reminders.json")
     private val reminders = mutableListOf<Reminder>()
 
     init {

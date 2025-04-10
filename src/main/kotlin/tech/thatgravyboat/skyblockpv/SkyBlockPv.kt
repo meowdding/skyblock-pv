@@ -30,6 +30,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
     val mod = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
     val version = mod.metadata.version
+    val configDir = FabricLoader.getInstance().configDir.resolve("skyblockpv")
 
     val configurator = Configurator("sbpv")
 
