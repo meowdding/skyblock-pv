@@ -12,7 +12,6 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.level.block.entity.SkullBlockEntity
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -80,6 +79,17 @@ object Utils {
         this.popPose()
     }
 
+    inline fun GuiGraphics.translated(x: Number = 0, y: Number = 0, z: Number = 0, action: PoseStack.() -> Unit) {
+        this.pose().translated(x, y, z, action)
+    }
+
+    inline fun PoseStack.translated(x: Number = 0, y: Number = 0, z: Number = 0, action: PoseStack.() -> Unit) {
+        this.pushPop {
+            this.translate(x.toFloat(), y.toFloat(), z.toFloat())
+            this.action()
+        }
+    }
+
     fun Number.round(): String = DecimalFormat("#.##").format(this)
 
     fun <T> List<List<T>>.transpose(): List<List<T>> {
@@ -143,7 +153,7 @@ object Utils {
         try {
             SkyBlockPv.mod.findPath("repo/$file.json").orElseThrow()?.let(Files::readString)?.readJson<T>() ?: return@runBlocking null
         } catch (e: Exception) {
-            Logger.error("Failed to load $file from repo", e)
+            SkyBlockPv.error("Failed to load $file from repo", e)
             null
         }
     }

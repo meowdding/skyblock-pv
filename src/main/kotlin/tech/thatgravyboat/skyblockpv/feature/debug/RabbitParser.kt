@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.feature.debug
 
 import com.google.gson.GsonBuilder
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
@@ -43,9 +42,7 @@ object RabbitParser {
         if (data.isEmpty()) return
         Text.of("Storing Rabbit Data in config").send()
 
-        val file = FabricLoader.getInstance().configDir
-            .resolve("skyblockpv")
-            .resolve("rabbits.json")
+        val file = SkyBlockPv.configDir.resolve("rabbits.json")
 
         Files.createDirectories(file.parent)
         Files.writeString(file, GsonBuilder().create().toJson(data))

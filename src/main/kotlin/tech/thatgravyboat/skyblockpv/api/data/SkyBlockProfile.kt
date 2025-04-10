@@ -5,7 +5,6 @@ import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
@@ -142,7 +141,7 @@ data class SkyBlockProfile(
                 id to (playerCollections[id] ?: 0)
             }.mapNotNull { (id, amount) ->
                 CollectionAPI.getCategoryByItemName(id)?.let {
-                    CollectionItem(it, id, ItemAPI.getItem(id.replace(":", "-")), amount)
+                    CollectionItem(it, id, amount)
                 }
             }
         }

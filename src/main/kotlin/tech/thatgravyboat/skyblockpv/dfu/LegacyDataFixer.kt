@@ -6,7 +6,6 @@ import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.getStringOrNull
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toJson
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -15,6 +14,7 @@ import tech.thatgravyboat.skyblockpv.dfu.fixes.*
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.ColorFixer
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.LoreFixer
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.NameFixer
+import tech.thatgravyboat.skyblockpv.utils.holder
 
 object LegacyDataFixer {
 
@@ -46,18 +46,27 @@ object LegacyDataFixer {
             return null
         }
 
+        val (item, count, builder) = base
+
         tag.getCompound("tag").ifPresent { tag ->
-            fixers.forEach { it.apply(base, tag) }
+            fixers.forEach {
+                if (!it.canApply(item)) return@forEach
+                it.apply(builder, tag)
+            }
         }
+
+        val stack = ItemStack(item.holder, count, builder.build())
 
         if (SkyBlockPv.isDevMode && !tag.isEmpty && !tag.getCompoundOrEmpty("tag").isEmpty) {
-            Logger.warn("""
-            Item tag is not empty after applying fixers for ${base.getData(DataTypes.ID)}:
+            SkyBlockPv.warn(
+                """
+            Item tag is not empty after applying fixers for ${stack.getData(DataTypes.ID)}:
             ${NbtUtils.prettyPrint(tag)}
-            ${base.toJson(ItemStack.CODEC)}
-            """.trimIndent())
+            ${stack.toJson(ItemStack.CODEC)}
+            """.trimIndent(),
+            )
         }
 
-        return base
+        return stack
     }
 }

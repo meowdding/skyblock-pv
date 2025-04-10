@@ -1,10 +1,11 @@
 package tech.thatgravyboat.skyblockpv.dfu
 
+import net.minecraft.core.component.DataComponentPatch
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Item
 import kotlin.jvm.optionals.getOrNull
 
 interface DataComponentFixer<T> {
@@ -12,13 +13,12 @@ interface DataComponentFixer<T> {
     val type: DataComponentType<T>
     fun getData(tag: CompoundTag): T?
 
-    fun canApply(stack: ItemStack): Boolean {
+    fun canApply(item: Item): Boolean {
         return true
     }
 
-    fun apply(stack: ItemStack, tag: CompoundTag) {
-        if (!canApply(stack)) return
-        stack.set(this.type, getData(tag))
+    fun apply(components: DataComponentPatch.Builder, tag: CompoundTag) {
+        getData(tag)?.let { data -> components.set(this.type, data) }
     }
 
     // Helpers
