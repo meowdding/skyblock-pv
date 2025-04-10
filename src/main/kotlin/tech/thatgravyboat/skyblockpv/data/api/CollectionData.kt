@@ -1,14 +1,15 @@
 package tech.thatgravyboat.skyblockpv.data.api
 
-import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 
 
 data class CollectionItem(
     val category: String,
     val itemId: String,
-    val itemStack: ItemStack?,
     val amount: Long,
-)
+) {
+    val itemStack by lazy { ItemAPI.getItem(itemId) }
+}
 
 
 data class CollectionCategory(
