@@ -4,10 +4,11 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
-import net.minecraft.core.Holder
 import it.unimi.dsi.fastutil.objects.ObjectSortedSets
+import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.Tag
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items

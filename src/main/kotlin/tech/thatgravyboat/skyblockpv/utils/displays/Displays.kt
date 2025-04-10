@@ -101,6 +101,7 @@ object Displays {
         if (columns == 1) {
             return inventoryBackground(rows, Orientation.VERTICAL, display, color)
         }
+
         return object : Display {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
