@@ -14,11 +14,11 @@ import net.minecraft.network.chat.Component
 import net.minecraft.util.ExtraCodecs
 import net.minecraft.util.ExtraCodecs.LateBoundIdMapper
 import org.joml.Vector2i
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.data.api.skills.PowderType
-import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 
 object MiningNodes {
     val ID_MAPPER: LateBoundIdMapper<String, MapCodec<out MiningNode>> = LateBoundIdMapper()
@@ -38,7 +38,7 @@ object MiningNodes {
 
         val parse = CODEC.listOf().parse(JsonOps.INSTANCE, hotm!!)
         miningNodes = if (parse.isError) {
-            Logger.error(parse.error().get().messageSupplier.get())
+            SkyBlockPv.error("Error parsing Mining Nodes: ${parse.error().get().messageSupplier.get()}")
             mutableListOf()
         } else {
             parse.partialOrThrow

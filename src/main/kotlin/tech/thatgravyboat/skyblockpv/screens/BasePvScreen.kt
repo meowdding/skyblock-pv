@@ -214,9 +214,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     }
 
     private fun saveProfiles() {
-        val file = FabricLoader.getInstance().configDir
-            .resolve("skyblockpv")
-            .resolve("profiles-${gameProfile.id}.json")
+        val file = SkyBlockPv.configDir.resolve("profiles-${gameProfile.id}.json")
 
         Files.createDirectories(file.parent)
         Files.writeString(

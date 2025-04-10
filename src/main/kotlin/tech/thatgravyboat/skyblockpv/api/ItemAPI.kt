@@ -35,7 +35,8 @@ object ItemAPI {
         val id = (id.takeUnless { it == "MUSHROOM_COLLECTION" } ?: "RED_MUSHROOM").replace(":", "-")
 
         val data = RepoAPI.items().getItem(id)
-        ItemStack.CODEC.parse(JsonOps.INSTANCE, data).ifError { SkyBlockPv.error(it.message()) }.result().orElse(null) ?: fallbackItem(id)
+        ItemStack.CODEC.parse(JsonOps.INSTANCE, data).ifError { SkyBlockPv.error("Error getting item $id ${it.message()}") }.result().orElse(null)
+            ?: fallbackItem(id)
     }
 
     fun getItemName(id: String): Component = getItem(id).hoverName

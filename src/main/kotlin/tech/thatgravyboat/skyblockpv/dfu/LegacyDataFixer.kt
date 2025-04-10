@@ -6,7 +6,6 @@ import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.utils.Logger
 import tech.thatgravyboat.skyblockapi.utils.extentions.getStringOrNull
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toJson
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -59,11 +58,13 @@ object LegacyDataFixer {
         val stack = ItemStack(item.holder, count, builder.build())
 
         if (SkyBlockPv.isDevMode && !tag.isEmpty && !tag.getCompoundOrEmpty("tag").isEmpty) {
-            Logger.warn("""
+            SkyBlockPv.warn(
+                """
             Item tag is not empty after applying fixers for ${stack.getData(DataTypes.ID)}:
             ${NbtUtils.prettyPrint(tag)}
             ${stack.toJson(ItemStack.CODEC)}
-            """.trimIndent())
+            """.trimIndent(),
+            )
         }
 
         return stack
