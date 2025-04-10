@@ -41,6 +41,8 @@ fun JsonElement.itemStack(): ItemStack {
     return this.getNbt().legacyStack()
 }
 
+fun ItemStack.withoutTooltip(): ItemStack = this.withTooltip()
+
 fun ItemStack.withTooltip(init: TooltipBuilder.() -> Unit = {}): ItemStack {
     val builder = TooltipBuilder().apply(init).lines().filterIsInstance<Component>()
     when {

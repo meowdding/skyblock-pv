@@ -2,7 +2,13 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.museum
 
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
+import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumArmor
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumData
@@ -21,23 +27,61 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                     Displays.empty(16, 16),
                     Displays.empty(16, 16),
                 ) { data -> createArmor(it, data) }
-            }.map { Displays.padding(2, it) }.chunked(15)
+            }.map { Displays.padding(2, it) }.chunked(15)// .chunked(240.coerceAtMost(this@MuseumArmorScreen.uiWidth - 80) / 16)
 
             display(
-                Displays.inventoryBackground(
-                    chunked.firstOrNull()?.size ?: 0, chunked.size,
-                    Displays.padding(2, chunked.map { it.toRow() }.toColumn()),
+                Displays.dropdownOverlay(
+                    Displays.inventoryBackground(
+                        chunked.firstOrNull()?.size ?: 0, chunked.size,
+                        Displays.padding(2, chunked.map { it.toRow() }.toColumn()),
+                    ),
+                    0x7F000000,
+                    dropdownContext,
                 ),
             )
         }
     }
 
+    private val dropdownContext = DropdownContext()
+
     private fun createArmor(museumArmor: MuseumArmor, data: MuseumData): Display {
         return data.items.find { it.id == museumArmor.id }?.let {
-            Displays.item(it.stacks.first(), showTooltip = true)
-        } ?: Displays.item(Items.GRAY_DYE.defaultInstance.withTooltip {
+            val table = it.stacks.map { Displays.item(it, showTooltip = true) }.map { Displays.padding(2, it) }.chunked(4)
+            val dropdown = table.map { it.toColumn() }.toRow().let { display ->
+                Displays.padding(-4, -4, Displays.inventoryBackground(table.size, it.stacks.size.coerceAtMost(4), Displays.padding(2, display)))
+            }
 
-        }, showTooltip = true)
+            Displays.item(it.stacks.first(), showTooltip = false).withDropdown(dropdown, dropdownContext)
+        } ?: Displays.item(Items.GRAY_DYE).withDropdown(
+            Displays.inventoryBackground(
+                1, 1,
+                Displays.item(
+                    Items.GRAY_DYE.defaultInstance.withTooltip {
+                        add("Missing Armor") { this.color = TextColor.RED }
+                        museumArmor.armorIds.map { ItemAPI.getItem(it) }.sortedByDescending { sortAmor(it) }.forEach {
+                            add(it.hoverName)
+                        }
+                    },
+                    showTooltip = true,
+                ).withPadding(2).let { Displays.inventoryBackground(1, 1, it.withPadding(2)) }.withPadding(top = -4, left = -4),
+            ),
+            dropdownContext,
+        )
+    }
+
+    fun sortAmor(itemStack: ItemStack): Int {
+        val skyBlockCategory = itemStack.getData(DataTypes.CATEGORY) ?: return -1
+        return when (skyBlockCategory.name) {
+            "helmet", "hat", "mask" -> return 8
+            "chestplate" -> return 7
+            "leggings" -> return 6
+            "boots" -> return 5
+            "necklace" -> return 4
+            "cloak" -> return 3
+            "belt" -> 2
+            "bracelet", "gloves" -> return 1
+            else -> -1
+        }
     }
 
 }

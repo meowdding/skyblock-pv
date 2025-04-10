@@ -87,7 +87,7 @@ object Displays {
             override fun render(graphics: GuiGraphics) {
                 SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
                 graphics.pushPop {
-                    this.translate(0,0, 2)
+                    this.translate(0, 0, 2)
                     display.render(graphics)
                 }
             }
@@ -108,7 +108,7 @@ object Displays {
             override fun render(graphics: GuiGraphics) {
                 SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
                 graphics.pushPop {
-                    this.translate(0,0, 2)
+                    this.translate(0, 0, 2)
                     display.render(graphics)
                 }
             }
@@ -611,5 +611,55 @@ object Displays {
         val xRange = translation.x().toInt()..(translation.x() + display.getWidth())
         val yRange = translation.y().toInt()..(translation.y() + display.getHeight())
         return mouseX.toInt() in xRange && mouseY.toInt() in yRange && graphics.containsPointInScissor(mouseX.toInt(), mouseY.toInt()) && showTooltips
+    }
+
+    fun dropdownOverlay(original: Display, color: Int, context: DropdownContext): Display {
+        return object : Display {
+            override fun getWidth() = original.getWidth()
+            override fun getHeight() = original.getHeight()
+            override fun render(graphics: GuiGraphics) {
+                original.render(graphics)
+                graphics.pushPop {
+                    this.translate(0, 0, 200)
+                    val difference = System.currentTimeMillis() - context.lastUpdated
+                    if (context.currentDropdown != null) {
+                        if (difference < context.fadeTime) {
+                            val value = ((difference / context.fadeTime.toDouble()) * 255).toInt()
+                            graphics.fill(0, 0, getWidth(), getHeight(), ARGB.multiply(color, ARGB.color(value, value, value, value)))
+                        } else {
+                            graphics.fill(0, 0, getWidth(), getHeight(), color)
+                        }
+                    } else if (difference < context.fadeTime) {
+                        val value = ((1 - (difference / context.fadeTime.toDouble())) * 255).toInt()
+                        graphics.fill(0, 0, getWidth(), getHeight(), ARGB.multiply(color, ARGB.color(value, value, value, value)))
+                    }
+                }
+            }
+        }
+    }
+
+    fun dropdown(original: Display, dropdown: Display, context: DropdownContext): Display {
+        return object : Display {
+            override fun getWidth() = original.getWidth()
+            override fun getHeight() = original.getHeight()
+            var isOpen = false
+            override fun render(graphics: GuiGraphics) {
+                original.render(graphics)
+
+                if (context.isCurrentDropdown(this) && (isMouseOver(original, graphics) || (isOpen && isMouseOver(dropdown, graphics)))) {
+                    isOpen = true
+                    context.currentDropdown = this
+                    graphics.pushPop {
+                        translate(0, 0, 201)
+                        dropdown.render(graphics)
+                    }
+                } else {
+                    if (context.currentDropdown === this) {
+                        context.currentDropdown = null
+                    }
+                    isOpen = false
+                }
+            }
+        }
     }
 }
