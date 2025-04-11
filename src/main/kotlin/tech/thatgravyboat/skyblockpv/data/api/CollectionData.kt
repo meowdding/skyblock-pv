@@ -11,7 +11,6 @@ data class CollectionItem(
     val itemStack by lazy { ItemAPI.getItem(itemId) }
 }
 
-
 data class CollectionCategory(
     val items: Map<String, CollectionEntry>,
 )
