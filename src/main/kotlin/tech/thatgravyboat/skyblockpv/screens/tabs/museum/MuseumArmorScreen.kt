@@ -14,6 +14,7 @@ import tech.thatgravyboat.skyblockpv.data.museum.MuseumArmor
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumData
 import tech.thatgravyboat.skyblockpv.data.museum.RepoMuseumData
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import tech.thatgravyboat.skyblockpv.utils.withTooltip
 
@@ -24,8 +25,16 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
         return LayoutBuild.frame {
             val chunked = RepoMuseumData.armor.map {
                 loaded(
-                    Displays.item(Items.ORANGE_DYE.defaultInstance.withTooltip { add("Loading...") { this.color = TextColor.GOLD } }, showTooltip = true),
-                    Displays.item(Items.BEDROCK.defaultInstance.withTooltip { add("Error!") { this.color = TextColor.RED } }, showTooltip = true),
+                    Displays.item(Items.ORANGE_DYE.defaultInstance.withTooltip {
+                        add("Loading...") {
+                            this.color = TextColor.GOLD
+                        }
+                    }, showTooltip = true),
+                    Displays.item(Items.BEDROCK.defaultInstance.withTooltip {
+                        add("Error!") {
+                            this.color = TextColor.RED
+                        }
+                    }, showTooltip = true),
                 ) { data -> createArmor(it, data) }
             }.map { Displays.padding(2, it) }.chunked(15)
 
@@ -46,25 +55,23 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
 
     private fun createArmor(museumArmor: MuseumArmor, data: MuseumData): Display {
         return data.items.find { it.id == museumArmor.id }?.let {
-            val table = it.stacks.map { Displays.item(it.value, showTooltip = true) }.map { Displays.padding(2, it) }.chunked(4)
-            val dropdown = table.map { it.toColumn() }.toRow().let { display ->
-                Displays.padding(-4, -4, Displays.inventoryBackground(table.size, it.stacks.size.coerceAtMost(4), Displays.padding(2, display)))
+            val table = it.stacks.map { Displays.item(it.value, showTooltip = true).withPadding(2) }.chunked(4)
+            val dropdown = table.transpose().asTable().let { display ->
+                Displays.inventoryBackground(table.size, it.stacks.size.coerceAtMost(4), display.withPadding(2))
+                    .withPadding(top = -4, left = -4)
             }
 
             Displays.item(it.stacks.first().value, showTooltip = false).withDropdown(dropdown, dropdownContext)
         } ?: Displays.item(Items.GRAY_DYE).withDropdown(
-            Displays.inventoryBackground(
-                1, 1,
-                Displays.item(
-                    Items.GRAY_DYE.defaultInstance.withTooltip {
-                        add("Missing Armor") { this.color = TextColor.RED }
-                        museumArmor.armorIds.map { ItemAPI.getItem(it) }.sortedByDescending { sortAmor(it) }.forEach {
-                            add(it.hoverName)
-                        }
-                    },
-                    showTooltip = true,
-                ).withPadding(2).let { Displays.inventoryBackground(1, 1, it.withPadding(2)) }.withPadding(top = -4, left = -4),
-            ),
+            Displays.item(
+                Items.GRAY_DYE.defaultInstance.withTooltip {
+                    add("Missing Armor") { this.color = TextColor.RED }
+                    museumArmor.armorIds.map { ItemAPI.getItem(it) }.sortedByDescending { sortAmor(it) }.forEach {
+                        add(it.hoverName)
+                    }
+                },
+                showTooltip = true,
+            ).withPadding(2).let { Displays.inventorySlot(it.withPadding(2)) }.withPadding(top = -4, left = -4),
             dropdownContext,
         )
     }
