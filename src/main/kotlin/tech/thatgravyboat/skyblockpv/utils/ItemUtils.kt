@@ -44,10 +44,10 @@ fun ItemStack.withTooltip(init: TooltipBuilder.() -> Unit = {}): ItemStack {
     val builder = TooltipBuilder().apply(init).lines().filterIsInstance<Component>()
     when {
         builder.isEmpty() -> this.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay(true, ObjectSortedSets.emptySet()))
-        builder.size == 1 -> this.set(DataComponents.ITEM_NAME, builder.first())
+        builder.size == 1 -> this.set(DataComponents.CUSTOM_NAME, builder.first())
         else -> {
             val first = builder.first()
-            this.set(DataComponents.ITEM_NAME, first)
+            this.set(DataComponents.CUSTOM_NAME, first)
             val lore = builder.drop(1)
             this.set(DataComponents.LORE, ItemLore(lore, lore))
         }

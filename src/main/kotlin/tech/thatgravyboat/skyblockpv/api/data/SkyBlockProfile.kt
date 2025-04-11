@@ -14,6 +14,7 @@ import tech.thatgravyboat.skyblockpv.data.api.CollectionItem
 import tech.thatgravyboat.skyblockpv.data.api.Currency
 import tech.thatgravyboat.skyblockpv.data.api.RiftData
 import tech.thatgravyboat.skyblockpv.data.api.skills.*
+import tech.thatgravyboat.skyblockpv.data.api.skills.combat.BestiaryMobData
 import tech.thatgravyboat.skyblockpv.data.api.skills.combat.DungeonData
 import tech.thatgravyboat.skyblockpv.data.api.skills.combat.MobData
 import tech.thatgravyboat.skyblockpv.data.api.skills.combat.SlayerTypeData
@@ -21,8 +22,8 @@ import tech.thatgravyboat.skyblockpv.data.api.skills.farming.FarmingData
 import tech.thatgravyboat.skyblockpv.data.api.skills.farming.GardenData
 import tech.thatgravyboat.skyblockpv.data.repo.EssenceData
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
-import tech.thatgravyboat.skyblockpv.utils.getPath
 import tech.thatgravyboat.skyblockpv.utils.Utils.toDashlessString
+import tech.thatgravyboat.skyblockpv.utils.getPath
 import java.util.*
 
 data class SkyBlockProfile(
@@ -40,6 +41,7 @@ data class SkyBlockProfile(
     val skill: Map<String, Long>,
     val collections: List<CollectionItem>,
     val mobData: List<MobData>,
+    val bestiaryData: List<BestiaryMobData>,
     val slayer: Map<String, SlayerTypeData>,
     val dungeonData: DungeonData?,
     val mining: MiningCore?,
@@ -94,6 +96,7 @@ data class SkyBlockProfile(
                 skill = playerData.getSkillData(),
                 collections = member.getCollectionData(),
                 mobData = playerStats?.getMobData() ?: emptyList(),
+                bestiaryData = member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList(),
                 slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
                 dungeonData = member.getAsJsonObject("dungeons")?.let { DungeonData.fromJson(it) },
                 mining = member.getAsJsonObject("mining_core")?.let { MiningCore.fromJson(it) },
@@ -150,8 +153,21 @@ data class SkyBlockProfile(
             val deaths = this["deaths"].asMap { id, amount -> id to amount.asLong(0) }
             val kills = this["kills"].asMap { id, amount -> id to amount.asLong(0) }
 
-            return (deaths.keys + kills.keys).map { id ->
+            return (deaths.keys + kills.keys).toSet().map { id ->
                 MobData(
+                    mobId = id,
+                    kills = kills[id] ?: 0,
+                    deaths = deaths[id] ?: 0,
+                )
+            }
+        }
+
+        private fun JsonObject.getBestiaryMobData(): List<BestiaryMobData> {
+            val deaths = this["deaths"].asMap { id, amount -> id to amount.asLong(0) }
+            val kills = this["kills"].asMap { id, amount -> id to amount.asLong(0) }
+
+            return (deaths.keys + kills.keys).toSet().map { id ->
+                BestiaryMobData(
                     mobId = id,
                     kills = kills[id] ?: 0,
                     deaths = deaths[id] ?: 0,

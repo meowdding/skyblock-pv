@@ -6,7 +6,9 @@ import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -26,6 +28,8 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
 object Utils {
+
+    fun getMinecraftItem(id: String) = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
 
     var isFetchingGameProfile = false
         private set
@@ -176,6 +180,7 @@ object Utils {
         }
         return this
     }
+
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss")
@@ -186,4 +191,6 @@ object Utils {
     fun UUID.toDashlessString(): String = this.toString().replace("-", "")
 
     fun <T> Map<out Number, T>.sortByKey(): Map<Number, T> = this.entries.sortedBy { it.key.toLong() }.associate { it.toPair() }
+
+    fun String.fixBase64Padding() = replace(Regex("=+$"), "").let { it + "=".repeat((4 - it.length % 4) % 4) }
 }

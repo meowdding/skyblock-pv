@@ -53,6 +53,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             SacksParser,
             CfCodecs,
             RiftCodecs,
+            BestiaryCodecs,
             SackCodecs,
             LegacyDataFixer,
         )
