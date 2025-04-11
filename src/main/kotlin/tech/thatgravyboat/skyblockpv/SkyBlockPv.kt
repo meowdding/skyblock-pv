@@ -23,6 +23,7 @@ import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
 import tech.thatgravyboat.skyblockpv.data.repo.*
 import tech.thatgravyboat.skyblockpv.dfu.LegacyDataFixer
 import tech.thatgravyboat.skyblockpv.feature.debug.RabbitParser
+import tech.thatgravyboat.skyblockpv.feature.debug.SacksParser
 import tech.thatgravyboat.skyblockpv.screens.PvTab
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
@@ -49,9 +50,11 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             FossilTypes,
             RemindersAPI,
             RabbitParser,
+            SacksParser,
             CfCodecs,
             RiftCodecs,
             BestiaryCodecs,
+            SackCodecs,
             LegacyDataFixer,
         )
 

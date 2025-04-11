@@ -2,13 +2,17 @@
     "@metadata": {
         "allowArrays": true
     },
+
     "//comment/config": "",
     "sbpv.dev.devMode": "Dev Mode",
     "sbpv.dev.devMode.desc": "Enable Debug Dev Features. \n§cMight bring unwanted consequences like crashes.",
     "sbpv.dev.hoppityParser": "Parse Hoppity Rabbits",
     "sbpv.dev.hoppityParser.desc": "Parse all Hoppity Rabbits from Hypixels Rabbits UI in an rarity to api name format.",
-    "//comment/tabs": "",
+    "sbpv.dev.sacksParser": "Parse Sacks Contents",
+    "sbpv.dev.sacksParser.desc": "Parse all Sack Items.",
 
+
+    "//comment/tabs": "",
     "skyblockpv.tab.main": "General",
     "skyblockpv.tab.combat": "Combat",
     "skyblockpv.tab.collection": "Collections",
@@ -22,8 +26,7 @@
     "skyblockpv.tab.museum": "Museum",
 
 
-    "//comment/fishing": "",
-
+    "//comment/essence/fishing": "",
     "gui.skyblockpv.tab.fishing.information.drake_piper.desc": [
         "<white>Can be upgraded at the <light_purple>Ice Essence Shop</light_purple></white>",
         "<white>on <red>Jerry's Workshop</red></white>",
@@ -31,7 +34,6 @@
         "<white>Increase the chance to spawn a <gold>Reindrake</gold></white>",
         "<white>by <green>10%</green> while on <red>Jerry's Workshop</red>.</white>"
     ],
-
     "gui.skyblockpv.tab.fishing.information.midas_lure.desc": [
         "<white>Can be upgraded at the <light_purple>Gold Essence Shop</light_purple></white>",
         "<white>in the <gold>Royal Mines</gold> in the <dark_green>Dwarven Mines</dark_green></white>",
@@ -39,7 +41,6 @@
         "<white>Increases your chances of fishing up a </white>",
         "<white><gold>Gold Trophy Fish</gold> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
     ],
-
     "gui.skyblockpv.tab.fishing.information.radiant_fisher.desc": [
         "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
         "<white>in the <dark_purple>Crystal Nucleus</dark_purple> in the <dark_purple>Crystal Hollows</dark_purple></white>",
@@ -47,7 +48,9 @@
         "<white>Increases your chances of fishing up a</white>",
         "<white><aqua>Diamond Trophy Fish</aqua> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
     ],
-    "//comment/mining": "",
+
+
+    "//comment/essence/mining": "",
     "gui.skyblockpv.tab.mining.information.fungus_fortuna.desc": [
         "<white>Can be upgraded at the <light_purple>Crimson Essence Shop</light_purple></white>",
         "<white>in the <red>Crimson Isle</red></white>",

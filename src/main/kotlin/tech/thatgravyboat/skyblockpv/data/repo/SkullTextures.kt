@@ -14,6 +14,7 @@ enum class SkullTextures(var texture: String = "") {
     CRIMSON_ESSENCE,
     BACKPACK,
     ACCESSORY_BAG,
+    SACKS,
     PERSONAL_VAULT,
     DUNGEONS,
     HOTM,

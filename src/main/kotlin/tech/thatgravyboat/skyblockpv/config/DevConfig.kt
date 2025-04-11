@@ -14,4 +14,9 @@ object DevConfig : CategoryKt("Dev") {
         description = Translated("sbpv.dev.hoppityParser.desc")
     }
 
+    var sacksParser by boolean(false) {
+        name = Translated("sbpv.dev.sacksParser")
+        description = Translated("sbpv.dev.sacksParser.desc")
+    }
+
 }
