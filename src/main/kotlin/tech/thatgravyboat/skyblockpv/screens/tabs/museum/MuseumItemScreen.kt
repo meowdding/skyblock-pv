@@ -6,11 +6,8 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import earth.terrarium.olympus.client.ui.UIConstants
-import net.minecraft.core.component.DataComponents
-import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.component.ItemLore
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -26,6 +23,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.withTooltip
 import kotlin.math.ceil
 
 class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
@@ -67,28 +65,25 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     }
 
     fun createItem(museumItem: MuseumItem, museumData: MuseumData): List<ItemStack> {
-        return museumData.items.find { it.id == museumItem.id }?.stacks
-            ?: listOf(
-                run {
-                    val parent = museumData.isParentDonated(museumItem)
-                    val defaultInstance = (if (parent != null) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance
-                    defaultInstance.set(DataComponents.CUSTOM_NAME, ItemAPI.getItemName(museumItem.id))
-                    val lines = TooltipBuilder().apply {
-                        if (parent != null) {
-                            add("Parent donated: ") {
-                                this.color = TextColor.GRAY
-                                append(ItemAPI.getItemName(parent))
-                            }
-                        } else {
-                            add("This item has not been donated!") {
-                                this.color = TextColor.GRAY
-                            }
+        return museumData.items.find { it.id == museumItem.id }?.stacks?.map { it.value } ?: listOf(
+            run {
+                val parent = museumData.isParentDonated(museumItem)
+                val defaultInstance = (if (parent != null) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance
+                defaultInstance.withTooltip {
+                    add(ItemAPI.getItemName(museumItem.id))
+                    if (parent != null) {
+                        add("Parent donated: ") {
+                            this.color = TextColor.GRAY
+                            append(ItemAPI.getItemName(parent))
                         }
-                    }.lines().filterIsInstance<Component>()
-                    defaultInstance.set(DataComponents.LORE, ItemLore(lines, lines))
-                    defaultInstance
-                },
-            )
+                    } else {
+                        add("This item has not been donated!") {
+                            this.color = TextColor.GRAY
+                        }
+                    }
+                }
+            },
+        )
     }
 
     private fun getIcons(): List<RepoMuseumCategory> =

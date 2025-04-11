@@ -46,12 +46,12 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
 
     private fun createArmor(museumArmor: MuseumArmor, data: MuseumData): Display {
         return data.items.find { it.id == museumArmor.id }?.let {
-            val table = it.stacks.map { Displays.item(it, showTooltip = true) }.map { Displays.padding(2, it) }.chunked(4)
+            val table = it.stacks.map { Displays.item(it.value, showTooltip = true) }.map { Displays.padding(2, it) }.chunked(4)
             val dropdown = table.map { it.toColumn() }.toRow().let { display ->
                 Displays.padding(-4, -4, Displays.inventoryBackground(table.size, it.stacks.size.coerceAtMost(4), Displays.padding(2, display)))
             }
 
-            Displays.item(it.stacks.first(), showTooltip = false).withDropdown(dropdown, dropdownContext)
+            Displays.item(it.stacks.first().value, showTooltip = false).withDropdown(dropdown, dropdownContext)
         } ?: Displays.item(Items.GRAY_DYE).withDropdown(
             Displays.inventoryBackground(
                 1, 1,
