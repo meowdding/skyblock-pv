@@ -15,6 +15,7 @@ import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.fixBase64Padding
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
+import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
@@ -70,16 +71,18 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             )
         }
 
-    private fun BestiaryMobEntry.getItem() = icon.getItem().withTooltip {
+    private fun BestiaryMobEntry.getItem(): Display {
         val kills = profile?.bestiaryData?.filter { mobs.contains(it.mobId) }?.sumOf { it.kills } ?: 0
-
-        add(name)
-        add(cap.toString())
-        add(bracket.toString())
-        add("Total Kills: $kills") {
-            color = TextColor.GRAY
+        val item = icon.getItem().withTooltip {
+            add(name)
+            add(cap.toString())
+            add(bracket.toString())
+            add("Total Kills: $kills") {
+                color = TextColor.GRAY
+            }
         }
-    }.let { Displays.item(it, showTooltip = true) }
+        return Displays.item(item, customStackText = kills.shorten(0), showTooltip = true)
+    }
 
     private fun BestiaryIcon.getItem(name: String = ""): ItemStack = Either.unwrap(
         this.mapBoth(
