@@ -1,0 +1,9 @@
+{
+    "name": "Helmets",
+    "display": "skyblock:squid_hat",
+    "categories": [
+        "helmet",
+        "carnival_mask"
+    ],
+    "priority": -700
+}

@@ -17,7 +17,7 @@ import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
-        val visitors = gardenProfile?.map { it.commissionData.commissions.associateBy { it.visitor } }?.getOrNull() ?: emptyMap()
+        val visitors = data?.map { it.commissionData.commissions.associateBy { it.visitor } }?.getOrNull() ?: emptyMap()
 
         return StaticGardenData.visitors
             .groupBy { it.rarity }
@@ -36,7 +36,7 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     private fun getRarity(rarity: SkyBlockRarity, commission: Commission?): Int {
-        if (this.gardenProfile?.isSuccess != true) {
+        if (this.data?.isSuccess != true) {
             return rarity.color
         }
 
@@ -62,7 +62,7 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         )
 
         return Displays.item(item).withTooltip {
-            val profile = gardenProfile ?: run {
+            val profile = data ?: run {
                 add("Loading...") { this.color = TextColor.LIGHT_PURPLE }
                 return@withTooltip
             }

@@ -1,0 +1,16 @@
+{
+    "name": "Equipment",
+    "display": "skyblock:rift_necklace_outside",
+    "categories": [
+        "necklace",
+        "dungeon_necklace",
+        "belt",
+        "glove",
+        "gloves",
+        "dungeon_gloves",
+        "dungeon_glove",
+        "cloak",
+        "bracelet"
+    ],
+    "priority": -900
+}

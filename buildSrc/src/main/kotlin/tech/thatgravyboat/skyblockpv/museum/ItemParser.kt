@@ -1,5 +1,7 @@
 package tech.thatgravyboat.skyblockpv.museum
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 
 class ItemParser(key: String) : MuseumProcessor(key) {
@@ -23,5 +25,22 @@ class ItemParser(key: String) : MuseumProcessor(key) {
         }
 
         value.add(output)
+    }
+
+    override fun postProcess(): JsonElement {
+        val output = JsonArray()
+
+        value.forEach {
+            if (it is JsonObject) {
+                if (it.keySet().size == 1) {
+                    output.add(it.get("id"))
+                    return@forEach
+                }
+            }
+
+            output.add(it)
+        }
+
+        return output
     }
 }

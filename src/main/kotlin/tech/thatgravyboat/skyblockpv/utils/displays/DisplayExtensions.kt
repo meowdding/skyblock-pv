@@ -95,3 +95,7 @@ fun Display.asButton(action: (Button) -> Unit): Button {
 
     return button
 }
+
+fun Display.withDropdown(display: Display, context: DropdownContext): Display = Displays.dropdown(this, display, context)
+fun Display.withPadding(padding: Int = 0, left: Int? = null, right: Int? = null, top: Int? = null, bottom: Int? = null): Display =
+    Displays.padding(left ?: padding, right ?: padding, top ?: padding, bottom ?: padding, this)
