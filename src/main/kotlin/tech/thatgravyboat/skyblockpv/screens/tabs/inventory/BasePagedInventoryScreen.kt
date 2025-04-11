@@ -25,6 +25,7 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
     abstract fun getIcons(): List<ItemStack>
     open fun getExtraLine(): Display? = null
 
+    open val itemStackSize = true
 
     override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
         val inventories = getInventories()
@@ -38,7 +39,7 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
 
         val buttons = List(inventories.size) { index ->
             val icon = icons[index]
-            icon.count = index + 1
+            if (itemStackSize) icon.count = index + 1
             val itemDisplay = Displays.item(icon, showStackSize = true)
 
             Button()

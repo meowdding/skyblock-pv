@@ -33,4 +33,6 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
     override fun getInventories(): List<Display> = sackDisplays.values.toList()
 
     override fun getIcons(): List<ItemStack> = sackDisplays.keys.toList()
+
+    override val itemStackSize = false
 }
