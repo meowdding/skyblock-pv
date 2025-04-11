@@ -22,6 +22,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -169,7 +170,11 @@ object Utils {
 
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
 
-    fun <T> MutableList<T>.rightPad(size: Int, element: T): MutableList<T> {
+    fun <T> List<T>.rightPad(size: Int, element: T): MutableList<T> {
+        if (this !is MutableList<T>) {
+            return this.toMutableList().rightPad(size, element)
+        }
+
         while (this.size < size) {
             this.add(this.lastIndex + 1, element)
         }
@@ -182,6 +187,8 @@ object Utils {
     fun Instant.toReadableString(zoneId: ZoneId = ZoneOffset.systemDefault()): String {
         return dateTimeFormatter.format(LocalDateTime.ofInstant(this, zoneId))
     }
+
+    fun UUID.toDashlessString(): String = this.toString().replace("-", "")
 
     fun <T> Map<out Number, T>.sortByKey(): Map<Number, T> = this.entries.sortedBy { it.key.toLong() }.associate { it.toPair() }
 

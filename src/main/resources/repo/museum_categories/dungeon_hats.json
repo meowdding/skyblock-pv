@@ -1,0 +1,8 @@
+{
+    "name": "Dungeon Helmets",
+    "display": "skyblock:spirit_mask",
+    "categories": [
+        "dungeon_helmet"
+    ],
+    "priority": -800
+}

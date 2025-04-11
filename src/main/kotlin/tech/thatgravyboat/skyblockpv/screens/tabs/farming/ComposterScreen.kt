@@ -43,7 +43,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         LayoutBuild.vertical {
             string("Organic Matter Stored: ") {
                 append(
-                    loadingComponent(gardenProfile) {
+                    loadingComponent {
                         Text.of(it.composterData.organicMatter.toFormattedString()) {
                             this.color = TextColor.GREEN
                         }
@@ -52,7 +52,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             }
             string("Fuel Stored: ") {
                 append(
-                    loadingComponent(gardenProfile) {
+                    loadingComponent {
                         Text.of(it.composterData.fuel.toFormattedString()) {
                             this.color = TextColor.DARK_GREEN
                         }
@@ -61,7 +61,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             }
             string("Compost Stored: ") {
                 append(
-                    loadingComponent(gardenProfile) {
+                    loadingComponent {
                         Text.of(it.composterData.compostItems.toFormattedString()) {
                             this.color = TextColor.RED
                         }
@@ -70,7 +70,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             }
             string("Last Update: ") {
                 append(
-                    loadingComponent(gardenProfile) {
+                    loadingComponent {
                         Text.of(Instant.ofEpochMilli(it.composterData.lastUpdateTimestamp).toReadableString()) {
                             this.color = TextColor.DARK_GRAY
                         }
@@ -186,7 +186,6 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     fun getPlots() = PvWidgets.label(
         "Plots",
         LayoutBuild.frame {
-            gardenProfile?.getOrNull()
             val map = MutableList(5) { MutableList(5) { Displays.empty() } }
 
             StaticGardenData.plots.forEach {
@@ -200,7 +199,6 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             }
 
             loading(
-                gardenProfile,
                 onSuccess = { data ->
                     val staticPlots = StaticGardenData.plots.toMutableList().apply { removeAll(data.unlockedPlots) }
                     data.unlockedPlots.forEach {
@@ -246,12 +244,11 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             map[2][2] = Displays.tooltip(
                 Displays.item(
                     loaded(
-                        gardenProfile,
-                        Items.BARRIER.defaultInstance,
-                        Items.BEDROCK.defaultInstance,
+                        whileLoading = Items.BARRIER.defaultInstance,
+                        onError = Items.BEDROCK.defaultInstance,
                     ) { it.selectedBarnSkin.getItem() },
                 ),
-                loadingComponent(gardenProfile) { it.selectedBarnSkin.displayName },
+                loadingComponent { it.selectedBarnSkin.displayName },
             )
 
             val plots = map.map { it.reversed().map { Displays.padding(2, it) }.toColumn() }.toRow()

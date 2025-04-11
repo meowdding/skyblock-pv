@@ -1,0 +1,15 @@
+{
+    "name": "Mining items",
+    "display": "skyblock:divan_drill",
+    "categories": [
+        "drill",
+        "pickaxe",
+        "gauntlet",
+        "chisel"
+    ],
+    "items": [
+        "DIVAN_PENDANT",
+        "DWARVEN_HANDWARMERS"
+    ],
+    "priority": -400
+}
