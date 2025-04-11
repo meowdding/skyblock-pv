@@ -17,7 +17,7 @@ enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val 
     BACKPACK(BackpackScreen::class, SkullTextures.BACKPACK.skull),
     WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.defaultInstance),
     ACCESSORY(AccessoryScreen::class, SkullTextures.ACCESSORY_BAG.skull),
-    SACKS(SacksScreen::class, sacksIcon),
+    SACKS(SacksScreen::class, SkullTextures.SACKS.skull),
     PERSONAL_VAULT(ItemVaultScreen::class, SkullTextures.PERSONAL_VAULT.skull),
     POTION_BAG(PotionBagScreen::class, Items.POTION.defaultInstance),
     FISHING_BAG(FishingBagScreen::class, Items.FISHING_ROD.defaultInstance),
