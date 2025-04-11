@@ -31,8 +31,6 @@ import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 import java.time.Instant
 
-val coachSkull by lazy { SkullTextures.COACH_JACKRABBIT.createSkull() }
-
 class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("CHOCOLATE_FACTORY", gameProfile, profile) {
 
     override fun create(bg: DisplayWidget) {
@@ -128,7 +126,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                     }
                 }
             }
-            createUpgradeItem(coachSkull.copy(), "Coach Jackrabbit", cf.chocolateMultiplierUpgrades) {
+            createUpgradeItem(SkullTextures.COACH_JACKRABBIT.skull.copy(), "Coach Jackrabbit", cf.chocolateMultiplierUpgrades) {
                 add("Increases the amount of ") {
                     color = TextColor.GRAY
                 }

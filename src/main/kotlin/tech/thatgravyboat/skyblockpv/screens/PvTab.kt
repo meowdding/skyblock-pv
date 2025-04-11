@@ -37,8 +37,8 @@ enum class PvTab(
     PETS(PetScreen::class, Items.BONE.defaultInstance),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
     MUSEUM(BaseMuseumScreen::class, ::MuseumItemScreen, Items.GOLD_BLOCK.defaultInstance),
-    CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.createSkull()),
-    RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.createSkull()),
+    CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.skull),
+    RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.skull),
     ;
 
     constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(
