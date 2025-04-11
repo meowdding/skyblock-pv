@@ -11,17 +11,13 @@ import tech.thatgravyboat.skyblockpv.screens.tabs.base.Category
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-val backpackIcon by lazy { SkullTextures.BACKPACK.createSkull() }
-val accessoryIcon by lazy { SkullTextures.ACCESSORY_BAG.createSkull() }
-val personalVaultIcon by lazy { SkullTextures.PERSONAL_VAULT.createSkull() }
-
 enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val icon: ItemStack) : Category {
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
     ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
-    BACKPACK(BackpackScreen::class, backpackIcon),
+    BACKPACK(BackpackScreen::class, SkullTextures.BACKPACK.skull),
     WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.defaultInstance),
-    ACCESSORY(AccessoryScreen::class, accessoryIcon),
-    PERSONAL_VAULT(ItemVaultScreen::class, personalVaultIcon),
+    ACCESSORY(AccessoryScreen::class, SkullTextures.ACCESSORY_BAG.skull),
+    PERSONAL_VAULT(ItemVaultScreen::class, SkullTextures.PERSONAL_VAULT.skull),
     POTION_BAG(PotionBagScreen::class, Items.POTION.defaultInstance),
     FISHING_BAG(FishingBagScreen::class, Items.FISHING_ROD.defaultInstance),
     QUIVER_BAG(QuiverBagScreen::class, Items.ARROW.defaultInstance),
