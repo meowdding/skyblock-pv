@@ -574,5 +574,46 @@
             "VOLCANIC_ROCK",
             "WHITE_GIFT"
         ]
+    },
+    "Dragons": {
+        "sack": "LARGE_DRAGON_SACK",
+        "items": [
+            "CRYSTAL_FRAGMENT",
+            "HOLY_FRAGMENT",
+            "MITE_GEL",
+            "OLD_FRAGMENT",
+            "PROTECTOR_FRAGMENT",
+            "RITUAL_RESIDUE",
+            "STRONG_FRAGMENT",
+            "SUPERIOR_FRAGMENT",
+            "UNSTABLE_FRAGMENT",
+            "WISE_FRAGMENT",
+            "YOUNG_FRAGMENT",
+            "SUSPICIOUS_SCRAP",
+            "YOUNG_FRAGMENT"
+        ]
+    },
+    "Flower": {
+        "sack": "FLOWER_SACK",
+        "items": [
+            "RED_ROSE:2",
+            "RED_ROSE:3",
+            "RED_ROSE:1",
+            "YELLOW_FLOWER",
+            "ENCHANTED_DANDELION",
+            "ENCHANTED_POPPY",
+            "ENDSTONE_ROSE",
+            "DOUBLE_PLANT:1",
+            "RED_ROSE:5",
+            "RED_ROSE:8",
+            "DOUBLE_PLANT:5",
+            "RED_ROSE:7",
+            "RED_ROSE",
+            "RED_ROSE:4",
+            "DOUBLE_PLANT:4",
+            "DOUBLE_PLANT",
+            "RED_ROSE:6",
+            "RED_ROSE:8"
+        ]
     }
 }

@@ -28,7 +28,7 @@ object SacksParser {
 
         val id = event.item.getData(DataTypes.ID) ?: return
         titleRegex.match(event.title, "name") { (name) ->
-            val title = event.title.replace("Gemstones", "Gemstone")
+            val title = event.title.replace("Gemstones", "Gemstone").replace("Dragons", "Dragon")
             val parsedIds = when (name) {
                 "Gemstones" -> {
                     listOf("ROUGH", "FLAWED", "FINE").map {
