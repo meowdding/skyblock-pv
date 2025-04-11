@@ -2,10 +2,13 @@ package tech.thatgravyboat.skyblockpv.api.data
 
 import com.google.gson.JsonObject
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.getNbt
 import tech.thatgravyboat.skyblockpv.utils.legacyStack
+import tech.thatgravyboat.skyblockpv.utils.withoutTooltip
 
 data class InventoryData(
     val inventoryItems: Inventory?,
@@ -61,7 +64,12 @@ data class InventoryData(
         companion object {
             fun fromJson(json: JsonObject): List<EnderChestPage> {
                 return json.get("data").getNbt().let {
-                    it.getListOrEmpty("i").map { item -> item.legacyStack() }.chunked(45).map { EnderChestPage(Inventory(it)) }
+                    it.getListOrEmpty("i")
+                        .map { item -> item.legacyStack() }
+                        .chunked(45)
+                        // Fill up every page to 45 slots
+                        .map { it.rightPad(45, Items.BLACK_STAINED_GLASS_PANE.defaultInstance.withoutTooltip()) }
+                        .map { EnderChestPage(Inventory(it)) }
                 }
             }
         }

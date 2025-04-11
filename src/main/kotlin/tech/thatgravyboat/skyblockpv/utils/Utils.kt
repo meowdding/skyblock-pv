@@ -6,17 +6,12 @@ import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.core.component.DataComponents
-import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.PlayerDbAPI
-import tech.thatgravyboat.skyblockpv.utils.displays.TooltipBuilder
 import java.nio.file.Files
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -171,7 +166,11 @@ object Utils {
 
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
 
-    fun <T> MutableList<T>.rightPad(size: Int, element: T): MutableList<T> {
+    fun <T> List<T>.rightPad(size: Int, element: T): MutableList<T> {
+        if (this !is MutableList<T>) {
+            return this.toMutableList().rightPad(size, element)
+        }
+
         while (this.size < size) {
             this.add(this.lastIndex + 1, element)
         }
