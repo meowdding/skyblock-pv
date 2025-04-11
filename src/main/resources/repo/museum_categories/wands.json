@@ -1,0 +1,11 @@
+{
+    "name": "Wands",
+    "display": "skyblock:gyrokinetic_wand",
+    "categories": [
+        "wand"
+    ],
+    "items": [
+        "TACTICAL_INSERTION"
+    ],
+    "priority": 18
+}
