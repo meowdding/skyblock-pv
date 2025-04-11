@@ -62,7 +62,7 @@ object RepoMuseumData {
         evaluateItemCategoryMap()
     }
 
-    fun convertToId(data: SkyBlockCategory?) = data?.toString()?.lowercase()?.replace(" ", "_")
+    private fun convertToId(data: SkyBlockCategory?) = data?.toString()?.lowercase()?.replace(" ", "_")
 
     private fun evaluateItemCategoryMap() {
         val ids = listOf(rarities, weapons).flatten()
