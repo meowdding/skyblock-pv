@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.data.repo
 
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.createSkull
 
 enum class SkullTextures(var texture: String = "") {
     WITHER_ESSENCE,
@@ -21,7 +22,7 @@ enum class SkullTextures(var texture: String = "") {
     RIFT,
     ;
 
-    fun createSkull() = tech.thatgravyboat.skyblockpv.utils.createSkull(texture)
+    val skull by lazy { createSkull(texture) }
 
     companion object {
         init {

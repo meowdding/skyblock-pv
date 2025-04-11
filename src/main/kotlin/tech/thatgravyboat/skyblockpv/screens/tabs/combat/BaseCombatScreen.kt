@@ -12,8 +12,6 @@ import tech.thatgravyboat.skyblockpv.screens.tabs.base.Category
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-val dungeonsIcon by lazy { SkullTextures.DUNGEONS.createSkull() }
-
 abstract class BaseCombatScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("COMBAT", gameProfile, profile) {
     override val categories: List<Category> get() = CombatCategory.entries
 }
@@ -21,6 +19,7 @@ abstract class BaseCombatScreen(gameProfile: GameProfile, profile: SkyBlockProfi
 enum class CombatCategory(val screen: KClass<out BaseCombatScreen>, override val icon: ItemStack) : Category {
     DUNGEONS(DungeonScreen::class, dungeonsIcon),
     BESTIARY(BestiaryScreen::class, Items.WRITABLE_BOOK.defaultInstance),
+    DUNGEONS(DungeonScreen::class, SkullTextures.DUNGEONS.skull),
     MOBS(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance),
     ;
 

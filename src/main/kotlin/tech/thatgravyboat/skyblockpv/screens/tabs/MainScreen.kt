@@ -299,7 +299,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     "ICE" -> SkullTextures.ICE_ESSENCE
                     "CRIMSON" -> SkullTextures.CRIMSON_ESSENCE
                     else -> null
-                }?.createSkull() ?: ItemStack.EMPTY
+                }?.skull ?: ItemStack.EMPTY
             },
         ) { _, amount -> amount.shorten() }
     }
