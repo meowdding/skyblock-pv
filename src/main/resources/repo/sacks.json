@@ -1,5 +1,5 @@
-{
-    "Combat": {
+[
+    {
         "sack": "LARGE_COMBAT_SACK",
         "items": [
             "BLAZE_ROD",
@@ -15,7 +15,7 @@
             "STRING"
         ]
     },
-    "Enchanted Combat": {
+    {
         "sack": "LARGE_ENCHANTED_COMBAT_SACK",
         "items": [
             "ABSOLUTE_ENDER_PEARL",
@@ -37,7 +37,7 @@
             "WHIPPED_MAGMA_CREAM"
         ]
     },
-    "Mining": {
+    {
         "sack": "LARGE_MINING_SACK",
         "items": [
             "GOLD_INGOT",
@@ -67,7 +67,7 @@
             "VOLTA"
         ]
     },
-    "Enchanted Mining": {
+    {
         "sack": "LARGE_ENCHANTED_MINING_SACK",
         "items": [
             "ENCHANTED_FLINT",
@@ -103,7 +103,7 @@
             "ENCHANTED_UMBER"
         ]
     },
-    "Husbandry": {
+    {
         "sack": "LARGE_HUSBANDRY_SACK",
         "items": [
             "EGG",
@@ -119,7 +119,7 @@
             "WOOL"
         ]
     },
-    "Enchanted Husbandry": {
+    {
         "sack": "LARGE_ENCHANTED_HUSBANDRY_SACK",
         "items": [
             "ENCHANTED_COOKED_MUTTON",
@@ -138,7 +138,7 @@
             "SUPER_EGG"
         ]
     },
-    "Foraging": {
+    {
         "sack": "LARGE_FORAGING_SACK",
         "items": [
             "SAPLING:4",
@@ -156,7 +156,7 @@
             "LOG:1"
         ]
     },
-    "Enchanted Foraging": {
+    {
         "sack": "LARGE_ENCHANTED_FORAGING_SACK",
         "items": [
             "ENCHANTED_ACACIA_LOG",
@@ -167,7 +167,7 @@
             "ENCHANTED_SPRUCE_LOG"
         ]
     },
-    "Agronomy": {
+    {
         "sack": "LARGE_AGRONOMY_SACK",
         "items": [
             "BROWN_MUSHROOM",
@@ -192,7 +192,7 @@
             "WHEAT"
         ]
     },
-    "Enchanted Agronomy": {
+    {
         "sack": "LARGE_ENCHANTED_AGRONOMY_SACK",
         "items": [
             "BOX_OF_SEEDS",
@@ -223,7 +223,7 @@
             "POLISHED_PUMPKIN"
         ]
     },
-    "Garden": {
+    {
         "sack": "GARDEN_SACK",
         "items": [
             "COMPOST",
@@ -238,7 +238,7 @@
             "COMPOST"
         ]
     },
-    "Dungeon": {
+    {
         "sack": "LARGE_DUNGEON_SACK",
         "items": [
             "GOLEM_POPPY",
@@ -264,7 +264,7 @@
             "ARCHITECT_FIRST_DRAFT"
         ]
     },
-    "Gemstones": {
+    {
         "sack": "LARGE_GEMSTONE_SACK",
         "items": [
             "ROUGH_JADE_GEM",
@@ -308,7 +308,7 @@
             "FINE_SAPPHIRE_GEM"
         ]
     },
-    "Enchanted Fishing": {
+    {
         "sack": "LARGE_ENCHANTED_FISHING_SACK",
         "items": [
             "ENCHANTED_CLAY_BALL",
@@ -329,7 +329,7 @@
             "ENCHANTED_INK_SACK"
         ]
     },
-    "Fishing": {
+    {
         "sack": "LARGE_FISHING_SACK",
         "items": [
             "AGARIMOO_TONGUE",
@@ -363,7 +363,7 @@
             "BUSTED_BELT_BUCKLE"
         ]
     },
-    "Slayer": {
+    {
         "sack": "LARGE_SLAYER_SACK",
         "items": [
             "BLAZE_ROD_DISTILLATE",
@@ -403,7 +403,7 @@
             "SOULFLOW"
         ]
     },
-    "Dwarven Mines": {
+    {
         "sack": "DWARVEN_MINES_SACK",
         "items": [
             "BIOFUEL",
@@ -421,7 +421,7 @@
             "GOBLIN_EGG_YELLOW"
         ]
     },
-    "Crystal Hollows": {
+    {
         "sack": "CRYSTAL_HOLLOWS_SACK",
         "items": [
             "ASCENSION_ROPE",
@@ -441,7 +441,7 @@
             "OIL_BARREL"
         ]
     },
-    "Nether": {
+    {
         "sack": "LARGE_NETHER_SACK",
         "items": [
             "GHAST_TEAR",
@@ -476,7 +476,7 @@
             "MILLENIA_OLD_BLAZE_ASHES"
         ]
     },
-    "Bronze Trophy Fishing": {
+    {
         "sack": "BRONZE_TROPHY_FISHING_SACK",
         "items": [
             "BLOBFISH_BRONZE",
@@ -500,7 +500,7 @@
             "SLUGFISH_BRONZE"
         ]
     },
-    "Silver Trophy Fishing": {
+    {
         "sack": "SILVER_TROPHY_FISHING_SACK",
         "items": [
             "BLOBFISH_SILVER",
@@ -524,7 +524,7 @@
             "SOUL_FISH_SILVER"
         ]
     },
-    "Lava Fishing": {
+    {
         "sack": "LARGE_LAVA_FISHING_SACK",
         "items": [
             "BLAZE_POWDER",
@@ -549,7 +549,7 @@
             "MOOGMA_PELT"
         ]
     },
-    "Events": {
+    {
         "sack": "LARGE_EVENTS_SACK",
         "items": [
             "GREEN_CANDY",
@@ -575,7 +575,7 @@
             "WHITE_GIFT"
         ]
     },
-    "Dragons": {
+    {
         "sack": "LARGE_DRAGON_SACK",
         "items": [
             "CRYSTAL_FRAGMENT",
@@ -591,7 +591,7 @@
             "YOUNG_FRAGMENT"
         ]
     },
-    "Flower": {
+    {
         "sack": "FLOWER_SACK",
         "items": [
             "RED_ROSE:2",
@@ -614,4 +614,4 @@
             "RED_ROSE:8"
         ]
     }
-}
+]

@@ -59,7 +59,7 @@ object SacksParser {
             .resolve("sacks.json")
 
         Files.createDirectories(file.parent)
-        Files.writeString(file, GsonBuilder().create().toJson(data))
+        Files.writeString(file, GsonBuilder().create().toJson(data.values))
     }
 
     fun shouldParse() = SkyBlockPv.isDevMode && DevConfig.sacksParser

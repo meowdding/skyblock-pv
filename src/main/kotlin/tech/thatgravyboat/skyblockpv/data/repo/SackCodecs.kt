@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.data.repo
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
@@ -8,15 +9,15 @@ import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object SackCodecs {
-    var data: Map<String, Sack> = emptyMap()
+    var data: List<Sack> = emptyList()
         private set
 
     init {
-        val CODEC = Codec.unboundedMap(Codec.STRING, Sack.CODEC)
+        val CODEC = Sack.CODEC.listOf()
 
-        val cfData = Utils.loadFromRepo<JsonObject>("sacks") ?: JsonObject()
+        val sackData = Utils.loadFromRepo<JsonArray>("sacks") ?: JsonObject()
 
-        CODEC.parse(JsonOps.INSTANCE, cfData).let {
+        CODEC.parse(JsonOps.INSTANCE, sackData).let {
             if (it.isError) {
                 throw RuntimeException(it.error().get().message())
             }

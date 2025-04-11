@@ -14,8 +14,8 @@ import tech.thatgravyboat.skyblockpv.utils.displays.asTable
 class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
     private val sackItems get() = profile?.inventory?.sacks ?: emptyMap()
     private val sackDisplays: Map<ItemStack, Display>
-        get() = SackCodecs.data.mapNotNull { (_, v) ->
-            val sackItems = v.items.associateWith { sackItems[it] ?: 0 }
+        get() = SackCodecs.data.mapNotNull {
+            val sackItems = it.items.associateWith { sackItems[it] ?: 0 }
             if (sackItems.entries.sumOf { it.value } == 0L) return@mapNotNull null
 
             val display = sackItems.map {
@@ -27,7 +27,7 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
                 )
             }
 
-            v.item to display
+            it.item to display
         }.toMap()
 
     override fun getInventories(): List<Display> = sackDisplays.values.toList()
