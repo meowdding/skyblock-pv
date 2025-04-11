@@ -14,6 +14,7 @@ import kotlin.reflect.full.isSubclassOf
 val backpackIcon by lazy { SkullTextures.BACKPACK.createSkull() }
 val accessoryIcon by lazy { SkullTextures.ACCESSORY_BAG.createSkull() }
 val personalVaultIcon by lazy { SkullTextures.PERSONAL_VAULT.createSkull() }
+val sacksIcon by lazy { SkullTextures.SACKS.createSkull() }
 
 enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val icon: ItemStack) : Category {
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
@@ -21,11 +22,11 @@ enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val 
     BACKPACK(BackpackScreen::class, backpackIcon),
     WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.defaultInstance),
     ACCESSORY(AccessoryScreen::class, accessoryIcon),
+    SACKS(SacksScreen::class, sacksIcon),
     PERSONAL_VAULT(ItemVaultScreen::class, personalVaultIcon),
     POTION_BAG(PotionBagScreen::class, Items.POTION.defaultInstance),
     FISHING_BAG(FishingBagScreen::class, Items.FISHING_ROD.defaultInstance),
     QUIVER_BAG(QuiverBagScreen::class, Items.ARROW.defaultInstance),
-    SACKS(SacksScreen::class, Items.BARRIER.defaultInstance),
     ;
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
