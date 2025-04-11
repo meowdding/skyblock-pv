@@ -36,6 +36,8 @@ class CarouselWidget(
         val last = displays.getOrNull((index - 1 + displays.size) % displays.size)
         val next = displays.getOrNull((index + 1) % displays.size)
 
+        // Aligning the carousel to the top
+        // @Sophie if theres a better solution pls tell me :3
         this.height = curr.getHeight()
 
         val left = x + (width - curr.getWidth()) / 2

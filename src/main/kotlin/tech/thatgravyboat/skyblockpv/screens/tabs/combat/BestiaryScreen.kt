@@ -4,12 +4,10 @@ import com.mojang.authlib.GameProfile
 import com.mojang.datafixers.util.Either
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.component.ItemLore
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
-import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.split
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.repo.*
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
@@ -19,7 +17,11 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.fixBase64Padding
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.createSkull
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.Display
+import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.asTable
+import tech.thatgravyboat.skyblockpv.utils.withTooltip
 
 class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     private var carousel: CarouselWidget? = null
@@ -47,46 +49,36 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private fun getCategories(): Map<ItemStack, Display> = BestiaryCodecs.data?.categories?.map { (_, v) ->
         Either.unwrap(
             v.mapBoth(
-                { it.icon.getItem(it.name) to it.getCategory() },
-                { it.icon.getItem(it.name) to it.getCategory() },
+                { it.icon.getItem(it.name) to it.getCategory() }, // Simple
+                { it.icon.getItem(it.name) to it.getCategory() }, // Complex
             ),
         )
     }?.toMap() ?: emptyMap()
 
-    private fun BestiaryCategoryEntry.getCategory() = mobs
-        .map { it.getItem() }
-        .toMutableList()
-        .rightPad(MOBS_PER_ROW_SIMPLE * 2, Displays.empty(16, 16))
+    private fun BestiaryCategoryEntry.getCategory() = mobs.map { it.getItem() }.format(MOBS_PER_ROW_SIMPLE)
+
+    private fun ComplexBestiaryCategoryEntry.getCategory() = subcategories.flatMap { it.value.mobs.map { it.getItem() } }.format(MOBS_PER_ROW_COMPLEX)
+
+    private fun List<Display>.format(mobsPerRow: Int) = toMutableList()
+        .rightPad(mobsPerRow * 2, Displays.empty(16, 16))
         .map { Displays.padding(2, it) }
-        .chunked(MOBS_PER_ROW_SIMPLE)
+        .chunked(mobsPerRow)
         .let {
             Displays.inventoryBackground(
-                MOBS_PER_ROW_SIMPLE, it.size,
+                mobsPerRow, it.size,
                 Displays.padding(2, it.asTable()),
             )
         }
 
-    private fun ComplexBestiaryCategoryEntry.getCategory() = subcategories
-        .flatMap { it.value.mobs.map { it.getItem() } }
-        .toMutableList()
-        .rightPad(MOBS_PER_ROW_COMPLEX * 2, Displays.empty(16, 16))
-        .map { Displays.padding(2, it) }
-        .chunked(MOBS_PER_ROW_COMPLEX)
-        .let {
-            Displays.inventoryBackground(
-                MOBS_PER_ROW_COMPLEX, it.size,
-                Displays.padding(2, it.asTable()),
-            )
-        }
+    private fun BestiaryMobEntry.getItem() = icon.getItem().withTooltip {
+        val kills = profile?.bestiaryData?.filter { mobs.contains(it.mobId) }?.sumOf { it.kills } ?: 0
 
-    private fun BestiaryMobEntry.getItem() = icon.getItem().apply {
-        val lore = TooltipBuilder().apply {
-            add(cap.toString())
-            add(bracket.toString())
-            add(mobs.joinToString(", "))
-        }.build().split("\n")
-        set(DataComponents.CUSTOM_NAME, Text.join(name) { italic = false; color = TextColor.WHITE })
-        set(DataComponents.LORE, ItemLore(lore, lore))
+        add(name)
+        add(cap.toString())
+        add(bracket.toString())
+        add("Total Kills: $kills") {
+            color = TextColor.GRAY
+        }
     }.let { Displays.item(it, showTooltip = true) }
 
     private fun BestiaryIcon.getItem(name: String = ""): ItemStack = Either.unwrap(
