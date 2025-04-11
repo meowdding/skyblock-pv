@@ -23,6 +23,8 @@ import tech.thatgravyboat.skyblockpv.utils.displays.*
 
 class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     private var carousel: CarouselWidget? = null
+    private val MOBS_PER_ROW_SIMPLE = 5
+    private val MOBS_PER_ROW_COMPLEX = 8
 
     override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
         val categories = getCategories()
@@ -35,11 +37,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             246,
         )
 
-        val buttonContainer = carousel!!.getIcons {
-            icons.mapIndexed { index, it ->
-                Displays.item(it, showTooltip = true)
-            }
-        }
+        val buttonContainer = carousel!!.getIcons { icons.map { Displays.item(it, showTooltip = true) } }
 
         widget(buttonContainer.centerHorizontally(uiWidth))
         spacer(height = 10)
@@ -58,12 +56,12 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private fun BestiaryCategoryEntry.getCategory() = mobs
         .map { it.getItem() }
         .toMutableList()
-        .rightPad(5, Displays.empty(16, 16))
+        .rightPad(MOBS_PER_ROW_SIMPLE * 2, Displays.empty(16, 16))
         .map { Displays.padding(2, it) }
-        .chunked(5)
+        .chunked(MOBS_PER_ROW_SIMPLE)
         .let {
             Displays.inventoryBackground(
-                5, it.size,
+                MOBS_PER_ROW_SIMPLE, it.size,
                 Displays.padding(2, it.asTable()),
             )
         }
@@ -71,12 +69,12 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private fun ComplexBestiaryCategoryEntry.getCategory() = subcategories
         .flatMap { it.value.mobs.map { it.getItem() } }
         .toMutableList()
-        .rightPad(8, Displays.empty(16, 16))
+        .rightPad(MOBS_PER_ROW_COMPLEX * 2, Displays.empty(16, 16))
         .map { Displays.padding(2, it) }
-        .chunked(8)
+        .chunked(MOBS_PER_ROW_COMPLEX)
         .let {
             Displays.inventoryBackground(
-                8, it.size,
+                MOBS_PER_ROW_COMPLEX, it.size,
                 Displays.padding(2, it.asTable()),
             )
         }
