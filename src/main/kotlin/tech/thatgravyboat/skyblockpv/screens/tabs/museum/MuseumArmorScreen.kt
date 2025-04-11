@@ -24,10 +24,10 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
         return LayoutBuild.frame {
             val chunked = RepoMuseumData.armor.map {
                 loaded(
-                    Displays.empty(16, 16),
-                    Displays.empty(16, 16),
+                    Displays.item(Items.ORANGE_DYE.defaultInstance.withTooltip { add("Loading...") { this.color = TextColor.GOLD } }, showTooltip = true),
+                    Displays.item(Items.BEDROCK.defaultInstance.withTooltip { add("Error!") { this.color = TextColor.RED } }, showTooltip = true),
                 ) { data -> createArmor(it, data) }
-            }.map { Displays.padding(2, it) }.chunked(15)// .chunked(240.coerceAtMost(this@MuseumArmorScreen.uiWidth - 80) / 16)
+            }.map { Displays.padding(2, it) }.chunked(15)
 
             display(
                 Displays.dropdownOverlay(

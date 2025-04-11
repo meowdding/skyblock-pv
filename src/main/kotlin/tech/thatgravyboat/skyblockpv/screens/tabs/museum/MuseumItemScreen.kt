@@ -45,8 +45,8 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         val map = sortedItems.map { item ->
             loaded(
-                whileLoading = listOf(Items.ORANGE_DYE.defaultInstance),
-                onError = listOf(Items.BEDROCK.defaultInstance),
+                whileLoading = listOf(Items.ORANGE_DYE.defaultInstance.withTooltip { add("Loading...") { this.color = TextColor.GOLD } }),
+                onError = listOf(Items.BEDROCK.defaultInstance.withTooltip { add("Error!") { this.color = TextColor.RED } }),
             ) { createItem(item, it) }
         }
 
