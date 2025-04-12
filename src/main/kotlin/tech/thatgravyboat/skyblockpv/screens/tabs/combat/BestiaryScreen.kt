@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile
 import com.mojang.datafixers.util.Either
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -13,9 +15,10 @@ import tech.thatgravyboat.skyblockpv.data.repo.*
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils
+import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.fixBase64Padding
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
-import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
+import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
 import tech.thatgravyboat.skyblockpv.utils.createSkull
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
@@ -73,20 +76,53 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     private fun BestiaryMobEntry.getItem(): Display {
         val kills = profile?.bestiaryData?.filter { mobs.contains(it.mobId) }?.sumOf { it.kills } ?: 0
-        val item = icon.getItem().withTooltip {
+        val fullBracket = BestiaryCodecs.data?.brackets?.get(bracket) ?: emptyList()
+        val maxLevel = fullBracket.indexOf(cap) + 1
+        val bracket = fullBracket.take(maxLevel)
+        val requiredKills = bracket.lastOrNull() ?: 0
+        val currentLevel = bracket.indexOfLast { kills >= it } + 1
+
+        val item = if (kills == 0L) Items.GRAY_DYE.defaultInstance
+        else icon.getItem()
+
+        item.withTooltip {
             add(name)
-            add(cap.toString())
-            add(bracket.toString())
-            add("Total Kills: $kills") {
+
+            add("Kills: ") {
                 color = TextColor.GRAY
+                append(kills.toFormattedString()) { color = TextColor.YELLOW }
+                append("/") { color = TextColor.GOLD }
+                append(requiredKills.toFormattedString()) { color = TextColor.YELLOW }
+                val percentage = kills / requiredKills.toDouble() * 100
+
+                if (percentage >= 100) {
+                    append(" Maxed!") {
+                        color = TextColor.RED
+                    }
+                } else {
+                    append(" (")
+                    append((kills / requiredKills.toDouble() * 100).round()) {
+                        color = TextColor.GREEN
+                        append("%")
+                    }
+                    append(")")
+                }
+            }
+
+            add("Level: ") {
+                color = TextColor.GRAY
+                append("$currentLevel") { color = TextColor.YELLOW }
+                append("/") { color = TextColor.GOLD }
+                append("$maxLevel") { color = TextColor.YELLOW }
             }
         }
-        return Displays.item(item, customStackText = kills.shorten(0), showTooltip = true)
+        return Displays.item(item, customStackText = currentLevel, showTooltip = true)
     }
 
     private fun BestiaryIcon.getItem(name: String = ""): ItemStack = Either.unwrap(
         this.mapBoth(
             { Utils.getMinecraftItem(it) },
+            // NEU Repo can be weird, sometimes including that weird split or wrong length of base64
             { createSkull(it.second.split("\", \"").first().fixBase64Padding()) },
         ),
     ).apply {
