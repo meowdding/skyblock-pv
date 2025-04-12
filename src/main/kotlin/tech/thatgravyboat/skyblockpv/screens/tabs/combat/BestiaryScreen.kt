@@ -13,6 +13,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.repo.*
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
+import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
@@ -45,9 +46,12 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
         val buttonContainer = carousel!!.getIcons { icons.map { Displays.item(it, showTooltip = true) } }
 
-        widget(buttonContainer.centerHorizontally(uiWidth))
-        spacer(height = 10)
-        widget(carousel!!.centerHorizontally(uiWidth))
+        widget(
+            LayoutBuild.vertical(5) {
+                widget(buttonContainer.centerHorizontally(uiWidth))
+                widget(carousel!!.centerHorizontally(uiWidth))
+            }.asScrollable(uiWidth, uiHeight),
+        )
     }
 
     private fun getCategories(): Map<ItemStack, Display> = BestiaryCodecs.data?.categories?.map { (_, v) ->
