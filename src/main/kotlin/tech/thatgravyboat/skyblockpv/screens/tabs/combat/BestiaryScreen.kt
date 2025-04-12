@@ -101,7 +101,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     }
                 } else {
                     append(" (")
-                    append((kills / requiredKills.toDouble() * 100).round()) {
+                    append(percentage.round()) {
                         color = TextColor.GREEN
                         append("%")
                     }
@@ -114,6 +114,22 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 append("$currentLevel") { color = TextColor.YELLOW }
                 append("/") { color = TextColor.GOLD }
                 append("$maxLevel") { color = TextColor.YELLOW }
+            }
+
+            if (currentLevel != maxLevel) {
+                add("Next Level: ") {
+                    color = TextColor.GRAY
+                    append(kills.toFormattedString()) { color = TextColor.YELLOW }
+                    append("/") { color = TextColor.GOLD }
+                    append(bracket[currentLevel].toFormattedString()) { color = TextColor.YELLOW }
+
+                    append(" (")
+                    append((kills / bracket[currentLevel].toDouble() * 100).round()) {
+                        color = TextColor.GREEN
+                        append("%")
+                    }
+                    append(")")
+                }
             }
         }
         return Displays.item(item, customStackText = currentLevel, showTooltip = true)
