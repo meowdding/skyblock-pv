@@ -171,7 +171,7 @@ enum class MiningGear {
     }
 }
 
-enum class RockBrackets(val oresRequired: Int, val rarity: SkyBlockRarity) {
+enum class RockBracket(val oresRequired: Int, val rarity: SkyBlockRarity) {
     COMMON(2500, SkyBlockRarity.COMMON),
     UNCOMMON(7500, SkyBlockRarity.UNCOMMON),
     RARE(20000, SkyBlockRarity.RARE),
@@ -179,8 +179,8 @@ enum class RockBrackets(val oresRequired: Int, val rarity: SkyBlockRarity) {
     LEGENDARY(250000, SkyBlockRarity.LEGENDARY);
 
     companion object {
-        fun getByOres(kills: Int): RockBrackets? {
-            return RockBrackets.entries.reversed().firstOrNull { it.oresRequired <= kills }
+        fun getByOres(kills: Int): RockBracket? {
+            return RockBracket.entries.reversed().firstOrNull { it.oresRequired <= kills }
         }
     }
 }

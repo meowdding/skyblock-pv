@@ -17,11 +17,11 @@ abstract class BaseMuseumScreen(gameProfile: GameProfile, profile: SkyBlockProfi
     AbstractCategorizedLoadingScreen<MuseumData>("MUSEUM", gameProfile, profile) {
 
     override val api get() = MuseumAPI
-    override val categories = MuseumCategories.entries
+    override val categories = MuseumCategory.entries
 
 }
 
-enum class MuseumCategories(val screen: KClass<out BaseMuseumScreen>, override val icon: ItemStack) : Category {
+enum class MuseumCategory(val screen: KClass<out BaseMuseumScreen>, override val icon: ItemStack) : Category {
     WEAPONS(MuseumItemScreen::class, Items.EMERALD.defaultInstance),
     ARMOR(MuseumArmorScreen::class, Items.NETHERITE_HELMET.defaultInstance)
     ;

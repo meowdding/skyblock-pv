@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 
-enum class MuseumParsers(val processor: MuseumProcessor) {
+enum class MuseumParser(val processor: MuseumProcessor) {
     WEAPONS(ItemParser("weapons")),
     ARMOR_SETS(ArmorParser()),
     RARITIES(ItemParser("rarities")),

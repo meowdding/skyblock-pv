@@ -329,7 +329,7 @@ enum class ToolType(val id: String) : StringRepresentable {
     }
 }
 
-enum class FarmingGear() {
+enum class FarmingGear {
     ARMOR,
     BELTS,
     CLOAKS,
