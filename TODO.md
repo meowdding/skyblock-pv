@@ -5,7 +5,6 @@ TODO:
 <summary>Main screen</summary>
 
 - Networth + Weight
-- Progress to next Slayer
 - Guild
 - Auctions
 
