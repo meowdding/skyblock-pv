@@ -14,7 +14,7 @@ import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.RemindersAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.MiningCore
-import tech.thatgravyboat.skyblockpv.data.api.skills.RockBrackets
+import tech.thatgravyboat.skyblockpv.data.api.skills.RockBracket
 import tech.thatgravyboat.skyblockpv.data.repo.EssenceData.addMiningPerk
 import tech.thatgravyboat.skyblockpv.data.repo.ForgeTimeData
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
@@ -81,7 +81,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             val hotmLevel = mining.getHotmLevel()
 
             val oresMined = profile.petMilestones["ores_mined"] ?: 0
-            val rockPet = RockBrackets.getByOres(oresMined)
+            val rockPet = RockBracket.getByOres(oresMined)
 
             grayText("HotM: $hotmLevel")
             grayText("Total Runs: ${totalRuns.toFormattedString()}")
@@ -99,7 +99,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                         Text.of(oresMined.toFormattedString()) { this.color = TextColor.AQUA },
                     ),
                     "",
-                    RockBrackets.entries.map {
+                    RockBracket.entries.map {
                         whiteText {
                             val hasObtained = it.oresRequired <= oresMined
                             if (!hasObtained) {

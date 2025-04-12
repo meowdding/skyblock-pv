@@ -48,7 +48,7 @@ abstract class CreateMuseumDataTask : DefaultTask() {
                 val item = it.asJsonObject
                 if (item.has("museum_data")) {
                     item.getAsJsonObject("museum_data")?.let { museumData ->
-                        val valueOf = MuseumParsers.valueOf(museumData.get("type").asString)
+                        val valueOf = MuseumParser.valueOf(museumData.get("type").asString)
                         valueOf.processor.process(item)
                     }
                 } else if (item.has("museum")) {
@@ -57,7 +57,7 @@ abstract class CreateMuseumDataTask : DefaultTask() {
             }
 
             val output = JsonObject()
-            MuseumParsers.values().forEach { parser ->
+            MuseumParser.values().forEach { parser ->
                 val processor = parser.processor
                 val postProcess = processor.postProcess()
                 output.add(processor.key, postProcess)

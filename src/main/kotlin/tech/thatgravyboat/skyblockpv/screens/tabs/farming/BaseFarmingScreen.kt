@@ -17,11 +17,11 @@ import kotlin.reflect.full.isSubclassOf
 abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedLoadingScreen<GardenProfile>("FARMING", gameProfile, profile) {
 
     override val api get() = GardenApi
-    override val categories: List<Category> get() = FarmingCategories.entries
+    override val categories: List<Category> get() = FarmingCategory.entries
 
 }
 
-enum class FarmingCategories(val screen: KClass<out BaseFarmingScreen>, override val icon: ItemStack) : Category {
+enum class FarmingCategory(val screen: KClass<out BaseFarmingScreen>, override val icon: ItemStack) : Category {
     MAIN(FarmingScreen::class, Items.WHEAT.defaultInstance),
     VISITORS(VisitorScreen::class, Items.VILLAGER_SPAWN_EGG.defaultInstance),
     CROP(CropScreen::class, Items.CARROT.defaultInstance),

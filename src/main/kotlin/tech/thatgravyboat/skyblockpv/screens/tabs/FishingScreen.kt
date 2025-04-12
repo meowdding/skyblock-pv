@@ -176,7 +176,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 )
             }
 
-            val rank = TrophyFishRanks.getById((profile.trophyFish.rewards.maxOrNull() ?: 0) - 1)
+            val rank = TrophyFishRank.getById((profile.trophyFish.rewards.maxOrNull() ?: 0) - 1)
 
             string(
                 Text.join(
@@ -190,7 +190,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addFishingPerk(profile, "radiant_fisher")
 
             val seaCreatureKills = profile.petMilestones["sea_creatures_killed"] ?: 0
-            val dolphin = DolphinBrackets.getByKills(seaCreatureKills)
+            val dolphin = DolphinBracket.getByKills(seaCreatureKills)
 
             display(
                 Displays.text(
@@ -205,7 +205,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                         Text.of(seaCreatureKills.toFormattedString()) { this.color = TextColor.AQUA },
                     ),
                     "",
-                    DolphinBrackets.entries.map {
+                    DolphinBracket.entries.map {
                         whiteText {
                             val hasObtained = it.killsRequired <= seaCreatureKills
                             if (!hasObtained) {
@@ -305,7 +305,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addStat("Treasures Found", itemsFished.treasure + itemsFished.largeTreasure)
             addStat("Trophy Fishes Caught", profile.trophyFish.totalCatches) {
                 profile.trophyFish.obtainedTypes.asSequence().mapNotNull {
-                    val fishTiers = TrophyFishTiers.entries.firstOrNull { tier ->
+                    val fishTiers = TrophyFishTier.entries.firstOrNull { tier ->
                         it.key.endsWith(tier.name.lowercase())
                     } ?: return@mapNotNull null
                     return@mapNotNull fishTiers to it.value
@@ -362,14 +362,14 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     private fun getSmallTrophyTable(profile: SkyBlockProfile): LayoutElement {
-        val trophyFishItems = TrophyFishTypes.entries.map { type ->
-            val fishies = TrophyFishTiers.entries.map { tier -> TrophyFish(type, tier) }.sortedBy { it.tier.ordinal }.reversed()
-            val highestObtainedType = fishies.firstOrNull { profile.trophyFish.obtainedTypes.containsKey(it.apiName) || it.tier == TrophyFishTiers.NONE }
+        val trophyFishItems = TrophyFishType.entries.map { type ->
+            val fishies = TrophyFishTier.entries.map { tier -> TrophyFish(type, tier) }.sortedBy { it.tier.ordinal }.reversed()
+            val highestObtainedType = fishies.firstOrNull { profile.trophyFish.obtainedTypes.containsKey(it.apiName) || it.tier == TrophyFishTier.NONE }
             val caught = getCaughtInformation(fishies, profile)
             val tooltip = getCaughtInformationTooltip(fishies, profile, caught)
 
-            val item = highestObtainedType?.takeIf { it.tier != TrophyFishTiers.NONE }?.item ?: Items.GRAY_DYE.defaultInstance
-            val stackText = caught[TrophyFishTiers.NONE]?.takeIf { i -> i != 0 }?.let(numberFormatInstance::format) ?: ""
+            val item = highestObtainedType?.takeIf { it.tier != TrophyFishTier.NONE }?.item ?: Items.GRAY_DYE.defaultInstance
+            val stackText = caught[TrophyFishTier.NONE]?.takeIf { i -> i != 0 }?.let(numberFormatInstance::format) ?: ""
 
             Displays.item(item, customStackText = stackText)
                 .withTooltip(highestObtainedType?.displayName, tooltip as List<*>)
@@ -384,25 +384,25 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     private fun getTrophyTable(profile: SkyBlockProfile): LayoutElement {
-        return TrophyFishTypes.entries.map { type -> getTrophyTableColumn(type, profile) }.transpose().asTable(4).centerIn(uiWidth, -1).asWidget()
+        return TrophyFishType.entries.map { type -> getTrophyTableColumn(type, profile) }.transpose().asTable(4).centerIn(uiWidth, -1).asWidget()
     }
 
-    private fun getCaughtInformation(fishies: List<TrophyFish>, profile: SkyBlockProfile): Map<TrophyFishTiers, Int> {
+    private fun getCaughtInformation(fishies: List<TrophyFish>, profile: SkyBlockProfile): Map<TrophyFishTier, Int> {
         return fishies.associate { it.tier to profile.trophyFish.obtainedTypes.getOrDefault(it.apiName, 0) }
     }
 
     private fun getCaughtInformationTooltip(
         fishies: List<TrophyFish>,
         profile: SkyBlockProfile,
-        caught: Map<TrophyFishTiers, Int> = getCaughtInformation(fishies, profile),
+        caught: Map<TrophyFishTier, Int> = getCaughtInformation(fishies, profile),
     ): List<MutableComponent> {
-        return TrophyFishTiers.entries.reversed().map { tiers ->
+        return TrophyFishTier.entries.reversed().map { tiers ->
             Text.of(tiers.displayName).append(": ").append("${caught[tiers] ?: 0}")
         }
     }
 
-    private fun getTrophyTableColumn(types: TrophyFishTypes, profile: SkyBlockProfile): List<Display> {
-        val fishies = TrophyFishTiers.entries.reversed().map { tiers -> TrophyFish(types, tiers) }
+    private fun getTrophyTableColumn(types: TrophyFishType, profile: SkyBlockProfile): List<Display> {
+        val fishies = TrophyFishTier.entries.reversed().map { tiers -> TrophyFish(types, tiers) }
         val caught = getCaughtInformation(fishies, profile)
         val caughtTooltip = getCaughtInformationTooltip(fishies, profile, caught)
 
@@ -425,7 +425,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }
 
         return Displays.inventorySlot(Displays.padding(3, item)).let {
-            if (trophyFish.tier == TrophyFishTiers.NONE) {
+            if (trophyFish.tier == TrophyFishTier.NONE) {
                 return@let Displays.padding(0, 0, 0, 0, it)
             }
             return it

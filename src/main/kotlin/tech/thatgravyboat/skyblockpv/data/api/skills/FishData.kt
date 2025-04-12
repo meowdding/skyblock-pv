@@ -70,10 +70,10 @@ data class ItemsFished(
     val trophyFish: Int,
 )
 
-data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
+data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
     val item: ItemStack by lazy { createSkull(type.getTexture(tier)) }
     val displayName: Component by lazy {
-        if (tier == TrophyFishTiers.NONE) {
+        if (tier == TrophyFishTier.NONE) {
             return@lazy Component.empty().append(type.displayName)
         }
 
@@ -81,7 +81,7 @@ data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
     }
 
     val apiName by lazy {
-        if (tier == TrophyFishTiers.NONE) {
+        if (tier == TrophyFishTier.NONE) {
             return@lazy type.internalName
         }
 
@@ -93,8 +93,8 @@ data class TrophyFish(val type: TrophyFishTypes, val tier: TrophyFishTiers) {
             if (fish.contains("/")) {
                 return fish.split("/").let {
                     TrophyFish(
-                        TrophyFishTypes.getByInternalName(it[0]) ?: return null,
-                        TrophyFishTiers.getByName(it[1]),
+                        TrophyFishType.getByInternalName(it[0]) ?: return null,
+                        TrophyFishTier.getByName(it[1]),
                     )
                 }
             }
@@ -141,7 +141,7 @@ enum class FishingGear {
     }
 }
 
-enum class DolphinBrackets(val killsRequired: Int, val rarity: SkyBlockRarity) {
+enum class DolphinBracket(val killsRequired: Int, val rarity: SkyBlockRarity) {
     COMMON(250, SkyBlockRarity.COMMON),
     UNCOMMON(1000, SkyBlockRarity.UNCOMMON),
     RARE(2500, SkyBlockRarity.RARE),
@@ -149,26 +149,26 @@ enum class DolphinBrackets(val killsRequired: Int, val rarity: SkyBlockRarity) {
     LEGENDARY(10000, SkyBlockRarity.LEGENDARY);
 
     companion object {
-        fun getByKills(kills: Int): DolphinBrackets? {
-            return DolphinBrackets.entries.reversed().firstOrNull { it.killsRequired <= kills }
+        fun getByKills(kills: Int): DolphinBracket? {
+            return DolphinBracket.entries.reversed().firstOrNull { it.killsRequired <= kills }
         }
     }
 }
 
-enum class TrophyFishRanks(val displayName: Component) {
+enum class TrophyFishRank(val displayName: Component) {
     NOVICE(displayName = Text.of("Novice") { withStyle(ChatFormatting.DARK_GRAY) }),
     ADEPT(displayName = Text.of("Adept") { withStyle(ChatFormatting.GRAY) }),
     EXPERT(displayName = Text.of("Expert") { withStyle(ChatFormatting.GOLD) }),
     MASTER(displayName = Text.of("Master") { withStyle(ChatFormatting.AQUA) });
 
     companion object {
-        fun getById(id: Int): TrophyFishRanks? {
+        fun getById(id: Int): TrophyFishRank? {
             return entries.firstOrNull { it.ordinal == id }
         }
     }
 }
 
-enum class TrophyFishTypes(
+enum class TrophyFishType(
     private var bronze: String = "",
     private var silver: String = "",
     private var gold: String = "",
@@ -272,23 +272,23 @@ enum class TrophyFishTypes(
 
     val internalName: String
 
-    fun getTexture(tier: TrophyFishTiers): String {
+    fun getTexture(tier: TrophyFishTier): String {
         return when (tier) {
-            TrophyFishTiers.NONE -> bronze
-            TrophyFishTiers.BRONZE -> bronze
-            TrophyFishTiers.SILVER -> silver
-            TrophyFishTiers.GOLD -> gold
-            TrophyFishTiers.DIAMOND -> diamond
+            TrophyFishTier.NONE -> bronze
+            TrophyFishTier.BRONZE -> bronze
+            TrophyFishTier.SILVER -> silver
+            TrophyFishTier.GOLD -> gold
+            TrophyFishTier.DIAMOND -> diamond
         }
     }
 
-    private fun setTexture(tier: TrophyFishTiers, skin: String) {
+    private fun setTexture(tier: TrophyFishTier, skin: String) {
         when (tier) {
-            TrophyFishTiers.NONE -> bronze = skin
-            TrophyFishTiers.BRONZE -> bronze = skin
-            TrophyFishTiers.SILVER -> silver = skin
-            TrophyFishTiers.GOLD -> gold = skin
-            TrophyFishTiers.DIAMOND -> diamond = skin
+            TrophyFishTier.NONE -> bronze = skin
+            TrophyFishTier.BRONZE -> bronze = skin
+            TrophyFishTier.SILVER -> silver = skin
+            TrophyFishTier.GOLD -> gold = skin
+            TrophyFishTier.DIAMOND -> diamond = skin
         }
     }
 
@@ -300,12 +300,12 @@ enum class TrophyFishTypes(
                 val type = valueOf(key.uppercase())
 
                 tiers.entries.forEach { (tier, skin) ->
-                    type.setTexture(TrophyFishTiers.valueOf(tier.uppercase()), skin)
+                    type.setTexture(TrophyFishTier.valueOf(tier.uppercase()), skin)
                 }
             }
         }
 
-        fun getByInternalName(internalName: String): TrophyFishTypes? {
+        fun getByInternalName(internalName: String): TrophyFishType? {
             return entries.firstOrNull { internalName.equals(it.internalName, ignoreCase = true) }
         }
     }
@@ -319,7 +319,7 @@ enum class TrophyFishTypes(
     }
 }
 
-enum class TrophyFishTiers(val nameSuffix: Component, val displayName: String) {
+enum class TrophyFishTier(val nameSuffix: Component, val displayName: String) {
     NONE(
         nameSuffix = Component.empty(),
         displayName = "Total",
@@ -350,7 +350,7 @@ enum class TrophyFishTiers(val nameSuffix: Component, val displayName: String) {
     );
 
     companion object {
-        fun getByName(name: String): TrophyFishTiers {
+        fun getByName(name: String): TrophyFishTier {
             return entries.firstOrNull { it.name.equals(name, ignoreCase = true) } ?: NONE
         }
     }
