@@ -17,7 +17,7 @@ abstract class BaseCombatScreen(gameProfile: GameProfile, profile: SkyBlockProfi
 }
 
 enum class CombatCategory(val screen: KClass<out BaseCombatScreen>, override val icon: ItemStack) : Category {
-    DDUNGEONS(DungeonScreen::class, SkullTextures.DUNGEONS.skull),
+    DUNGEONS(DungeonScreen::class, SkullTextures.DUNGEONS.skull),
     BESTIARY(BestiaryScreen::class, Items.WRITABLE_BOOK.defaultInstance),
     MOBS(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance),
     ;
