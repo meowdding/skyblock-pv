@@ -92,18 +92,26 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         item.withTooltip {
             add(name)
 
+            add("Level: ") {
+                color = TextColor.GRAY
+                append("$currentLevel") { color = TextColor.YELLOW }
+                append("/") { color = TextColor.GOLD }
+                append("$maxLevel") { color = TextColor.YELLOW }
+            }
+
             add("Kills: ") {
                 color = TextColor.GRAY
                 append(kills.toFormattedString()) { color = TextColor.YELLOW }
-                append("/") { color = TextColor.GOLD }
-                append(requiredKills.toFormattedString()) { color = TextColor.YELLOW }
-                val percentage = kills / requiredKills.toDouble() * 100
 
+                val percentage = kills / requiredKills.toDouble() * 100
                 if (percentage >= 100) {
                     append(" Maxed!") {
                         color = TextColor.RED
                     }
                 } else {
+                    append("/") { color = TextColor.GOLD }
+                    append(requiredKills.toFormattedString()) { color = TextColor.YELLOW }
+
                     append(" (")
                     append(percentage.round()) {
                         color = TextColor.GREEN
@@ -111,13 +119,6 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     }
                     append(")")
                 }
-            }
-
-            add("Level: ") {
-                color = TextColor.GRAY
-                append("$currentLevel") { color = TextColor.YELLOW }
-                append("/") { color = TextColor.GOLD }
-                append("$maxLevel") { color = TextColor.YELLOW }
             }
 
             if (currentLevel != maxLevel) {
