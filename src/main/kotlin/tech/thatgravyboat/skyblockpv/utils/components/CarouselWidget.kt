@@ -36,62 +36,85 @@ class CarouselWidget(
         val last = displays.getOrNull((index - 1 + displays.size) % displays.size)
         val next = displays.getOrNull((index + 1) % displays.size)
 
-        // Aligning the carousel to the top
-        // @Sophie if theres a better solution pls tell me :3
-        this.height = curr.getHeight()
-
         val left = x + (width - curr.getWidth()) / 2
         val right = left + curr.getWidth()
 
-        val midY = y + height - curr.getHeight() + 10
-        val bottom = y + height
+        val midY = y + 10
+        val bottom = y + curr.getHeight()
         val sideHeight = bottom - midY
 
-        graphics.scissorRange(x..left, midY..bottom) {
+        val lastDiff = curr.getHeight() - 10 - (curr.getHeight() - (last?.getHeight() ?: 0)).coerceAtLeast(0)
+        val lastY = midY + sideHeight - lastDiff
+        val lastBottom = lastY + lastDiff
+        graphics.scissorRange(x..left, lastY..lastBottom) {
+
             Displays.disableTooltips {
-                last?.render(graphics, x, midY)
+                last?.render(graphics, x, lastY)
             }
 
             graphics.translated(0f, 0f, 300f) {
-                graphics.fill(x, midY, left, bottom, 0x7F000000)
+                graphics.fill(x, lastY, left, lastBottom, 0x7F000000)
 
                 if (graphics.containsPointInScissor(mouseX, mouseY)) {
-                    translate(x + (left - x) / 2f, midY + sideHeight / 2f - 7.5f, 0f)
+                    translate(x + (left - x) / 2f, lastY + lastDiff / 2f - 7.5f, 0f)
                     scale(2f, 2f, 1f)
                     graphics.drawCenteredString(McFont.self, "<", 0, 0, 0xFFFFFF)
                     cursor = CursorScreen.Cursor.POINTER
                 }
             }
         }
-        graphics.scissorRange(right..(x + width), midY..bottom) {
+
+        val nextDiff = curr.getHeight() - 10 - (curr.getHeight() - (next?.getHeight() ?: 0)).coerceAtLeast(0)
+        val nextY = midY + sideHeight - nextDiff
+        val nextBottom = nextY + nextDiff
+
+        graphics.scissorRange(right..(x + width), nextY..nextBottom) {
             Displays.disableTooltips {
-                next?.render(graphics, x + width, midY, alignmentX = 1f)
+                next?.render(graphics, x + width, nextY, alignmentX = 1f)
             }
 
             graphics.translated(0f, 0f, 300f) {
-                graphics.fill(right, midY, x + width, bottom, 0x7F000000)
+                graphics.fill(right, nextY, x + width, nextBottom, 0x7F000000)
 
                 if (graphics.containsPointInScissor(mouseX, mouseY)) {
-                    translate(right + (x + width - right) / 2f, midY + sideHeight / 2f - 7.5f, 0f)
+                    translate(right + (x + width - right) / 2f, nextY + nextDiff / 2f - 7.5f, 0f)
                     scale(2f, 2f, 1f)
                     graphics.drawCenteredString(McFont.self, ">", 0, 0, 0xFFFFFF)
                     cursor = CursorScreen.Cursor.POINTER
                 }
             }
         }
+
         graphics.translated(0f, 0f, 150f) {
-            curr.render(graphics, x + width / 2, y + height, alignmentX = 0.5f, alignmentY = 1f)
+            curr.render(graphics, x + width / 2, y, alignmentX = 0.5f, alignmentY = 0f)
         }
     }
 
     override fun onClick(mouseX: Double, mouseY: Double) {
+        val curr = displays.getOrNull(index) ?: return
+        val last = displays.getOrNull((index - 1 + displays.size) % displays.size)
+        val next = displays.getOrNull((index + 1) % displays.size)
+
         val left = x + (width - displays[index].getWidth()) / 2
         val right = left + displays[index].getWidth()
-        val midY = y + height - displays[index].getHeight()
 
-        if (mouseX.toInt() in x until left && mouseY.toInt() in midY + 10 until y + height) {
+        val midY = y + 10
+        val bottom = y + curr.getHeight()
+        val sideHeight = bottom - midY
+
+        val lastDiff = curr.getHeight() - 10 - (curr.getHeight() - (last?.getHeight() ?: 0)).coerceAtLeast(0)
+        val lastY = midY + sideHeight - lastDiff
+        val lastBottom = lastY + lastDiff
+
+        if (mouseX.toInt() in x..left && mouseY.toInt() in lastY..lastBottom) {
             index = (index - 1 + displays.size) % displays.size
-        } else if (mouseX.toInt() in right until x + width && mouseY.toInt() in midY + 10 until y + height) {
+        }
+
+        val nextDiff = curr.getHeight() - 10 - (curr.getHeight() - (next?.getHeight() ?: 0)).coerceAtLeast(0)
+        val nextY = midY + sideHeight - nextDiff
+        val nextBottom = nextY + nextDiff
+
+        if (mouseX.toInt() in right..(x + width) && mouseY.toInt() in nextY..nextBottom) {
             index = (index + 1) % displays.size
         }
     }
