@@ -1,5 +1,5 @@
 {
-    "slayer_boss_xp": [
+    "@default": [
         5,
         25,
         100,

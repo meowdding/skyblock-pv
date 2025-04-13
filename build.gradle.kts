@@ -124,7 +124,7 @@ compactingResource {
     compactToObject("garden_data")
     compactToObject("chocolate_factory")
     compactToObject("rift")
-    compactToObject("slayer")
     compactToArray("museum_categories")
+    substituteFromDifferentFile("slayer", "slayers", "slayer")
     downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/bestiary.json", "bestiary.json")
 }
