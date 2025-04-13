@@ -131,7 +131,7 @@ class CarouselWidget(
                             WidgetRenderers.sprite(UIConstants.PRIMARY_BUTTON),
                             WidgetRenderers.sprite(UIConstants.DARK_BUTTON),
                         ) { this.index == index },
-                        WidgetRenderers.center(16, 20, ExtraWidgetRenderers.display(it)),
+                        WidgetRenderers.center(16, 18, ExtraWidgetRenderers.display(it)),
                     ),
                 )
                 .withCallback {
