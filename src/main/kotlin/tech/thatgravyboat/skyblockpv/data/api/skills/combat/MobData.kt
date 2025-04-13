@@ -5,3 +5,9 @@ data class MobData(
     val kills: Long,
     val deaths: Long,
 )
+
+data class BestiaryMobData(
+    val mobId: String,
+    val kills: Long,
+    val deaths: Long,
+)

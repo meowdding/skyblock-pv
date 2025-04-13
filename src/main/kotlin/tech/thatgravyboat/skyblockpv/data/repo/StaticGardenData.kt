@@ -11,7 +11,6 @@ import eu.pb4.placeholders.api.parsers.TagParser
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.ExtraCodecs
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.item.Item
@@ -315,8 +314,7 @@ data class StaticVisitorData(
     }
 
     val itemStack: ItemStack by lazy {
-        skin?.let { createSkull(it) } ?: ItemAPI.getItem(item).takeUnless { it.item == Items.BARRIER }
-        ?: BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(item)).defaultInstance
+        skin?.let { createSkull(it) } ?: ItemAPI.getItem(item).takeUnless { it.item == Items.BARRIER } ?: Utils.getMinecraftItem(item)
     }
 }
 
