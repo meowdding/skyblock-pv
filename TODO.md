@@ -20,7 +20,6 @@ TODO:
 <details>
 <summary>combat</summary>
 
-- Bestiary
 - Kuudra
 - Crimson Isle
 
