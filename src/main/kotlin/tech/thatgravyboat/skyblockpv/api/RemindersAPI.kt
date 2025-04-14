@@ -1,6 +1,6 @@
 package tech.thatgravyboat.skyblockpv.api
 
-import com.google.gson.JsonObject
+import com.google.gson.JsonArray
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.network.chat.Component
@@ -28,7 +28,7 @@ object RemindersAPI {
         if (!file.exists()) {
             file.parent.createDirectories()
         } else {
-            file.readText().readJson<JsonObject>().toData(CODEC)?.let {
+            file.readText().readJson<JsonArray>().toData(CODEC)?.let {
                 reminders.addAll(it)
                 reminders.sortBy(Reminder::timestamp)
             }
