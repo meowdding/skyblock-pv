@@ -27,13 +27,6 @@ TODO:
 </details>
 
 <details>
-<summary>Pets</summary>
-
-- gdrag lvl
-
-</details>
-
-<details>
 <summary>Garden</summary>
 
 ## Main page
