@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
@@ -40,7 +41,7 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val sortedItems = items.asSequence().sortedWith(
             Comparator
                 .comparingInt<MuseumRepoEntry> { ItemAPI.getItem(it.id).getData(DataTypes.RARITY)?.ordinal ?: 0 }
-                .thenComparing({ ItemAPI.getItemName(it.id).stripped }, String::compareTo),
+                .thenComparing({ RepoItemsAPI.getItemName(it.id).stripped }, String::compareTo),
         )
 
         val map = sortedItems.map { item ->
@@ -70,11 +71,11 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 val parent = museumData.isParentDonated(museumItem)
                 val defaultInstance = (if (parent != null) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance
                 defaultInstance.withTooltip {
-                    add(ItemAPI.getItemName(museumItem.id))
+                    add(RepoItemsAPI.getItemName(museumItem.id))
                     if (parent != null) {
                         add("Parent donated: ") {
                             this.color = TextColor.GRAY
-                            append(ItemAPI.getItemName(parent))
+                            append(RepoItemsAPI.getItemName(parent))
                         }
                     } else {
                         add("This item has not been donated!") {

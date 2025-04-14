@@ -5,6 +5,7 @@ import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -12,7 +13,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import tech.thatgravyboat.skyblockpv.data.api.skills.farming.GardenProfile
@@ -161,7 +161,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         this.color = TextColor.RED
                     }
                 } else {
-                    append(ItemAPI.getItemName(key))
+                    append(RepoItemsAPI.getItemName(key))
                 }
                 append(CommonText.SPACE)
                 append(used.toFormattedString()) {

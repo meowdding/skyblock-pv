@@ -6,6 +6,8 @@ import com.mojang.serialization.Codec
 import net.minecraft.ChatFormatting
 import net.minecraft.util.StringRepresentable
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
+import tech.thatgravyboat.skyblockapi.api.remote.RepoPetsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.Utils
@@ -115,7 +117,7 @@ data class ForgeSlot(
 ) {
     val itemStack by lazy {
         if (type == "PETS") {
-            ItemAPI.getPet(id, SkyBlockRarity.LEGENDARY, 100)
+            RepoPetsAPI.getPetAsItem(PetQuery(id, SkyBlockRarity.LEGENDARY, 100))
         } else {
             ItemAPI.getItem(id)
         }

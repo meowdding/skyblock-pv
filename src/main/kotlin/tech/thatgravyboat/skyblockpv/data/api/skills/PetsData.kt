@@ -3,10 +3,11 @@ package tech.thatgravyboat.skyblockpv.data.api.skills
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
+import tech.thatgravyboat.skyblockapi.api.remote.RepoPetsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import java.util.*
 
 data class Pet(
@@ -23,7 +24,7 @@ data class Pet(
     val cumulativeLevels = petLevels.drop(petRarityOffset[tier]!!).take(99).runningFold(0L) { a, b -> a + b }
     val rarity = SkyBlockRarity.entries.find { it.name == tier } ?: SkyBlockRarity.COMMON
 
-    val itemStack by lazy { ItemAPI.getPet(type, rarity, level, skin, heldItem) }
+    val itemStack by lazy { RepoPetsAPI.getPetAsItem(PetQuery(type, rarity, level, skin, heldItem)) }
 
     val level = cumulativeLevels.let { lvls ->
         lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
