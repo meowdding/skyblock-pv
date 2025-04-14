@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockCategory
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object RepoMuseumData {
@@ -32,7 +32,7 @@ object RepoMuseumData {
             RepoMuseumData.armor = armor.sortedWith(
                 Comparator.comparingInt<MuseumArmor>(
                     {
-                        it.armorIds.map { ItemAPI.getItem(it) }.maxOf { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }
+                        it.armorIds.map { RepoItemsAPI.getItem(it) }.maxOf { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }
                     },
                 ).then(Comparator.comparing { it.id }),
             )
@@ -70,7 +70,7 @@ object RepoMuseumData {
         val sortedBy = museumCategories.sortedByDescending { it.priority }
         museumCategoryMap.putAll(
             ids.groupBy { museumItem ->
-                val item = ItemAPI.getItem(museumItem.id)
+                val item = RepoItemsAPI.getItem(museumItem.id)
                 val data = convertToId(item.getData(DataTypes.CATEGORY))
 
                 sortedBy.find { it.categories.contains(data) || it.items.contains(museumItem.id) || it.categories.contains("*") }

@@ -5,7 +5,7 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object SackCodecs {
@@ -29,7 +29,7 @@ object SackCodecs {
         val sack: String,
         val items: List<String>,
     ) {
-        val item by lazy { ItemAPI.getItem(sack) }
+        val item by lazy { RepoItemsAPI.getItem(sack) }
 
         companion object {
             val CODEC = RecordCodecBuilder.create {

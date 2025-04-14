@@ -15,7 +15,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.museum.*
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
@@ -40,7 +39,7 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     fun createPagesForCategory(items: List<MuseumItem>): List<Display> {
         val sortedItems = items.asSequence().sortedWith(
             Comparator
-                .comparingInt<MuseumRepoEntry> { ItemAPI.getItem(it.id).getData(DataTypes.RARITY)?.ordinal ?: 0 }
+                .comparingInt<MuseumRepoEntry> { RepoItemsAPI.getItem(it.id).getData(DataTypes.RARITY)?.ordinal ?: 0 }
                 .thenComparing({ RepoItemsAPI.getItemName(it.id).stripped }, String::compareTo),
         )
 

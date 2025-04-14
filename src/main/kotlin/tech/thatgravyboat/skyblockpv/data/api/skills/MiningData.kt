@@ -7,9 +7,9 @@ import net.minecraft.ChatFormatting
 import net.minecraft.util.StringRepresentable
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.api.remote.RepoPetsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.getPath
 
@@ -119,7 +119,7 @@ data class ForgeSlot(
         if (type == "PETS") {
             RepoPetsAPI.getPetAsItem(PetQuery(id, SkyBlockRarity.LEGENDARY, 100))
         } else {
-            ItemAPI.getItem(id)
+            RepoItemsAPI.getItem(id)
         }
     }
 }

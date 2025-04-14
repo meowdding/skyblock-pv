@@ -6,10 +6,10 @@ import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.SortedEntry
 import tech.thatgravyboat.skyblockpv.data.api.skills.Pet
@@ -84,7 +84,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
             activePet.candyUsed.takeIf { it > 0 }?.let { string("Candy Used: $it") }
 
-            val petItemStack = activePet.heldItem?.let { ItemAPI.getItem(it) } ?: return@vertical
+            val petItemStack = activePet.heldItem?.let { RepoItemsAPI.getItem(it) } ?: return@vertical
             horizontal(alignment = 0.5f) {
                 string("Held Item: ")
                 display(Displays.item(petItemStack, showTooltip = true))
