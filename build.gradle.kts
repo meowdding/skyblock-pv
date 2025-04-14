@@ -80,7 +80,6 @@ dependencies {
     include(libs.mixinconstraints)
     include(libs.placeholders)
     include(libs.keval)
-    include(libs.repo)
 
     modRuntimeOnly(libs.devauth)
     modRuntimeOnly(libs.modmenu)
