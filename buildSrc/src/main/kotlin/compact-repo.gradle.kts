@@ -28,9 +28,11 @@ tasks.withType<ProcessResources>().configureEach {
     from(museumDataTask.get().outputs.files)
 
     sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).resources.srcDirs.add(outDirectory.toFile())
+    val task = this
 
     doFirst {
         val directoriesToSearch = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).resources.srcDirs.map { it.toPath() }
+            .toMutableList().apply { add(outDirectory) }
 
         configuration.externalResources.forEach { resource ->
             val orDownload = downloadCache.getOrDownload(resource.url)
@@ -52,12 +54,15 @@ tasks.withType<ProcessResources>().configureEach {
             logger.warn("Compacting folder {}", compactor.output)
 
             directoriesToSearch.forEach { file ->
+                println("Searching $file")
                 fileTree(file) {
 
                     include(*pathsToCompact.toTypedArray())
                     exclude(*listOfPaths.toMutableList().apply { this.removeAll(pathsToCompact) }.toTypedArray())
 
                     forEach {
+                        task.exclude(file.relativize(it.toPath()).toString())
+                        println("Excluding ${file.relativize(it.toPath())}")
                         compactor.add(it.nameWithoutExtension, JsonParser.parseString(it.readText()))
                     }
                 }
@@ -65,8 +70,9 @@ tasks.withType<ProcessResources>().configureEach {
 
             val complete = compactor.complete()
 
-            outputBaseDirectory.createDirectories()
-            outputBaseDirectory.resolve("${compactor.output}.json").writeText(
+            val resolve = outputBaseDirectory.resolve("${compactor.output}.json")
+            resolve.parent.createDirectories()
+            resolve.writeText(
                 complete.toString(),
                 options = arrayOf(StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
             )
