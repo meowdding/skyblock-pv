@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object RiftCodecs {
@@ -48,6 +48,6 @@ object RiftCodecs {
         val name: String,
     ) {
         val hypixelId = "RIFT_TROPHY_${id.uppercase()}"
-        val item by lazy { ItemAPI.getItem(hypixelId) }
+        val item by lazy { RepoItemsAPI.getItem(hypixelId) }
     }
 }
