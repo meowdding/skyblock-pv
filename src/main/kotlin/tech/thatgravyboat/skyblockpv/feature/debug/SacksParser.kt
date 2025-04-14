@@ -8,11 +8,11 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerChangeEvent
 import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerCloseEvent
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.config.DevConfig
 import java.nio.file.Files
 
@@ -41,7 +41,7 @@ object SacksParser {
 
             // Get the Sack Item ID, some sacks don't have multiple scales, some do
             val sackId = listOf("", "LARGE_", "MEDIUM_", "SMALL_").firstNotNullOfOrNull {
-                ItemAPI.getItem("$it${title.replace(" ", "_").uppercase()}").takeUnless { it.item == Items.BARRIER }?.getData(DataTypes.ID)
+                RepoItemsAPI.getItem("$it${title.replace(" ", "_").uppercase()}").takeUnless { it.item == Items.BARRIER }?.getData(DataTypes.ID)
             } ?: title
 
             data.computeIfAbsent(name) { Sack(sackId, mutableListOf()) }.add(parsedIds)

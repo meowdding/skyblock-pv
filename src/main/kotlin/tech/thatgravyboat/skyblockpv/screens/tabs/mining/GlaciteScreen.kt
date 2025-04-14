@@ -3,12 +3,12 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.mining
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
 import tech.thatgravyboat.skyblockpv.data.api.skills.GlaciteData
@@ -57,7 +57,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             val unlocked = glacite.fossilsDonated.contains(it.id.split("_").first())
             val inPetMenu = profile.pets.any { pet -> pet.type == it.pet }
 
-            val item = if (unlocked) ItemAPI.getItem(it.id)
+            val item = if (unlocked) RepoItemsAPI.getItem(it.id)
             else Items.GRAY_DYE.defaultInstance
 
             val hover = Text.multiline(

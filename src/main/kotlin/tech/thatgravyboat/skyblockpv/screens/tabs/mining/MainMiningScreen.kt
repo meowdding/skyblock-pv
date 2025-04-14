@@ -4,13 +4,13 @@ import com.mojang.authlib.GameProfile
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.RemindersAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.MiningCore
@@ -152,7 +152,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             val width = uiWidth / 3
 
             val convertedElements = mining.crystals.map { (name, crystal) ->
-                val icon = ItemAPI.getItem(name.uppercase()).let { Displays.item(it) }
+                val icon = RepoItemsAPI.getItem(name.uppercase()).let { Displays.item(it) }
                 val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
                 }

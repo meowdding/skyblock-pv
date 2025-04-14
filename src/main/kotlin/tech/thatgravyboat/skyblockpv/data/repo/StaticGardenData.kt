@@ -18,12 +18,12 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
@@ -49,7 +49,7 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
     val internalName: String = internalName ?: name
     val itemId: String = itemId ?: this.internalName
 
-    fun getItem() = ItemAPI.getItem(itemId.replace(":", "-"))
+    fun getItem() = RepoItemsAPI.getItem(itemId.replace(":", "-"))
 
     companion object {
         fun getByApiId(s: String) = entries.find { it.internalName == s } ?: UNKNOWN
@@ -209,7 +209,7 @@ data class StaticBarnSkin(
     val displayName: Component,
     val item: String,
 ) {
-    fun getItem() = ItemAPI.getItem(item)
+    fun getItem() = RepoItemsAPI.getItem(item)
 
     companion object {
         val UNKNOWN = StaticBarnSkin(Text.of("Unknown") { this.color = TextColor.RED }, "barrier")
@@ -278,7 +278,7 @@ data class StaticPlotCost(
     val amount: Int,
     val bundle: Boolean,
 ) {
-    fun getDisplay() = ItemAPI.getItemName("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")
+    fun getDisplay() = RepoItemsAPI.getItemName("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")
 }
 
 data class StaticPlotData(
@@ -314,7 +314,7 @@ data class StaticVisitorData(
     }
 
     val itemStack: ItemStack by lazy {
-        skin?.let { createSkull(it) } ?: ItemAPI.getItem(item).takeUnless { it.item == Items.BARRIER } ?: Utils.getMinecraftItem(item)
+        skin?.let { createSkull(it) } ?: RepoItemsAPI.getItem(item).takeUnless { it.item == Items.BARRIER } ?: Utils.getMinecraftItem(item)
     }
 }
 

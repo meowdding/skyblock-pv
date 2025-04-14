@@ -15,6 +15,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.item.component.ResolvableProfile
 import net.minecraft.world.item.component.TooltipDisplay
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 import tech.thatgravyboat.skyblockpv.dfu.LegacyDataFixer
 import tech.thatgravyboat.skyblockpv.utils.displays.TooltipBuilder
 import java.util.*
@@ -44,10 +45,13 @@ fun ItemStack.withTooltip(init: TooltipBuilder.() -> Unit = {}): ItemStack {
     val builder = TooltipBuilder().apply(init).lines().filterIsInstance<Component>()
     when {
         builder.isEmpty() -> this.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay(true, ObjectSortedSets.emptySet()))
-        builder.size == 1 -> this.set(DataComponents.CUSTOM_NAME, builder.first())
+        builder.size == 1 -> this.set(DataComponents.CUSTOM_NAME, builder.first().copy().apply {
+            this.italic = false
+        })
         else -> {
-            val first = builder.first()
-            this.set(DataComponents.CUSTOM_NAME, first)
+            this.set(DataComponents.CUSTOM_NAME, builder.first().copy().apply {
+                this.italic = false
+            })
             val lore = builder.drop(1)
             this.set(DataComponents.LORE, ItemLore(lore, lore))
         }

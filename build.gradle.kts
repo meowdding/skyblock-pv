@@ -80,7 +80,6 @@ dependencies {
     include(libs.mixinconstraints)
     include(libs.placeholders)
     include(libs.keval)
-    include(libs.repo)
 
     modRuntimeOnly(libs.devauth)
     modRuntimeOnly(libs.modmenu)
@@ -126,5 +125,7 @@ compactingResource {
     compactToObject("rift")
     compactToArray("museum_categories")
     substituteFromDifferentFile("slayer", "slayers", "slayer")
+    compactToObject("pets/overwrites", "pets/overwrites")
+    compactToObject("pets")
     downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/bestiary.json", "bestiary.json")
 }

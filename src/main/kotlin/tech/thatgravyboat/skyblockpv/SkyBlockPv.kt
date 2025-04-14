@@ -13,7 +13,6 @@ import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.RemindersAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
@@ -42,7 +41,6 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
         val modules = listOf(
             this,
-            ItemAPI,
             SkillAPI,
             CollectionAPI,
             ForgeTimeData,

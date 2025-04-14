@@ -11,14 +11,20 @@ import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 
 object CodecUtils {
+
+    val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =
+        Codec.INT.listOf().xmap(
+            { it.runningFold(0, Int::plus).drop(1) },
+            { it.reversed().runningFold(0, Int::minus).reversed() },
+        )
 
     val INT_LONG_MAP: Codec<Map<Int, Long>> = Codec.unboundedMap(Codec.STRING, Codec.LONG).xmap(
         { it.mapKeys { entry -> entry.key.toInt() } },
@@ -70,7 +76,7 @@ object CodecUtils {
         {
             lazy {
                 if (it.namespace.equals("skyblock")) {
-                    ItemAPI.getItem(it.path.uppercase())
+                    RepoItemsAPI.getItem(it.path.uppercase())
                 } else {
                     BuiltInRegistries.ITEM.get(it).map { it.value().defaultInstance }
                         .orElseGet {
@@ -88,7 +94,7 @@ object CodecUtils {
                 ResourceLocation.fromNamespaceAndPath("skyblock", id.lowercase())
             } else {
                 if (value.`is`(Items.BARRIER) && !value.componentsPatch.isEmpty) {
-                    ResourceLocation.parse(value.get(DataComponents.ITEM_NAME)?.stripped?: "barrier")
+                    ResourceLocation.parse(value.get(DataComponents.ITEM_NAME)?.stripped ?: "barrier")
                 } else {
                     BuiltInRegistries.ITEM.getKey(value.item)
                 }

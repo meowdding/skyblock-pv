@@ -6,9 +6,9 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockpv.api.ItemAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumArmor
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumData
@@ -66,7 +66,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
             Displays.item(
                 Items.GRAY_DYE.defaultInstance.withTooltip {
                     add("Missing Armor") { this.color = TextColor.RED }
-                    museumArmor.armorIds.map { ItemAPI.getItem(it) }.sortedByDescending { sortAmor(it) }.forEach {
+                    museumArmor.armorIds.map { RepoItemsAPI.getItem(it) }.sortedByDescending { sortAmor(it) }.forEach {
                         add(it.hoverName)
                     }
                 },
