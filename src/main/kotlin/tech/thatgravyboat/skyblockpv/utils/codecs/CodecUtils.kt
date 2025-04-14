@@ -20,6 +20,12 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 object CodecUtils {
 
+    val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =
+        Codec.INT.listOf().xmap(
+            { it.runningFold(0, Int::plus).drop(1) },
+            { it.reversed().runningFold(0, Int::minus).reversed() },
+        )
+
     val INT_LONG_MAP: Codec<Map<Int, Long>> = Codec.unboundedMap(Codec.STRING, Codec.LONG).xmap(
         { it.mapKeys { entry -> entry.key.toInt() } },
         { it.mapKeys { entry -> entry.key.toString() } },
