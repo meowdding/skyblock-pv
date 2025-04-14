@@ -272,16 +272,49 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 val data = pair.second
                 TooltipBuilder().apply {
                     add(name.toTitleCase()) { this.color = TextColor.YELLOW }
-                    add("Exp: ${data.exp.shorten()}") { this.color = TextColor.GRAY }
                     add("Kills: ") {
                         this.color = TextColor.GRAY
                         Text.join(
-                            data.bossKillsTier.map {
-                                Text.of(it.value.toFormattedString()) { this.color = TextColor.GRAY }
+                            (0 until repo.maxBossTier).map {
+                                Text.of(data.bossKillsTier[it]?.toFormattedString() ?: "0") { this.color = TextColor.GRAY }
                             },
                             separator = Text.of("/") { this.color = TextColor.DARK_GRAY },
                         ).let { append(it) }
                     }
+                    add("Exp: ") {
+                        this.color = TextColor.GRAY
+                        append(data.exp.toFormattedString()) { this.color = TextColor.YELLOW }
+
+                        val percentage = data.exp / repo.leveling.last().toDouble() * 100
+                        if (percentage >= 100) {
+                            append(" Maxed!") { this.color = TextColor.RED }
+                        } else {
+                            append("/") { this.color = TextColor.GOLD }
+                            append(repo.leveling.last().toFormattedString()) { this.color = TextColor.YELLOW }
+                            append(
+                                Text.of(((data.exp.toFloat() / repo.leveling.last()) * 100).round()) {
+                                    append("%")
+                                    this.color = TextColor.GREEN
+                                }.wrap(" (", ")"),
+                            )
+                        }
+                    }
+
+                    if (repo.getLevel(data.exp) != repo.maxLevel) {
+                        add("Next Level: ") {
+                            this.color = TextColor.GRAY
+                            append(data.exp.toFormattedString()) { this.color = TextColor.YELLOW }
+                            append("/") { this.color = TextColor.GOLD }
+                            append(repo.leveling[repo.getLevel(data.exp)].toFormattedString()) { this.color = TextColor.YELLOW }
+                            append(
+                                Text.of(((data.exp.toFloat() / repo.leveling[repo.getLevel(data.exp)]) * 100).round()) {
+                                    append("%")
+                                    this.color = TextColor.GREEN
+                                }.wrap(" (", ")"),
+                            )
+                        }
+                    }
+
                 }.build()
             },
         )

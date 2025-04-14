@@ -2,8 +2,8 @@ package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
-import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockpv.data.repo.SlayerCodecs.Slayer
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
@@ -13,24 +13,19 @@ object SlayerCodecs {
 
     init {
         val CODEC = Codec.unboundedMap(Codec.STRING, Slayer.CODEC)
-
-        val slayerData = Utils.loadFromRepo<JsonObject>("slayer") ?: JsonObject()
-
-        CODEC.parse(JsonOps.INSTANCE, slayerData).let {
-            if (it.isError) {
-                throw RuntimeException(it.error().get().message())
-            }
-            data = it.getOrThrow()
-        }
+        data = Utils.loadFromRepo<JsonObject>("slayer").toData(CODEC) ?: throw RuntimeException("Failed to load slayer data")
     }
 
     data class Slayer(
         val name: String,
         val id: String,
         val leveling: List<Long>,
-        val xp: List<Int>,
+        val bossXp: List<Int>,
     ) {
-        fun getLevel(xp: Long) = leveling.indexOfLast { it < xp }
+        val maxBossTier = bossXp.size
+        val maxLevel = leveling.size
+
+        fun getLevel(xp: Long) = leveling.indexOfLast { it < xp } + 1
 
         companion object {
             val CODEC = RecordCodecBuilder.create {
@@ -38,7 +33,7 @@ object SlayerCodecs {
                     Codec.STRING.fieldOf("name").forGetter(Slayer::name),
                     Codec.STRING.fieldOf("id").forGetter(Slayer::id),
                     Codec.LONG.listOf().fieldOf("leveling").forGetter(Slayer::leveling),
-                    Codec.INT.listOf().fieldOf("xp").forGetter(Slayer::xp),
+                    Codec.INT.listOf().fieldOf("xp").forGetter(Slayer::bossXp),
                 ).apply(it, ::Slayer)
             }
         }
