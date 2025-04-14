@@ -6,7 +6,8 @@
             "@from": "slayer_levels"
         },
         "xp": {
-            "@from": "slayer_xp"
+            "@from": "slayer_xp",
+            "key": "revenant_slayer_level"
         }
     },
     "tarantula": {

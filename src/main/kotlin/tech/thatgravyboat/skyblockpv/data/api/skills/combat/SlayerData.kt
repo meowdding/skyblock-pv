@@ -26,11 +26,11 @@ private val xpPerLevelVampire = mapOf(
 
 fun getIconFromSlayerName(name: String): ResourceLocation = SkyBlockPv.id(
     when (name) {
-        "zombie" -> "icon/slayer/revenant"
-        "spider" -> "icon/slayer/tarantula"
-        "wolf" -> "icon/slayer/sven"
-        "enderman" -> "icon/slayer/voidgloom"
-        "blaze" -> "icon/slayer/inferno"
+        "revenant" -> "icon/slayer/revenant"
+        "tarantula" -> "icon/slayer/tarantula"
+        "sven" -> "icon/slayer/sven"
+        "voidgloom" -> "icon/slayer/voidgloom"
+        "inferno_demonlord" -> "icon/slayer/inferno"
         "vampire" -> "icon/slayer/vampire"
         else -> "icon/questionmark"
     },

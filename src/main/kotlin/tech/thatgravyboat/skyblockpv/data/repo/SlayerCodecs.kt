@@ -21,7 +21,6 @@ object SlayerCodecs {
                 throw RuntimeException(it.error().get().message())
             }
             data = it.getOrThrow()
-            println(data)
         }
     }
 
@@ -31,6 +30,8 @@ object SlayerCodecs {
         val leveling: List<Long>,
         val xp: List<Int>,
     ) {
+        fun getLevel(xp: Long) = leveling.indexOfLast { it < xp }
+
         companion object {
             val CODEC = RecordCodecBuilder.create {
                 it.group(
