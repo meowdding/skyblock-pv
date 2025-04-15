@@ -1,0 +1,22 @@
+[
+    {
+        "threshold": 1000,
+        "belt": "YELLOW"
+    },
+    {
+        "threshold": 2000,
+        "belt": "GREEN"
+    },
+    {
+        "threshold": 4000,
+        "belt": "BLUE"
+    },
+    {
+        "threshold": 6000,
+        "belt": "BROWN"
+    },
+    {
+        "threshold": 7000,
+        "belt": "BLACK"
+    }
+]

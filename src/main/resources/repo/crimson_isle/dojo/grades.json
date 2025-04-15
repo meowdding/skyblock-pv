@@ -1,0 +1,26 @@
+[
+    {
+        "threshold": 0,
+        "rank": "F"
+    },
+    {
+        "threshold": 200,
+        "rank": "D"
+    },
+    {
+        "threshold": 400,
+        "rank": "C"
+    },
+    {
+        "threshold": 600,
+        "rank": "B"
+    },
+    {
+        "threshold": 800,
+        "rank": "A"
+    },
+    {
+        "threshold": 1000,
+        "rank": "S"
+    }
+]
