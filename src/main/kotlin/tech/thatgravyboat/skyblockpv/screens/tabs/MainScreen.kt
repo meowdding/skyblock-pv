@@ -268,8 +268,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 getIconFromSlayerName(name) // TODO: if addSection gets ever removed, include the icon in slayerdata
             },
             getToolTip = { name, pair ->
-                val repo = pair.first
-                val data = pair.second
+                val (repo, data) = pair
                 TooltipBuilder().apply {
                     add(name.toTitleCase()) { this.color = TextColor.YELLOW }
                     add("Kills: ") {

@@ -20,7 +20,7 @@ open class CompactingResourcesExtension {
         externalResources.add(ExternalResource(url, output, json))
     }
 
-    fun substituteFromDifferentFile(folder: String, mainFile: String, output: String) {
+    fun substituteFromDifferentFile(folder: String, mainFile: String, output: String = folder) {
         compactors.add(SubstituteFromDifferentFile(folder, mainFile, output))
     }
 }
@@ -55,7 +55,7 @@ class SubstituteFromDifferentFile(private val folder: String, val mainFile: Stri
         return mainFile
     }
 
-    fun walk(jsonObject: JsonElement) {
+    private fun walk(jsonObject: JsonElement) {
         when (jsonObject) {
             is JsonObject -> {
                 for ((key, value) in jsonObject.entrySet()) {
