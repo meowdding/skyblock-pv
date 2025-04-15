@@ -79,6 +79,7 @@ class SubstituteFromDifferentFile(private val folder: String, val mainFile: Stri
             }
 
             is JsonArray -> {
+                val map = mutableMapOf<JsonElement, JsonElement>()
                 for (element in jsonObject) {
                     if (element is JsonObject && element.has("@from")) {
                         val from = element.get("@from").asString
@@ -90,11 +91,14 @@ class SubstituteFromDifferentFile(private val folder: String, val mainFile: Stri
                             "@default"
                         }
 
-                        jsonObject.remove(element)
-                        jsonObject.add(json.get(copyKey))
+                        map[element] = json.get(copyKey)
                     } else {
                         walk(element)
                     }
+                }
+                map.forEach { (key, value) ->
+                    jsonObject.remove(key)
+                    jsonObject.add(value)
                 }
             }
         }
