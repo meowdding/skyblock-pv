@@ -177,18 +177,12 @@ data class SkyBlockProfile(
 
         private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { name, jsonElement ->
             val data = jsonElement.asJsonObject
-            val maxTier = when (name) {
-                "zombie", "vampire" -> 4
-                else -> 3
-            }
             name to SlayerTypeData(
                 exp = data["xp"].asLong(0),
-                bossAttemptsTier = (0..maxTier).associateWith { tier ->
-                    data["boss_attempts_tier_$tier"].asInt(0)
-                },
-                bossKillsTier = (0..maxTier).associateWith { tier ->
-                    data["boss_kills_tier_$tier"].asInt(0)
-                },
+                bossAttemptsTier = data.entrySet().filter { it.key.startsWith("boss_attempts_tier_") }
+                    .map { it.key.filter { it.isDigit() }.toInt() to it.value.asInt }.toMap(),
+                bossKillsTier = data.entrySet().filter { it.key.startsWith("boss_kills_tier_") }
+                    .map { it.key.filter { it.isDigit() }.toInt() to it.value.asInt }.toMap(),
             )
         }.sortToSlayerOrder()
 

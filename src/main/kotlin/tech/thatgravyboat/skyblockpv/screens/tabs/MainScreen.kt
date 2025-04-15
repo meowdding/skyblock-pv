@@ -22,9 +22,10 @@ import tech.thatgravyboat.skyblockpv.api.SkillAPI.getSkillLevel
 import tech.thatgravyboat.skyblockpv.api.StatusAPI
 import tech.thatgravyboat.skyblockpv.api.data.PlayerStatus
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
+import tech.thatgravyboat.skyblockpv.data.api.skills.combat.SlayerTypeData
 import tech.thatgravyboat.skyblockpv.data.api.skills.combat.getIconFromSlayerName
-import tech.thatgravyboat.skyblockpv.data.api.skills.combat.getSlayerLevel
 import tech.thatgravyboat.skyblockpv.data.repo.SkullTextures
+import tech.thatgravyboat.skyblockpv.data.repo.SlayerCodecs
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.FakePlayer
@@ -259,26 +260,65 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         addSection(
             title = "Slayer",
-            data = profile.slayer.asSequence().map { it.toPair() },
-            getIcon = ::getIconFromSlayerName,
-            getToolTip = { name, data ->
+            data = SlayerCodecs.data.map { (k, v) ->
+                val data = profile.slayer[v.id] ?: SlayerTypeData(0, emptyMap(), emptyMap())
+                Pair(k, Pair(v, data))
+            }.asSequence(),
+            getIcon = { name ->
+                getIconFromSlayerName(name) // TODO: if addSection gets ever removed, include the icon in slayerdata
+            },
+            getToolTip = { name, pair ->
+                val (repo, data) = pair
                 TooltipBuilder().apply {
                     add(name.toTitleCase()) { this.color = TextColor.YELLOW }
-                    add("Exp: ${data.exp.shorten()}") { this.color = TextColor.GRAY }
                     add("Kills: ") {
                         this.color = TextColor.GRAY
                         Text.join(
-                            data.bossKillsTier.map {
-                                Text.of(it.value.toFormattedString()) { this.color = TextColor.GRAY }
+                            (0 until repo.maxBossTier).map {
+                                Text.of(data.bossKillsTier[it]?.toFormattedString() ?: "0") { this.color = TextColor.GRAY }
                             },
                             separator = Text.of("/") { this.color = TextColor.DARK_GRAY },
                         ).let { append(it) }
                     }
+                    add("Exp: ") {
+                        this.color = TextColor.GRAY
+                        append(data.exp.toFormattedString()) { this.color = TextColor.YELLOW }
+
+                        val percentage = data.exp / repo.leveling.last().toDouble() * 100
+                        if (percentage >= 100) {
+                            append(" Maxed!") { this.color = TextColor.RED }
+                        } else {
+                            append("/") { this.color = TextColor.GOLD }
+                            append(repo.leveling.last().toFormattedString()) { this.color = TextColor.YELLOW }
+                            append(
+                                Text.of(((data.exp.toFloat() / repo.leveling.last()) * 100).round()) {
+                                    append("%")
+                                    this.color = TextColor.GREEN
+                                }.wrap(" (", ")"),
+                            )
+                        }
+                    }
+
+                    if (repo.getLevel(data.exp) != repo.maxLevel) {
+                        add("Next Level: ") {
+                            this.color = TextColor.GRAY
+                            append(data.exp.toFormattedString()) { this.color = TextColor.YELLOW }
+                            append("/") { this.color = TextColor.GOLD }
+                            append(repo.leveling[repo.getLevel(data.exp)].toFormattedString()) { this.color = TextColor.YELLOW }
+                            append(
+                                Text.of(((data.exp.toFloat() / repo.leveling[repo.getLevel(data.exp)]) * 100).round()) {
+                                    append("%")
+                                    this.color = TextColor.GREEN
+                                }.wrap(" (", ")"),
+                            )
+                        }
+                    }
+
                 }.build()
             },
         )
         { name, data ->
-            getSlayerLevel(name, data.exp)
+            data.first.getLevel(data.second.exp)
         }
 
         spacer(height = 10)
