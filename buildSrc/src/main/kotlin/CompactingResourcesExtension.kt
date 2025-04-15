@@ -1,7 +1,6 @@
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import org.gradle.internal.declarativedsl.parsing.main
 
 open class CompactingResourcesExtension {
     internal val compactors: MutableList<CompactedResources<*>> = mutableListOf()
@@ -32,6 +31,7 @@ class CompactToObject(val folder: String, val outputFile: String) : CompactedRes
         value!!.add(fileName, element)
     }
 }
+
 class CompactToArray(private val folder: String, outputFile: String) : CompactedResources<JsonArray>(::JsonArray, outputFile) {
     override fun getPath() = arrayOf("$folder/*.json", "$folder/*.jsonc")
 
@@ -39,7 +39,9 @@ class CompactToArray(private val folder: String, outputFile: String) : Compacted
         value!!.add(element)
     }
 }
-class SubstituteFromDifferentFile(private val folder: String, val mainFile: String, val outputFile: String): CompactedResources<JsonElement>({ JsonArray() }, outputFile) {
+
+class SubstituteFromDifferentFile(private val folder: String, val mainFile: String, val outputFile: String) :
+    CompactedResources<JsonElement>({ JsonArray() }, outputFile) {
     val loadedJsons = mutableMapOf<String, JsonElement>()
 
     override fun setup() {}
@@ -61,7 +63,7 @@ class SubstituteFromDifferentFile(private val folder: String, val mainFile: Stri
                 for ((key, value) in jsonObject.entrySet()) {
                     if (value is JsonObject && value.has("@from")) {
                         val from = value.get("@from").asString
-                        val json = loadedJsons[from]?.asJsonObject?: throw IllegalStateException("File $from not found in folder $folder")
+                        val json = loadedJsons[from]?.asJsonObject ?: throw IllegalStateException("File $from not found in folder $folder")
 
                         val copyKey = if (value.has("key")) {
                             value.get("key").asString
@@ -75,11 +77,12 @@ class SubstituteFromDifferentFile(private val folder: String, val mainFile: Stri
                     }
                 }
             }
+
             is JsonArray -> {
                 for (element in jsonObject) {
                     if (element is JsonObject && element.has("@from")) {
                         val from = element.get("@from").asString
-                        val json = loadedJsons[from]?.asJsonObject?: throw IllegalStateException("File $from not found in folder $folder")
+                        val json = loadedJsons[from]?.asJsonObject ?: throw IllegalStateException("File $from not found in folder $folder")
 
                         val copyKey = if (element.has("key")) {
                             element.get("key").asString
@@ -104,7 +107,7 @@ class SubstituteFromDifferentFile(private val folder: String, val mainFile: Stri
     override fun getPath() = arrayOf("$folder/*.json", "$folder/*.jsonc")
 }
 
-abstract class CompactedResources<T: JsonElement>(private val factory: () -> T, val output: String) {
+abstract class CompactedResources<T : JsonElement>(private val factory: () -> T, val output: String) {
     protected var value: T? = null
 
     abstract fun add(fileName: String, element: JsonElement)
