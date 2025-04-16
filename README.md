@@ -44,6 +44,51 @@ All fishing related information, so Essence Upgrades, Trophy Fish, Gear, Stats, 
 
 ...we just didn't put them in the ReadMe. Look at them when pv'ing yourself or someone else!
 
+<details>
+<summary>All Tabs</summary>
+
+as of 2025-04-16
+
+- Home
+- Combat
+    - Dungeons
+    - Bestiary
+    - Mob Kills
+- Inventory
+    - Main Inventory
+    - Ender Chest
+    - Backpacks
+    - Wardrobe
+    - Accessory
+    - Sacks
+    - Personal Vault
+    - Potion Bag
+    - Fishing Bag
+    - Quiver
+- Collections
+- Mining
+    - Main Mining
+    - Mining Gear
+    - HotM
+    - Glacite
+- Fishing
+- Pets
+- Farming
+    - Main Farming
+    - Visitors
+    - Crops
+    - Composter
+- Museum
+    - Weapons
+    - Armor
+- Chocolate Factory
+- Rift
+    - Main Rift
+    - Inventory
+    - Ender Chest
+
+</details>
+
 ### Mod Compatibility
 
 #### SkyBlockMod
