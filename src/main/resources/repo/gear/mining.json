@@ -116,5 +116,8 @@
         "REINFORCED_CHISEL",
         "GLACITE_CHISEL",
         "PERFECT_CHISEL"
+    ],
+    "suspicious_scrap": [
+        "SUSPICIOUS_SCRAP"
     ]
 }
