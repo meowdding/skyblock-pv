@@ -12,8 +12,8 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.entity.BannerPattern
 import net.minecraft.world.level.block.entity.BannerPatternLayers
 import net.minecraft.world.level.block.entity.BannerPatternLayers.Layer
+import tech.thatgravyboat.skyblockapi.utils.extentions.holder
 import tech.thatgravyboat.skyblockpv.dfu.DataComponentFixer
-import tech.thatgravyboat.skyblockpv.utils.holder
 import kotlin.jvm.optionals.getOrNull
 
 private val PATTERN_MAP = Object2ObjectOpenHashMap<String, Holder<BannerPattern>>().apply {

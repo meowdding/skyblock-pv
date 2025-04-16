@@ -1,7 +1,7 @@
 package tech.thatgravyboat.skyblockpv.data.repo
 
+import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import tech.thatgravyboat.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockpv.utils.createSkull
 
 enum class SkullTextures(var texture: String = "") {
     WITHER_ESSENCE,

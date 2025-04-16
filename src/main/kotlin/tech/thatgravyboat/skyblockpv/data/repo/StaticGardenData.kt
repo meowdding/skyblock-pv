@@ -20,6 +20,7 @@ import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
+import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -28,7 +29,6 @@ import tech.thatgravyboat.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
-import tech.thatgravyboat.skyblockpv.utils.createSkull
 import java.util.*
 
 enum class GardenResource(internalName: String? = null, itemId: String? = null) : StringRepresentable {

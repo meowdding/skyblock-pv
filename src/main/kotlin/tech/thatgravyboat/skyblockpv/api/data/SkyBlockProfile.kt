@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import tech.thatgravyboat.skyblockpv.api.CollectionAPI
 import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
@@ -23,7 +24,6 @@ import tech.thatgravyboat.skyblockpv.data.api.skills.farming.GardenData
 import tech.thatgravyboat.skyblockpv.data.repo.EssenceData
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils.toDashlessString
-import tech.thatgravyboat.skyblockpv.utils.getPath
 import java.util.*
 
 data class SkyBlockProfile(

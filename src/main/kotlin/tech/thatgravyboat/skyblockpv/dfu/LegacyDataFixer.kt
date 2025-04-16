@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.getStringOrNull
+import tech.thatgravyboat.skyblockapi.utils.extentions.holder
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toJson
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.dfu.base.BaseItem
@@ -14,7 +15,6 @@ import tech.thatgravyboat.skyblockpv.dfu.fixes.*
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.ColorFixer
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.LoreFixer
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.NameFixer
-import tech.thatgravyboat.skyblockpv.utils.holder
 
 object LegacyDataFixer {
 
