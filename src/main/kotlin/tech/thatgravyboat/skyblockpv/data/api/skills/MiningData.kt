@@ -150,6 +150,7 @@ enum class MiningGear {
     NECKLACES,
     GLOVES,
     CHISELS,
+    SUSPICIOUS_SCRAP,
     ;
 
     var list: List<String> = emptyList()
@@ -170,6 +171,7 @@ enum class MiningGear {
         val armor = ARMOR.list
         val pickaxes = PICKAXES.list
         val chisels = CHISELS.list
+        val suspicious_scrap = SUSPICIOUS_SCRAP.list
     }
 }
 

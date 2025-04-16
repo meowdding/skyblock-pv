@@ -6,11 +6,13 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.MiningGear
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
 class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
@@ -39,15 +41,31 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 ),
             )
 
-            widget(
-                PvWidgets.tools(
-                    profile,
-                    ::calculateItemScore,
-                    MiningGear.chisels,
-                    "icon/slot/armorstand",
-                    maxAmount = 1,
-                ),
-            )
+            vertical(5) {
+                widget(
+                    PvWidgets.tools(
+                        profile,
+                        ::calculateItemScore,
+                        MiningGear.chisels,
+                        "icon/slot/armorstand",
+                        maxAmount = 1,
+                    ),
+                )
+
+                val suspiciousScrapId = MiningGear.suspicious_scrap.first()
+                val scrapItem = RepoItemsAPI.getItem(suspiciousScrapId)
+                val scrapsCount = profile.inventory?.getAllItems()?.filter {
+                    it.getData(DataTypes.ID) == suspiciousScrapId
+                }?.sumOf { it.count } ?: 0
+                val display = Displays.inventorySlot(
+                    Displays.padding(
+                        2,
+                        Displays.item(scrapItem, customStackText = scrapsCount, showTooltip = true),
+                    ),
+                )
+                display(display)
+            }
+
         }.let {
             PvWidgets.label("Mining Gear", it)
         }
