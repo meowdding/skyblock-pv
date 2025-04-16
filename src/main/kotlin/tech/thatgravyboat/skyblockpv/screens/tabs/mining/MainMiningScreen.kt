@@ -61,7 +61,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     widget(crystal)
                     forge?.let { widget(it) }
                 }
-            }
+            }.asScrollable(uiWidth, uiHeight)
         }
     }
 
@@ -157,8 +157,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
                 }
 
-                val display = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, listOf(icon, state).toRow(1)))
-                display.withTooltip {
+                val display = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, listOf(icon, state).toRow(1))).withTooltip {
                     add("§l${name.toTitleCase()}")
                     add("§7State: ${crystal.state.toTitleCase()}")
                     add("§7Found: ${crystal.totalFound.toFormattedString()}")
