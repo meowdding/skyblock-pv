@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
+import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.repo.SkullTextures
 import tech.thatgravyboat.skyblockpv.screens.tabs.*
@@ -19,7 +20,6 @@ import tech.thatgravyboat.skyblockpv.screens.tabs.museum.BaseMuseumScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.museum.MuseumItemScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.rift.BaseRiftScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.rift.MainRiftScreen
-import tech.thatgravyboat.skyblockpv.utils.createSkull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 

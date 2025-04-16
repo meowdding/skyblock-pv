@@ -4,9 +4,9 @@ import com.google.gson.JsonObject
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asList
+import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import tech.thatgravyboat.skyblockpv.data.api.skills.Pet
 import tech.thatgravyboat.skyblockpv.utils.getNbt
-import tech.thatgravyboat.skyblockpv.utils.getPath
 import tech.thatgravyboat.skyblockpv.utils.legacyStack
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
