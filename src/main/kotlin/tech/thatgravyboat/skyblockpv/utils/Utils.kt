@@ -80,8 +80,6 @@ object Utils {
             }
     }
 
-    fun String.toTitleCase() = lowercase().split("_").joinToString(" ") { it.replaceFirstChar { it.uppercase() } }
-
     private val formatter = NumberFormat.getCompactNumberInstance()
     fun Number.shorten(decimalDigits: Int = 1): String = formatter.apply { maximumFractionDigits = decimalDigits }.format(this)
 

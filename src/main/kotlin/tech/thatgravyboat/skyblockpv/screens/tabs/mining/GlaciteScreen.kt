@@ -5,6 +5,7 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -14,7 +15,6 @@ import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
 import tech.thatgravyboat.skyblockpv.data.api.skills.GlaciteData
 import tech.thatgravyboat.skyblockpv.data.repo.EssenceData.addMiningPerk
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
 
