@@ -1,11 +1,6 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.museum
 
 import com.mojang.authlib.GameProfile
-import earth.terrarium.olympus.client.components.buttons.Button
-import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import earth.terrarium.olympus.client.layouts.Layouts
-import earth.terrarium.olympus.client.layouts.LinearViewLayout
-import earth.terrarium.olympus.client.ui.UIConstants
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
@@ -17,7 +12,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.museum.*
-import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
@@ -103,35 +97,18 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         )
 
         val map = mutableMapOf<RepoMuseumCategory, Int>()
-        val buttons = List(inventories.size) { index ->
-            val icon = icons[index]
-            val compute = map.compute(icon) { _, i -> i?.plus(1) ?: 0 }
-            val itemDisplay = Displays.item(
-                icon.item.value,
-                customStackText = (compute ?: 0).takeIf { it != 0 }?.let { Text.of(it.plus(1).toString()) },
-            ).withTooltip {
-                add(icon.name)
-            }
-
-            Button()
-                .withSize(20, 20)
-                .withRenderer(
-                    WidgetRenderers.layered(
-                        ExtraWidgetRenderers.conditional(
-                            WidgetRenderers.sprite(UIConstants.PRIMARY_BUTTON),
-                            WidgetRenderers.sprite(UIConstants.DARK_BUTTON),
-                        ) { index == carousel?.index },
-                        WidgetRenderers.center(16, 20, ExtraWidgetRenderers.display(itemDisplay)),
-                    ),
-                )
-                .withCallback {
-                    carousel?.index = index
+        val buttonContainer = carousel!!.getIcons {
+            List(inventories.size) { index ->
+                val icon = icons[index]
+                val compute = map.compute(icon) { _, i -> i?.plus(1) ?: 0 }
+                Displays.item(
+                    icon.item.value,
+                    customStackText = (compute ?: 0).takeIf { it != 0 }?.let { Text.of(it.plus(1).toString()) },
+                ).withTooltip {
+                    add(icon.name)
                 }
+            }
         }
-
-        val buttonContainer = buttons.chunked(9)
-            .map { it.fold(Layouts.row().withGap(1), LinearViewLayout::withChild) }
-            .fold(Layouts.column().withGap(1), LinearViewLayout::withChild)
 
         widget(buttonContainer.centerHorizontally(uiWidth))
         spacer(height = 10)
