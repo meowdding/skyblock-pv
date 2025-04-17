@@ -1,7 +1,7 @@
 {
-    "BASIC": 0,
-    "HOT": 1000,
-    "BURNING": 3000,
-    "FIERY": 7000,
-    "INFERNAL": 12000
+    "none": 0,
+    "hot": 1000,
+    "burning": 3000,
+    "fiery": 7000,
+    "infernal": 12000
 }

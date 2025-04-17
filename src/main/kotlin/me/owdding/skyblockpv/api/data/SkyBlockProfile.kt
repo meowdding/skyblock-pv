@@ -57,6 +57,7 @@ data class SkyBlockProfile(
     val farmingData: FarmingData,
     val chocolateFactoryData: CfData?,
     val rift: RiftData?,
+    val crimsonIsleData: CrimsonIsleData
 ) {
     companion object {
 
@@ -121,6 +122,7 @@ data class SkyBlockProfile(
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
+                crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data"))
             )
         }
 

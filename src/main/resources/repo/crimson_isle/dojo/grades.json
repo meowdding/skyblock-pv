@@ -1,26 +1,26 @@
 [
     {
         "threshold": 0,
-        "rank": "F"
+        "grade": "<red>F</red>"
     },
     {
         "threshold": 200,
-        "rank": "D"
+        "grade": "<green>D</green>"
     },
     {
         "threshold": 400,
-        "rank": "C"
+        "grade": "<green>C</green>"
     },
     {
         "threshold": 600,
-        "rank": "B"
+        "grade": "<blue>B</blue>"
     },
     {
         "threshold": 800,
-        "rank": "A"
+        "grade": "<light_purple>A</light_purple>"
     },
     {
         "threshold": 1000,
-        "rank": "S"
+        "grade": "<gold>S</gold>"
     }
 ]

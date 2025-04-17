@@ -1,22 +1,22 @@
 [
     {
         "threshold": 1000,
-        "belt": "YELLOW"
+        "item": "skyblock:dojo_yellow_belt"
     },
     {
         "threshold": 2000,
-        "belt": "GREEN"
+        "item": "skyblock:dojo_green_belt"
     },
     {
         "threshold": 4000,
-        "belt": "BLUE"
+        "item": "skyblock:dojo_blue_belt"
     },
     {
         "threshold": 6000,
-        "belt": "BROWN"
+        "item": "skyblock:dojo_brown_belt"
     },
     {
         "threshold": 7000,
-        "belt": "BLACK"
+        "item": "skyblock:dojo_black_belt"
     }
 ]
