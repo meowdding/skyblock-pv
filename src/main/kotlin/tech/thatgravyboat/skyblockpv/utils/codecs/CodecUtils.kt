@@ -72,7 +72,7 @@ object CodecUtils {
         { it },
     )
 
-    val ITEM_REFRENCE = ResourceLocation.CODEC.xmap(
+    val ITEM_REFERENCE = ResourceLocation.CODEC.xmap(
         {
             lazy {
                 if (it.namespace.equals("skyblock")) {

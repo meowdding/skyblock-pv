@@ -16,7 +16,7 @@ data class RepoMuseumCategory(
 val MUSEUM_CATEGORY_CODEC = RecordCodecBuilder.create {
     it.group(
         Codec.STRING.fieldOf("name").forGetter(RepoMuseumCategory::name),
-        CodecUtils.ITEM_REFRENCE.fieldOf("display").forGetter(RepoMuseumCategory::item),
+        CodecUtils.ITEM_REFERENCE.fieldOf("display").forGetter(RepoMuseumCategory::item),
         Codec.STRING.listOf().fieldOf("categories").forGetter(RepoMuseumCategory::categories),
         Codec.STRING.listOf().optionalFieldOf("items", emptyList()).forGetter(RepoMuseumCategory::categories),
         Codec.INT.optionalFieldOf("priority", 0).forGetter(RepoMuseumCategory::priority),
