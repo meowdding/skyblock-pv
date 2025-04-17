@@ -36,11 +36,10 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     override fun create(bg: DisplayWidget) {
         val profile = profile ?: return
         val cf = profile.chocolateFactoryData ?: return
-        val data = CfCodecs.data ?: return
 
-        val employees = getEmployees(cf, data)
-        val rarities = getRarities(cf, data)
-        val info = getInfo(cf, data)
+        val employees = getEmployees(cf)
+        val rarities = getRarities(cf, CfCodecs.data)
+        val info = getInfo(cf, CfCodecs.data)
         val upgrades = getUpgrades(cf)
 
         LayoutBuild.frame(bg.width, bg.height) {
@@ -274,9 +273,9 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             }.chunked(4).map { it.toRow(1) }.toColumn(1, Alignment.CENTER).asWidget(),
     )
 
-    private fun getEmployees(cf: CfData, data: CfCodecs.CfRepoData) = data.employees.map { repoEmployee ->
+    private fun getEmployees(cf: CfData) = CfCodecs.data.employees.map { repoEmployee ->
         val employee = cf.employees.find { it.id == repoEmployee.id } ?: RabbitEmployee(repoEmployee.id, 0)
-        val item = (CfCodecs.data?.textures?.find { it.id == employee.id }?.skull ?: Items.BARRIER.defaultInstance).takeIf { employee.level > 0 }
+        val item = (CfCodecs.data.textures.find { it.id == employee.id }?.skull ?: Items.BARRIER.defaultInstance).takeIf { employee.level > 0 }
             ?: Items.GRAY_DYE.defaultInstance
 
         PvWidgets.iconNumberElement(item, Text.of("${employee.level}") { color = employee.color }).withTooltip {

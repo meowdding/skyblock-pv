@@ -54,14 +54,14 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         )
     }
 
-    private fun getCategories(): Map<ItemStack, Display> = BestiaryCodecs.data?.categories?.map { (_, v) ->
+    private fun getCategories(): Map<ItemStack, Display> = BestiaryCodecs.data.categories.map { (_, v) ->
         Either.unwrap(
             v.mapBoth(
                 { it.icon.getItem(it.name) to it.getCategory() }, // Simple
                 { it.icon.getItem(it.name) to it.getCategory() }, // Complex
             ),
         )
-    }?.toMap() ?: emptyMap()
+    }.toMap()
 
     private fun BestiaryCategoryEntry.getCategory() = mobs.map { it.getItem() }.format(MOBS_PER_ROW_SIMPLE)
 
@@ -80,7 +80,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     private fun BestiaryMobEntry.getItem(): Display {
         val kills = profile?.bestiaryData?.filter { mobs.contains(it.mobId) }?.sumOf { it.kills } ?: 0
-        val fullBracket = BestiaryCodecs.data?.brackets?.get(bracket) ?: emptyList()
+        val fullBracket = BestiaryCodecs.data.brackets[bracket] ?: emptyList()
         val maxLevel = fullBracket.indexOf(cap) + 1
         val bracket = fullBracket.take(maxLevel)
         val requiredKills = bracket.lastOrNull() ?: 0
