@@ -1,7 +1,7 @@
 package tech.thatgravyboat.skyblockpv.utils.displays
 
 import net.minecraft.client.gui.GuiGraphics
-import tech.thatgravyboat.skyblockpv.utils.Utils.translated
+import tech.thatgravyboat.skyblockapi.utils.extentions.translated
 
 interface Display {
 

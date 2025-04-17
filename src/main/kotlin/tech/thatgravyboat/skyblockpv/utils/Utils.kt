@@ -1,7 +1,6 @@
 package tech.thatgravyboat.skyblockpv.utils
 
 import com.mojang.authlib.GameProfile
-import com.mojang.blaze3d.vertex.PoseStack
 import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
 import net.minecraft.Util
@@ -10,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
+import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
@@ -49,43 +49,6 @@ object Utils {
                 this@drawRoundedRec, (x + xOffset).toInt(), (y + yOffset).toInt(), width, height,
                 backgroundColor, borderColor, width.coerceAtMost(height) * (radius / 100f), borderSize,
             )
-        }
-    }
-
-    fun PoseStack.translate(x: Int, y: Int, z: Int) {
-        this.translate(x.toFloat(), y.toFloat(), z.toFloat())
-    }
-
-    inline fun GuiGraphics.scissor(x: Int, y: Int, width: Int, height: Int, action: () -> Unit) {
-        this.enableScissor(x, y, x + width, y + height)
-        action()
-        this.disableScissor()
-    }
-
-    inline fun GuiGraphics.scissorRange(x: IntRange, y: IntRange, action: () -> Unit) {
-        this.enableScissor(x.start, y.start, x.endInclusive, y.endInclusive)
-        action()
-        this.disableScissor()
-    }
-
-    inline fun GuiGraphics.pushPop(action: PoseStack.() -> Unit) {
-        this.pose().pushPop(action)
-    }
-
-    inline fun PoseStack.pushPop(action: PoseStack.() -> Unit) {
-        this.pushPose()
-        this.action()
-        this.popPose()
-    }
-
-    inline fun GuiGraphics.translated(x: Number = 0, y: Number = 0, z: Number = 0, action: PoseStack.() -> Unit) {
-        this.pose().translated(x, y, z, action)
-    }
-
-    inline fun PoseStack.translated(x: Number = 0, y: Number = 0, z: Number = 0, action: PoseStack.() -> Unit) {
-        this.pushPop {
-            this.translate(x.toFloat(), y.toFloat(), z.toFloat())
-            this.action()
         }
     }
 
