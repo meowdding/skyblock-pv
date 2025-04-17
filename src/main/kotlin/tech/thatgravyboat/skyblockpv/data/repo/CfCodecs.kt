@@ -2,16 +2,16 @@ package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
-import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.notkamui.keval.keval
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 
 object CfCodecs {
-    var data: CfRepoData? = null
+    var data: CfRepoData
         private set
 
     private val CfTextureCodec = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(
@@ -46,14 +46,7 @@ object CfCodecs {
             ).apply(it, ::CfRepoData)
         }
 
-        val cfData = Utils.loadFromRepo<JsonObject>("chocolate_factory") ?: JsonObject()
-
-        CODEC.parse(JsonOps.INSTANCE, cfData).let {
-            if (it.isError) {
-                throw RuntimeException(it.error().get().message())
-            }
-            data = it.getOrThrow()
-        }
+        data = Utils.loadFromRepo<JsonObject>("chocolate_factory").toData(CODEC) ?: throw IllegalStateException("Failed to load chocolate factory data!")
     }
 
     data class CfRepoData(
