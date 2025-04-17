@@ -6,6 +6,7 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
@@ -25,7 +26,6 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.Utils.sortByKey
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
-import tech.thatgravyboat.skyblockpv.utils.Utils.toTitleCase
 import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
