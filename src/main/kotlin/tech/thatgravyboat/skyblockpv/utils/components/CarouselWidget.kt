@@ -10,9 +10,9 @@ import earth.terrarium.olympus.client.ui.UIConstants
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.helpers.McFont
+import tech.thatgravyboat.skyblockapi.utils.extentions.scissorRange
+import tech.thatgravyboat.skyblockapi.utils.extentions.translated
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
-import tech.thatgravyboat.skyblockpv.utils.Utils.scissorRange
-import tech.thatgravyboat.skyblockpv.utils.Utils.translated
 import tech.thatgravyboat.skyblockpv.utils.displays.Display
 import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 
