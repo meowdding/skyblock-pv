@@ -31,15 +31,9 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             }
             return@horizontal
         }
-        val data = RiftCodecs.data ?: run {
-            string("Failed to load rift data") {
-                color = TextColor.RED
-            }
-            return@horizontal
-        }
 
-        val trophy = getTrophy(rift, data)
-        val info = getInformation(profile!!, data)
+        val trophy = getTrophy(rift, RiftCodecs.data)
+        val info = getInformation(profile!!, RiftCodecs.data)
 
         if (trophy.width + info.width + 5 > bg.width) {
             widget(
