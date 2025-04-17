@@ -1,28 +1,18 @@
 package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
-import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object SackCodecs {
-    var data: List<Sack> = emptyList()
+    var data: List<Sack>
         private set
 
     init {
-        val CODEC = Sack.CODEC.listOf()
-
-        val sackData = Utils.loadFromRepo<JsonArray>("sacks") ?: JsonObject()
-
-        CODEC.parse(JsonOps.INSTANCE, sackData).let {
-            if (it.isError) {
-                throw RuntimeException(it.error().get().message())
-            }
-            data = it.getOrThrow()
-        }
+        data = Utils.loadFromRepo<JsonArray>("sacks").toData(Sack.CODEC.listOf()) ?: throw IllegalStateException("Failed to load sacks data!")
     }
 
     data class Sack(

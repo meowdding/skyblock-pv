@@ -20,15 +20,14 @@ data class RepoEssencePerk(
 )
 
 object EssenceData {
-    var allPerks: Map<String, RepoEssencePerk> = emptyMap()
+    var allPerks: Map<String, RepoEssencePerk>
         private set
 
     init {
-        Utils.loadFromRepo<RepoEssenceData>("essence_perks")
+        allPerks = Utils.loadFromRepo<RepoEssenceData>("essence_perks")
             ?.let(RepoEssenceData::shops)
             ?.flatMap { it.value.entries }
-            ?.associate { it.key to it.value }
-            ?.let { it -> allPerks = it }
+            ?.associate { it.key to it.value } ?: emptyMap()
     }
 
     fun LayoutBuilder.addFishingPerk(profile: SkyBlockProfile, id: String) {

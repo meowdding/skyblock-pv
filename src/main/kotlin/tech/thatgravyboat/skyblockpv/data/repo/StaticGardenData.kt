@@ -3,7 +3,6 @@ package tech.thatgravyboat.skyblockpv.data.repo
 import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
-import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.notkamui.keval.keval
 import eu.pb4.placeholders.api.ParserContext
@@ -22,6 +21,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
 import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -175,13 +175,7 @@ data object StaticGardenData {
             ).apply(it, StaticGardenData::init)
         }
 
-        val gardenData = Utils.loadFromRepo<JsonObject>("garden_data") ?: JsonObject()
-
-        CODEC.parse(JsonOps.INSTANCE, gardenData).let {
-            if (it.isError) {
-                throw RuntimeException(it.error().get().message())
-            }
-        }
+        Utils.loadFromRepo<JsonObject>("garden_data").toData(CODEC)
     }
 
     fun init(

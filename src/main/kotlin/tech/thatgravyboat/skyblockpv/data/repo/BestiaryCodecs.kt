@@ -4,9 +4,9 @@ import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
-import com.mojang.serialization.JsonOps
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.codecs.DispatchedCodec
 import tech.thatgravyboat.skyblockpv.utils.codecs.ReservedUnboundMapCodec
@@ -16,7 +16,7 @@ typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, ComplexBestiar
 
 object BestiaryCodecs {
 
-    var data: BestiaryRepoData? = null
+    var data: BestiaryRepoData
         private set
 
     private val ICON: MapCodec<BestiaryIcon> = Codec.mapEither(
@@ -95,16 +95,8 @@ object BestiaryCodecs {
     }
 
     init {
-        val bestiaryData = Utils.loadFromRepo<JsonObject>("bestiary") ?: JsonObject()
-
-        CODEC.parse(JsonOps.INSTANCE, bestiaryData).let {
-            if (it.isError) {
-                throw RuntimeException(it.error().get().message())
-            }
-            data = it.getOrThrow()
-        }
+        data = Utils.loadFromRepo<JsonObject>("bestiary").toData(CODEC) ?: throw IllegalStateException("Failed to load bestiary data!")
     }
-
 }
 
 data class BestiaryRepoData(

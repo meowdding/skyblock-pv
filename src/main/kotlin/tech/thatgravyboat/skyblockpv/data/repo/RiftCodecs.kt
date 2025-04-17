@@ -2,13 +2,13 @@ package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
-import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
 object RiftCodecs {
-    var data: RiftRepoData? = null
+    var data: RiftRepoData
         private set
 
     private val trophyCodec = RecordCodecBuilder.create {
@@ -27,14 +27,7 @@ object RiftCodecs {
             ).apply(it, ::RiftRepoData)
         }
 
-        val cfData = Utils.loadFromRepo<JsonObject>("rift") ?: JsonObject()
-
-        CODEC.parse(JsonOps.INSTANCE, cfData).let {
-            if (it.isError) {
-                throw RuntimeException(it.error().get().message())
-            }
-            data = it.getOrThrow()
-        }
+        data = Utils.loadFromRepo<JsonObject>("rift").toData(CODEC) ?: throw IllegalStateException("Failed to load rift data!")
     }
 
     data class RiftRepoData(
