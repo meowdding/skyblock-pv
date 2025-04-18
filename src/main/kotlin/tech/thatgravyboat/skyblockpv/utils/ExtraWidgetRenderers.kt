@@ -2,7 +2,7 @@ package tech.thatgravyboat.skyblockpv.utils
 
 import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
 import net.minecraft.client.gui.components.AbstractWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Display
+import tech.thatgravyboat.lib.displays.Display
 
 object ExtraWidgetRenderers {
 

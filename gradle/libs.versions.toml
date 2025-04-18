@@ -19,6 +19,7 @@ mixinconstraints = "1.0.7"
 placeholders = "2.6.1+1.21.5"
 keval = "1.1.1"
 repo = "1.2.0"
+meowdding-lib = "1.0.3"
 
 # Dev Dependencies
 devauth = "1.2.1"
@@ -43,6 +44,7 @@ mixinconstraints = { module = "com.moulberry:mixinconstraints", version.ref = "m
 placeholders = { module = "eu.pb4:placeholder-api", version.ref = "placeholders" }
 keval = { module = "com.notkamui.libs:keval", version.ref = "keval" }
 repo = { module = "tech.thatgravyboat.repo-lib:repo-lib", version.ref = "repo" }
+meowdding-lib = { module = "tech.thatgravyboat.meowdding-lib:meowdding-lib-1.21.5", version.ref = "meowdding-lib" }
 
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }

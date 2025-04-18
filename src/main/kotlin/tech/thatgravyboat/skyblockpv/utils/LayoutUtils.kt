@@ -5,6 +5,7 @@ import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import tech.thatgravyboat.lib.builder.LayoutBuild
 
 object LayoutUtils {
 

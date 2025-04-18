@@ -1,11 +1,12 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.center
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget) = LayoutBuild.horizontal {
@@ -20,7 +21,7 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         ).toRow()
 
         display(
-            Displays.inventoryBackground(
+            ExtraDisplays.inventoryBackground(
                 2, 4,
                 Displays.padding(2, armorAndEquipment),
             ).centerIn(-1, height),

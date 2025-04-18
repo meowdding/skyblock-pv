@@ -3,17 +3,18 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.combat
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.DisplayWidget
+import tech.thatgravyboat.lib.displays.Displays
+import tech.thatgravyboat.lib.displays.asTable
+import tech.thatgravyboat.lib.displays.asWidget
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.combat.DungeonData
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asTable
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     val classToLevel by lazy {
@@ -95,13 +96,13 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             val level = classToLevel?.get(name)!!
             val progress = classToProgress?.get(name)!!
             string("${name.replaceFirstChar { it.uppercase() }}: $level")
-            display(Displays.progress(progress))
+            display(ExtraDisplays.progress(progress))
         }
 
         val mainContent = LayoutBuild.vertical(10) {
             vertical(5) {
                 string("Catacombs: $catacombsLevel")
-                display(Displays.progress(catacombsProgressToNext))
+                display(ExtraDisplays.progress(catacombsProgressToNext))
                 widget(getClass("healer"))
                 widget(getClass("mage"))
                 widget(getClass("berserk"))

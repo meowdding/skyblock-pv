@@ -68,6 +68,7 @@ dependencies {
     modImplementation(libs.olympus)
     modImplementation(libs.mixinconstraints)
     modImplementation(libs.placeholders)
+    modImplementation(libs.meowdding.lib)
     implementation(libs.keval)
     implementation(libs.repo)
 
@@ -80,6 +81,7 @@ dependencies {
     include(libs.mixinconstraints)
     include(libs.placeholders)
     include(libs.keval)
+    include(libs.meowdding.lib)
 
     modRuntimeOnly(libs.devauth)
     modRuntimeOnly(libs.modmenu)

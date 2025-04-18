@@ -8,6 +8,8 @@ import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -19,11 +21,10 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.MiningCore
 import tech.thatgravyboat.skyblockpv.data.api.skills.PowderType
 import tech.thatgravyboat.skyblockpv.data.repo.*
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.withScrollToBottom
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
@@ -68,7 +69,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 return@let it
             }
             gridLayout.addChild(
-                Displays.inventorySlot(Displays.padding(2, getNode(node, level, disabled, mining))).asWidget(),
+                ExtraDisplays.inventorySlot(Displays.padding(2, getNode(node, level, disabled, mining))).asWidget(),
                 9 - node.location.y,
                 node.location.x + 2,
             )

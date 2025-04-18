@@ -3,11 +3,11 @@ package tech.thatgravyboat.skyblockpv.api
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
+import tech.thatgravyboat.lib.displays.Display
+import tech.thatgravyboat.lib.displays.Displays
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.asList
 import tech.thatgravyboat.skyblockapi.utils.http.Http
-import tech.thatgravyboat.skyblockpv.utils.displays.Display
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import java.util.*
 
 private const val API_URL = "https://pronoundb.org/api/v2/lookup"

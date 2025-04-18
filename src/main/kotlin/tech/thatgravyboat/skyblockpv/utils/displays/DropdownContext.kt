@@ -1,5 +1,8 @@
 package tech.thatgravyboat.skyblockpv.utils.displays
 
+import tech.thatgravyboat.lib.displays.Display
+
+
 class DropdownContext(val fadeTime: Int = 200) {
     var lastUpdated = 0L
     var currentDropdown: Display? = null

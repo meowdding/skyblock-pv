@@ -3,6 +3,8 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.mining
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
@@ -14,9 +16,8 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
 import tech.thatgravyboat.skyblockpv.data.api.skills.GlaciteData
 import tech.thatgravyboat.skyblockpv.data.repo.EssenceData.addMiningPerk
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
@@ -77,7 +78,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             Displays.padding(2, Displays.item(item).withTooltip(hover))
         }.chunked(4).asTable(2).let {
-            Displays.inventoryBackground(
+            ExtraDisplays.inventoryBackground(
                 4, 2,
                 Displays.padding(2, it),
             )

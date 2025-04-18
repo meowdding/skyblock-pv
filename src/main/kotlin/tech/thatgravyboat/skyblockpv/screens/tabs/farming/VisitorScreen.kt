@@ -3,6 +3,8 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.farming
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -10,10 +12,9 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.farming.Commission
 import tech.thatgravyboat.skyblockpv.data.repo.StaticGardenData
 import tech.thatgravyboat.skyblockpv.data.repo.StaticVisitorData
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
@@ -25,7 +26,7 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             .map {
                 it.chunked(uiWidth / 24).map {
                     it.map {
-                        Displays.inventorySlot(
+                        ExtraDisplays.inventorySlot(
                             Displays.padding(2, toDisplay(it, visitors[it])),
                             this.getRarity(it.rarity, visitors[it]),
                         )
