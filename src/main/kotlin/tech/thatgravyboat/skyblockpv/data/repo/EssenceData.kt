@@ -53,6 +53,6 @@ object EssenceData {
             { TextColor.DARK_GRAY.toUInt() },
             false,
         )
-        display(display.withTranslatedTooltip("gui.skyblockpv.tab.$category.information.$id.desc"))
+        display(display.withTranslatedTooltip("skyblockpv.essence.$category.$id"))
     }
 }

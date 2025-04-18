@@ -1,12 +1,9 @@
 package tech.thatgravyboat.skyblockpv.utils.displays
 
 import earth.terrarium.olympus.client.components.buttons.Button
-import eu.pb4.placeholders.api.ParserContext
-import eu.pb4.placeholders.api.parsers.TagParser
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockpv.mixin.I18nAccessor
 import tech.thatgravyboat.skyblockpv.utils.ExtraWidgetRenderers
 
 fun List<Any>.toColumn(spacing: Int = 0, alignment: Alignment = Alignment.START): Display {
@@ -77,13 +74,7 @@ fun Display.withTooltip(builder: TooltipBuilder.() -> Unit): Display = TooltipBu
 
 fun Display.withTooltip(vararg tooltip: Any?): Display = Displays.tooltip(this, Text.multiline(*tooltip))
 fun Display.withTranslatedTooltip(key: String, vararg args: Any?): Display {
-    var raw = I18nAccessor.getLanguage().getOrDefault(key)
-    args.forEachIndexed { index, any ->
-        raw = raw.replace("<$index>", any.toString())
-    }
-
-    val text = TagParser.QUICK_TEXT_SAFE.parseText(raw, ParserContext.of())
-    return Displays.tooltip(this, text)
+    return Displays.tooltip(this, Component.translatable(key, args))
 }
 
 fun Display.asButton(action: (Button) -> Unit): Button {
