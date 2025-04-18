@@ -6,6 +6,10 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.level.ItemLike
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.builder.LayoutBuilder.Companion.setPos
+import tech.thatgravyboat.lib.builder.TooltipBuilder
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
@@ -20,15 +24,13 @@ import tech.thatgravyboat.skyblockpv.data.api.RabbitEmployee
 import tech.thatgravyboat.skyblockpv.data.repo.CfCodecs
 import tech.thatgravyboat.skyblockpv.data.repo.SkullTextures
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 import java.time.Instant
 
 class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("CHOCOLATE_FACTORY", gameProfile, profile) {
@@ -137,7 +139,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 }
             }
         }.map { Displays.padding(2, Displays.item(it, showTooltip = true)) }.toRow(2).let {
-            Displays.inventoryBackground(4, 1, Displays.padding(2, it))
+            ExtraDisplays.inventoryBackground(4, 1, Displays.padding(2, it))
         }.asWidget(),
     )
 

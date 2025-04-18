@@ -5,6 +5,12 @@ import com.mojang.datafixers.util.Either
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.Display
+import tech.thatgravyboat.lib.displays.DisplayWidget
+import tech.thatgravyboat.lib.displays.Displays
+import tech.thatgravyboat.lib.displays.asTable
+import tech.thatgravyboat.lib.extensions.withTooltip
 import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -13,7 +19,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.repo.*
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils
@@ -22,11 +27,7 @@ import tech.thatgravyboat.skyblockpv.utils.Utils.fixBase64Padding
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Display
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asTable
-import tech.thatgravyboat.skyblockpv.utils.withTooltip
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     private var carousel: CarouselWidget? = null
@@ -72,7 +73,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         .map { Displays.padding(2, it) }
         .chunked(mobsPerRow)
         .let {
-            Displays.inventoryBackground(
+            ExtraDisplays.inventoryBackground(
                 mobsPerRow, it.size,
                 Displays.padding(2, it.asTable()),
             )

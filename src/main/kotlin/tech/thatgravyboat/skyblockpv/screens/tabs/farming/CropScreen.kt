@@ -5,6 +5,8 @@ import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -20,11 +22,10 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.repo.GardenResource
 import tech.thatgravyboat.skyblockpv.data.repo.StaticGardenData
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
 
@@ -32,7 +33,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val profile = profile ?: return LayoutBuild.frame {}
 
         val resourcesDisplay = GardenResource.actualValues.map {
-            Displays.inventoryBackground(
+            ExtraDisplays.inventoryBackground(
                 3, Orientation.VERTICAL,
                 Displays.padding(
                     2,

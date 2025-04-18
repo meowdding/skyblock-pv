@@ -24,6 +24,11 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.builder.LayoutBuilder.Companion.setPos
+import tech.thatgravyboat.lib.displays.DisplayWidget
+import tech.thatgravyboat.lib.displays.Displays
+import tech.thatgravyboat.lib.displays.asWidget
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -36,12 +41,8 @@ import tech.thatgravyboat.skyblockpv.api.ProfileAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 import java.lang.reflect.Type
 import java.nio.file.Files
 import kotlin.time.Duration.Companion.seconds
@@ -142,7 +143,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     private fun addLoader() {
         if (this.profile != null) return
 
-        val loading = Displays.loading().asWidget()
+        val loading = ExtraDisplays.loading().asWidget()
         FrameLayout.centerInRectangle(loading, 0, 0, this.width, this.height)
 
         if (starttime + 8000 > System.currentTimeMillis()) return loading.visitWidgets(this::addRenderableOnly)

@@ -3,19 +3,19 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.inventory
 import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.Display
+import tech.thatgravyboat.lib.displays.DisplayWidget
+import tech.thatgravyboat.lib.displays.Displays
+import tech.thatgravyboat.lib.displays.asWidget
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.repo.SkullTextures
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
 import tech.thatgravyboat.skyblockpv.screens.tabs.base.Category
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Display
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
-import tech.thatgravyboat.skyblockpv.utils.displays.asWidget
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 

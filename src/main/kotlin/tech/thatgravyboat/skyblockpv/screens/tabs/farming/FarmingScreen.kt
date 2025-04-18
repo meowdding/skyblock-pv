@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
@@ -24,13 +26,12 @@ import tech.thatgravyboat.skyblockpv.data.api.skills.farming.MedalType
 import tech.thatgravyboat.skyblockpv.data.repo.FarmingGear
 import tech.thatgravyboat.skyblockpv.data.repo.GardenResource
 import tech.thatgravyboat.skyblockpv.data.repo.StaticGardenData
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
@@ -203,7 +204,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         .rightPad(4, Displays.background(SkyBlockPv.id("icon/slot/bone"), Displays.empty(16, 16)))
         .map { Displays.padding(2, it) }
         .toColumn()
-        .let { Displays.inventoryBackground(4, Orientation.VERTICAL, Displays.padding(2, it)) }
+        .let { ExtraDisplays.inventoryBackground(4, Orientation.VERTICAL, Displays.padding(2, it)) }
 
     private fun getGear(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
@@ -220,7 +221,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             spacer(width = 5)
             display(getPets(profile))
             spacer(width = 5)
-            widget(Displays.inventorySlot(getVacuum(profile)).asWidget()) { alignVerticallyMiddle() }
+            widget(ExtraDisplays.inventorySlot(getVacuum(profile)).asWidget()) { alignVerticallyMiddle() }
         },
     )
 
@@ -331,7 +332,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
         }.map { Displays.padding(2, it) }.chunked(5)
             .map { it.toColumn() }
-            .toRow().let { Displays.inventoryBackground(2, 5, Displays.padding(2, it)) }.asWidget(),
+            .toRow().let { ExtraDisplays.inventoryBackground(2, 5, Displays.padding(2, it)) }.asWidget(),
     )
 }
 

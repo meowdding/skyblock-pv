@@ -8,16 +8,17 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicateHelper
 import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 object PvWidgets {
 
@@ -56,7 +57,7 @@ object PvWidgets {
             }.let { Displays.padding(2, it) }
         }.toColumn()
 
-        return Displays.inventoryBackground(
+        return ExtraDisplays.inventoryBackground(
             maxAmount, Orientation.VERTICAL,
             Displays.padding(2, column),
         ).asWidget()
@@ -98,7 +99,7 @@ object PvWidgets {
             armorDisplay(armorAndEquipment),
             displayEquipment.toColumn(),
         ).toRow()
-        return Displays.inventoryBackground(
+        return ExtraDisplays.inventoryBackground(
             2, 4,
             Displays.padding(2, armorEquipment),
         ).asWidget()
@@ -193,7 +194,7 @@ object PvWidgets {
                 Displays.padding(2, Displays.item(item, showTooltip = true, showStackSize = true))
             }
         }
-        return Displays.inventoryBackground(
+        return ExtraDisplays.inventoryBackground(
             9, itemDisplays.size,
             Displays.padding(2, itemDisplays.asTable()),
         )

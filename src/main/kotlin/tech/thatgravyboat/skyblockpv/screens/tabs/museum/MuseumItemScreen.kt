@@ -3,6 +3,9 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.museum
 import com.mojang.authlib.GameProfile
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
+import tech.thatgravyboat.lib.extensions.withTooltip
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
@@ -12,12 +15,10 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.museum.*
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.centerHorizontally
 import tech.thatgravyboat.skyblockpv.utils.Utils.rightPad
 import tech.thatgravyboat.skyblockpv.utils.components.CarouselWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.*
-import tech.thatgravyboat.skyblockpv.utils.withTooltip
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 import kotlin.math.ceil
 
 class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
@@ -27,7 +28,7 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     fun getInventories(): List<Display> {
         return RepoMuseumData.museumCategoryMap.entries
             .flatMap { (_, entries) -> createPagesForCategory(entries) }
-            .map { Displays.inventoryBackground(9, 6, Displays.padding(2, it)) }
+            .map { ExtraDisplays.inventoryBackground(9, 6, Displays.padding(2, it)) }
     }
 
     fun createPagesForCategory(items: List<MuseumItem>): List<Display> {

@@ -8,6 +8,7 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
@@ -22,7 +23,7 @@ import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
 import tech.thatgravyboat.skyblockpv.screens.elements.ExtraConstants
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.shorten
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("COLLECTION", gameProfile, profile) {
 
@@ -112,7 +113,7 @@ class CollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             Displays.item(col.itemStack ?: ItemStack.EMPTY),
             listOf(
                 Displays.text(Text.join(col.itemStack?.hoverName?.stripped ?: col.itemId, ": ${col.amount.shorten()}")),
-                listOf(Displays.progress(progNext.second), progressText).toRow(3),
+                listOf(ExtraDisplays.progress(progNext.second), progressText).toRow(3),
             ).toColumn(1),
             spacing = 5,
             alignment = Alignment.CENTER,

@@ -3,16 +3,17 @@ package tech.thatgravyboat.skyblockpv.screens.tabs.mining
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.DisplayWidget
+import tech.thatgravyboat.lib.displays.Displays
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.skills.MiningGear
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 
 class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
@@ -57,7 +58,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 val scrapsCount = profile.inventory?.getAllItems()?.filter {
                     it.getData(DataTypes.ID) == suspiciousScrapId
                 }?.sumOf { it.count } ?: 0
-                val display = Displays.inventorySlot(
+                val display = ExtraDisplays.inventorySlot(
                     Displays.padding(
                         2,
                         Displays.item(scrapItem, customStackText = scrapsCount, showTooltip = true),

@@ -4,6 +4,9 @@ import com.mojang.authlib.GameProfile
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
+import tech.thatgravyboat.lib.extensions.withTooltip
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
@@ -13,10 +16,10 @@ import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumArmor
 import tech.thatgravyboat.skyblockpv.data.museum.MuseumData
 import tech.thatgravyboat.skyblockpv.data.museum.RepoMuseumData
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
-import tech.thatgravyboat.skyblockpv.utils.displays.*
-import tech.thatgravyboat.skyblockpv.utils.withTooltip
+import tech.thatgravyboat.skyblockpv.utils.displays.DropdownContext
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
+import tech.thatgravyboat.skyblockpv.utils.displays.withDropdown
 
 class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     BaseMuseumScreen(gameProfile, profile) {
@@ -39,8 +42,8 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
             }.map { Displays.padding(2, it) }.chunked(15)
 
             display(
-                Displays.dropdownOverlay(
-                    Displays.inventoryBackground(
+                ExtraDisplays.dropdownOverlay(
+                    ExtraDisplays.inventoryBackground(
                         chunked.firstOrNull()?.size ?: 0, chunked.size,
                         Displays.padding(2, chunked.map { it.toRow() }.toColumn()),
                     ),
@@ -57,7 +60,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
         return data.items.find { it.id == museumArmor.id }?.let {
             val table = it.stacks.map { Displays.item(it.value, showTooltip = true).withPadding(2) }.chunked(4)
             val dropdown = table.transpose().asTable().let { display ->
-                Displays.inventoryBackground(table.size, it.stacks.size.coerceAtMost(4), display.withPadding(2))
+                ExtraDisplays.inventoryBackground(table.size, it.stacks.size.coerceAtMost(4), display.withPadding(2))
                     .withPadding(top = -4, left = -4)
             }
 
@@ -71,7 +74,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                     }
                 },
                 showTooltip = true,
-            ).withPadding(2).let { Displays.inventorySlot(it.withPadding(2)) }.withPadding(top = -4, left = -4),
+            ).withPadding(2).let { ExtraDisplays.inventorySlot(it.withPadding(2)) }.withPadding(top = -4, left = -4),
             dropdownContext,
         )
     }

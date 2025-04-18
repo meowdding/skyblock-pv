@@ -5,6 +5,12 @@ import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.TooltipFlag
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.builder.TooltipBuilder
+import tech.thatgravyboat.lib.displays.DisplayWidget
+import tech.thatgravyboat.lib.displays.Displays
+import tech.thatgravyboat.lib.displays.toRow
+import tech.thatgravyboat.lib.displays.withTooltip
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
@@ -14,13 +20,12 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockpv.data.api.RiftData
 import tech.thatgravyboat.skyblockpv.data.repo.RiftCodecs
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.formatReadableTime
 import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 import java.time.Instant
 
 class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
@@ -171,7 +176,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     }
                 }.build()
                 Displays.padding(2, Displays.item(item).withTooltip(lore))
-            }.toRow().let { display(Displays.inventoryBackground(8, Orientation.HORIZONTAL, Displays.padding(2, it))) }
+            }.toRow().let { display(ExtraDisplays.inventoryBackground(8, Orientation.HORIZONTAL, Displays.padding(2, it))) }
         },
     )
 }
