@@ -19,7 +19,7 @@ mixinconstraints = "1.0.7"
 placeholders = "2.6.1+1.21.5"
 keval = "1.1.1"
 repo = "1.2.0"
-meowdding-lib = "1.0.1"
+meowdding-lib = "1.0.3"
 
 # Dev Dependencies
 devauth = "1.2.1"

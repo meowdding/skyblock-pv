@@ -9,6 +9,10 @@ import net.minecraft.client.gui.layouts.LayoutSettings
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.builder.LayoutBuilder
+import tech.thatgravyboat.lib.builder.LayoutBuilder.Companion.setPos
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
@@ -22,15 +26,12 @@ import tech.thatgravyboat.skyblockpv.api.predicates.ItemPredicates
 import tech.thatgravyboat.skyblockpv.data.api.skills.*
 import tech.thatgravyboat.skyblockpv.data.repo.EssenceData.addFishingPerk
 import tech.thatgravyboat.skyblockpv.screens.BasePvScreen
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder.Companion.setPos
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.asScrollable
 import tech.thatgravyboat.skyblockpv.utils.Utils.text
 import tech.thatgravyboat.skyblockpv.utils.Utils.transpose
 import tech.thatgravyboat.skyblockpv.utils.Utils.whiteText
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -354,7 +355,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             ItemPredicates.AnySkyblockID(FishingGear.trophyArmor),
         ) ?: emptyList()
 
-        return Displays.inventoryBackground(
+        return ExtraDisplays.inventoryBackground(
             4,
             Orientation.VERTICAL,
             Displays.padding(2, PvWidgets.armorDisplay(trophyArmor)),
@@ -377,7 +378,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         val chunked = trophyFishItems.chunked(6)
 
-        return Displays.inventoryBackground(
+        return ExtraDisplays.inventoryBackground(
             6, 3,
             Displays.padding(2, chunked.map { row -> row.map { Displays.padding(2, it) }.toRow() }.toColumn()),
         ).asWidget()
@@ -424,7 +425,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             )
         }
 
-        return Displays.inventorySlot(Displays.padding(3, item)).let {
+        return ExtraDisplays.inventorySlot(Displays.padding(3, item)).let {
             if (trophyFish.tier == TrophyFishTier.NONE) {
                 return@let Displays.padding(0, 0, 0, 0, it)
             }

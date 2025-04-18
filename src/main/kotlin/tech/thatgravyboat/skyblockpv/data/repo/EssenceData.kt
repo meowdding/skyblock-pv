@@ -1,13 +1,13 @@
 package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.annotations.SerializedName
+import tech.thatgravyboat.lib.builder.LayoutBuilder
+import tech.thatgravyboat.lib.displays.Displays
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuilder
 import tech.thatgravyboat.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockpv.utils.displays.Displays
 import tech.thatgravyboat.skyblockpv.utils.displays.withTranslatedTooltip
 
 data class RepoEssenceData(

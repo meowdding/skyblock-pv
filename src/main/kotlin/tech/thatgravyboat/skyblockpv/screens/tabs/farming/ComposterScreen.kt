@@ -5,6 +5,8 @@ import earth.terrarium.olympus.client.utils.Orientation
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
@@ -18,12 +20,11 @@ import tech.thatgravyboat.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import tech.thatgravyboat.skyblockpv.data.api.skills.farming.GardenProfile
 import tech.thatgravyboat.skyblockpv.data.repo.StaticComposterData
 import tech.thatgravyboat.skyblockpv.data.repo.StaticGardenData
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.Utils.append
 import tech.thatgravyboat.skyblockpv.utils.Utils.round
 import tech.thatgravyboat.skyblockpv.utils.Utils.toReadableString
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.*
+import tech.thatgravyboat.skyblockpv.utils.displays.ExtraDisplays
 import java.time.Instant
 
 class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
@@ -84,7 +85,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         "Upgrades",
         LayoutBuild.frame {
             display(
-                Displays.inventoryBackground(
+                ExtraDisplays.inventoryBackground(
                     5, Orientation.HORIZONTAL,
                     Displays.padding(
                         2,
@@ -253,7 +254,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
             val plots = map.map { it.reversed().map { Displays.padding(2, it) }.toColumn() }.toRow()
             display(
-                Displays.inventoryBackground(
+                ExtraDisplays.inventoryBackground(
                     5,5,
                     Displays.padding(2, plots),
                 ),

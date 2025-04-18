@@ -1,8 +1,13 @@
 package tech.thatgravyboat.skyblockpv.screens.tabs.rift
 
 import com.mojang.authlib.GameProfile
+import tech.thatgravyboat.lib.builder.LayoutBuild
+import tech.thatgravyboat.lib.displays.DisplayWidget
+import tech.thatgravyboat.lib.displays.Displays
+import tech.thatgravyboat.lib.displays.asWidget
+import tech.thatgravyboat.lib.displays.centerIn
+import tech.thatgravyboat.lib.displays.toRow
 import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
 import tech.thatgravyboat.skyblockpv.utils.LayoutUtils.center
 import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
 import tech.thatgravyboat.skyblockpv.utils.displays.*
@@ -20,7 +25,7 @@ class RiftInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
         ).toRow()
 
         display(
-            Displays.inventoryBackground(
+            ExtraDisplays.inventoryBackground(
                 2, 4,
                 Displays.padding(2, armorAndEquipment),
             ).centerIn(-1, height),
