@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.feature.debug
 
 import com.google.gson.GsonBuilder
+import me.owdding.ktmodules.Module
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
@@ -14,6 +15,7 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.config.DevConfig
 import java.nio.file.Files
 
+@Module
 object RabbitParser {
     private var data: MutableMap<String, MutableSet<String>> = mutableMapOf()
 

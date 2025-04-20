@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.data.repo
 
 import com.google.gson.annotations.SerializedName
+import me.owdding.ktmodules.Module
 import tech.thatgravyboat.lib.builder.LayoutBuilder
 import tech.thatgravyboat.lib.displays.Displays
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -19,6 +20,7 @@ data class RepoEssencePerk(
     @SerializedName("max_level") val maxLevel: Int,
 )
 
+@Module
 object EssenceData {
     var allPerks: Map<String, RepoEssencePerk>
         private set

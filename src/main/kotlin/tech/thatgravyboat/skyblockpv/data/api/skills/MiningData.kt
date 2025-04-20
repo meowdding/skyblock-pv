@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
+import me.owdding.ktmodules.Module
 import net.minecraft.ChatFormatting
 import net.minecraft.util.StringRepresentable
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
@@ -201,6 +202,7 @@ enum class PowderType(val formatting: ChatFormatting) : StringRepresentable {
     }
 }
 
+@Module
 object FossilTypes {
 
     data class Fossil(
