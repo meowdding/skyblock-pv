@@ -4,12 +4,14 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.notkamui.keval.keval
+import me.owdding.ktmodules.Module
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 
+@Module
 object CfCodecs {
     var data: CfRepoData
         private set

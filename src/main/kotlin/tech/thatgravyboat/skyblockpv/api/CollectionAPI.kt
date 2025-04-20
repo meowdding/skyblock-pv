@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.api
 
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
+import me.owdding.ktmodules.Module
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
@@ -12,6 +13,7 @@ import tech.thatgravyboat.skyblockpv.data.api.CollectionEntry
 
 private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/collections"
 
+@Module
 object CollectionAPI {
     var collectionData: Map<String, CollectionCategory> = emptyMap()
         private set

@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import me.owdding.ktmodules.Module
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockpv.utils.codecs.DispatchedCodec
@@ -14,6 +15,7 @@ import tech.thatgravyboat.skyblockpv.utils.codecs.ReservedUnboundMapCodec
 typealias BestiaryIcon = Either<String, Pair<String, String>>
 typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, ComplexBestiaryCategoryEntry>
 
+@Module
 object BestiaryCodecs {
 
     var data: BestiaryRepoData

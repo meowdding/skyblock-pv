@@ -20,6 +20,7 @@ placeholders = "2.6.1+1.21.5"
 keval = "1.1.1"
 repo = "1.2.0"
 meowdding-lib = "1.0.3"
+meowdding-ktmodules = "1.0.2"
 
 # Dev Dependencies
 devauth = "1.2.1"
@@ -45,6 +46,7 @@ placeholders = { module = "eu.pb4:placeholder-api", version.ref = "placeholders"
 keval = { module = "com.notkamui.libs:keval", version.ref = "keval" }
 repo = { module = "tech.thatgravyboat.repo-lib:repo-lib", version.ref = "repo" }
 meowdding-lib = { module = "tech.thatgravyboat.meowdding-lib:meowdding-lib-1.21.5", version.ref = "meowdding-lib" }
+meowdding-ktmodules = { module = "me.owdding.ktmodules:KtModules", version.ref = "meowdding-ktmodules" }
 
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }

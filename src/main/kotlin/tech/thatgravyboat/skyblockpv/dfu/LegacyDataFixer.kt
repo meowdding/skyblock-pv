@@ -1,5 +1,6 @@
 package tech.thatgravyboat.skyblockpv.dfu
 
+import me.owdding.ktmodules.Module
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtUtils
 import net.minecraft.nbt.Tag
@@ -16,6 +17,7 @@ import tech.thatgravyboat.skyblockpv.dfu.fixes.display.ColorFixer
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.LoreFixer
 import tech.thatgravyboat.skyblockpv.dfu.fixes.display.NameFixer
 
+@Module
 object LegacyDataFixer {
 
     private val fixers = listOf(

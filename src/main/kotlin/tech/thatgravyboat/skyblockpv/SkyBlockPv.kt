@@ -3,6 +3,8 @@ package tech.thatgravyboat.skyblockpv
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.generated.SkyBlockPVModules
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.ResourceLocation
@@ -12,21 +14,14 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockpv.api.CollectionAPI
-import tech.thatgravyboat.skyblockpv.api.RemindersAPI
-import tech.thatgravyboat.skyblockpv.api.SkillAPI
 import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import tech.thatgravyboat.skyblockpv.config.Config
 import tech.thatgravyboat.skyblockpv.config.DevConfig
-import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
-import tech.thatgravyboat.skyblockpv.data.repo.*
-import tech.thatgravyboat.skyblockpv.dfu.LegacyDataFixer
-import tech.thatgravyboat.skyblockpv.feature.debug.RabbitParser
-import tech.thatgravyboat.skyblockpv.feature.debug.SacksParser
 import tech.thatgravyboat.skyblockpv.screens.PvTab
 import tech.thatgravyboat.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockpv.utils.Utils
 
+@Module
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
     val mod = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
     val version = mod.metadata.version
@@ -38,26 +33,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
     override fun onInitialize() {
         Config.register(configurator)
-
-        val modules = listOf(
-            this,
-            SkillAPI,
-            CollectionAPI,
-            ForgeTimeData,
-            EssenceData,
-            FossilTypes,
-            RemindersAPI,
-            RabbitParser,
-            SacksParser,
-            CfCodecs,
-            RiftCodecs,
-            BestiaryCodecs,
-            SackCodecs,
-            SlayerCodecs,
-            LegacyDataFixer,
-        )
-
-        modules.forEach { SkyBlockAPI.eventBus.register(it) }
+        SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
     }
 
     @Subscription

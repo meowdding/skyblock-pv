@@ -3,6 +3,7 @@ package tech.thatgravyboat.skyblockpv.api
 import com.google.gson.JsonArray
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import me.owdding.ktmodules.Module
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentSerialization
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
@@ -17,6 +18,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
+@Module
 object RemindersAPI {
 
     private val CODEC = Reminder.CODEC.listOf()
