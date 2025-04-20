@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-    "package": "me.owdding.skyblockpv.mixin",
+  "package": "me.owdding.skyblockpv.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
     "PlayerRendererMixin",
