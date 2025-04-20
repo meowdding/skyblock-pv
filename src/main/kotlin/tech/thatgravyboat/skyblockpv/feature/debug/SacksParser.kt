@@ -1,6 +1,7 @@
 package tech.thatgravyboat.skyblockpv.feature.debug
 
 import com.google.gson.GsonBuilder
+import me.owdding.ktmodules.Module
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
@@ -16,6 +17,7 @@ import tech.thatgravyboat.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockpv.config.DevConfig
 import java.nio.file.Files
 
+@Module
 object SacksParser {
     private var data: MutableMap<String, Sack> = mutableMapOf()
 

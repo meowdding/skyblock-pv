@@ -2,6 +2,7 @@ package tech.thatgravyboat.skyblockpv.api
 
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
+import me.owdding.ktmodules.Module
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
@@ -13,6 +14,7 @@ import tech.thatgravyboat.skyblockpv.data.api.skills.SkillData
 
 private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/skills"
 
+@Module
 object SkillAPI {
     var skills: List<Skill> = emptyList()
         private set
