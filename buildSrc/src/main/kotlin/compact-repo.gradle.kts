@@ -1,6 +1,6 @@
 
 import com.google.gson.JsonParser
-import tech.thatgravyboat.skyblockpv.museum.CreateMuseumDataTask
+import me.owdding.skyblockpv.museum.CreateMuseumDataTask
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
