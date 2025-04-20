@@ -1,10 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "tech.thatgravyboat.skyblockpv.mixin",
+  "package": "me.owdding.skyblockpv.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "I18nAccessor",
     "PlayerRendererMixin",
     "PlayerRenderStateMixin",
     "compat.ProfileViewerScreenMixin"
@@ -14,7 +13,6 @@
   },
   "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin",
   "mixins": [
-    "LanguageMixin",
     "compat.SkyblockModMessageMixin"
   ]
 }
