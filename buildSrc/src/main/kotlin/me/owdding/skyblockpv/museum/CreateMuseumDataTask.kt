@@ -68,7 +68,7 @@ abstract class CreateMuseumDataTask : DefaultTask() {
             write(GsonBuilder().setPrettyPrinting().create().toJson(output).toByteArray())
         }
 
-        outputs.dir(project.layout.buildDirectory.file("generated/museum_data"))
+        outputs.dir(project.layout.buildDirectory.file("generated/meowdding/museum_data"))
     }
 
 
