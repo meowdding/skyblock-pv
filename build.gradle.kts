@@ -1,13 +1,18 @@
+import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
+import org.gradle.api.internal.artifacts.dependencies.DefaultMinimalDependency
+import org.gradle.api.internal.artifacts.dependencies.DefaultMutableVersionConstraint
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     idea
-    kotlin("jvm") version "2.1.0"
+    `maven-publish`
+    `museum-data` // defined in buildSrc
+    alias(libs.plugins.kotlin)
     alias(libs.plugins.loom)
-    id("maven-publish")
-    `compact-repo`
-    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
+    alias(libs.plugins.repo)
+    alias(libs.plugins.resources)
+    alias(libs.plugins.ksp)
 }
 
 base {
@@ -56,36 +61,24 @@ dependencies {
     ksp(libs.meowdding.ktmodules)
 
     minecraft(libs.minecraft)
+    @Suppress("UnstableApiUsage")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.21.3:2024.12.07@zip")
+        parchment(libs.parchmentmc.get().withMcVersion().toString())
     })
-    modImplementation(libs.loader)
-    modImplementation(libs.fabrickotlin)
-    modImplementation(libs.fabric)
 
-    modImplementation(libs.hypixelapi)
-    modImplementation(libs.skyblockapi)
-    modImplementation(libs.rconfig)
-    modImplementation(libs.rconfigkt)
-    modImplementation(libs.rlib)
-    modImplementation(libs.olympus)
-    modImplementation(libs.mixinconstraints)
-    modImplementation(libs.placeholders)
-    modImplementation(libs.meowdding.lib)
-    implementation(libs.keval)
-    implementation(libs.repo)
+    modImplementation(libs.bundles.fabric)
 
-    include(libs.hypixelapi)
-    include(libs.skyblockapi)
-    include(libs.rconfig)
-    include(libs.rconfigkt)
-    include(libs.rlib)
-    include(libs.olympus)
-    include(libs.mixinconstraints)
-    include(libs.placeholders)
-    include(libs.keval)
-    include(libs.meowdding.lib)
+    implementation(libs.repo) // included in sbapi, exposed through implementation
+
+    includeModImplementationBundle(libs.bundles.sbapi)
+    includeModImplementationBundle(libs.bundles.rconfig)
+    includeModImplementationBundle(libs.bundles.libs)
+    includeModImplementationBundle(libs.bundles.meowdding)
+
+    includeModImplementation(libs.mixinconstraints)
+
+    includeImplementation(libs.keval)
 
     modRuntimeOnly(libs.devauth)
     modRuntimeOnly(libs.modmenu)
@@ -123,9 +116,12 @@ idea {
     }
 }
 
-compactingResource {
+repo {
+    hotm { includeAll() }
+}
+
+compactingResources {
     this.basePath = "repo"
-    compactToArray("hotmperks", "hotm")
     compactToObject("garden_data")
     compactToObject("chocolate_factory")
     compactToObject("rift")
@@ -140,3 +136,31 @@ ksp {
     arg("meowdding.modules.project_name", project.name)
     arg("meowdding.modules.package", "me.owdding.skyblockpv.generated")
 }
+
+fun ExternalModuleDependency.withMcVersion(): ExternalModuleDependency {
+    return DefaultMinimalDependency(
+        DefaultModuleIdentifier.newId(this.group, this.name.replace("<mc_version>", libs.versions.minecraft.get())),
+        DefaultMutableVersionConstraint(this.versionConstraint)
+    )
+}
+
+@Suppress("unused")
+fun DependencyHandlerScope.includeImplementationBundle(bundle: Provider<ExternalModuleDependencyBundle>) = bundle.get().forEach {
+    includeImplementation(provider { it })
+}
+
+fun DependencyHandlerScope.includeModImplementationBundle(bundle: Provider<ExternalModuleDependencyBundle>) = bundle.get().forEach {
+    includeModImplementation(provider { it })
+}
+
+fun <T : ExternalModuleDependency> DependencyHandlerScope.includeImplementation(dependencyNotation: Provider<T>) =
+    with(dependencyNotation.get().withMcVersion()) {
+        include(this)
+        modImplementation(this)
+    }
+
+fun <T : ExternalModuleDependency> DependencyHandlerScope.includeModImplementation(dependencyNotation: Provider<T>) =
+    with(dependencyNotation.get().withMcVersion()) {
+        include(this)
+        modImplementation(this)
+    }
