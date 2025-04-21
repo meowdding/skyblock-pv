@@ -5,12 +5,14 @@ import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
+import me.owdding.skyblockpv.screens.PvTab
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -78,6 +80,14 @@ object Utils {
                 callback(profile.getOrNull())
                 isFetchingGameProfile = false
             }
+    }
+
+    fun openMainScreen(name: String) = fetchGameProfile(name) { profile ->
+        if (profile == null) {
+            ChatUtils.chat("§cPlayer could not be found")
+        } else {
+            McClient.tell { McClient.setScreen(PvTab.MAIN.create(profile)) }
+        }
     }
 
     private val formatter = NumberFormat.getCompactNumberInstance()
