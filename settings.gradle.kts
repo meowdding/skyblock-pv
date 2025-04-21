@@ -8,6 +8,7 @@ pluginManagement {
             name = "Fabric"
         }
         gradlePluginPortal()
+        maven("https://maven.teamresourceful.com/repository/maven-public/")
     }
 }
 
