@@ -1,12 +1,12 @@
 package me.owdding.skyblockpv.museum
 
-import CompactingResourcesExtension
-import DEFAULT_CACHE_DIRECTORY
-import FileCache
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import me.owdding.repo.DEFAULT_CACHE_DIRECTORY
+import me.owdding.repo.FileCache
+import me.owdding.repo.resources.CompactingResourcesExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Internal
@@ -29,7 +29,7 @@ abstract class CreateMuseumDataTask : DefaultTask() {
 
     init {
         val configuration = project.extensions.getByType<CompactingResourcesExtension>()
-        val file = project.layout.buildDirectory.file("generated/museum_data/${configuration.basePath!!}/museum_data.json").get().asFile
+        val file = project.layout.buildDirectory.file("generated/meowdding/museum_data/${configuration.basePath!!}/museum_data.json").get().asFile
         fun write(byteArray: ByteArray) {
             val filePath = file.toPath()
             filePath.parent.createDirectories()
