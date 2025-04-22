@@ -9,7 +9,6 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.DevConfig
 import me.owdding.skyblockpv.generated.SkyBlockPVModules
 import me.owdding.skyblockpv.screens.PvTab
-import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
@@ -46,16 +45,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             }
             then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 callback {
-                    val player = this.getArgument("player", String::class.java)
-                    Utils.fetchGameProfile(player) { profile ->
-                        if (profile == null) {
-                            ChatUtils.chat("§cPlayer could not be found")
-                        } else {
-                            McClient.tell {
-                                McClient.setScreen(PvTab.MAIN.create(profile))
-                            }
-                        }
-                    }
+                    Utils.openMainScreen(this.getArgument("player", String::class.java))
                 }
             }
         }
