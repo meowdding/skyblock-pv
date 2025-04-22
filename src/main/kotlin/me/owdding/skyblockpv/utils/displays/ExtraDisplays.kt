@@ -1,14 +1,14 @@
 package me.owdding.skyblockpv.utils.displays
 
 import earth.terrarium.olympus.client.utils.Orientation
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.Displays.isMouseOver
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.util.ARGB
-import tech.thatgravyboat.lib.displays.Display
-import tech.thatgravyboat.lib.displays.Displays
-import tech.thatgravyboat.lib.displays.Displays.isMouseOver
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
 import tech.thatgravyboat.skyblockapi.utils.extentions.translate

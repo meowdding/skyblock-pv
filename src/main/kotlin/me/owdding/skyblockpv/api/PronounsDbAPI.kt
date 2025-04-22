@@ -3,8 +3,8 @@ package me.owdding.skyblockpv.api
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
-import tech.thatgravyboat.lib.displays.Display
-import tech.thatgravyboat.lib.displays.Displays
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.Displays
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.asList
 import tech.thatgravyboat.skyblockapi.utils.http.Http

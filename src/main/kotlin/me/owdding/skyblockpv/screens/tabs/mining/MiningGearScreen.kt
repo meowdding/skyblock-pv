@@ -1,15 +1,15 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.MiningGear
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.displays.DisplayWidget
-import tech.thatgravyboat.lib.displays.Displays
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData

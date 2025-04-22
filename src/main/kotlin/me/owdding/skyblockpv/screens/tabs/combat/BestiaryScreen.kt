@@ -2,6 +2,15 @@ package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
 import com.mojang.datafixers.util.Either
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asTable
+import me.owdding.lib.extensions.ItemUtils.createSkull
+import me.owdding.lib.extensions.rightPad
+import me.owdding.lib.extensions.round
+import me.owdding.lib.extensions.withTooltip
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
@@ -9,20 +18,11 @@ import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.fixBase64Padding
-import me.owdding.skyblockpv.utils.Utils.rightPad
-import me.owdding.skyblockpv.utils.Utils.round
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.displays.Display
-import tech.thatgravyboat.lib.displays.DisplayWidget
-import tech.thatgravyboat.lib.displays.Displays
-import tech.thatgravyboat.lib.displays.asTable
-import tech.thatgravyboat.lib.extensions.withTooltip
-import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor

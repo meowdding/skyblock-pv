@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.screens
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.tabs.*
@@ -19,7 +20,6 @@ import me.owdding.skyblockpv.screens.tabs.rift.MainRiftScreen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
-import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 

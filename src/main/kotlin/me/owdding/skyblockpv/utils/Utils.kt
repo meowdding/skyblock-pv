@@ -17,17 +17,8 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.nio.file.Files
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
-import kotlin.time.Duration
-import kotlin.time.DurationUnit
 
 object Utils {
 
@@ -54,21 +45,6 @@ object Utils {
         }
     }
 
-    fun Number.round(): String = DecimalFormat("#.##").format(this)
-
-    fun <T> List<List<T>>.transpose(): List<List<T>> {
-        val list = mutableListOf<MutableList<T>>()
-        for (x in indices) {
-            for (y in this[x].indices) {
-                if (x == 0) {
-                    list.add(mutableListOf())
-                }
-                list[y].add(this[x][y])
-            }
-        }
-        return list
-    }
-
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
@@ -90,35 +66,6 @@ object Utils {
         }
     }
 
-    private val formatter = NumberFormat.getCompactNumberInstance()
-    fun Number.shorten(decimalDigits: Int = 1): String = formatter.apply { maximumFractionDigits = decimalDigits }.format(this)
-
-    fun Duration.formatReadableTime(biggestUnit: DurationUnit = DurationUnit.DAYS, maxUnits: Int = 2): String {
-        val units = listOf(
-            DurationUnit.DAYS to this.inWholeDays,
-            DurationUnit.HOURS to this.inWholeHours % 24,
-            DurationUnit.MINUTES to this.inWholeMinutes % 60,
-            DurationUnit.SECONDS to this.inWholeSeconds % 60,
-            //DurationUnit.MILLISECONDS to this.inWholeMilliseconds % 1000,
-        )
-
-        val unitNames = mapOf(
-            DurationUnit.DAYS to "d",
-            DurationUnit.HOURS to "h",
-            DurationUnit.MINUTES to "min",
-            DurationUnit.SECONDS to "s",
-            //DurationUnit.MILLISECONDS to "ms",
-        )
-
-        val filteredUnits = units.dropWhile { it.first != biggestUnit }
-            .filter { it.second > 0 }
-            .take(maxUnits)
-
-        return filteredUnits.joinToString(", ") { (unit, value) ->
-            "$value${unitNames[unit]}"
-        }.ifEmpty { "0 seconds" }
-    }
-
     inline fun <reified T : Any> loadFromRepo(file: String) = runBlocking {
         try {
             SkyBlockPv.mod.findPath("repo/$file.json").orElseThrow()?.let(Files::readString)?.readJson<T>() ?: return@runBlocking null
@@ -138,30 +85,10 @@ object Utils {
             init(this)
         }
     }
-
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
-
-    fun <T> List<T>.rightPad(size: Int, element: T): MutableList<T> {
-        if (this !is MutableList<T>) {
-            return this.toMutableList().rightPad(size, element)
-        }
-
-        while (this.size < size) {
-            this.add(this.lastIndex + 1, element)
-        }
-        return this
-    }
-
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 
-    private val dateTimeFormatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss")
-    fun Instant.toReadableString(zoneId: ZoneId = ZoneOffset.systemDefault()): String {
-        return dateTimeFormatter.format(LocalDateTime.ofInstant(this, zoneId))
-    }
-
     fun UUID.toDashlessString(): String = this.toString().replace("-", "")
-
-    fun <T> Map<out Number, T>.sortByKey(): Map<Number, T> = this.entries.sortedBy { it.key.toLong() }.associate { it.toPair() }
 
     fun String.fixBase64Padding() = replace(Regex("=+$"), "").let { it + "=".repeat((4 - it.length % 4) % 4) }
 }

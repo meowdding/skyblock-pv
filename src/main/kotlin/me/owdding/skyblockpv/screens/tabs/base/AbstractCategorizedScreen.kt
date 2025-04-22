@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.layouts.Layouts
+import me.owdding.lib.displays.DisplayWidget
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
@@ -11,7 +12,6 @@ import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.lib.displays.DisplayWidget
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 
 abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen(name, gameProfile, profile) {

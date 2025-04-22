@@ -1,9 +1,9 @@
 package me.owdding.skyblockpv.api.predicates
 
+import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import java.util.function.Predicate
 
 typealias ItemPredicate = Predicate<ItemStack>

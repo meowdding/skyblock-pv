@@ -1,12 +1,12 @@
 package me.owdding.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.*
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.utils.LayoutUtils.center
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.displays.*
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget) = LayoutBuild.horizontal {

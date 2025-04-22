@@ -1,8 +1,8 @@
 package me.owdding.skyblockpv.utils
 
 import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
+import me.owdding.lib.displays.Display
 import net.minecraft.client.gui.components.AbstractWidget
-import tech.thatgravyboat.lib.displays.Display
 
 object ExtraWidgetRenderers {
 

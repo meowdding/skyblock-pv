@@ -2,24 +2,24 @@ package me.owdding.skyblockpv.screens.tabs.rift
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
+import me.owdding.lib.extensions.toReadableString
+import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.RiftData
 import me.owdding.skyblockpv.data.repo.RiftCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
-import me.owdding.skyblockpv.utils.Utils.formatReadableTime
-import me.owdding.skyblockpv.utils.Utils.toReadableString
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.TooltipFlag
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.builder.TooltipBuilder
-import tech.thatgravyboat.lib.displays.DisplayWidget
-import tech.thatgravyboat.lib.displays.Displays
-import tech.thatgravyboat.lib.displays.toRow
-import tech.thatgravyboat.lib.displays.withTooltip
+import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
@@ -80,7 +80,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             }
             string("Time sitting with Ävaeìkx: ") {
                 color = TextColor.DARK_GRAY
-                append(rift.secondsSitting.formatReadableTime()) {
+                append(rift.secondsSitting.toReadableTime()) {
                     color = TextColor.DARK_PURPLE
                 }
             }

@@ -4,9 +4,9 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.utils.Utils
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
-import me.owdding.skyblockpv.utils.Utils
 
 @Module
 object RiftCodecs {

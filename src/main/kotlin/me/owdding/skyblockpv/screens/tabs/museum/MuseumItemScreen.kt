@@ -1,17 +1,17 @@
 package me.owdding.skyblockpv.screens.tabs.museum
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.*
+import me.owdding.lib.extensions.rightPad
+import me.owdding.lib.extensions.withTooltip
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.museum.*
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
-import me.owdding.skyblockpv.utils.Utils.rightPad
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.displays.*
-import tech.thatgravyboat.lib.extensions.withTooltip
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI

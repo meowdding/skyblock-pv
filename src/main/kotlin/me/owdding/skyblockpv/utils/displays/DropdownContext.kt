@@ -1,6 +1,6 @@
 package me.owdding.skyblockpv.utils.displays
 
-import tech.thatgravyboat.lib.displays.Display
+import me.owdding.lib.displays.Display
 
 
 class DropdownContext(val fadeTime: Int = 200) {

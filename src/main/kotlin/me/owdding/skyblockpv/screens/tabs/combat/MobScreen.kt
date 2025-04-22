@@ -3,13 +3,13 @@ package me.owdding.skyblockpv.screens.tabs.combat
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.base.ListWidget
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.DisplayWidget
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.combat.MobData
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.displays.DisplayWidget
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 
 class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {

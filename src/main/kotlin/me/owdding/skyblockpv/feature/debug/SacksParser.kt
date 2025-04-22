@@ -9,8 +9,8 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
-import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerChangeEvent
 import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerCloseEvent
+import tech.thatgravyboat.skyblockapi.api.events.screen.InventoryChangeEvent
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -24,9 +24,9 @@ object SacksParser {
     private var titleRegex = "(?<name>.*) Sack".toRegex()
 
     @Subscription
-    fun onInv(event: ContainerChangeEvent) {
+    fun onInv(event: InventoryChangeEvent) {
         if (!shouldParse()) return
-        if (event.slot !in 9..44) return
+        if (event.slot.index !in 9..44) return
 
         val id = event.item.getData(DataTypes.ID) ?: return
         titleRegex.match(event.title, "name") { (name) ->

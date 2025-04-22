@@ -2,11 +2,11 @@ package me.owdding.skyblockpv.data.repo
 
 import com.google.gson.annotations.SerializedName
 import me.owdding.ktmodules.Module
+import me.owdding.lib.builder.LayoutBuilder
+import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.displays.withTranslatedTooltip
-import tech.thatgravyboat.lib.builder.LayoutBuilder
-import tech.thatgravyboat.lib.displays.Displays
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color

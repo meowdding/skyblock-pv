@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.data.repo
 
+import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 
 enum class SkullTextures(var texture: String = "") {
     WITHER_ESSENCE,

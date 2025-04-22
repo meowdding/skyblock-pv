@@ -20,7 +20,7 @@ mixinconstraints = "1.0.7"
 placeholders = "2.6.1+1.21.5"
 keval = "1.1.1"
 repolib = "1.2.0"
-meowdding-lib = "1.0.3"
+meowdding-lib = "1.0.5"
 meowdding-ktmodules = "1.0.2"
 
 # Keep kt version in sync with first segment of ksp version
@@ -51,7 +51,7 @@ rconfigkt = { module = "com.teamresourceful.resourcefulconfigkt:resourcefulconfi
 olympus = { module = "earth.terrarium.olympus:olympus-fabric-<mc_version>", version.ref = "olympus" }
 rlib = { module = "com.teamresourceful.resourcefullib:resourcefullib-fabric-<mc_version>", version.ref = "rlib" }
 parchmentmc = { module = "org.parchmentmc.data:parchment-<mc_version>", version.ref = "parchmentmc" }
-meowdding-lib = { module = "tech.thatgravyboat.meowdding-lib:meowdding-lib-<mc_version>", version.ref = "meowdding-lib" }
+meowdding-lib = { module = "me.owdding.meowdding-lib:meowdding-lib-<mc_version>", version.ref = "meowdding-lib" }
 
 # Other libs
 hypixelapi = { module = "maven.modrinth:hypixel-mod-api", version.ref = "hypixelapi" }

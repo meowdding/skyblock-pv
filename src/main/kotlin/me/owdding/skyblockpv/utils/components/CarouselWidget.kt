@@ -7,11 +7,11 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import earth.terrarium.olympus.client.ui.UIConstants
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout
-import tech.thatgravyboat.lib.displays.Display
-import tech.thatgravyboat.lib.displays.Displays
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissorRange
 import tech.thatgravyboat.skyblockapi.utils.extentions.translated
