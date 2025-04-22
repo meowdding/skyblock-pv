@@ -28,6 +28,12 @@
         },
         "prefix": "skyblockpv"
     },
+    "config": {
+        "spying": {
+            "@value": "Spying Button",
+            "desc": "Add a button to the Hypixel Profile Viewer that allows you to open our Profile Viewer directly."
+        }
+    },
     "dev": {
         "dev_mode": {
             "@value": "Dev Mode",
