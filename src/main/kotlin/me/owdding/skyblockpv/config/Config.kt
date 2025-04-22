@@ -31,5 +31,9 @@ object Config : ConfigKt("skyblockpv/config") {
         category(DevConfig)
     }
 
+    var profileSpying by boolean(true) {
+        name = Translated("skyblockpv.config.spying")
+        description = Translated("skyblockpv.config.spying.desc")
+    }
 
 }
