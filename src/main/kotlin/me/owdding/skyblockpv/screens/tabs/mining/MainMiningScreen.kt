@@ -220,7 +220,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                         ChatUtils.chat("Reminder set for ${slot.itemStack.hoverName?.stripped} to be ready in $timeDisplay")
                         RemindersAPI.addReminder(
                             "forge_slot_$index",
-                            Text.of("Reminder: ${slot.itemStack.hoverName?.stripped} is ready!"),
+                            Text.join("Reminder: ", slot.itemStack.hoverName, " is ready!"),
                             System.currentTimeMillis() + timeRemaining.inWholeMilliseconds,
                         )
                     }
