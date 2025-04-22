@@ -1,14 +1,14 @@
 package me.owdding.skyblockpv.screens.tabs.rift
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.displays.DisplayWidget
-import tech.thatgravyboat.lib.displays.Displays
 
 class RiftEnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
 

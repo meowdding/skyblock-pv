@@ -4,6 +4,9 @@ import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import me.owdding.lib.displays.*
+import me.owdding.lib.extensions.round
+import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.api.CollectionAPI
 import me.owdding.skyblockpv.api.CollectionAPI.getIconFromCollectionType
 import me.owdding.skyblockpv.api.CollectionAPI.getProgressToMax
@@ -13,14 +16,11 @@ import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionCategory
 import me.owdding.skyblockpv.data.api.CollectionItem
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
-import me.owdding.skyblockpv.utils.Utils.round
-import me.owdding.skyblockpv.utils.Utils.shorten
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped

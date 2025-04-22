@@ -2,6 +2,11 @@ package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutBuilder
+import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
+import me.owdding.lib.displays.*
+import me.owdding.lib.extensions.transpose
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
@@ -10,7 +15,6 @@ import me.owdding.skyblockpv.data.repo.EssenceData.addFishingPerk
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.text
-import me.owdding.skyblockpv.utils.Utils.transpose
 import me.owdding.skyblockpv.utils.Utils.whiteText
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -21,10 +25,6 @@ import net.minecraft.client.gui.layouts.LayoutSettings
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.builder.LayoutBuilder
-import tech.thatgravyboat.lib.builder.LayoutBuilder.Companion.setPos
-import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData

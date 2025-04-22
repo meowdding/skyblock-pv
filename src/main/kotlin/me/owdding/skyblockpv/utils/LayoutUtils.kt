@@ -2,10 +2,10 @@ package me.owdding.skyblockpv.utils
 
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.compound.LayoutWidget
+import me.owdding.lib.builder.LayoutBuild
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
-import tech.thatgravyboat.lib.builder.LayoutBuild
 
 object LayoutUtils {
 

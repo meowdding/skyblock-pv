@@ -1,6 +1,11 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.*
+import me.owdding.lib.extensions.shorten
+import me.owdding.lib.extensions.sortByKey
+import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.RemindersAPI
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -11,17 +16,12 @@ import me.owdding.skyblockpv.data.repo.ForgeTimeData
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
-import me.owdding.skyblockpv.utils.Utils.formatReadableTime
-import me.owdding.skyblockpv.utils.Utils.shorten
-import me.owdding.skyblockpv.utils.Utils.sortByKey
 import me.owdding.skyblockpv.utils.Utils.text
 import me.owdding.skyblockpv.utils.Utils.whiteText
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.displays.*
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
@@ -197,7 +197,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     ) + (slot.startTime - System.currentTimeMillis()).toDuration(DurationUnit.MILLISECONDS)
 
                     val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) "§aReady"
-                    else "§8${timeRemaining.formatReadableTime(DurationUnit.DAYS, 2)}"
+                    else "§8${timeRemaining.toReadableTime()}"
 
                     val display = listOf(
                         Displays.text("§8§lSlot $index", shadow = false),

@@ -1,6 +1,12 @@
 package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
+import me.owdding.lib.displays.*
+import me.owdding.lib.extensions.round
+import me.owdding.lib.extensions.shorten
+import me.owdding.lib.extensions.toReadableString
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.CfData
 import me.owdding.skyblockpv.data.api.RabbitEmployee
@@ -9,9 +15,6 @@ import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
-import me.owdding.skyblockpv.utils.Utils.round
-import me.owdding.skyblockpv.utils.Utils.shorten
-import me.owdding.skyblockpv.utils.Utils.toReadableString
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.core.component.DataComponents
@@ -19,10 +22,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.level.ItemLike
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.builder.LayoutBuilder.Companion.setPos
-import tech.thatgravyboat.lib.builder.TooltipBuilder
-import tech.thatgravyboat.lib.displays.*
+import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap

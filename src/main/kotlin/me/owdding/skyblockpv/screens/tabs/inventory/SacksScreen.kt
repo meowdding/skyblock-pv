@@ -1,15 +1,15 @@
 package me.owdding.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asTable
+import me.owdding.lib.extensions.rightPad
+import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SackCodecs
-import me.owdding.skyblockpv.utils.Utils.rightPad
-import me.owdding.skyblockpv.utils.Utils.shorten
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.lib.displays.Display
-import tech.thatgravyboat.lib.displays.Displays
-import tech.thatgravyboat.lib.displays.asTable
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
 class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {

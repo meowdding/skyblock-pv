@@ -1,12 +1,12 @@
 package me.owdding.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
+import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.utils.Utils
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.utils.extentions.ItemUtils.createSkull
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.text.Text

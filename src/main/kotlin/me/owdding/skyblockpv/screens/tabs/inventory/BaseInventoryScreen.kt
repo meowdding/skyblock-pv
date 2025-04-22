@@ -1,6 +1,11 @@
 package me.owdding.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asWidget
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.BasePvScreen
@@ -10,11 +15,6 @@ import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.lib.builder.LayoutBuild
-import tech.thatgravyboat.lib.displays.Display
-import tech.thatgravyboat.lib.displays.DisplayWidget
-import tech.thatgravyboat.lib.displays.Displays
-import tech.thatgravyboat.lib.displays.asWidget
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
