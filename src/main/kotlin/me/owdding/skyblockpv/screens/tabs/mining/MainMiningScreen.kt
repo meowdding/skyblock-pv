@@ -199,6 +199,8 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) "§aReady"
                     else "§8${timeRemaining.toReadableTime()}"
 
+                    val canSetReminder = isProfileOfUser() && timeRemaining.inWholeMilliseconds > 0
+
                     val display = listOf(
                         Displays.text("§8§lSlot $index", shadow = false),
                         Displays.padding(0, 0, -4, 0, itemDisplay),
@@ -207,13 +209,13 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                         add("§l${slot.itemStack.hoverName?.stripped}")
                         add("§7Time Remaining: $timeDisplay")
                         add("§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}")
-                        if (isProfileOfUser()) {
+                        if (canSetReminder) {
                             add("")
                             add("§aClick to set a reminder")
                         }
                     }
 
-                    val widget = if (!isProfileOfUser()) display.asWidget()
+                    val widget = if (!canSetReminder) display.asWidget()
                     else display.asButton {
                         ChatUtils.chat("Reminder set for ${slot.itemStack.hoverName?.stripped} to be ready in $timeDisplay")
                         RemindersAPI.addReminder(
