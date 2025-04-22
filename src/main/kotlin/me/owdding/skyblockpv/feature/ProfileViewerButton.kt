@@ -23,12 +23,13 @@ object ProfileViewerButton {
     fun onInventoryChange(event: InventoryChangeEvent) {
         if (!Config.profileSpying) return
         if (event.slot.index != 13) return
-        if (event.item !in ItemTag.GLASS_PANES) {
-            SkyBlockPv.warn("Failed to replace profile viewer button, item is not a glass pane")
-            return
-        }
 
         titleRegex.match(event.title, "name") { (name) ->
+            if (event.item !in ItemTag.GLASS_PANES) {
+                SkyBlockPv.warn("Failed to replace profile viewer button, item is not a glass pane")
+                return@match
+            }
+
             event.item.replaceVisually {
                 item = Items.SPYGLASS
                 name(
