@@ -49,15 +49,19 @@ object RemindersAPI {
 
         val now = System.currentTimeMillis()
         val iterator = reminders.iterator()
+        var remindersChanged = false
         while (iterator.hasNext()) {
             val reminder = iterator.next()
             if (reminder.timestamp <= now) {
                 iterator.remove()
                 McClient.chat.addMessage(reminder.message)
+                remindersChanged = true
             } else {
                 break
             }
         }
+
+        if (remindersChanged) save()
     }
 
     fun getReminders(): List<Reminder> {
