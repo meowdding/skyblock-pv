@@ -170,13 +170,12 @@ enum class TrophyFishRank(val displayName: Component) {
 
 enum class TrophyFishType(
     val displayName: Component,
-    val internalName: String,
+    internalName: String = "",
 ) {
     SULPHUR_SKITTER(
         displayName = Text.of("Sulphur Skitter") {
             withStyle(ChatFormatting.WHITE)
         },
-        internalName = "SULPHUR_SKITTER",
     ),
     OBFUSCATED_ONE(
         displayName = Text.of("Obfuscated 1") {
@@ -188,19 +187,16 @@ enum class TrophyFishType(
         displayName = Text.of("Steaming-Hot Flounder") {
             withStyle(ChatFormatting.WHITE)
         },
-        internalName = "STEAMING_HOT_FLOUNDER",
     ),
     GUSHER(
         displayName = Text.of("Gusher") {
             withStyle(ChatFormatting.WHITE)
         },
-        internalName = "GUSHER",
     ),
     BLOBFISH(
         displayName = Text.of("Blobfish") {
             withStyle(ChatFormatting.WHITE)
         },
-        internalName = "BLOBFISH",
     ),
     OBFUSCATED_TWO(
         displayName = Text.of("Obfuscated 2") {
@@ -212,13 +208,11 @@ enum class TrophyFishType(
         displayName = Text.of("Slugfish") {
             withStyle(ChatFormatting.GREEN)
         },
-        internalName = "SLUGFISH",
     ),
     FLYFISH(
         displayName = Text.of("Flyfish") {
             withStyle(ChatFormatting.GREEN)
         },
-        internalName = "FLYFISH",
     ),
     OBFUSCATED_THREE(
         displayName = Text.of("Obfuscated 3") {
@@ -230,61 +224,54 @@ enum class TrophyFishType(
         displayName = Text.of("Lavahorse") {
             withStyle(ChatFormatting.BLUE)
         },
-        internalName = "LAVA_HORSE",
     ),
     MANA_RAY(
         displayName = Text.of("Mana Ray") {
             withStyle(ChatFormatting.BLUE)
         },
-        internalName = "MANA_RAY",
     ),
     VOLCANIC_STONEFISH(
         displayName = Text.of("Volcanic Stonefish") {
             withStyle(ChatFormatting.BLUE)
         },
-        internalName = "VOLCANIC_STONEFISH",
     ),
     VANILLE(
         displayName = Text.of("Vanille") {
             withStyle(ChatFormatting.BLUE)
         },
-        internalName = "VANILLE",
     ),
     SKELETON_FISH(
         displayName = Text.of("Skeleton Fish") {
             withStyle(ChatFormatting.DARK_PURPLE)
         },
-        internalName = "SKELETON_FISH",
     ),
     MOLDFIN(
         displayName = Text.of("Moldfin") {
             withStyle(ChatFormatting.DARK_PURPLE)
         },
-        internalName = "MOLDFIN",
     ),
     SOUL_FISH(
         displayName = Text.of("Soul Fish") {
             withStyle(ChatFormatting.DARK_PURPLE)
         },
-        internalName = "SOUL_FISH",
     ),
     KARATE_FISH(
         displayName = Text.of("Karate Fish") {
             withStyle(ChatFormatting.DARK_PURPLE)
         },
-        internalName = "KARATE_FISH",
     ),
     GOLDEN_FISH(
         displayName = Text.of("Golden Fish") {
             withStyle(ChatFormatting.GOLD)
         },
-        internalName = "GOLDEN_FISH",
     );
 
-    val bronze by lazy { RepoItemsAPI.getItem("${internalName}_BRONZE") }
-    val silver by lazy { RepoItemsAPI.getItem("${internalName}_SILVER") }
-    val gold by lazy { RepoItemsAPI.getItem("${internalName}_GOLD") }
-    val diamond by lazy { RepoItemsAPI.getItem("${internalName}_DIAMOND") }
+    val internalName: String = internalName.takeUnless { it.isEmpty() } ?: name
+
+    val bronze by lazy { RepoItemsAPI.getItem("${this.internalName}_BRONZE") }
+    val silver by lazy { RepoItemsAPI.getItem("${this.internalName}_SILVER") }
+    val gold by lazy { RepoItemsAPI.getItem("${this.internalName}_GOLD") }
+    val diamond by lazy { RepoItemsAPI.getItem("${this.internalName}_DIAMOND") }
 
     fun getItem(tier: TrophyFishTier): ItemStack {
         return when (tier) {
