@@ -1,12 +1,12 @@
 package me.owdding.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
-import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.utils.Utils
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -71,7 +71,7 @@ data class ItemsFished(
 )
 
 data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
-    val item: ItemStack by lazy { createSkull(type.getTexture(tier)) }
+    val item: ItemStack by lazy { type.getItem(tier) }
     val displayName: Component by lazy {
         if (tier == TrophyFishTier.NONE) {
             return@lazy Component.empty().append(type.displayName)
@@ -82,10 +82,10 @@ data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
 
     val apiName by lazy {
         if (tier == TrophyFishTier.NONE) {
-            return@lazy type.internalName
+            return@lazy type.internalName.lowercase()
         }
 
-        "${type.internalName}_${tier.name.lowercase()}"
+        "${type.internalName.lowercase()}_${tier.name.lowercase()}"
     }
 
     companion object {
@@ -169,110 +169,124 @@ enum class TrophyFishRank(val displayName: Component) {
 }
 
 enum class TrophyFishType(
-    private var bronze: String = "",
-    private var silver: String = "",
-    private var gold: String = "",
-    private var diamond: String = "",
     val displayName: Component,
-    internalName: String = "",
+    val internalName: String,
 ) {
     SULPHUR_SKITTER(
         displayName = Text.of("Sulphur Skitter") {
             withStyle(ChatFormatting.WHITE)
         },
+        internalName = "SULPHUR_SKITTER",
     ),
     OBFUSCATED_ONE(
-        internalName = "obfuscated_fish_1",
         displayName = Text.of("Obfuscated 1") {
             withStyle(ChatFormatting.WHITE, ChatFormatting.OBFUSCATED)
         },
+        internalName = "OBFUSCATED_FISH_1",
     ),
     STEAMING_HOT_FLOUNDER(
         displayName = Text.of("Steaming-Hot Flounder") {
             withStyle(ChatFormatting.WHITE)
         },
+        internalName = "STEAMING_HOT_FLOUNDER",
     ),
     GUSHER(
         displayName = Text.of("Gusher") {
             withStyle(ChatFormatting.WHITE)
         },
+        internalName = "GUSHER",
     ),
     BLOBFISH(
         displayName = Text.of("Blobfish") {
             withStyle(ChatFormatting.WHITE)
         },
+        internalName = "BLOBFISH",
     ),
     OBFUSCATED_TWO(
-        internalName = "obfuscated_fish_2",
         displayName = Text.of("Obfuscated 2") {
             withStyle(ChatFormatting.GREEN, ChatFormatting.OBFUSCATED)
         },
+        internalName = "OBFUSCATED_FISH_2",
     ),
     SLUGFISH(
         displayName = Text.of("Slugfish") {
             withStyle(ChatFormatting.GREEN)
         },
+        internalName = "SLUGFISH",
     ),
     FLYFISH(
         displayName = Text.of("Flyfish") {
             withStyle(ChatFormatting.GREEN)
         },
+        internalName = "FLYFISH",
     ),
     OBFUSCATED_THREE(
-        internalName = "obfuscated_fish_3",
         displayName = Text.of("Obfuscated 3") {
             withStyle(ChatFormatting.BLUE, ChatFormatting.OBFUSCATED)
         },
+        internalName = "OBFUSCATED_FISH_3",
     ),
     LAVA_HORSE(
         displayName = Text.of("Lavahorse") {
             withStyle(ChatFormatting.BLUE)
         },
+        internalName = "LAVA_HORSE",
     ),
     MANA_RAY(
         displayName = Text.of("Mana Ray") {
             withStyle(ChatFormatting.BLUE)
         },
+        internalName = "MANA_RAY",
     ),
     VOLCANIC_STONEFISH(
         displayName = Text.of("Volcanic Stonefish") {
             withStyle(ChatFormatting.BLUE)
         },
+        internalName = "VOLCANIC_STONEFISH",
     ),
     VANILLE(
         displayName = Text.of("Vanille") {
             withStyle(ChatFormatting.BLUE)
         },
+        internalName = "VANILLE",
     ),
     SKELETON_FISH(
         displayName = Text.of("Skeleton Fish") {
             withStyle(ChatFormatting.DARK_PURPLE)
         },
+        internalName = "SKELETON_FISH",
     ),
     MOLDFIN(
         displayName = Text.of("Moldfin") {
             withStyle(ChatFormatting.DARK_PURPLE)
         },
+        internalName = "MOLDFIN",
     ),
     SOUL_FISH(
         displayName = Text.of("Soul Fish") {
             withStyle(ChatFormatting.DARK_PURPLE)
         },
+        internalName = "SOUL_FISH",
     ),
     KARATE_FISH(
         displayName = Text.of("Karate Fish") {
             withStyle(ChatFormatting.DARK_PURPLE)
         },
+        internalName = "KARATE_FISH",
     ),
     GOLDEN_FISH(
         displayName = Text.of("Golden Fish") {
             withStyle(ChatFormatting.GOLD)
         },
+        internalName = "GOLDEN_FISH",
     );
 
-    val internalName: String
+    val bronze by lazy { RepoItemsAPI.getItem("${internalName}_BRONZE") }
+    val silver by lazy { RepoItemsAPI.getItem("${internalName}_SILVER") }
+    val gold by lazy { RepoItemsAPI.getItem("${internalName}_GOLD") }
+    val diamond by lazy { RepoItemsAPI.getItem("${internalName}_DIAMOND") }
 
-    fun getTexture(tier: TrophyFishTier): String {
+    fun getItem(tier: TrophyFishTier): ItemStack {
         return when (tier) {
             TrophyFishTier.NONE -> bronze
             TrophyFishTier.BRONZE -> bronze
@@ -282,39 +296,9 @@ enum class TrophyFishType(
         }
     }
 
-    private fun setTexture(tier: TrophyFishTier, skin: String) {
-        when (tier) {
-            TrophyFishTier.NONE -> bronze = skin
-            TrophyFishTier.BRONZE -> bronze = skin
-            TrophyFishTier.SILVER -> silver = skin
-            TrophyFishTier.GOLD -> gold = skin
-            TrophyFishTier.DIAMOND -> diamond = skin
-        }
-    }
-
     companion object {
-        init {
-            val textures = Utils.loadFromRepo<Map<String, Map<String, String>>>("trophy_fish_skins") ?: emptyMap()
-
-            textures.entries.forEach { (key, tiers) ->
-                val type = valueOf(key.uppercase())
-
-                tiers.entries.forEach { (tier, skin) ->
-                    type.setTexture(TrophyFishTier.valueOf(tier.uppercase()), skin)
-                }
-            }
-        }
-
         fun getByInternalName(internalName: String): TrophyFishType? {
             return entries.firstOrNull { internalName.equals(it.internalName, ignoreCase = true) }
-        }
-    }
-
-    init {
-        if (internalName.isEmpty()) {
-            this.internalName = name.lowercase()
-        } else {
-            this.internalName = internalName
         }
     }
 }
