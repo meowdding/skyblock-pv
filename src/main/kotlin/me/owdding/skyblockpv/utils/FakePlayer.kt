@@ -13,6 +13,13 @@ import net.minecraft.world.scores.Scoreboard
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 
 class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val armor: List<ItemStack>) : RemotePlayer(McClient.self.level!!, gameProfile) {
+
+    constructor(gameProfile: GameProfile, customDisplayName: Component) : this(
+        gameProfile,
+        customDisplayName,
+        List(4) { ItemStack.EMPTY }
+    )
+
     init {
         equipment.set(EquipmentSlot.HEAD, armor[3])
         equipment.set(EquipmentSlot.CHEST, armor[2])

@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
+import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import kotlinx.coroutines.runBlocking
@@ -31,7 +32,9 @@ import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
+import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -120,13 +123,19 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
         val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
         val fakePlayer = FakePlayer(gameProfile, name, armor)
+        val nakedFakePlayer = FakePlayer(gameProfile, name)
         val playerWidget = Displays.background(SkyBlockPv.id("buttons/dark/disabled"), width, height).asWidget().withRenderer { gr, ctx, _ ->
+            val isHovered = ctx.mouseX in ctx.x..(ctx.x + width) && ctx.mouseY in ctx.y..(ctx.y + height)
             val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             gr.pushPop {
                 translate(0f, 0f, 100f)
                 Displays.entity(
-                    fakePlayer,
+                    if (GLFW.glfwGetMouseButton(McClient.window.window, InputConstants.MOUSE_BUTTON_RIGHT) == 1 && isHovered) {
+                        nakedFakePlayer
+                    } else {
+                        fakePlayer
+                    },
                     width, height,
                     (width / 2.5).toInt(),
                     eyesX, eyesY,
