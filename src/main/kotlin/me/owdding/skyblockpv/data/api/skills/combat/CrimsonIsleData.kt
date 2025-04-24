@@ -2,8 +2,8 @@ package me.owdding.skyblockpv.data.api.skills.combat
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs
-import me.owdding.skyblockpv.utils.utils.asEnum
 import net.minecraft.network.chat.Component
+import tech.thatgravyboat.skyblockapi.utils.extentions.asEnum
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
