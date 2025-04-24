@@ -9,7 +9,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
-//mini daily, kuudra daily
+// todo mini daily, kuudra daily
 // nether_island_player_data
 data class CrimsonIsleData(
     val kuudraStats: List<KuudraEntry>,
