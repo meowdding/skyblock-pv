@@ -7,11 +7,11 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-private const val PATH = "v2/skyblock/profiles"
+private const val PATH = "/profiles"
 
 object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
 
-    override fun path() = PATH
+    override fun path(data: UUID) = "$PATH/$data"
 
     override fun decode(data: JsonObject, originalData: UUID): List<SkyBlockProfile> {
         val startTime = System.currentTimeMillis()
@@ -34,7 +34,6 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
         return profiles.mapNotNull { future -> future.resultNow() }
     }
     override fun getKey(data: UUID) = data
-    override fun variables(data: UUID) = mapOf("uuid" to data.toString())
 
     suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = getData(uuid).getOrNull() ?: emptyList()
 }
