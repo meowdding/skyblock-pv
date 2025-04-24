@@ -1,23 +1,115 @@
-package tech.thatgravyboat.skyblockpv.screens.tabs.combat
+package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.withTooltip
+import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.data.api.skills.combat.CrimsonIsleData
+import me.owdding.skyblockpv.data.api.skills.combat.DojoEntry
+import me.owdding.skyblockpv.data.api.skills.combat.KuudraEntry
+import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs
+import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs.getFor
+import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.Utils.textDisplay
+import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.CommonComponents
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
-import tech.thatgravyboat.skyblockpv.api.data.SkyBlockProfile
-import tech.thatgravyboat.skyblockpv.data.api.skills.combat.KuudraEntry
-import tech.thatgravyboat.skyblockpv.data.repo.CrimsonIsleCodecs
-import tech.thatgravyboat.skyblockpv.utils.LayoutBuild
-import tech.thatgravyboat.skyblockpv.utils.components.PvWidgets
-import tech.thatgravyboat.skyblockpv.utils.displays.DisplayWidget
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
         val profile = profile ?: return LayoutBuild.frame { }
         val crimsonIsleData = profile.crimsonIsleData
-        return LayoutBuild.vertical {
-            widget(getKuudraStats(crimsonIsleData.kuudraStats))
+        if (bg.width < 400) {
+            return LayoutBuild.vertical {
+                widget(getDojoStats(crimsonIsleData.dojoStats)) { alignHorizontallyCenter() }
+                spacer(0, 5)
+                widget(getKuudraStats(crimsonIsleData.kuudraStats)) { alignHorizontallyCenter() }
+                spacer(0, 5)
+                widget(getReputationWidget(crimsonIsleData)) { alignHorizontallyCenter() }
+            }.asScrollable(bg.width, bg.height)
         }
+
+        return LayoutBuild.horizontal {
+            widget(getDojoStats(crimsonIsleData.dojoStats)) { alignVerticallyMiddle() }
+            widget(getKuudraStats(crimsonIsleData.kuudraStats)) { alignVerticallyMiddle() }
+            widget(getReputationWidget(crimsonIsleData)) { alignVerticallyMiddle() }
+        }
+    }
+
+    private fun getReputationWidget(crimsonIsleData: CrimsonIsleData): LayoutElement {
+        return PvWidgets.label(
+            "Reputation",
+            LayoutBuild.vertical {
+                display(
+                    textDisplay {
+                        append("Faction: ")
+                        append(crimsonIsleData.selectedFaction?.displayName() ?: Text.of("None :c") { this.color = TextColor.YELLOW })
+                    },
+                )
+                crimsonIsleData.factionReputation.forEach { (faction, rep) ->
+                    display(
+                        textDisplay {
+                            append(faction.displayName())
+                            append(": ")
+                            append(rep.toFormattedString())
+                            append(CommonComponents.SPACE)
+                            append(Text.of(CrimsonIsleCodecs.factionRanks.getFor(rep) ?: "Unknown :c").wrap("(", ")"))
+                        },
+                    )
+                }
+                val highestRep = crimsonIsleData.factionReputation.values.max()
+                val maxTier = CrimsonIsleCodecs.KuudraCodecs.requirements.entries
+                    .sortedByDescending { it.value }.firstOrNull { (_, value) -> value <= highestRep }?.key
+
+                display(
+                    textDisplay {
+                        append("Highest Kuudra: ")
+                        if (maxTier == null) {
+                            append("None")
+                        } else {
+                            append(CrimsonIsleCodecs.KuudraCodecs.idNameMap[maxTier] ?: "Unknown :c")
+                        }
+                    },
+                )
+            },
+        )
+    }
+
+    private fun getDojoStats(stats: List<DojoEntry>): LayoutElement {
+        return PvWidgets.label(
+            "Dojo Stats",
+            LayoutBuild.vertical {
+                val totalPoints = stats.sumOf { it.points.coerceAtLeast(0) }.takeUnless { stats.all { it.points == -1 } } ?: -1
+                stats.forEach { (points, id, _) ->
+                    val name = CrimsonIsleCodecs.DojoCodecs.idNameMap.getOrDefault(id, id)
+                    display(
+                        textDisplay {
+                            append("$name: ${points.takeUnless { it == -1 } ?: "None"} (")
+                            append(CrimsonIsleCodecs.DojoCodecs.grades.getFor(points.coerceAtLeast(0)) ?: Text.of("Error") { this.color = TextColor.RED })
+                            append(")")
+                        },
+                    )
+                }
+                display(
+                    textDisplay {
+                        append("Total points: ${totalPoints.takeUnless { it == -1 } ?: "None"} (")
+                        append(
+                            CrimsonIsleCodecs.DojoCodecs.belts.getFor(totalPoints.coerceAtLeast(0))?.value?.hoverName ?: Text.of("Error") {
+                                this.color = TextColor.RED
+                            },
+                        )
+                        append(")")
+                    },
+                )
+            },
+        )
     }
 
     private fun getKuudraStats(stats: List<KuudraEntry>): LayoutElement {
@@ -26,16 +118,24 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
             LayoutBuild.vertical {
                 stats.forEach { string(createKuudraStat(it)) }
                 spacer(height = 3)
+                val kuudraCollection = stats.mapIndexed { index, it -> it.completions * (index + 1) }.sum()
+                val currentCollection = CrimsonIsleCodecs.KuudraCodecs.collection.sortedByDescending { it }.indexOfFirst { it <= kuudraCollection }.plus(1)
+                val maxCollection = CrimsonIsleCodecs.KuudraCodecs.collection.size
+
                 string("Total Runs: ${stats.sumOf { it.completions }.toFormattedString()}")
-                string("Collection: ${stats.mapIndexed { index, it -> it.completions * (index + 1) }.sum().toFormattedString()}")
-                string("Highest Wave: ${stats.maxOf { it.highestWave }.toFormattedString()}")
+                string("Collection: ${kuudraCollection.toFormattedString()} (${currentCollection.toFormattedString()}/${maxCollection})")
+                display(
+                    textDisplay("Highest Wave: ${stats.maxOf { it.highestWave }.toFormattedString()}").withTooltip {
+                        stats.map { "${CrimsonIsleCodecs.KuudraCodecs.idNameMap[it.id] ?: it.id}: ${it.highestWave.toFormattedString()}" }.forEach { add(it) }
+                    },
+                )
             },
         )
     }
 
     private fun createKuudraStat(kuudraEntry: KuudraEntry): String {
         val (_, completions, id) = kuudraEntry
-        val name = CrimsonIsleCodecs.KuudraCodecs.idNameMap[id] ?: "<unknown>"
+        val name = CrimsonIsleCodecs.KuudraCodecs.idNameMap[id] ?: id
 
         return "$name: ${completions.toFormattedString()}"
     }

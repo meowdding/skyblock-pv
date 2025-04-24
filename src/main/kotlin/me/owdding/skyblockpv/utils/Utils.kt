@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.utils
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
+import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.screens.PvTab
@@ -75,6 +76,13 @@ object Utils {
         }
     }
 
+    fun textDisplay(
+        text: String = "",
+        color: UInt = 0x555555u,
+        shadow: Boolean = false,
+        init: MutableComponent.() -> Unit = {},
+    ) = Displays.text(text(text, color, init), shadow = shadow)
+
     fun text(
         text: String = "",
         color: UInt = 0x555555u,
@@ -85,6 +93,7 @@ object Utils {
             init(this)
         }
     }
+
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 

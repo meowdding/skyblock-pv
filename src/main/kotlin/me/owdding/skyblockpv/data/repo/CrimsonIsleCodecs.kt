@@ -1,14 +1,16 @@
-package tech.thatgravyboat.skyblockpv.data.repo
+package me.owdding.skyblockpv.data.repo
 
 import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
-import tech.thatgravyboat.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockpv.utils.codecs.CodecUtils
 
+@Module
 object CrimsonIsleCodecs {
     val factionRanks = mutableListOf<ThresholdData<String>>()
     val factionNameMap = mutableMapOf<String, Component>()
@@ -36,12 +38,12 @@ object CrimsonIsleCodecs {
         val grades = mutableListOf<ThresholdData<Component>>()
         val belts = mutableListOf<ThresholdData<Lazy<ItemStack>>>()
         val idNameMap = mutableMapOf<String, String>()
-        val ids: Set<String> get() = KuudraCodecs.idNameMap.keys
+        val ids: Set<String> get() = idNameMap.keys
 
         val CODEC = RecordCodecBuilder.create {
             it.group(
                 ThresholdData.createCodec(CodecUtils.COMPONENT_TAG, "grade").listOf().fieldOf("grades").forGetter { grades },
-                ThresholdData.createCodec(CodecUtils.ITEM_REFRENCE, "item").listOf().fieldOf("belts").forGetter { belts },
+                ThresholdData.createCodec(CodecUtils.ITEM_REFERENCE, "item").listOf().fieldOf("belts").forGetter { belts },
                 Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("name_map").forGetter { idNameMap },
             ).apply(it) { grades, belts, idNameMap ->
                 this.grades.addAll(grades)
@@ -65,6 +67,11 @@ object CrimsonIsleCodecs {
 
     init {
         Utils.loadFromRepo<JsonObject>("crimson_isle").toDataOrThrow(CODEC)
+    }
+
+    fun <T> List<ThresholdData<T>>.getFor(amount: Int): T? {
+        return this.sortedByDescending { (threshold, _) -> threshold }.firstOrNull { (threshold, _) -> threshold <= amount }?.data
+            ?: this.firstOrNull { (threshold, _) -> threshold == 0 }?.data
     }
 
     data class ThresholdData<T>(val threshold: Int, val data: T) {

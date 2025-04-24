@@ -19,20 +19,6 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockpv.api.CollectionAPI
-import tech.thatgravyboat.skyblockpv.api.RemindersAPI
-import tech.thatgravyboat.skyblockpv.api.SkillAPI
-import tech.thatgravyboat.skyblockpv.command.SkyBlockPlayerSuggestionProvider
-import tech.thatgravyboat.skyblockpv.config.Config
-import tech.thatgravyboat.skyblockpv.config.DevConfig
-import tech.thatgravyboat.skyblockpv.data.api.skills.FossilTypes
-import tech.thatgravyboat.skyblockpv.data.repo.*
-import tech.thatgravyboat.skyblockpv.dfu.LegacyDataFixer
-import tech.thatgravyboat.skyblockpv.feature.debug.RabbitParser
-import tech.thatgravyboat.skyblockpv.feature.debug.SacksParser
-import tech.thatgravyboat.skyblockpv.screens.PvTab
-import tech.thatgravyboat.skyblockpv.utils.ChatUtils
-import tech.thatgravyboat.skyblockpv.utils.Utils
 
 @Module
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {

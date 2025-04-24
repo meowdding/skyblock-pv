@@ -1,9 +1,13 @@
-package tech.thatgravyboat.skyblockpv.data.api.skills.combat
+package me.owdding.skyblockpv.data.api.skills.combat
 
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs
+import me.owdding.skyblockpv.utils.utils.asEnum
+import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
-import tech.thatgravyboat.skyblockpv.data.repo.CrimsonIsleCodecs
-import tech.thatgravyboat.skyblockpv.utils.asEnum
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 //mini daily, kuudra daily
 // nether_island_player_data
@@ -17,7 +21,7 @@ data class CrimsonIsleData(
         fun fromJson(ciData: JsonObject?): CrimsonIsleData {
             val data = ciData?: JsonObject()
             val reputation = Faction.entries.associateWith {
-                data.get("${it.id}_reputation").asInt(0)
+                data.get("${it.id}_reputation").asInt(0).coerceAtLeast(0)
             }
             val selectedFaction = data.get("selected_faction").asEnum<Faction> { it.id }
             val kuudraObject = data.getAsJsonObject("kuudra_completed_tiers")?: JsonObject()
@@ -51,7 +55,11 @@ data class CrimsonIsleData(
 
 enum class Faction(val id: String) {
     MAGE("mages"),
-    BARBARIAN("barbarians")
+    BARBARIAN("barbarians");
+
+    fun displayName(): Component {
+        return CrimsonIsleCodecs.factionNameMap[id] ?: Text.of("Unknown") { this.color = TextColor.RED }
+    }
 }
 
 data class DojoEntry(val points: Int, val id: String, val time: Int)
