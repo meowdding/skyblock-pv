@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.Layouts
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.withTooltip
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -11,7 +11,6 @@ import me.owdding.skyblockpv.data.api.skills.combat.KuudraEntry
 import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs
 import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs.getFor
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
-import me.owdding.skyblockpv.utils.Utils.textDisplay
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -24,19 +23,17 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutBuild.frame { }
+        val profile = profile ?: return Layouts.frame { }
         val crimsonIsleData = profile.crimsonIsleData
         if (bg.width < 400) {
-            return LayoutBuild.vertical {
+            return Layouts.vertical(5) {
                 widget(getDojoStats(crimsonIsleData.dojoStats)) { alignHorizontallyCenter() }
-                spacer(0, 5)
                 widget(getKuudraStats(crimsonIsleData.kuudraStats)) { alignHorizontallyCenter() }
-                spacer(0, 5)
                 widget(getReputationWidget(crimsonIsleData)) { alignHorizontallyCenter() }
             }.asScrollable(bg.width, bg.height)
         }
 
-        return LayoutBuild.horizontal {
+        return Layouts.horizontal {
             widget(getDojoStats(crimsonIsleData.dojoStats)) { alignVerticallyMiddle() }
             widget(getKuudraStats(crimsonIsleData.kuudraStats)) { alignVerticallyMiddle() }
             widget(getReputationWidget(crimsonIsleData)) { alignVerticallyMiddle() }
@@ -46,38 +43,32 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     private fun getReputationWidget(crimsonIsleData: CrimsonIsleData): LayoutElement {
         return PvWidgets.label(
             "Reputation",
-            LayoutBuild.vertical {
-                display(
-                    textDisplay {
-                        append("Faction: ")
-                        append(crimsonIsleData.selectedFaction?.displayName() ?: Text.of("None :c") { this.color = TextColor.YELLOW })
-                    },
-                )
+            Layouts.vertical {
+                textDisplay {
+                    append("Faction: ")
+                    append(crimsonIsleData.selectedFaction?.displayName() ?: Text.of("None :c") { this.color = TextColor.YELLOW })
+                }
                 crimsonIsleData.factionReputation.forEach { (faction, rep) ->
-                    display(
-                        textDisplay {
-                            append(faction.displayName())
-                            append(": ")
-                            append(rep.toFormattedString())
-                            append(CommonComponents.SPACE)
-                            append(Text.of(CrimsonIsleCodecs.factionRanks.getFor(rep) ?: "Unknown :c").wrap("(", ")"))
-                        },
-                    )
+                    textDisplay {
+                        append(faction.displayName())
+                        append(": ")
+                        append(rep.toFormattedString())
+                        append(CommonComponents.SPACE)
+                        append(Text.of(CrimsonIsleCodecs.factionRanks.getFor(rep) ?: "Unknown :c").wrap("(", ")"))
+                    }
                 }
                 val highestRep = crimsonIsleData.factionReputation.values.max()
                 val maxTier = CrimsonIsleCodecs.KuudraCodecs.requirements.entries
                     .sortedByDescending { it.value }.firstOrNull { (_, value) -> value <= highestRep }?.key
 
-                display(
-                    textDisplay {
-                        append("Highest Kuudra: ")
-                        if (maxTier == null) {
-                            append("None")
-                        } else {
-                            append(CrimsonIsleCodecs.KuudraCodecs.idNameMap[maxTier] ?: "Unknown :c")
-                        }
-                    },
-                )
+                textDisplay {
+                    append("Highest Kuudra: ")
+                    if (maxTier == null) {
+                        append("None")
+                    } else {
+                        append(CrimsonIsleCodecs.KuudraCodecs.idNameMap[maxTier] ?: "Unknown :c")
+                    }
+                }
             },
         )
     }
@@ -85,29 +76,25 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     private fun getDojoStats(stats: List<DojoEntry>): LayoutElement {
         return PvWidgets.label(
             "Dojo Stats",
-            LayoutBuild.vertical {
+            Layouts.vertical {
                 val totalPoints = stats.sumOf { it.points.coerceAtLeast(0) }.takeUnless { stats.all { it.points == -1 } } ?: -1
                 stats.forEach { (points, id, _) ->
                     val name = CrimsonIsleCodecs.DojoCodecs.idNameMap.getOrDefault(id, id)
-                    display(
-                        textDisplay {
-                            append("$name: ${points.takeUnless { it == -1 } ?: "None"} (")
-                            append(CrimsonIsleCodecs.DojoCodecs.grades.getFor(points.coerceAtLeast(0)) ?: Text.of("Error") { this.color = TextColor.RED })
-                            append(")")
+                    textDisplay {
+                        append("$name: ${points.takeUnless { it == -1 } ?: "None"} (")
+                        append(CrimsonIsleCodecs.DojoCodecs.grades.getFor(points.coerceAtLeast(0)) ?: Text.of("Error") { this.color = TextColor.RED })
+                        append(")")
+                    }
+                }
+                textDisplay {
+                    append("Total points: ${totalPoints.takeUnless { it == -1 } ?: "None"} (")
+                    append(
+                        CrimsonIsleCodecs.DojoCodecs.belts.getFor(totalPoints.coerceAtLeast(0))?.value?.hoverName ?: Text.of("Error") {
+                            this.color = TextColor.RED
                         },
                     )
+                    append(")")
                 }
-                display(
-                    textDisplay {
-                        append("Total points: ${totalPoints.takeUnless { it == -1 } ?: "None"} (")
-                        append(
-                            CrimsonIsleCodecs.DojoCodecs.belts.getFor(totalPoints.coerceAtLeast(0))?.value?.hoverName ?: Text.of("Error") {
-                                this.color = TextColor.RED
-                            },
-                        )
-                        append(")")
-                    },
-                )
             },
         )
     }
@@ -115,7 +102,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     private fun getKuudraStats(stats: List<KuudraEntry>): LayoutElement {
         return PvWidgets.label(
             "Kuudra Stats",
-            LayoutBuild.vertical {
+            Layouts.vertical {
                 stats.forEach { string(createKuudraStat(it)) }
                 spacer(height = 3)
                 val kuudraCollection = stats.mapIndexed { index, it -> it.completions * (index + 1) }.sum()
@@ -124,10 +111,16 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
 
                 string("Total Runs: ${stats.sumOf { it.completions }.toFormattedString()}")
                 string("Collection: ${kuudraCollection.toFormattedString()} (${currentCollection.toFormattedString()}/${maxCollection})")
-                display(
-                    textDisplay("Highest Wave: ${stats.maxOf { it.highestWave }.toFormattedString()}").withTooltip {
-                        stats.map { "${CrimsonIsleCodecs.KuudraCodecs.idNameMap[it.id] ?: it.id}: ${it.highestWave.toFormattedString()}" }.forEach { add(it) }
+
+                textDisplay(
+                    "Highest Wave: ${stats.maxOf { it.highestWave }.toFormattedString()}",
+                    displayModifier = {
+                        withTooltip {
+                            stats.map { "${CrimsonIsleCodecs.KuudraCodecs.idNameMap[it.id] ?: it.id}: ${it.highestWave.toFormattedString()}" }
+                                .forEach { add(it) }
+                        }
                     },
+                    init = {},
                 )
             },
         )
