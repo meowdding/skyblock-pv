@@ -11,7 +11,7 @@ abstract class CachedApi<D, V, K> {
     private val cache: MutableMap<K, CacheEntry<Result<V>>> = mutableMapOf()
 
     suspend fun getData(data: D): Result<V> = cache.getOrPut(getKey(data)) {
-        val result = HypixelAPI.get(path(data)) ?: run {
+        val result = PvAPI.get(path(data)) ?: run {
             ChatUtils.chat("Something went wrong fetching the status from Hypixel. Report this on the Discord!")
             return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong")))
         }

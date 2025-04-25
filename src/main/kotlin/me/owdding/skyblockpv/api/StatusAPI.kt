@@ -8,7 +8,7 @@ private const val PATH = "/status"
 
 object StatusAPI {
     suspend fun getStatus(uuid: UUID): PlayerStatus? {
-        val result = HypixelAPI.get("$PATH/$uuid") ?: run {
+        val result = PvAPI.get("$PATH/$uuid") ?: run {
             ChatUtils.chat("Something went wrong fetching the status from Hypixel. Report this on the Discord!")
             return null
         }

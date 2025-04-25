@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
-import me.owdding.skyblockpv.api.HypixelAPI
+import me.owdding.skyblockpv.api.PvAPI
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.DevConfig
@@ -36,7 +36,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
         Config.register(configurator)
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
-        runBlocking { HypixelAPI.authenticate() }
+        runBlocking { PvAPI.authenticate() }
     }
 
     @Subscription
