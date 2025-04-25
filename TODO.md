@@ -18,14 +18,6 @@ TODO:
 </details>
 
 <details>
-<summary>combat</summary>
-
-- Kuudra
-- Crimson Isle
-
-</details>
-
-<details>
 <summary>Garden</summary>
 
 ## Main page
