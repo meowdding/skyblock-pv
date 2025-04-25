@@ -1,0 +1,26 @@
+[
+    {
+        "threshold": 0,
+        "grade": "<red>F</red>"
+    },
+    {
+        "threshold": 200,
+        "grade": "<green>D</green>"
+    },
+    {
+        "threshold": 400,
+        "grade": "<green>C</green>"
+    },
+    {
+        "threshold": 600,
+        "grade": "<blue>B</blue>"
+    },
+    {
+        "threshold": 800,
+        "grade": "<light_purple>A</light_purple>"
+    },
+    {
+        "threshold": 1000,
+        "grade": "<gold>S</gold>"
+    }
+]
