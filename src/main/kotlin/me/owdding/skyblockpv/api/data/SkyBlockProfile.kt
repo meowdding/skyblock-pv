@@ -11,10 +11,7 @@ import me.owdding.skyblockpv.data.api.CollectionItem
 import me.owdding.skyblockpv.data.api.Currency
 import me.owdding.skyblockpv.data.api.RiftData
 import me.owdding.skyblockpv.data.api.skills.*
-import me.owdding.skyblockpv.data.api.skills.combat.BestiaryMobData
-import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
-import me.owdding.skyblockpv.data.api.skills.combat.MobData
-import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
+import me.owdding.skyblockpv.data.api.skills.combat.*
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
@@ -57,6 +54,7 @@ data class SkyBlockProfile(
     val farmingData: FarmingData,
     val chocolateFactoryData: CfData?,
     val rift: RiftData?,
+    val crimsonIsleData: CrimsonIsleData
 ) {
     companion object {
 
@@ -121,6 +119,7 @@ data class SkyBlockProfile(
                 farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
+                crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data"))
             )
         }
 
@@ -180,9 +179,9 @@ data class SkyBlockProfile(
             name to SlayerTypeData(
                 exp = data["xp"].asLong(0),
                 bossAttemptsTier = data.entrySet().filter { it.key.startsWith("boss_attempts_tier_") }
-                    .map { it.key.filter { it.isDigit() }.toInt() to it.value.asInt }.toMap(),
+                    .associate { it.key.filter { it.isDigit() }.toInt() to it.value.asInt },
                 bossKillsTier = data.entrySet().filter { it.key.startsWith("boss_kills_tier_") }
-                    .map { it.key.filter { it.isDigit() }.toInt() to it.value.asInt }.toMap(),
+                    .associate { it.key.filter { it.isDigit() }.toInt() to it.value.asInt },
             )
         }.sortToSlayerOrder()
 

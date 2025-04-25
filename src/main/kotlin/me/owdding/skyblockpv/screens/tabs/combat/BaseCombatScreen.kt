@@ -20,6 +20,7 @@ enum class CombatCategory(val screen: KClass<out BaseCombatScreen>, override val
     DUNGEONS(DungeonScreen::class, SkullTextures.DUNGEONS.skull),
     BESTIARY(BestiaryScreen::class, Items.WRITABLE_BOOK.defaultInstance),
     MOBS(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance),
+    ISLE(CrimsonIsleScreen::class, Items.NETHERRACK.defaultInstance),
     ;
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
