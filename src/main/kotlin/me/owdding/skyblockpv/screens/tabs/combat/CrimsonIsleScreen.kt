@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.Layouts
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.withTooltip
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -23,17 +23,17 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return Layouts.frame { }
+        val profile = profile ?: return LayoutFactory.frame { }
         val crimsonIsleData = profile.crimsonIsleData
         if (bg.width < 400) {
-            return Layouts.vertical(5) {
+            return LayoutFactory.vertical(5) {
                 widget(getDojoStats(crimsonIsleData.dojoStats)) { alignHorizontallyCenter() }
                 widget(getKuudraStats(crimsonIsleData.kuudraStats)) { alignHorizontallyCenter() }
                 widget(getReputationWidget(crimsonIsleData)) { alignHorizontallyCenter() }
             }.asScrollable(bg.width, bg.height)
         }
 
-        return Layouts.horizontal {
+        return LayoutFactory.horizontal {
             widget(getDojoStats(crimsonIsleData.dojoStats)) { alignVerticallyMiddle() }
             widget(getKuudraStats(crimsonIsleData.kuudraStats)) { alignVerticallyMiddle() }
             widget(getReputationWidget(crimsonIsleData)) { alignVerticallyMiddle() }
@@ -43,7 +43,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     private fun getReputationWidget(crimsonIsleData: CrimsonIsleData): LayoutElement {
         return PvWidgets.label(
             "Reputation",
-            Layouts.vertical {
+            LayoutFactory.vertical {
                 textDisplay {
                     append("Faction: ")
                     append(crimsonIsleData.selectedFaction?.displayName() ?: Text.of("None :c") { this.color = TextColor.YELLOW })
@@ -76,7 +76,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     private fun getDojoStats(stats: List<DojoEntry>): LayoutElement {
         return PvWidgets.label(
             "Dojo Stats",
-            Layouts.vertical {
+            LayoutFactory.vertical {
                 val totalPoints = stats.sumOf { it.points.coerceAtLeast(0) }.takeUnless { stats.all { it.points == -1 } } ?: -1
                 stats.forEach { (points, id, _) ->
                     val name = CrimsonIsleCodecs.DojoCodecs.idNameMap.getOrDefault(id, id)
@@ -102,7 +102,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     private fun getKuudraStats(stats: List<KuudraEntry>): LayoutElement {
         return PvWidgets.label(
             "Kuudra Stats",
-            Layouts.vertical {
+            LayoutFactory.vertical {
                 stats.forEach { string(createKuudraStat(it)) }
                 spacer(height = 3)
                 val kuudraCollection = stats.mapIndexed { index, it -> it.completions * (index + 1) }.sum()
