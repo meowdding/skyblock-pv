@@ -31,5 +31,12 @@
             "asset_id": "skyblock-pv:cat/trans",
             "left_shoulder": false
         }
+    },
+    "503450fc-72c2-4e87-8243-94e264977437": {
+        "title": "<gr #55CDFC #F7A8B8 #FFFFFF #F7A8B8 #55CDFC>Super cool person<gr>",
+        "cat": {
+            "asset_id": "skyblock-pv:cat/trans",
+            "left_shoulder": false
+        }
     }
 }
