@@ -1,0 +1,27 @@
+{
+    "index": 1,
+    "display": "skyblock:cobblestone_generator_12",
+    "title": "Mining Minions",
+    "minions": [
+        "HARD_STONE",
+        "RED_SAND",
+        "MYCELIUM",
+        "COBBLESTONE",
+        "OBSIDIAN",
+        "GLOWSTONE",
+        "GRAVEL",
+        "SAND",
+        "ICE",
+        "SNOW",
+        "COAL",
+        "IRON",
+        "GOLD",
+        "DIAMOND",
+        "LAPIS",
+        "REDSTONE",
+        "EMERALD",
+        "QUARTZ",
+        "ENDER_STONE",
+        "MITHRIL"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "index": 0,
+    "display": "skyblock:wheat_generator_12",
+    "title": "Farming Minions",
+    "minions": [
+        "COCOA",
+        "PUMPKIN",
+        "CHICKEN",
+        "MUSHROOM",
+        "CACTUS",
+        "PIG",
+        "WHEAT",
+        "COW",
+        "RABBIT",
+        "SUGAR_CANE",
+        "MELON",
+        "NETHER_WARTS",
+        "CARROT",
+        "POTATO",
+        "SHEEP"
+    ]
+}

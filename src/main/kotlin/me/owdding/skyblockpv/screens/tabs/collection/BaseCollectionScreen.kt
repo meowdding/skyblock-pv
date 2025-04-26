@@ -7,6 +7,7 @@ import me.owdding.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.tabs.base.Category
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -23,6 +24,7 @@ enum class CollectionCategories(val screen: KClass<out BaseCollectionScreen>, ov
     FORAGING(CommonCollectionScreen::class, Items.JUNGLE_SAPLING.defaultInstance),
     FISHING(CommonCollectionScreen::class, Items.FISHING_ROD.defaultInstance),
     RIFT(CommonCollectionScreen::class, Items.MYCELIUM.defaultInstance),
+    MINION(MinionScreen::class, RepoItemsAPI.getItem("SNOW_GENERATOR_12"))
     ;
 
     override val isSelected: Boolean
@@ -34,6 +36,6 @@ enum class CollectionCategories(val screen: KClass<out BaseCollectionScreen>, ov
 
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BasePvScreen =
         if (screen == CommonCollectionScreen::class) CommonCollectionScreen(gameProfile, profile, this.name) else screen.constructors.first()
-            .call(gameProfile, profile, this.name)
+            .call(gameProfile, profile)
 }
 
