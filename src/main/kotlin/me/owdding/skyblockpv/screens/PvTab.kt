@@ -36,7 +36,7 @@ enum class PvTab(
     MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
     COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
-    COLLECTION(BaseCollectionScreen::class, { p1, p2 -> CollectionCategories.FARMING.create(p1, p2) }, Items.ITEM_FRAME.defaultInstance),
+    COLLECTION(BaseCollectionScreen::class, CollectionCategories.FARMING::create, Items.ITEM_FRAME.defaultInstance),
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
