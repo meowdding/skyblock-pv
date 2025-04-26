@@ -1,0 +1,22 @@
+{
+    "index": 2,
+    "display": "skyblock:zombie_generator_11",
+    "title": "Combat Minions",
+    "minions": [
+        "ZOMBIE",
+        "REVENANT",
+        "SKELETON",
+        "CREEPER",
+        "SPIDER",
+        "CAVESPIDER",
+        "TARANTULA",
+        "BLAZE",
+        "MAGMA_CUBE",
+        "ENDERMAN",
+        "GHAST",
+        "SLIME",
+        "VOIDLING",
+        "INFERNO",
+        "VAMPIRE"
+    ]
+}
