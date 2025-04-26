@@ -1,0 +1,13 @@
+{
+    "index": 3,
+    "display": "skyblock:oak_generator_11",
+    "title": "Foraging Minions",
+    "minions": [
+        "OAK",
+        "SPRUCE",
+        "BIRCH",
+        "DARK_OAK",
+        "ACACIA",
+        "JUNGLE"
+    ]
+}

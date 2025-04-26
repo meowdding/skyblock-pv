@@ -132,6 +132,8 @@ compactingResources {
     compactToObject("crimson_isle/dojo")
     compactToObject("crimson_isle/kuudra")
     compactToObject("crimson_isle")
+    compactToArray("minions/categories")
+    compactToObject("minions")
     downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/bestiary.json", "bestiary.json")
 }
 
