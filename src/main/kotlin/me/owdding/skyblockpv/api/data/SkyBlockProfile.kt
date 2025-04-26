@@ -121,6 +121,7 @@ data class SkyBlockProfile(
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
                 crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data")),
+                // todo: asStringList or smth
                 minions = playerData?.getAsJsonArray("crafted_generators").asList { it.asString("") }.filterNot { it.isEmpty() }
                     .sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
             )
