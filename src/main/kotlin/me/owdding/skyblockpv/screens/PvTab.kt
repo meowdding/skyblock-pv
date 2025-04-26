@@ -4,7 +4,12 @@ import com.mojang.authlib.GameProfile
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
-import me.owdding.skyblockpv.screens.tabs.*
+import me.owdding.skyblockpv.screens.tabs.ChocolateFactoryScreen
+import me.owdding.skyblockpv.screens.tabs.FishingScreen
+import me.owdding.skyblockpv.screens.tabs.MainScreen
+import me.owdding.skyblockpv.screens.tabs.PetScreen
+import me.owdding.skyblockpv.screens.tabs.collection.BaseCollectionScreen
+import me.owdding.skyblockpv.screens.tabs.collection.CollectionCategories
 import me.owdding.skyblockpv.screens.tabs.combat.BaseCombatScreen
 import me.owdding.skyblockpv.screens.tabs.combat.DungeonScreen
 import me.owdding.skyblockpv.screens.tabs.farming.BaseFarmingScreen
@@ -31,7 +36,7 @@ enum class PvTab(
     MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
     COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
-    COLLECTION(CollectionScreen::class, Items.ITEM_FRAME.defaultInstance),
+    COLLECTION(BaseCollectionScreen::class, { p1, p2 -> CollectionCategories.FARMING.create(p1, p2) }, Items.ITEM_FRAME.defaultInstance),
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
