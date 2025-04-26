@@ -11,6 +11,7 @@ import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
@@ -39,15 +40,20 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             .map { it.withPadding(2) }
             .rightPad(20, Displays.empty(20, 20))
             .chunked(5)
-            .map { it.toRow() }
-            .toColumn()
+            .asTable()
     }
 
     fun createMinion(context: MinionContext): Display {
         val minion = RepoItemsAPI.getItem("${context.type}_GENERATOR_${context.maxObtainedLevel.coerceAtLeast(1)}")
         val maxTier = MinionCodecs.miscData.getMax(context.type)
 
-        return Displays.item(minion.takeUnless { context.maxObtainedLevel == -1 } ?: Items.GRAY_DYE.defaultInstance).withTooltip {
+        val stackSize = when (context.maxObtainedLevel) {
+            -1 -> null
+            maxTier -> Text.of("${context.maxObtainedLevel}") { color = TextColor.GREEN }
+            else -> Text.of("${context.maxObtainedLevel}") { color = TextColor.YELLOW }
+        }
+
+        return Displays.item(minion.takeUnless { context.maxObtainedLevel == -1 } ?: Items.GRAY_DYE.defaultInstance, customStackText = stackSize).withTooltip {
             add(minion.hoverName.stripped.substringBeforeLast(" ")) {
                 this.color = TextColor.BLUE
             }
@@ -61,10 +67,10 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             add("Highest Unlocked: ") {
                 this.color = TextColor.GRAY
                 append(context.maxObtainedLevel.takeUnless { it == -1 }?.let { "$it" } ?: "None") {
-                    this.color = with(context.maxObtainedLevel) {
-                        if (this == maxTier) return@with TextColor.GREEN
-                        if (this == -1) return@with TextColor.RED
-                        return@with TextColor.YELLOW
+                    this.color = when (context.maxObtainedLevel) {
+                        maxTier -> TextColor.GREEN
+                        -1 -> TextColor.RED
+                        else -> TextColor.YELLOW
                     }
                 }
             }
