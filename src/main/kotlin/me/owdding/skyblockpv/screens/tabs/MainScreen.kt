@@ -5,8 +5,8 @@ import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import kotlinx.coroutines.runBlocking
-import me.owdding.lib.builder.LayoutBuild
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
+import me.owdding.lib.builder.Layouts
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -55,14 +55,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
-        LayoutBuild.horizontal {
+        Layouts.horizontal {
             widget(createLeftColumn(profile!!, sideColumnWidth))
             widget(createMiddleColumn(profile!!, middleColumnWidth))
             widget(createRightColumn(profile!!, sideColumnWidth))
         }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
+    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = Layouts.vertical(alignment = 0.5f) {
         spacer(height = 5)
 
         val irrelevantSkills = listOf(
@@ -77,7 +77,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         widget(PvWidgets.getTitleWidget("Info", width))
 
-        val infoColumn = LayoutBuild.vertical(2) {
+        val infoColumn = Layouts.vertical(2) {
             fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
 
             string("Purse: ${profile.currency?.purse?.toFormattedString()}")
@@ -175,7 +175,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         return layout
     }
 
-    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
+    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = Layouts.vertical(alignment = 0.5f) {
         spacer(height = 5)
 
         fun <D, T> addSection(
