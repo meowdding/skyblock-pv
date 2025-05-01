@@ -60,7 +60,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 }?.sumOf { it.count } ?: 0
                 val display = ExtraDisplays.inventorySlot(
                     Displays.padding(
-                        2,
+                        4,
                         Displays.item(scrapItem, customStackText = scrapsCount, showTooltip = true),
                     ),
                 )
