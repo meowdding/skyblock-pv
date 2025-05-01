@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.utils.components
 
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.skyblockpv.SkyBlockPv
@@ -29,7 +29,7 @@ object PvWidgets {
 
     fun iconNumberElement(icon: ItemLike, text: Component) = iconNumberElement(icon.asItem().defaultInstance, text)
 
-    fun label(title: String, element: LayoutElement, padding: Int = 0) = LayoutBuild.vertical {
+    fun label(title: String, element: LayoutElement, padding: Int = 0) = LayoutFactory.vertical {
         widget(getTitleWidget(title, element.width + padding + 20))
         widget(getMainContentWidget(element, element.width + padding + 20))
     }
@@ -175,7 +175,7 @@ object PvWidgets {
     }
 
     fun getMainContentWidget(content: LayoutElement, width: Int): LayoutElement = Widgets.frame { compoundWidget ->
-        val contentWithSpacer = LayoutBuild.vertical {
+        val contentWithSpacer = LayoutFactory.vertical {
             spacer(height = 7)
             widget(content)
             spacer(height = 7)

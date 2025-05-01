@@ -4,8 +4,8 @@ import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
-import me.owdding.lib.builder.LayoutBuild
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.extensions.round
@@ -13,7 +13,6 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.SortedEntry
 import me.owdding.skyblockpv.data.api.skills.Pet
 import me.owdding.skyblockpv.screens.BasePvScreen
-import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -35,7 +34,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
         val leftColumnWidth = ((bg.width - 10) * 0.65).toInt()
         val rightColumnWidth = (bg.width - 10 - leftColumnWidth).toInt()
 
-        LayoutBuild.horizontal(5) {
+        LayoutFactory.horizontal(5) {
             widget(createPetRow(sortedPets, leftColumnWidth).asScrollable(leftColumnWidth, uiHeight - 10))
             widget(createInfoRow(rightColumnWidth))
         }.setPos(bg.x + 5, bg.y + 5).visitWidgets(this::addRenderableWidget)
@@ -61,15 +60,15 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
         return Button()
             .withSize(22, 22)
             .withTexture(null)
-            .withRenderer(ExtraWidgetRenderers.display(display))
+            .withRenderer(DisplayWidget.displayRenderer(display))
             .withCallback {
                 selectedPet = pet
                 this.rebuildWidgets()
             }
     }
 
-    private fun createInfoRow(width: Int) = LayoutBuild.vertical {
-        val petInfo = LayoutBuild.vertical {
+    private fun createInfoRow(width: Int) = LayoutFactory.vertical {
+        val petInfo = LayoutFactory.vertical {
             string(Text.join("Name: ", selectedPet?.type?.toTitleCase() ?: "None"))
             val activePet = selectedPet ?: return@vertical
 

@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -30,7 +30,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutBuild.frame {}
+        val profile = profile ?: return LayoutFactory.frame {}
 
         val resourcesDisplay = GardenResource.actualValues.map {
             ExtraDisplays.inventoryBackground(
@@ -46,7 +46,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             )
         }
 
-        return resourcesDisplay.toRow(2).let { LayoutBuild.frame { display(it) } }
+        return resourcesDisplay.toRow(2).let { LayoutFactory.frame { display(it) } }
     }
 
     private fun getCropUpgrade(it: GardenResource): Display {

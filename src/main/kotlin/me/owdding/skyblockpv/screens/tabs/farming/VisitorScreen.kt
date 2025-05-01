@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.Commission
@@ -33,7 +33,7 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     }.toRow(0, Alignment.CENTER)
                 }.toColumn(0, Alignment.CENTER)
             }.toColumn(4, Alignment.CENTER)
-            .let { LayoutBuild.frame { display(it) }.asScrollable(uiWidth, uiHeight) }
+            .let { LayoutFactory.frame { display(it) }.asScrollable(uiWidth, uiHeight) }
     }
 
     private fun getRarity(rarity: SkyBlockRarity, commission: Commission?): Int {
