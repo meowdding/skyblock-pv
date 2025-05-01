@@ -8,6 +8,7 @@ import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import earth.terrarium.olympus.client.ui.UIConstants
 import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import net.minecraft.client.gui.GuiGraphics
@@ -131,7 +132,7 @@ class CarouselWidget(
                             WidgetRenderers.sprite(UIConstants.PRIMARY_BUTTON),
                             WidgetRenderers.sprite(UIConstants.DARK_BUTTON),
                         ) { this.index == index },
-                        WidgetRenderers.center(16, 18, ExtraWidgetRenderers.display(it)),
+                        WidgetRenderers.center(16, 18, DisplayWidget.displayRenderer(it)),
                     ),
                 )
                 .withCallback {

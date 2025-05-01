@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.rift
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -14,7 +14,7 @@ class RiftEnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? =
 
     private var carousel: CarouselWidget? = null
 
-    override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
+    override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
         val inventories = profile?.rift?.inventory?.enderChest?.map { PvWidgets.createInventory(it) } ?: return@vertical
         val icons = List(inventories.size) { Items.ENDER_CHEST.defaultInstance }
 

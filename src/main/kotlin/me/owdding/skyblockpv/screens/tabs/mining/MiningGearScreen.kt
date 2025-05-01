@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -18,9 +18,9 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutBuild.horizontal { }
+        val profile = profile ?: return LayoutFactory.horizontal { }
 
-        return LayoutBuild.horizontal(5, 0.5f) {
+        return LayoutFactory.horizontal(5, 0.5f) {
             widget(
                 PvWidgets.armorAndEquipment(
                     profile,

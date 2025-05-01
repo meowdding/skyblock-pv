@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.screens.tabs.combat
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.base.ListWidget
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.combat.MobData
@@ -43,7 +43,7 @@ class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
     }
 
 
-    private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int) = LayoutBuild.vertical(5) {
+    private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int) = LayoutFactory.vertical(5) {
         widget(Widgets.text(name).centerHorizontally(width))
 
         val listWidget = ListWidget(width, height)

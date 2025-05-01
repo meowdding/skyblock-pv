@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.tabs.rift
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.toRow
@@ -29,7 +29,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.time.Instant
 
 class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
-    override fun getLayout(bg: DisplayWidget) = LayoutBuild.horizontal(5, 0.5f) {
+    override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal(5, 0.5f) {
         val rift = profile?.rift ?: run {
             string("Failed to load rift profile data") {
                 color = TextColor.RED
@@ -42,7 +42,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
         if (trophy.width + info.width + 5 > bg.width) {
             widget(
-                LayoutBuild.vertical(3, 0.5f) {
+                LayoutFactory.vertical(3, 0.5f) {
                     widget(info)
                     widget(trophy)
                 }.asScrollable(bg.width, bg.height),
@@ -57,7 +57,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     private fun getInformation(profile: SkyBlockProfile, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
         "Information",
-        LayoutBuild.vertical {
+        LayoutFactory.vertical {
             val rift = profile.rift!!
 
             string("Motes: ") {
@@ -153,7 +153,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     private fun getTrophy(rift: RiftData, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
         "Timecharms",
-        LayoutBuild.horizontal {
+        LayoutFactory.horizontal {
             data.trophies.map { trophy ->
                 val ingameTrophy = rift.trophies.find { it.type == trophy.id }
                 val unlocked = ingameTrophy != null

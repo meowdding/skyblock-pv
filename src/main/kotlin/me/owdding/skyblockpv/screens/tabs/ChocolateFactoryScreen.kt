@@ -1,8 +1,8 @@
 package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -44,10 +44,10 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val info = getInfo(cf, CfCodecs.data)
         val upgrades = getUpgrades(cf)
 
-        LayoutBuild.frame(bg.width, bg.height) {
+        LayoutFactory.frame(bg.width, bg.height) {
             if (maxOf(employees.width, upgrades.width) + info.width + 3 > bg.width) {
                 widget(
-                    LayoutBuild.vertical(3, 0.5f) {
+                    LayoutFactory.vertical(3, 0.5f) {
                         widget(employees)
                         widget(upgrades)
                         widget(info)
@@ -156,7 +156,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     private fun getInfo(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
         "Information",
-        LayoutBuild.vertical {
+        LayoutFactory.vertical {
             string("Chocolate: ") {
                 color = TextColor.DARK_GRAY
                 append(cf.chocolate.shorten()) {

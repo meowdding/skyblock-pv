@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.rift
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.utils.LayoutUtils.center
@@ -9,7 +9,7 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 
 class RiftInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
-    override fun getLayout(bg: DisplayWidget) = LayoutBuild.horizontal {
+    override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal {
         val inventory = profile?.rift?.inventory ?: return@horizontal
         val armor = inventory.armor
         val equipment = inventory.equipment

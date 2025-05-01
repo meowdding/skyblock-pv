@@ -17,8 +17,8 @@ import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import me.owdding.lib.builder.LayoutBuild
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
@@ -98,7 +98,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         } catch (e: Exception) {
             e.printStackTrace()
 
-            val errorWidget = LayoutBuild.vertical {
+            val errorWidget = LayoutFactory.vertical {
                 val text = mutableListOf(
                     "Failed building screen $name",
                     "Report this in the discord",
@@ -148,7 +148,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
         if (starttime + 8000 > System.currentTimeMillis()) return loading.visitWidgets(this::addRenderableOnly)
 
-        val errorWidget = LayoutBuild.vertical(alignment = 0.5f) {
+        val errorWidget = LayoutFactory.vertical(alignment = 0.5f) {
             widget(loading)
             spacer(height = 20)
 
@@ -173,7 +173,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         errorWidget.visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createDevRow(bg: DisplayWidget) = LayoutBuild.horizontal(5) {
+    private fun createDevRow(bg: DisplayWidget) = LayoutFactory.horizontal(5) {
         // Useful for hotswaps
         val refreshButton = Button()
             .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
@@ -242,7 +242,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
     }
 
-    private fun createTabs() = LayoutBuild.vertical(2) {
+    private fun createTabs() = LayoutFactory.vertical(2) {
         // as you can see, maya has no idea what she is doing
         PvTab.entries.forEach { tab ->
             val button = Button()
