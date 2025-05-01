@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
 import com.mojang.datafixers.util.Either
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
@@ -34,7 +34,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private val MOBS_PER_ROW_SIMPLE = 5
     private val MOBS_PER_ROW_COMPLEX = 8
 
-    override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
+    override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
         val categories = getCategories()
         val inventories = categories.values.toList()
         val icons = categories.keys.toList()
@@ -48,7 +48,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         val buttonContainer = carousel!!.getIcons { icons.map { Displays.item(it, showTooltip = true) } }
 
         widget(
-            LayoutBuild.vertical(5) {
+            LayoutFactory.vertical(5) {
                 widget(buttonContainer.centerHorizontally(uiWidth))
                 widget(carousel!!.centerHorizontally(uiWidth))
             }.asScrollable(uiWidth, uiHeight),

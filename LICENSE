@@ -1,0 +1,41 @@
+# SkyBlockPv License v1.1
+
+### 0. Definitions
+
+"Code" refers to:
+1. Any file found in the `.../resources/repo/...` directory
+2. Any file found in the `buildSrc/...` directory
+3. Source files, which refers to
+    1. Files ending in `.java` and `.kt`
+4. Script files, which refers to
+    1. Files ending in `.kts`
+5. Shader files, which refers to
+    1. Files ending in `.fsh` and `.vsh`
+
+"Non-Code" refers to any file not covered under the definition of Code.
+
+### 1. Code
+
+Code is licensed under the MIT License (as provided below), with the additional requirement that any redistribution, reuse, or derivative work that includes Code must contain a clear notice that the Code originates from the "SkyBlockPv" mod.
+
+#### MIT License (Modified for Attribution)
+
+> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+> Attribution Requirement:
+Any redistribution or use of the Code must include a clear notice stating:
+"Portions of this code are from the SkyBlockPv mod."
+
+> The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+### 2. Non-Code
+
+Non-Code content is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+
+> You are free to:
+> - Share — copy and redistribute the material in any medium or format
+> - Adapt — remix, transform, and build upon the material for any purpose, even commercially

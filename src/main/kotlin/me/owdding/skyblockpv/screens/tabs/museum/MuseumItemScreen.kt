@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.museum
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.withTooltip
@@ -87,7 +87,7 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             mutableListOf<RepoMuseumCategory>().rightPad(nextUp, category)
         }
 
-    override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
+    override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
         val inventories = getInventories()
         val icons = getIcons()
 

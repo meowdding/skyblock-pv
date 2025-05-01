@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asTable
@@ -34,7 +34,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val dungeonData = profile?.dungeonData ?: return LayoutBuild.vertical {
+        val dungeonData = profile?.dungeonData ?: return LayoutFactory.vertical {
             string("No Dungeon Data")
         }
 
@@ -42,10 +42,10 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val leveling = createLevelingDisplay(dungeonData)
         val runs = createRunsDisplay(dungeonData)
 
-        return LayoutBuild.frame(bg.width, bg.height) {
+        return LayoutFactory.frame(bg.width, bg.height) {
             if (info.width + leveling.width + runs.width + 10 > bg.width) {
                 widget(
-                    LayoutBuild.vertical(5) {
+                    LayoutFactory.vertical(5) {
                         widget(createInfoBoxDisplay(dungeonData))
                         widget(createLevelingDisplay(dungeonData))
                         widget(createRunsDisplay(dungeonData))
@@ -60,7 +60,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
         }
 
-        return LayoutBuild.horizontal(5) {
+        return LayoutFactory.horizontal(5) {
             widget(createInfoBoxDisplay(dungeonData))
             widget(createLevelingDisplay(dungeonData))
             widget(createRunsDisplay(dungeonData))
@@ -73,7 +73,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val catacombsCompl = dungeonData.dungeonTypes["catacombs"]?.tierCompletions
         val masterModeCompl = dungeonData.dungeonTypes["master_catacombs"]?.tierCompletions
 
-        val mainContent = LayoutBuild.vertical {
+        val mainContent = LayoutFactory.vertical {
             string("Class Average: ${classToLevel?.map { it.value }?.toList()?.average()}")
             string("Secrets: ${dungeonData.secrets.toFormattedString()}")
             string("Secrets/Run: ${(dungeonData.secrets / (countRuns(catacombsCompl) + countRuns(masterModeCompl))).round()}")
@@ -92,14 +92,14 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             1.0f
         }
 
-        fun getClass(name: String) = LayoutBuild.vertical(5) {
+        fun getClass(name: String) = LayoutFactory.vertical(5) {
             val level = classToLevel?.get(name)!!
             val progress = classToProgress?.get(name)!!
             string("${name.replaceFirstChar { it.uppercase() }}: $level")
             display(ExtraDisplays.progress(progress))
         }
 
-        val mainContent = LayoutBuild.vertical(10) {
+        val mainContent = LayoutFactory.vertical(10) {
             vertical(5) {
                 string("Catacombs: $catacombsLevel")
                 display(ExtraDisplays.progress(catacombsProgressToNext))

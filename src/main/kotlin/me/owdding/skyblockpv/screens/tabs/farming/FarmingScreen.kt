@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
@@ -35,9 +35,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutBuild.frame {}
+        val profile = profile ?: return LayoutFactory.frame {}
 
-        return LayoutBuild.frame {
+        return LayoutFactory.frame {
             horizontal {
                 widget(getGear(profile))
                 widget(getContests(profile.farmingData))
@@ -48,7 +48,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
-        LayoutBuild.vertical {
+        LayoutFactory.vertical {
             val garden = data?.getOrNull()
 
             string("Copper: ") {
@@ -208,7 +208,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getGear(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
-        LayoutBuild.horizontal {
+        LayoutFactory.horizontal {
             PvWidgets.armorAndEquipment(
                 profile,
                 ::calculateEquipmentScore,
