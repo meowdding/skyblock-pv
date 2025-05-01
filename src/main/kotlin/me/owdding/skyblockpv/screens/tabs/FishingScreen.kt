@@ -2,9 +2,9 @@ package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutBuild
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -50,7 +50,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val gearWidget = getGearWidget(profile)
         var trophyWidth = 0
         val trophyWidget by lazy {
-            LayoutBuild.vertical {
+            LayoutFactory.vertical {
                 val useSmallTable = (trophyWidth < 480)
                 widget(PvWidgets.getTitleWidget("Trophy Fish", trophyWidth))
                 if (useSmallTable) {
@@ -63,7 +63,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }
 
         fun LayoutBuilder.addBottomRow(first: LayoutElement, second: LayoutElement) {
-            LayoutBuild.vertical {
+            LayoutFactory.vertical {
                 spacer(height = 5)
                 horizontal {
                     widget(first)
@@ -84,9 +84,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + 165 /* Height of trophy table */ < bg.height) {
             trophyWidth = bg.width
-            LayoutBuild.frame {
+            LayoutFactory.frame {
                 spacer(bg.width, bg.height)
-                LayoutBuild.vertical {
+                LayoutFactory.vertical {
                     spacer(height = 5)
                     horizontal {
                         widget(infoWidget)
@@ -106,9 +106,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }.applyLayout()
         } else if (infoWidget.width + statWidget.width < bg.width && gearWidget.height + 10 + infoWidget.height < bg.height) {
             trophyWidth = bg.width - gearWidget.width
-            LayoutBuild.frame {
+            LayoutFactory.frame {
                 spacer(bg.width, bg.height)
-                LayoutBuild.vertical {
+                LayoutFactory.vertical {
                     spacer(height = 5)
                     horizontal {
                         widget(infoWidget)
@@ -124,9 +124,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }.applyLayout()
         } else if (gearWidget.width + statWidget.width < bg.width && gearWidget.height + 10 + infoWidget.height < bg.height) {
             trophyWidth = bg.width - infoWidget.width
-            LayoutBuild.frame {
+            LayoutFactory.frame {
                 spacer(bg.width, bg.height)
-                LayoutBuild.vertical {
+                LayoutFactory.vertical {
                     spacer(height = 5)
                     horizontal {
                         widget(infoWidget)
@@ -145,7 +145,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         } else {
             trophyWidth = bg.width - 60
 
-            LayoutBuild.vertical {
+            LayoutFactory.vertical {
                 fun add(element: LayoutElement) {
                     spacer(height = 5, width = element.width + 20)
                     widget(element) {
@@ -165,7 +165,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
-        LayoutBuild.vertical {
+        LayoutFactory.vertical {
             if (profile.trophyFish.lastCatch == null) {
                 string(Text.of("Never caught a trophy fish!") { this.color = TextColor.RED })
             } else {
@@ -232,7 +232,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getStatWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Stats",
-        LayoutBuild.vertical {
+        LayoutFactory.vertical {
             val sharksKilled = profile.miscFishData.festivalSharksKilled
             display(
                 Displays.text(
@@ -324,7 +324,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getGearWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
-        LayoutBuild.horizontal {
+        LayoutFactory.horizontal {
             widget(getTrophyArmor(profile))
             spacer(width = 5)
             widget(

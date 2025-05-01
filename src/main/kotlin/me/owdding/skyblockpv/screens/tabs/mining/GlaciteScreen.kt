@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.FossilTypes
@@ -22,22 +22,22 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutBuild.horizontal { }
-        val glacite = profile.glacite ?: return LayoutBuild.horizontal { }
+        val profile = profile ?: return LayoutFactory.horizontal { }
+        val glacite = profile.glacite ?: return LayoutFactory.horizontal { }
         val columnWidth = uiWidth / 2
 
-        return LayoutBuild.horizontal(5) {
+        return LayoutFactory.horizontal(5) {
             spacer(height = uiHeight)
             widget(createLeftColumn(profile, columnWidth))
             widget(createRightColumn(glacite, columnWidth))
         }
     }
 
-    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutBuild.vertical {
+    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutFactory.vertical {
         val glacite = profile.glacite ?: return@vertical
         spacer(width, 5)
 
-        val info = LayoutBuild.vertical(3) {
+        val info = LayoutFactory.vertical(3) {
             fun grayText(text: String) = display(Displays.text(text, color = { 0x555555u }, shadow = false))
             val fossilDust = glacite.fossilDust
 
@@ -89,10 +89,10 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     }
 
-    private fun createRightColumn(glacite: GlaciteData, width: Int) = LayoutBuild.vertical(alignment = 0.5f) {
+    private fun createRightColumn(glacite: GlaciteData, width: Int) = LayoutFactory.vertical(alignment = 0.5f) {
         spacer(width, 5)
 
-        val corpses = LayoutBuild.vertical(3) {
+        val corpses = LayoutFactory.vertical(3) {
             fun addCorpse(name: String, color: Int) {
                 string(
                     Text.join(

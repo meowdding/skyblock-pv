@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.extensions.sortByKey
@@ -36,8 +36,8 @@ import kotlin.time.toDuration
 class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutBuild.horizontal { }
-        val mining = profile.mining ?: return LayoutBuild.horizontal { }
+        val profile = profile ?: return LayoutFactory.horizontal { }
+        val mining = profile.mining ?: return LayoutFactory.horizontal { }
 
         val info = getInformation(profile)
         val powder = getPowder(mining)
@@ -45,14 +45,14 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val forge = getForge()
 
         return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) > uiWidth) {
-            LayoutBuild.vertical(5, 0.5f) {
+            LayoutFactory.vertical(5, 0.5f) {
                 widget(info)
                 widget(powder)
                 widget(crystal)
                 forge?.let { widget(it) }
             }.asScrollable(uiWidth, uiHeight)
         } else {
-            LayoutBuild.horizontal(5, 0.5f) {
+            LayoutFactory.horizontal(5, 0.5f) {
                 vertical(5, 0.5f) {
                     widget(info)
                     widget(powder)
@@ -67,7 +67,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     private fun getInformation(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
-        LayoutBuild.vertical(3) {
+        LayoutFactory.vertical(3) {
             val mining = profile.mining ?: return@vertical
             fun grayText(text: String) = display(Displays.text(text, color = { 0x555555u }, shadow = false))
             val nucleusRunCrystals = listOf(
@@ -133,7 +133,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     private fun getPowder(mining: MiningCore) = PvWidgets.label(
         "Powder",
-        LayoutBuild.vertical(3) {
+        LayoutFactory.vertical(3) {
             display(
                 listOf(
                     listOf("", "Current", "Total"),
@@ -148,7 +148,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     private fun getCrystal(mining: MiningCore) = PvWidgets.label(
         "Crystals",
-        LayoutBuild.vertical(5) {
+        LayoutFactory.vertical(5) {
             val width = uiWidth / 3
 
             val convertedElements = mining.crystals.map { (name, crystal) ->
@@ -187,7 +187,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         return PvWidgets.label(
             "Forge",
-            LayoutBuild.vertical(5) {
+            LayoutFactory.vertical(5) {
                 forgeSlots.sortByKey().forEach { (index, slot) ->
                     val itemDisplay = Displays.item(slot.itemStack)
 

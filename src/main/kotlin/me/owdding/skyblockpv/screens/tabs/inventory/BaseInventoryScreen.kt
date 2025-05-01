@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
@@ -51,7 +51,7 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
 
     open val itemStackSize = true
 
-    override fun getLayout(bg: DisplayWidget) = LayoutBuild.vertical {
+    override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
         val inventories = getInventories()
         val icons = getIcons()
 

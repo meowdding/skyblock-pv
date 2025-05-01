@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.museum
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
 import me.owdding.lib.extensions.withTooltip
@@ -25,7 +25,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     BaseMuseumScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        return LayoutBuild.frame {
+        return LayoutFactory.frame {
             val chunked = RepoMuseumData.armor.map {
                 loaded(
                     Displays.item(Items.ORANGE_DYE.defaultInstance.withTooltip {

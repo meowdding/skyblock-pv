@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.toReadableString
@@ -28,10 +28,10 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.time.Instant
 
 class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
-    override fun getLayout(bg: DisplayWidget) = LayoutBuild.horizontal {
+    override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal {
         widget(getPlots())
         widget(
-            LayoutBuild.vertical {
+            LayoutFactory.vertical {
                 widget(getInformation())
                 spacer(0, 10)
                 widget(getUpgrades())
@@ -41,7 +41,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     private fun getInformation() = PvWidgets.label(
         "Information",
-        LayoutBuild.vertical {
+        LayoutFactory.vertical {
             string("Organic Matter Stored: ") {
                 append(
                     loadingComponent {
@@ -83,7 +83,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     private fun getUpgrades() = PvWidgets.label(
         "Upgrades",
-        LayoutBuild.frame {
+        LayoutFactory.frame {
             display(
                 ExtraDisplays.inventoryBackground(
                     5, Orientation.HORIZONTAL,
@@ -186,7 +186,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     fun getPlots() = PvWidgets.label(
         "Plots",
-        LayoutBuild.frame {
+        LayoutFactory.frame {
             val map = MutableList(5) { MutableList(5) { Displays.empty() } }
 
             StaticGardenData.plots.forEach {

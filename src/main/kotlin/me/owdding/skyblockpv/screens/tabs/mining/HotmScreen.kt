@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutBuild
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -32,7 +32,7 @@ import kotlin.math.roundToInt
 class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val mining = profile?.mining ?: return LayoutBuild.horizontal { }
+        val mining = profile?.mining ?: return LayoutFactory.horizontal { }
         val gridLayout = GridLayout()
 
         // nodes that are unlocked but not in the repo:
