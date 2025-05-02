@@ -1,70 +1,46 @@
 package me.owdding.skyblockpv.data.repo
 
-import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.notkamui.keval.keval
+import me.owdding.ktcodecs.FieldName
+import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.ktcodecs.IncludedCodec
+import me.owdding.ktcodecs.NamedCodec
 import me.owdding.ktmodules.Module
 import me.owdding.lib.extensions.ItemUtils.createSkull
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 
 @Module
 object CfCodecs {
     var data: CfRepoData
         private set
 
-    private val CfTextureCodec: Codec<List<CfTextureRepo>> = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(
-        { it.entries.map { (key, value) -> CfTextureRepo(key, value) } },
-        { emptyMap() },
+    @IncludedCodec(named = "cf§texture_list")
+    val CF_TEXTURE_CODEC: Codec<List<CfTextureRepo>> = CodecUtils.map<String, String>().xmap(
+        { it.map { (key, value) -> CfTextureRepo(key, value) }.toList() },
+        { it.associate { value -> value.id to value.texture } },
     )
 
-    private val CfEmployeeCodec: Codec<CfEmployeeRepo> = RecordCodecBuilder.create {
-        it.group(
-            Codec.STRING.fieldOf("id").forGetter(CfEmployeeRepo::id),
-            Codec.STRING.fieldOf("name").forGetter(CfEmployeeRepo::name),
-            Codec.STRING.fieldOf("reward").forGetter(CfEmployeeRepo::rewardFormula),
-        ).apply(it, ::CfEmployeeRepo)
-    }
-
-    private val CfMiscCodec: Codec<CfMiscRepo> = RecordCodecBuilder.create {
-        it.group(
-            CodecUtils.INT_LONG_MAP.fieldOf("chocolate_prestige").forGetter(CfMiscRepo::chocolatePerPrestige),
-        ).apply(it, ::CfMiscRepo)
-    }
-
-    private val CfRabbitRaritiesCodec: Codec<Map<SkyBlockRarity, List<String>>> =
-        Codec.unboundedMap(SkyBlockPVCodecs.getCodec<SkyBlockRarity>(), Codec.STRING.listOf())
-
     init {
-        val CODEC = RecordCodecBuilder.create {
-            it.group(
-                CfTextureCodec.fieldOf("textures").forGetter(CfRepoData::textures),
-                CfEmployeeCodec.listOf().fieldOf("employees").forGetter(CfRepoData::employees),
-                CfRabbitRaritiesCodec.fieldOf("rabbits").forGetter(CfRepoData::rabbits),
-                CfMiscCodec.fieldOf("misc").forGetter(CfRepoData::misc),
-                CodecUtils.CUMULATIVE_LONG_LIST.fieldOf("hitman_cost").forGetter(CfRepoData::hitmanCost),
-            ).apply(it, ::CfRepoData)
-        }
-
-        data = Utils.loadFromRepo<JsonObject>("chocolate_factory").toData(CODEC) ?: throw IllegalStateException("Failed to load chocolate factory data!")
+        data = Utils.loadRepoData<CfRepoData>("chocolate_factory")
     }
 
+    @GenerateCodec
     data class CfRepoData(
-        val textures: List<CfTextureRepo>,
+        @NamedCodec("cf§texture_list") val textures: List<CfTextureRepo>,
         val employees: List<CfEmployeeRepo>,
         val rabbits: Map<SkyBlockRarity, List<String>>,
         val misc: CfMiscRepo,
-        val hitmanCost: List<Long>,
+        @NamedCodec("cum_long_list") @FieldName("hitman_cost") val hitmanCost: List<Long>,
     )
 
+    @GenerateCodec
     data class CfEmployeeRepo(
         val id: String,
         val name: String,
-        val rewardFormula: String,
+        @FieldName("reward") val rewardFormula: String,
     ) {
         fun getReward(level: Int) = rewardFormula.keval {
             includeDefault()
@@ -82,8 +58,9 @@ object CfCodecs {
         val skull by lazy { createSkull(texture) }
     }
 
+    @GenerateCodec
     data class CfMiscRepo(
-        val chocolatePerPrestige: Map<Int, Long>,
+        @NamedCodec("int_long_map") @FieldName("chocolate_prestige") val chocolatePerPrestige: Map<Int, Long>,
     ) {
         val maxPrestigeLevel = chocolatePerPrestige.size + 1
     }

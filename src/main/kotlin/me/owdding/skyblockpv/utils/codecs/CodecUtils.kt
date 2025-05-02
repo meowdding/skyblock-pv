@@ -34,7 +34,7 @@ object CodecUtils {
             { it.reversed().runningFold(0, Int::minus).reversed() },
         )
 
-    @IncludedCodec(named = "cum_int_long_map")
+    @IncludedCodec(named = "int_long_map")
     val INT_LONG_MAP: Codec<Map<Int, Long>> = Codec.unboundedMap(Codec.STRING, Codec.LONG).xmap(
         { it.mapKeys { entry -> entry.key.toInt() } },
         { it.mapKeys { entry -> entry.key.toString() } },
