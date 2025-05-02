@@ -1,13 +1,10 @@
 package me.owdding.skyblockpv.data.repo
 
-import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktmodules.Module
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.utils.Utils
-import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 
 @Module
 object SlayerCodecs {
@@ -15,8 +12,7 @@ object SlayerCodecs {
         private set
 
     init {
-        val codec: Codec<Map<String, Slayer>> = Codec.unboundedMap(Codec.STRING, SkyBlockPVCodecs.getCodec<Slayer>())
-        data = Utils.loadFromRepo<JsonObject>("slayer").toDataOrThrow(codec)
+        data = Utils.loadRepoData<Slayer, Map<String, Slayer>>("slayer") { Codec.unboundedMap(Codec.STRING, it) }
     }
 
     @GenerateCodec

@@ -1,6 +1,5 @@
 package me.owdding.skyblockpv.data.repo
 
-import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -15,7 +14,6 @@ import me.owdding.ktmodules.Module
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import net.minecraft.network.chat.Component
@@ -28,7 +26,6 @@ import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
-import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -114,7 +111,7 @@ data object StaticGardenData {
     )
 
     init {
-        init(Utils.loadFromRepo<JsonObject>("garden_data").toDataOrThrow(SkyBlockPVCodecs.getCodec<GardenData>()))
+        init(Utils.loadRepoData<GardenData>("garden_data"))
     }
 
     fun init(data: GardenData) {
