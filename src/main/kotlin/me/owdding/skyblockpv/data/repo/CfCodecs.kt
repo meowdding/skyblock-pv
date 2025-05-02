@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.notkamui.keval.keval
 import me.owdding.ktmodules.Module
 import me.owdding.lib.extensions.ItemUtils.createSkull
+import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
@@ -16,12 +17,12 @@ object CfCodecs {
     var data: CfRepoData
         private set
 
-    private val CfTextureCodec = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(
+    private val CfTextureCodec: Codec<List<CfTextureRepo>> = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(
         { it.entries.map { (key, value) -> CfTextureRepo(key, value) } },
         { emptyMap() },
     )
 
-    private val CfEmployeeCodec = RecordCodecBuilder.create {
+    private val CfEmployeeCodec: Codec<CfEmployeeRepo> = RecordCodecBuilder.create {
         it.group(
             Codec.STRING.fieldOf("id").forGetter(CfEmployeeRepo::id),
             Codec.STRING.fieldOf("name").forGetter(CfEmployeeRepo::name),
@@ -29,13 +30,14 @@ object CfCodecs {
         ).apply(it, ::CfEmployeeRepo)
     }
 
-    private val CfMiscCodec = RecordCodecBuilder.create {
+    private val CfMiscCodec: Codec<CfMiscRepo> = RecordCodecBuilder.create {
         it.group(
             CodecUtils.INT_LONG_MAP.fieldOf("chocolate_prestige").forGetter(CfMiscRepo::chocolatePerPrestige),
         ).apply(it, ::CfMiscRepo)
     }
 
-    private val CfRabbitRaritiesCodec = Codec.unboundedMap(CodecUtils.SKYBLOCK_RARITY_CODEC, Codec.STRING.listOf())
+    private val CfRabbitRaritiesCodec: Codec<Map<SkyBlockRarity, List<String>>> =
+        Codec.unboundedMap(SkyBlockPVCodecs.getCodec<SkyBlockRarity>(), Codec.STRING.listOf())
 
     init {
         val CODEC = RecordCodecBuilder.create {

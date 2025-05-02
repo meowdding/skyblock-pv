@@ -3,16 +3,19 @@ package me.owdding.skyblockpv.utils.codecs
 import com.mojang.serialization.Codec
 import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
+import me.owdding.ktcodecs.IncludedCodec
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.ExtraCodecs
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
-import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
@@ -20,41 +23,46 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 object CodecUtils {
 
+    @IncludedCodec(named = "cum_int_list_alt")
     val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =
         Codec.INT.listOf().xmap(
             { it.runningFold(0, Int::plus).drop(1) },
             { it.reversed().runningFold(0, Int::minus).reversed() },
         )
 
+    @IncludedCodec(named = "cum_int_long_map")
     val INT_LONG_MAP: Codec<Map<Int, Long>> = Codec.unboundedMap(Codec.STRING, Codec.LONG).xmap(
         { it.mapKeys { entry -> entry.key.toInt() } },
         { it.mapKeys { entry -> entry.key.toString() } },
     )
 
-    val SKYBLOCK_RARITY_CODEC: Codec<SkyBlockRarity> = EnumCodec.Companion.of(SkyBlockRarity.entries.toTypedArray())
-
+    @IncludedCodec(named = "cum_int_list")
     val CUMULATIVE_INT_LIST: Codec<List<Int>> =
         Codec.INT.listOf().xmap(
             { it.runningFold(0, Int::plus).distinct() },
             { it.reversed().runningFold(0, Int::minus).reversed() },
         )
 
+    @IncludedCodec(named = "cum_long_list")
     val CUMULATIVE_LONG_LIST: Codec<List<Long>> =
         Codec.LONG.listOf().xmap(
             { it.runningFold(0, Long::plus).distinct() },
             { it.reversed().runningFold(0, Long::minus).reversed() },
         )
 
-    val VECTOR_2I = Codec.INT.listOf(2, 2).xmap(
+    @IncludedCodec(named = "vec_2i")
+    val VECTOR_2I: Codec<Vector2i> = Codec.INT.listOf(2, 2).xmap(
         { Vector2i(it[0], it[1]) },
         { listOf(it.x, it.y) },
     )
 
-    val COMPONENT_TAG = Codec.STRING.xmap(
+    @IncludedCodec(named = "component_tag")
+    val COMPONENT_TAG: Codec<Component> = Codec.STRING.xmap(
         { TagParser.QUICK_TEXT_SAFE.parseText(it, ParserContext.of()) },
         { it.string },
     )
 
+    @IncludedCodec(named = "cum_string_int_map")
     val CUMULATIVE_STRING_INT_MAP: Codec<List<Map<String, Int>>> = Codec.unboundedMap(Codec.STRING, Codec.INT).listOf().xmap(
         {
             it.runningFold(
@@ -72,7 +80,8 @@ object CodecUtils {
         { it },
     )
 
-    val ITEM_REFERENCE = ResourceLocation.CODEC.xmap(
+    @IncludedCodec(named = "lazy_item_ref")
+    val ITEM_REFERENCE: Codec<Lazy<ItemStack>> = ResourceLocation.CODEC.xmap(
         {
             lazy {
                 if (it.namespace.equals("skyblock")) {
@@ -101,4 +110,10 @@ object CodecUtils {
             }
         },
     )
+
+    @IncludedCodec(named = "item")
+    val ITEM: Codec<Item> = BuiltInRegistries.ITEM.byNameCodec()
+
+    @IncludedCodec(named = "compact_string_list")
+    val COMPACT_STRING_LIST: Codec<List<String>> = ExtraCodecs.compactListCodec(Codec.STRING)
 }
