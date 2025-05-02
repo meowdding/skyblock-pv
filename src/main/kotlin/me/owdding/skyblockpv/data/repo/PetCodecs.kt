@@ -14,13 +14,6 @@ object PetCodecs {
     private val overwrites: MutableMap<String, Data> = mutableMapOf()
     private val defaultData = Data()
 
-    @GenerateCodec
-    data class PetData(
-        @FieldName("rarity_offsets") val rarityOffsets: List<Int>,
-        @NamedCodec("cum_int_list_alt") @FieldName("xp_curve") val xpCurve: List<Int>,
-        val overwrites: Map<String, Data>,
-    )
-
     init {
         Utils.loadRepoData<PetData>("pets").let {
             this.rarityOffsets.addAll(it.rarityOffsets)
@@ -34,6 +27,14 @@ object PetCodecs {
     }
 
     @GenerateCodec
+    data class PetData(
+        @FieldName("rarity_offsets") val rarityOffsets: List<Int>,
+        @NamedCodec("cum_int_list_alt") @FieldName("xp_curve") val xpCurve: List<Int>,
+        val overwrites: Map<String, Data>,
+    )
+
+    @GenerateCodec
+    @NamedCodec("PetsData")
     data class Data(
         @NamedCodec("cum_int_list_alt") @FieldName("xp_curve") val xpCurve: List<Int> = PetCodecs.xpCurve,
         @FieldName("rarity_offsets") val rarityOffsets: List<Int> = PetCodecs.rarityOffsets,

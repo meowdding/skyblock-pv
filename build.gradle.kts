@@ -58,8 +58,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.meowdding.ktmodules)
-    ksp(libs.meowdding.ktmodules)
+    compileOnly(libs.meowdding.ktmodules) { isTransitive = false }
+    ksp(libs.meowdding.ktmodules) { isTransitive = false }
     compileOnly(libs.meowdding.ktcodecs)
     ksp(libs.meowdding.ktcodecs)
 
