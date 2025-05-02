@@ -21,6 +21,7 @@ import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
+import me.owdding.skyblockpv.feature.NetworthCalculator
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.FakePlayer
@@ -111,6 +112,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 ).toRow().withTooltip("Provided by https://pronoundb.org/"),
             )
             string("Fairy Souls: ${profile.fairySouls}")
+
+            // todo: load separately
+            string("Networth: ${NetworthCalculator.calculateNetworth(profile).toFormattedString()}")
         }
 
         widget(PvWidgets.getMainContentWidget(infoColumn, width))
