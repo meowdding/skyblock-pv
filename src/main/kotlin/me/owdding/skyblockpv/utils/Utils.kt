@@ -87,6 +87,10 @@ object Utils {
         return loadFromRepo<JsonElement>(file).toDataOrThrow(SkyBlockPVCodecs.getCodec<T>().let(modifier))
     }
 
+    internal inline fun <B : Any> loadRepoData(file: String, supplier: () -> Codec<B>): B {
+        return loadFromRepo<JsonElement>(file).toDataOrThrow(supplier())
+    }
+
     fun text(
         text: String = "",
         color: UInt = 0x555555u,

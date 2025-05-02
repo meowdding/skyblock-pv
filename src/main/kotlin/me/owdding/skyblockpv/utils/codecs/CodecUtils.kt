@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
 import me.owdding.ktcodecs.IncludedCodec
+import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
@@ -22,6 +23,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 object CodecUtils {
+
+    internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
+        Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
 
     @IncludedCodec(named = "cum_int_list_alt")
     val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =
