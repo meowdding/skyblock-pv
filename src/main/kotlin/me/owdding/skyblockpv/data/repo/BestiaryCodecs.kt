@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
+import me.owdding.ktcodecs.Unnamed
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.utils.Utils
@@ -63,12 +64,14 @@ object BestiaryCodecs {
         { DataResult.success(if (it) COMPLEX_CATEGORY_CODEC else SIMPLE_CATEGORY_CODEC) },
     ).codec()
 
-    private val BRACKETS_CODEC: Codec<Map<Int, List<Int>>> = Codec.unboundedMap(
+    @IncludedCodec(named = "be§brackets")
+    val BRACKETS_CODEC: Codec<Map<Int, List<Int>>> = Codec.unboundedMap(
         Codec.STRING.xmap({ it.toIntOrNull() ?: 0 }, { it.toString() }),
         Codec.INT.listOf(),
     )
 
-    private val CATEGORIES_CODEC: MapCodec<Map<String, BestiaryCategoriesEntry>> = MapCodec.assumeMapUnsafe(
+    @IncludedCodec(named = "be§categories")
+    val CATEGORIES_CODEC: MapCodec<Map<String, BestiaryCategoriesEntry>> = MapCodec.assumeMapUnsafe(
         ReservedUnboundMapCodec(
             Codec.STRING,
             CATEGORY_CODEC,
@@ -76,22 +79,15 @@ object BestiaryCodecs {
         ),
     )
 
-    private val CODEC: Codec<BestiaryRepoData> = RecordCodecBuilder.create {
-        it.group(
-            BRACKETS_CODEC.fieldOf("brackets").forGetter(BestiaryRepoData::brackets),
-            CATEGORIES_CODEC.forGetter(BestiaryRepoData::categories),
-        ).apply(it, ::BestiaryRepoData)
-    }
-
     init {
-        data = Utils.loadRepoData("bestiary", CODEC)
+        data = Utils.loadRepoData<BestiaryRepoData>("bestiary")
     }
 }
 
-
+@GenerateCodec
 data class BestiaryRepoData(
-    val brackets: Map<Int, List<Int>>,
-    val categories: Map<String, BestiaryCategoriesEntry>,
+    @NamedCodec("be§brackets") val brackets: Map<Int, List<Int>>,
+    @NamedCodec("be§categories") @Unnamed val categories: Map<String, BestiaryCategoriesEntry>,
 )
 
 
@@ -111,7 +107,7 @@ data class ComplexBestiaryCategoryEntry(
 @GenerateCodec
 data class BestiaryMobEntry(
     val name: String,
-    @NamedCodec("be§icon") val icon: BestiaryIcon,
+    @NamedCodec("be§icon") @Unnamed val icon: BestiaryIcon,
     val cap: Int,
     val mobs: List<String>,
     val bracket: Int,
