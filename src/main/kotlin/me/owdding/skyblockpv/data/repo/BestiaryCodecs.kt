@@ -24,7 +24,7 @@ object BestiaryCodecs {
         private set
 
     @IncludedCodec(named = "be§icon")
-    private val ICON: MapCodec<BestiaryIcon> = Codec.mapEither(
+    val ICON: MapCodec<BestiaryIcon> = Codec.mapEither(
         Codec.STRING.fieldOf("item"),
         RecordCodecBuilder.mapCodec {
             it.group(
