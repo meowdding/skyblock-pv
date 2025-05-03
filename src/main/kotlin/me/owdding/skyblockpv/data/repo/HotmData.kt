@@ -38,7 +38,7 @@ enum class MiningNodes(override val type: KClass<out MiningNode>) : DispatchHelp
             { if (it.size == 1) Either.left(it) else Either.right(it) },
         )
 
-        val miningNodes: List<MiningNode> = Utils.loadRepoData("hotm", CodecUtils.list<MiningNode>())
+        val miningNodes: List<MiningNode> = Utils.loadRepoData("hotm", CodecUtils.list())
 
         fun getType(id: String) = valueOf(id.uppercase())
     }

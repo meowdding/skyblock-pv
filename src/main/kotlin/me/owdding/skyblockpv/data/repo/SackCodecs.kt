@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.data.repo
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
 @Module
@@ -11,7 +12,7 @@ object SackCodecs {
         private set
 
     init {
-        data = Utils.loadRepoData<Sack, List<Sack>>("sacks") { it.listOf() }
+        data = Utils.loadRepoData("sacks", CodecUtils.list())
     }
 
     @GenerateCodec

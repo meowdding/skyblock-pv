@@ -25,9 +25,8 @@ object EssenceData {
     val allPerks: Map<String, RepoEssencePerk>
 
     init {
-        allPerks = Utils.loadRepoData<Map<String, Map<String, RepoEssencePerk>>>("essence_perks") {
-            Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>())
-        }.flatMap { it.value.entries }.associateBy({ it.key }, { it.value })
+        allPerks = Utils.loadRepoData("essence_perks", Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>()))
+            .flatMap { it.value.entries }.associateBy({ it.key }, { it.value })
     }
 
     fun LayoutBuilder.addFishingPerk(profile: SkyBlockProfile, id: String) {

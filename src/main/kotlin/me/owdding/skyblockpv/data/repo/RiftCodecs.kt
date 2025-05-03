@@ -11,7 +11,7 @@ object RiftCodecs {
         private set
 
     init {
-        data = Utils.loadRepoData<RiftRepoData>("rift")
+        data = Utils.loadRepoData("rift")
     }
 
     @GenerateCodec

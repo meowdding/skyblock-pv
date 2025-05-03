@@ -1,10 +1,10 @@
 package me.owdding.skyblockpv.data.repo
 
-import com.mojang.serialization.Codec
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.CodecUtils
 
 @Module
 object SlayerCodecs {
@@ -12,7 +12,7 @@ object SlayerCodecs {
         private set
 
     init {
-        data = Utils.loadRepoData<Slayer, Map<String, Slayer>>("slayer") { Codec.unboundedMap(Codec.STRING, it) }
+        data = Utils.loadRepoData("slayer", CodecUtils.map())
     }
 
     @GenerateCodec
