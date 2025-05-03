@@ -27,6 +27,10 @@ object CodecUtils {
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
         Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
 
+    internal inline fun <reified T> list(): Codec<List<T>> {
+        return SkyBlockPVCodecs.getCodec<T>().listOf()
+    }
+
     @IncludedCodec(named = "cum_int_list_alt")
     val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =
         Codec.INT.listOf().xmap(

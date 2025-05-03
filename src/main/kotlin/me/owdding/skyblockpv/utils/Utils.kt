@@ -91,6 +91,10 @@ object Utils {
         return loadFromRepo<JsonElement>(file).toDataOrThrow(supplier())
     }
 
+    internal fun <B : Any> loadRepoData(file: String, codec: Codec<B>): B {
+        return loadFromRepo<JsonElement>(file).toDataOrThrow(codec)
+    }
+
     fun text(
         text: String = "",
         color: UInt = 0x555555u,
