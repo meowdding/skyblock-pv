@@ -1,8 +1,7 @@
 package me.owdding.skyblockpv.api.data
 
 import com.google.gson.JsonObject
-import me.owdding.skyblockpv.utils.getNbt
-import me.owdding.skyblockpv.utils.legacyStack
+import me.owdding.skyblockpv.utils.apiItemStacks
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
@@ -60,9 +59,7 @@ data class InventoryData(
     ) {
         companion object {
             fun fromJson(json: JsonObject): List<EnderChestPage> {
-                return json.get("data").getNbt().let {
-                    it.getListOrEmpty("i").map { item -> item.legacyStack() }.chunked(45).map { EnderChestPage(Inventory(it)) }
-                }
+                return json.get("data").apiItemStacks().chunked(45).map { EnderChestPage(Inventory(it)) }
             }
         }
     }
@@ -74,7 +71,7 @@ data class InventoryData(
         companion object {
             fun icons(json: JsonObject): Map<Int, ItemStack> {
                 return json.entrySet().associate { entry ->
-                    entry.key.toInt() to entry.value.asJsonObject.get("data").getNbt().getListOrEmpty("i").first().legacyStack()
+                    entry.key.toInt() to entry.value.asJsonObject.get("data").apiItemStacks().first()
                 }
             }
 
@@ -91,9 +88,7 @@ data class InventoryData(
     ) {
         companion object {
             fun fromJson(json: JsonObject): List<TalismansPage> {
-                return json.get("data").getNbt().getListOrEmpty("i")?.let {
-                    it.map { it.legacyStack() }.chunked(45).map { TalismansPage(Inventory(it)) }
-                } ?: listOf()
+                return json.get("data").apiItemStacks().chunked(45).map { TalismansPage(Inventory(it)) }
             }
         }
     }
@@ -103,9 +98,7 @@ data class InventoryData(
     ) {
         companion object {
             fun fromJson(json: JsonObject): Inventory {
-                if (!json.has("data")) return Inventory(listOf())
-                val itemList = json.get("data").getNbt().getListOrEmpty("i")
-                return Inventory(itemList.map { item -> item.legacyStack() })
+                return Inventory(json.get("data")?.apiItemStacks() ?: listOf())
             }
         }
     }

@@ -6,7 +6,6 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.tabs.ChocolateFactoryScreen
 import me.owdding.skyblockpv.screens.tabs.FishingScreen
-import me.owdding.skyblockpv.screens.tabs.MainScreen
 import me.owdding.skyblockpv.screens.tabs.PetScreen
 import me.owdding.skyblockpv.screens.tabs.collection.BaseCollectionScreen
 import me.owdding.skyblockpv.screens.tabs.collection.CollectionCategories
@@ -14,6 +13,7 @@ import me.owdding.skyblockpv.screens.tabs.combat.BaseCombatScreen
 import me.owdding.skyblockpv.screens.tabs.combat.DungeonScreen
 import me.owdding.skyblockpv.screens.tabs.farming.BaseFarmingScreen
 import me.owdding.skyblockpv.screens.tabs.farming.FarmingScreen
+import me.owdding.skyblockpv.screens.tabs.general.MainScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.InventoryScreen
 import me.owdding.skyblockpv.screens.tabs.mining.BaseMiningScreen

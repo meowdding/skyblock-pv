@@ -8,11 +8,14 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderType
+import net.minecraft.network.chat.Component
 import net.minecraft.util.ARGB
+import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
 import tech.thatgravyboat.skyblockapi.utils.extentions.translate
 import tech.thatgravyboat.skyblockapi.utils.extentions.translated
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.width
 import kotlin.math.cos
 import kotlin.math.sin
 import me.owdding.skyblockpv.utils.RenderUtils as SbPvRenderUtils
@@ -158,6 +161,50 @@ object ExtraDisplays {
                         context.currentDropdown = null
                     }
                     isOpen = false
+                }
+            }
+        }
+    }
+
+    fun label(width: Int, first: Display, second: Display): Display {
+        return object : Display {
+
+            fun isLeftRight() = first.getWidth() + second.getWidth() < width
+
+            override fun getWidth() = width
+            override fun getHeight() = if (isLeftRight()) {
+                first.getHeight().coerceAtLeast(second.getHeight())
+            } else {
+                first.getHeight() + second.getHeight()
+            }
+
+            override fun render(graphics: GuiGraphics) {
+                if (isLeftRight()) {
+                    graphics.pushPop {
+                        first.render(graphics)
+                        translate(getWidth() - second.getWidth(), 0, 0)
+                        second.render(graphics)
+                    }
+                } else {
+                    graphics.pushPop {
+                        first.render(graphics)
+                        translate(0, first.getWidth(), 0)
+                        second.render(graphics)
+                    }
+                }
+            }
+        }
+    }
+
+    fun scaledText(text: Component, scale: Float, shadow: Boolean = false): Display {
+        return object : Display {
+            override fun getWidth() = (text.width * scale).toInt()
+            override fun getHeight() = (McFont.height * scale).toInt()
+
+            override fun render(graphics: GuiGraphics) {
+                graphics.pushPop {
+                    scale(scale, scale, 0f)
+                    graphics.drawString(McFont.self, text, 0, 0, -1, shadow)
                 }
             }
         }

@@ -12,6 +12,7 @@ import java.util.*
 
 private const val API_URL = "https://pronoundb.org/api/v2/lookup"
 
+// TODO support decorations :3
 object PronounsDbAPI {
     private val pronouns = mutableMapOf<UUID, List<ProunounSet>>()
 

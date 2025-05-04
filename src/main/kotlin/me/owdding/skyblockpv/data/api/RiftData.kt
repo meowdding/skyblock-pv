@@ -2,8 +2,7 @@ package me.owdding.skyblockpv.data.api
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.api.skills.Pet
-import me.owdding.skyblockpv.utils.getNbt
-import me.owdding.skyblockpv.utils.legacyStack
+import me.owdding.skyblockpv.utils.apiItemStacks
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asList
@@ -58,7 +57,7 @@ data class RiftInventory(
             )
         }
 
-        private fun JsonObject.getInventory() = this.get("data").getNbt().getListOrEmpty("i").map { it.legacyStack() }
+        private fun JsonObject.getInventory() = this.get("data").apiItemStacks()
     }
 }
 

@@ -9,15 +9,15 @@ import net.minecraft.client.gui.layouts.LayoutElement
 
 object LayoutUtils {
 
-    fun LayoutElement.centerVertically(height: Int): LayoutElement {
+    fun LayoutElement.centerVertically(height: Int): Layout {
         return FrameLayout(0, height).also { it.addChild(this) }
     }
 
-    fun LayoutElement.centerHorizontally(width: Int): LayoutElement {
+    fun LayoutElement.centerHorizontally(width: Int): Layout {
         return FrameLayout(width, 0).also { it.addChild(this) }
     }
 
-    fun LayoutElement.center(width: Int, height: Int): LayoutElement {
+    fun LayoutElement.center(width: Int, height: Int): Layout {
         return FrameLayout(width, height).also { it.addChild(this) }
     }
 

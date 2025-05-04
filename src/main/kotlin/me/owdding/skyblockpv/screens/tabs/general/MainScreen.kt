@@ -1,4 +1,4 @@
-package me.owdding.skyblockpv.screens.tabs
+package me.owdding.skyblockpv.screens.tabs.general
 
 import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.platform.InputConstants
@@ -8,12 +8,16 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PronounsDbAPI
 import me.owdding.skyblockpv.api.SkillAPI
-import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
 import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -21,12 +25,12 @@ import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
-import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
@@ -34,6 +38,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
@@ -45,21 +50,20 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.text.SimpleDateFormat
 
-
-class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
+class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseGeneralScreen(gameProfile, profile) {
 
     private var cachedX = 0.0F
     private var cachedY = 0.0F
 
-    override fun create(bg: DisplayWidget) {
+    override fun getLayout(bg: DisplayWidget): Layout {
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
-        LayoutFactory.horizontal {
+        return LayoutFactory.horizontal {
             widget(createLeftColumn(profile!!, sideColumnWidth))
             widget(createMiddleColumn(profile!!, middleColumnWidth))
             widget(createRightColumn(profile!!, sideColumnWidth))
-        }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
+        }
     }
 
     private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutFactory.vertical(alignment = 0.5f) {
@@ -72,7 +76,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val skillAvg = profile.skill
             .filterNot { it.key in irrelevantSkills }
-            .map { getSkillLevel(SkillAPI.getSkill(it.key), it.value, profile) }
+            .map { SkillAPI.getSkillLevel(SkillAPI.getSkill(it.key), it.value, profile) }
             .average()
 
         widget(PvWidgets.getTitleWidget("Info", width))
@@ -120,7 +124,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val height = (width * 1.1).toInt()
         val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
         val skyblockLvl = profile.skyBlockLevel.first
-        val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
+        val skyblockLvlColor = ProfileAPI.getLevelColor(skyblockLvl)
         val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
         val fakePlayer = FakePlayer(gameProfile, name, armor)
         val nakedFakePlayer = FakePlayer(gameProfile, name)
@@ -232,13 +236,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                             this.color = TextColor.GRAY
                             if (progress == 1f) {
                                 append("Maxed!") { this.color = TextColor.RED }
-                            } else if (skill.hasFloatingLevelCap() && getSkillLevel(skill, num, profile) == skill.maxLevel(profile)) {
+                            } else if (skill.hasFloatingLevelCap() && SkillAPI.getSkillLevel(skill, num, profile) == skill.maxLevel(profile)) {
                                 append("Reached max skill cap!") { this.color = TextColor.DARK_PURPLE }
                             } else {
                                 append("${(progress * 100).round()}% to next") { this.color = TextColor.GREEN }
                             }
                         }
-                        if (skill.data.maxLevel != getSkillLevel(skill, num, profile)) {
+                        if (skill.data.maxLevel != SkillAPI.getSkillLevel(skill, num, profile)) {
                             add("Progress to max: ") {
                                 this.color = TextColor.GRAY
                                 val expRequired = SkillAPI.getExpRequired(skill, skill.data.maxLevel)
@@ -263,7 +267,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             },
             getIcon = SkillAPI.Skill::icon,
         ) { name, num ->
-            getSkillLevel(name, num, profile)
+            SkillAPI.getSkillLevel(name, num, profile)
         }
 
         spacer(height = 10)

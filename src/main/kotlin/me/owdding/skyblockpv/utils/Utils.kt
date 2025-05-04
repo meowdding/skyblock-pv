@@ -48,7 +48,7 @@ object Utils {
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
-        PlayerDbAPI.getUUID(username).takeUnless { it?.id == Util.NIL_UUID }?.let {
+        PlayerDbAPI.getProfile(username).takeUnless { it?.id == Util.NIL_UUID }?.let {
             callback(it)
             isFetchingGameProfile = false
         }
