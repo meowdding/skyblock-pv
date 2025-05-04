@@ -2,11 +2,9 @@ package me.owdding.skyblockpv.data.api.skills
 
 
 import com.google.gson.JsonObject
-import com.mojang.serialization.Codec
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
 import net.minecraft.ChatFormatting
-import net.minecraft.util.StringRepresentable
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
@@ -190,16 +188,10 @@ enum class RockBracket(val oresRequired: Int, val rarity: SkyBlockRarity) {
     }
 }
 
-enum class PowderType(val formatting: ChatFormatting) : StringRepresentable {
+enum class PowderType(val formatting: ChatFormatting) {
     MITHRIL(ChatFormatting.DARK_GREEN),
     GEMSTONE(ChatFormatting.LIGHT_PURPLE),
     GLACITE(ChatFormatting.AQUA);
-
-    override fun getSerializedName() = name
-
-    companion object {
-        val CODEC: Codec<PowderType> = StringRepresentable.fromEnum { entries.toTypedArray() }
-    }
 }
 
 @Module
