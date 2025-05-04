@@ -18,7 +18,7 @@ object NetworthCalculator {
             val skin = Pricing.getPrice(it.skin)
             pet + item + skin
         }
-        SkyBlockPv.info("Networth calculation took ${System.currentTimeMillis() - start}ms")
+        if (SkyBlockPv.isDevMode) SkyBlockPv.info("Networth calculation took ${System.currentTimeMillis() - start}ms")
 
         return listOfNotNull(
             items,
