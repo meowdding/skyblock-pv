@@ -11,13 +11,6 @@ TODO:
 </details>
 
 <details>
-<summary>Collections</summary>
-
-- [ ] Minions
-
-</details>
-
-<details>
 <summary>Garden</summary>
 
 ## Main page
