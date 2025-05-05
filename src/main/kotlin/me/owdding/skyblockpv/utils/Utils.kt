@@ -16,6 +16,7 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
@@ -52,6 +53,11 @@ object Utils {
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
+        if (username == McPlayer.name) {
+            callback(McClient.self.gameProfile)
+            isFetchingGameProfile = false
+            return
+        }
         PlayerDbAPI.getUUID(username).takeUnless { it?.id == Util.NIL_UUID }?.let {
             callback(it)
             isFetchingGameProfile = false

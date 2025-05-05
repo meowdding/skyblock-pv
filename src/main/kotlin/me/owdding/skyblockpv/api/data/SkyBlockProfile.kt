@@ -101,8 +101,7 @@ data class SkyBlockProfile(
                 mining = member.getAsJsonObject("mining_core")?.let { MiningCore.fromJson(it) },
                 forge = member.getAsJsonObject("forge")?.let { Forge.fromJson(it) },
                 glacite = member.getAsJsonObject("glacite_player_data")?.let { GlaciteData.fromJson(it) },
-                tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed")?.asJsonArray
-                    ?.map { it.asString("") }?.filter { it.isNotBlank() } ?: emptyList(),
+                tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() },
                 pets = member.getAsJsonObject("pets_data").getAsJsonArray("pets").map { Pet.fromJson(it.asJsonObject) },
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
@@ -121,8 +120,7 @@ data class SkyBlockProfile(
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
                 crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data")),
-                // todo: asStringList or smth
-                minions = playerData?.getAsJsonArray("crafted_generators").asList { it.asString("") }.filterNot { it.isEmpty() }
+                minions = playerData?.getAsJsonArray("crafted_generators").asStringList().filterNot { it.isNotBlank() }
                     .sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
             )
         }

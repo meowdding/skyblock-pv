@@ -32,8 +32,10 @@ object Config : ConfigKt("skyblockpv/config") {
     }
 
     var profileSpying by boolean(true) {
-        name = Translated("skyblockpv.config.spying")
-        description = Translated("skyblockpv.config.spying.desc")
+        this.translation = "skyblockpv.config.spying"
     }
 
+    var currency by enum(ConfigCurrency.USD) {
+        this.translation = "skyblockpv.config.currency"
+    }
 }

@@ -9,10 +9,12 @@ import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.util.ARGB
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
 import tech.thatgravyboat.skyblockapi.utils.extentions.translate
 import tech.thatgravyboat.skyblockapi.utils.extentions.translated
+import java.util.concurrent.CompletableFuture
 import kotlin.math.cos
 import kotlin.math.sin
 import me.owdding.skyblockpv.utils.RenderUtils as SbPvRenderUtils
@@ -146,7 +148,7 @@ object ExtraDisplays {
             override fun render(graphics: GuiGraphics) {
                 original.render(graphics)
 
-                if (context.isCurrentDropdown(this) && (Displays.isMouseOver(original, graphics) || (isOpen && isMouseOver(dropdown, graphics)))) {
+                if (context.isCurrentDropdown(this) && (isMouseOver(original, graphics) || (isOpen && isMouseOver(dropdown, graphics)))) {
                     isOpen = true
                     context.currentDropdown = this
                     graphics.pushPop {
@@ -159,6 +161,32 @@ object ExtraDisplays {
                     }
                     isOpen = false
                 }
+            }
+        }
+    }
+
+    fun <T> completableDisplay(
+        completable: CompletableFuture<T>,
+        onComplete: (T) -> Display,
+        onError: (Throwable) -> Display,
+        onLoading: () -> Display = { loading() },
+    ): Display {
+        return object : Display {
+            private var display: Display = onLoading()
+
+            init {
+                completable.whenCompleteAsync { result, error ->
+                    McClient.tell {
+                        display = result?.runCatching(onComplete)?.fold({ it }, onError) ?: onError(error)
+                    }
+                }
+            }
+
+            override fun getWidth() = display.getWidth()
+            override fun getHeight() = display.getHeight()
+
+            override fun render(graphics: GuiGraphics) {
+                display.render(graphics)
             }
         }
     }
