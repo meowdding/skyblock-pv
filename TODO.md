@@ -4,7 +4,7 @@ TODO:
 <details>
 <summary>Main screen</summary>
 
-- Networth + Weight
+- Weight
 - Guild
 - Auctions
 
