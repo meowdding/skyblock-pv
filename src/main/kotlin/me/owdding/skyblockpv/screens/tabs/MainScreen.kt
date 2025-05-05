@@ -271,7 +271,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         addSection(
             title = "Slayer",
             data = SlayerCodecs.data.map { (k, v) ->
-                val data = profile.slayer[v.id] ?: SlayerTypeData(0, emptyMap(), emptyMap())
+                val data = profile.slayer[v.id] ?: SlayerTypeData.EMPTY
                 Pair(k, Pair(v, data))
             }.asSequence(),
             getIcon = { name ->
