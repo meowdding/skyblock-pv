@@ -11,10 +11,10 @@ import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
-import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCollectionScreen(gameProfile, profile) {
@@ -54,7 +54,7 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
         }
 
         return Displays.item(minion.takeUnless { context.maxObtainedLevel == -1 } ?: Items.GRAY_DYE.defaultInstance, customStackText = stackSize).withTooltip {
-            add(minion.hoverName.stripped.substringBeforeLast(" ")) {
+            add(minion.cleanName.substringBeforeLast(" ")) {
                 this.color = TextColor.BLUE
             }
 
