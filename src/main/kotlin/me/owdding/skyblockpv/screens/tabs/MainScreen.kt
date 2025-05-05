@@ -106,62 +106,58 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 grayText("First Join: ${SimpleDateFormat("yyyy.MM.dd").format(profile.firstJoin)}")
                     .withTooltip(SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)),
             )
-            display(
-                grayText("Skill Avg: ${skillAvg.round()}"),
-            )
+            display(grayText("Skill Avg: ${skillAvg.round()}"))
             string("Fairy Souls: ${profile.fairySouls}")
 
-            display(Displays.column(
+            display(
                 listOf(
                     grayText("Pronouns: "),
                     PronounsDbAPI.getDisplay(gameProfile.id),
                 ).toRow().withTooltip("Provided by https://pronoundb.org/"),
-                spacing = 2
-            ))
-
-            display(
-                listOf(
-                    grayText("Net worth: "),
-                    ExtraDisplays.completableDisplay(
-                        NetworthCalculator.calculateNetworthAsync(profile),
-                        {
-                            val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
-                            val networthCookies = if (cookiePrice > 0) (it / cookiePrice).roundToInt() else 0
-                            val networthUSD = ((networthCookies * 325.0) / 675.0) * 4.99
-
-                            val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
-
-                            grayText(it.toFormattedString()).withTooltip {
-                                if (cookiePrice <= 0) return@withTooltip
-
-                                this.add {
-                                    this.append("Net worth in Cookies: ") { this.color = TextColor.YELLOW }
-                                    this.append(networthCookies.toFormattedString()) { this.color = TextColor.GOLD }
-                                }
-
-                                this.add {
-                                    this.append("Net worth in ${currency.name}: ") { this.color = TextColor.YELLOW }
-                                    this.append("\$${networthConverted.round()} ${currency.name}") { this.color = TextColor.GREEN }
-                                }
-
-                                this.space()
-                                this.add("Note: You can change the currency in the settings.") { this.color = TextColor.GRAY }
-                            }
-                        },
-                        { error ->
-                            grayText("Failed to load").withTooltip {
-                                this.add(Text.of("An error occurred: ") { this.color = TextColor.RED })
-                                error.stackTraceToString().lines().forEach { line ->
-                                    this.add(Text.of(line) { this.color = TextColor.RED })
-                                }
-                            }
-                        },
-                        {
-                            grayText("Loading...")
-                        },
-                    )
-                ).toRow(),
             )
+
+            horizontalDisplay {
+                grayText("Net worth: ")
+                ExtraDisplays.completableDisplay(
+                    NetworthCalculator.calculateNetworthAsync(profile),
+                    {
+                        val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
+                        val networthCookies = if (cookiePrice > 0) (it / cookiePrice).roundToInt() else 0
+                        val networthUSD = ((networthCookies * 325.0) / 675.0) * 4.99
+
+                        val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
+
+                        grayText(it.toFormattedString()).withTooltip {
+                            if (cookiePrice <= 0) return@withTooltip
+
+                            this.add {
+                                this.append("Net worth in Cookies: ") { this.color = TextColor.YELLOW }
+                                this.append(networthCookies.toFormattedString()) { this.color = TextColor.GOLD }
+                            }
+
+                            this.add {
+                                this.append("Net worth in ${currency.name}: ") { this.color = TextColor.YELLOW }
+                                val formattedNetworth = networthConverted.roundToInt().toFormattedString()
+                                this.append("$$formattedNetworth ${currency.name}") { this.color = TextColor.GREEN }
+                            }
+
+                            this.space()
+                            this.add("Note: You can change the currency in the settings.") { this.color = TextColor.GRAY }
+                        }
+                    },
+                    { error ->
+                        grayText("Failed to load").withTooltip {
+                            this.add(Text.of("An error occurred: ") { this.color = TextColor.RED })
+                            error.stackTraceToString().lines().forEach { line ->
+                                this.add(Text.of(line) { this.color = TextColor.RED })
+                            }
+                        }
+                    },
+                    {
+                        grayText("Loading...")
+                    },
+                ).let(this::display)
+            }
         }
 
         widget(PvWidgets.getMainContentWidget(infoColumn, width))
