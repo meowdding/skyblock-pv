@@ -117,7 +117,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             )
 
             horizontalDisplay {
-                grayText("Net worth: ")
+                display(grayText("Net worth: "))
                 ExtraDisplays.completableDisplay(
                     NetworthCalculator.calculateNetworthAsync(profile),
                     {
@@ -127,8 +127,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
                         val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
 
-                        grayText(it.toFormattedString()).withTooltip {
+                        grayText(it.shorten()).withTooltip {
                             if (cookiePrice <= 0) return@withTooltip
+
+                            this.add {
+                                this.append("Networth: ") { this.color = TextColor.YELLOW }
+                                this.append(it.toFormattedString()) { this.color = TextColor.GREEN }
+                            }
 
                             this.add {
                                 this.append("Net worth in Cookies: ") { this.color = TextColor.YELLOW }
