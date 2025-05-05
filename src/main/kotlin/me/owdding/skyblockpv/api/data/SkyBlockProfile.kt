@@ -101,7 +101,7 @@ data class SkyBlockProfile(
                 mining = member.getAsJsonObject("mining_core")?.let { MiningCore.fromJson(it) },
                 forge = member.getAsJsonObject("forge")?.let { Forge.fromJson(it) },
                 glacite = member.getAsJsonObject("glacite_player_data")?.let { GlaciteData.fromJson(it) },
-                tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed")?.asStringList()?.filter { it.isNotBlank() } ?: emptyList(),
+                tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() },
                 pets = member.getAsJsonObject("pets_data").getAsJsonArray("pets").map { Pet.fromJson(it.asJsonObject) },
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
@@ -120,8 +120,7 @@ data class SkyBlockProfile(
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
                 crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data")),
-                // todo: asStringList or smth
-                minions = playerData?.getAsJsonArray("crafted_generators").asStringList().filterNot { it.isEmpty() }
+                minions = playerData?.getAsJsonArray("crafted_generators").asStringList().filterNot { it.isNotBlank() }
                     .sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
             )
         }
@@ -145,9 +144,7 @@ data class SkyBlockProfile(
             return allCollections.map { (id, _) ->
                 id to (playerCollections[id] ?: 0)
             }.mapNotNull { (id, amount) ->
-                CollectionAPI.getCategoryByItemName(id)?.let {
-                    CollectionItem(it, id, amount)
-                }
+                CollectionAPI.getCategoryByItemName(id)?.let { CollectionItem(it, id, amount) }
             }
         }
 
@@ -177,16 +174,7 @@ data class SkyBlockProfile(
             }
         }
 
-        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { name, jsonElement ->
-            val data = jsonElement.asJsonObject
-            name to SlayerTypeData(
-                exp = data["xp"].asLong(0),
-                bossAttemptsTier = data.entrySet().filter { it.key.startsWith("boss_attempts_tier_") }
-                    .associate { it.key.filter { it.isDigit() }.toInt() to it.value.asInt },
-                bossKillsTier = data.entrySet().filter { it.key.startsWith("boss_kills_tier_") }
-                    .associate { it.key.filter { it.isDigit() }.toInt() to it.value.asInt },
-            )
-        }.sortToSlayerOrder()
+        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { n, e -> n to SlayerTypeData.fromJson(e.asJsonObject) }.sortToSlayerOrder()
 
         private fun JsonObject?.parseEssencePerks(): Map<String, Int> {
             val perks = this?.asMap { id, amount -> id to amount.asInt(0) } ?: emptyMap()
