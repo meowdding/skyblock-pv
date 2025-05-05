@@ -144,9 +144,7 @@ data class SkyBlockProfile(
             return allCollections.map { (id, _) ->
                 id to (playerCollections[id] ?: 0)
             }.mapNotNull { (id, amount) ->
-                CollectionAPI.getCategoryByItemName(id)?.let {
-                    CollectionItem(it, id, amount)
-                }
+                CollectionAPI.getCategoryByItemName(id)?.let { CollectionItem(it, id, amount) }
             }
         }
 
@@ -176,16 +174,7 @@ data class SkyBlockProfile(
             }
         }
 
-        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { name, jsonElement ->
-            val data = jsonElement.asJsonObject
-            name to SlayerTypeData(
-                exp = data["xp"].asLong(0),
-                bossAttemptsTier = data.entrySet().filter { it.key.startsWith("boss_attempts_tier_") }
-                    .associate { it.key.filter { it.isDigit() }.toInt() to it.value.asInt },
-                bossKillsTier = data.entrySet().filter { it.key.startsWith("boss_kills_tier_") }
-                    .associate { it.key.filter { it.isDigit() }.toInt() to it.value.asInt },
-            )
-        }.sortToSlayerOrder()
+        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { n, e -> n to SlayerTypeData.fromJson(e.asJsonObject) }.sortToSlayerOrder()
 
         private fun JsonObject?.parseEssencePerks(): Map<String, Int> {
             val perks = this?.asMap { id, amount -> id to amount.asInt(0) } ?: emptyMap()

@@ -32,4 +32,7 @@ data class MuseumData(val items: List<MuseumEntry>) {
     }
 }
 
-data class MuseumEntry(val id: String, val stacks: List<Lazy<ItemStack>>)
+data class MuseumEntry(
+    val id: String,
+    val stacks: List<Lazy<ItemStack>>,
+)

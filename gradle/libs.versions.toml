@@ -22,13 +22,13 @@ keval = "1.1.1"
 repolib = "1.2.0"
 meowdding-lib = "1.0.9"
 meowdding-ktmodules = "1.0.2"
+meowdding-ktcodecs = "1.0.11"
 
 # Keep kt version in sync with first segment of ksp version
 kotlin = "2.1.20"
 ksp = "2.1.20-2.0.0"
-repo = "1.0.2"
-resources = "1.0.0"
-
+repo = "1.0.4"
+resources = "1.0.6"
 
 # Dev Dependencies
 devauth = "1.2.1"
@@ -60,6 +60,7 @@ placeholders = { module = "eu.pb4:placeholder-api", version.ref = "placeholders"
 keval = { module = "com.notkamui.libs:keval", version.ref = "keval" }
 repo = { module = "tech.thatgravyboat.repo-lib:repo-lib", version.ref = "repolib" }
 meowdding-ktmodules = { module = "me.owdding.ktmodules:KtModules", version.ref = "meowdding-ktmodules" }
+meowdding-ktcodecs = { module = "me.owdding.ktcodecs:KtCodecs", version.ref = "meowdding-ktcodecs" }
 meowdding-resources = { module = "me.owdding.repo:compacting-resources", version.ref = "resources" }
 
 # Dev libs
