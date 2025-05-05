@@ -5,6 +5,7 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockapi.api.area.hub.LowestBinAPI
 import tech.thatgravyboat.skyblockapi.api.item.calculator.Pricing
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
+import java.util.concurrent.CompletableFuture
 
 object NetworthCalculator {
 
@@ -28,6 +29,12 @@ object NetworthCalculator {
             profile.currency?.soloBank,
             profile.currency?.mainBank,
         ).sum()
+    }
+
+    fun calculateNetworthAsync(profile: SkyBlockProfile): CompletableFuture<Long> {
+        return CompletableFuture.supplyAsync {
+            calculateNetworth(profile)
+        }
     }
 
 }

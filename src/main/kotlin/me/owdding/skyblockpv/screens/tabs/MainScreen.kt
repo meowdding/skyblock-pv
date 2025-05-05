@@ -17,6 +17,8 @@ import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
 import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.config.Config
+import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
@@ -28,12 +30,14 @@ import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
+import tech.thatgravyboat.skyblockapi.api.area.hub.BazaarAPI
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
@@ -45,6 +49,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
@@ -104,17 +109,59 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             display(
                 grayText("Skill Avg: ${skillAvg.round()}"),
             )
+            string("Fairy Souls: ${profile.fairySouls}")
 
-            display(
+            display(Displays.column(
                 listOf(
                     grayText("Pronouns: "),
                     PronounsDbAPI.getDisplay(gameProfile.id),
                 ).toRow().withTooltip("Provided by https://pronoundb.org/"),
-            )
-            string("Fairy Souls: ${profile.fairySouls}")
+                spacing = 2
+            ))
 
-            // todo: load separately
-            string("Networth: ${NetworthCalculator.calculateNetworth(profile).toFormattedString()}")
+            display(
+                listOf(
+                    grayText("Net worth: "),
+                    ExtraDisplays.completableDisplay(
+                        NetworthCalculator.calculateNetworthAsync(profile),
+                        {
+                            val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
+                            val networthCookies = if (cookiePrice > 0) (it / cookiePrice).roundToInt() else 0
+                            val networthUSD = ((networthCookies * 325.0) / 675.0) * 4.99
+
+                            val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
+
+                            grayText(it.toFormattedString()).withTooltip {
+                                if (cookiePrice <= 0) return@withTooltip
+
+                                this.add {
+                                    this.append("Net worth in Cookies: ") { this.color = TextColor.YELLOW }
+                                    this.append(networthCookies.toFormattedString()) { this.color = TextColor.GOLD }
+                                }
+
+                                this.add {
+                                    this.append("Net worth in ${currency.name}: ") { this.color = TextColor.YELLOW }
+                                    this.append("\$${networthConverted.round()} ${currency.name}") { this.color = TextColor.GREEN }
+                                }
+
+                                this.space()
+                                this.add("Note: You can change the currency in the settings.") { this.color = TextColor.GRAY }
+                            }
+                        },
+                        { error ->
+                            grayText("Failed to load").withTooltip {
+                                this.add(Text.of("An error occurred: ") { this.color = TextColor.RED })
+                                error.stackTraceToString().lines().forEach { line ->
+                                    this.add(Text.of(line) { this.color = TextColor.RED })
+                                }
+                            }
+                        },
+                        {
+                            grayText("Loading...")
+                        },
+                    )
+                ).toRow(),
+            )
         }
 
         widget(PvWidgets.getMainContentWidget(infoColumn, width))
