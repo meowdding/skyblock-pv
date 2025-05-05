@@ -142,7 +142,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                             }
 
                             this.space()
-                            this.add("Note: You can change the currency in the settings.") { this.color = TextColor.GRAY }
+                            this.add("Note: You can change the currency in the settings using /sbpv.") { this.color = TextColor.GRAY }
                         }
                     },
                     { error ->
