@@ -41,6 +41,7 @@ enum class ConfigCurrency {
     CNH,
     HKD,
     NZD,
+    CZK,
 
     // Fake Money
     BTC,
