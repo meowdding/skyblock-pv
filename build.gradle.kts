@@ -121,6 +121,7 @@ idea {
 
 repo {
     hotm { includeAll() }
+    sacks { includeAll() }
 }
 
 compactingResources {
