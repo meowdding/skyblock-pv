@@ -29,21 +29,21 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
         layout.visitWidgets(this::addRenderableWidget)
 
 
-        this.categories.fold(Layouts.row().withGap(2)) { layout, category ->
+        this.categories.fold(Layouts.column().withGap(2)) { layout, category ->
             val button = Button()
-                .withSize(20, 31)
-                .withTexture(if (category.isSelected) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP)
+                .withSize(31, 20)
+                .withTexture(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT)
                 .withCallback { McClient.tell { McClient.setScreen(category.create(gameProfile, profile)) } }
                 .withRenderer(
                     WidgetRenderers.padded(
-                        4, 0, 9, 0,
+                        0, 4, 0, 9,
                         WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
                     ),
                 )
 
             button.active = !category.isSelected
             layout.withChild(button)
-        }.withPosition(bg.x + 20, bg.y - 22).build(this::addRenderableWidget)
+        }.withPosition(bg.x + bg.width - 9, bg.y + 20).build(this::addRenderableWidget)
     }
 
 }

@@ -120,7 +120,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             errorWidget.visitWidgets(this::addRenderableWidget)
         }
 
-        val tabs = createTabs().setPos(bg.x + bg.width - 9, bg.y + 5)
+        val tabs = createTabs().setPos(bg.x + 20, bg.y - 22)
         tabs.visitWidgets(this::addRenderableWidget)
 
         val username = createSearch(bg)
@@ -242,21 +242,21 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
     }
 
-    private fun createTabs() = LayoutFactory.vertical(2) {
+    private fun createTabs() = LayoutFactory.horizontal(2) {
         // as you can see, maya has no idea what she is doing
         PvTab.entries.forEach { tab ->
             val button = Button()
-            button.setSize(31, 20)
+            button.setSize(20, 31)
             if (tab.isSelected()) {
-                button.withTexture(ExtraConstants.TAB_RIGHT_SELECTED)
+                button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
             } else {
                 button.withCallback { McClient.tell { McClient.setScreen(tab.create(gameProfile, profile)) } }
-                button.withTexture(ExtraConstants.TAB_RIGHT)
+                button.withTexture(ExtraConstants.TAB_TOP)
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
             button.withRenderer(
                 WidgetRenderers.padded(
-                    0, 3 - if (tab.isSelected()) 1 else 0, 0, 9,
+                    4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
                     WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
                 ),
             )
