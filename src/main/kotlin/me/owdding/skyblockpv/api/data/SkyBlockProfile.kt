@@ -120,7 +120,7 @@ data class SkyBlockProfile(
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
                 crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data")),
-                minions = playerData?.getAsJsonArray("crafted_generators").asStringList().filterNot { it.isNotBlank() }
+                minions = playerData?.getAsJsonArray("crafted_generators").asStringList().filter { it.isNotBlank() }
                     .sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
             )
         }
