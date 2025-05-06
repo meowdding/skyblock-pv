@@ -140,6 +140,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         )
     }
 
+    override fun isPauseScreen() = false
+
     private fun addLoader() {
         if (this.profile != null) return
 
