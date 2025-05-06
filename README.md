@@ -38,7 +38,7 @@ Switch between EnderChest, Backpack, ... pages using the custom build Carousel o
 ### 🎣 Fishing Tab
 
 <img src="./.github/images/fishing.png" width="720" alt="" title="Fishing">
-All fishing related information, so Essence Upgrades, Trophy Fish, Gear, Stats, ... in one beautiful tab.
+All fishing related information, so Essence Upgrades, Trophy Fish, Gear, Stats, ... in one tab.
 
 ### 🔍 And many more tabs...
 
@@ -53,6 +53,7 @@ as of 2025-04-16
 - Combat
     - Dungeons
     - Bestiary
+  - Crimson Isle
     - Mob Kills
 - Inventory
     - Main Inventory
@@ -66,6 +67,7 @@ as of 2025-04-16
     - Fishing Bag
     - Quiver
 - Collections
+    - With Minions
 - Mining
     - Main Mining
     - Mining Gear
