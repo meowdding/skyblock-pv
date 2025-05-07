@@ -17,7 +17,9 @@ abstract class CachedApi<D, V, K> {
         }
 
 
-        return@getOrPut CacheEntry(runCatching { decode(result, data) ?: throw RuntimeException("Something went wrong!") })
+        return@getOrPut CacheEntry(runCatching {
+            decode(result, data) ?: throw RuntimeException("Failed to decode data: $result")
+        })
     }.takeIf { System.currentTimeMillis() - it.timestamp < CACHE_TIME }?.data ?: run {
         cache.remove(getKey(data))
         getData(data)

@@ -26,7 +26,7 @@ class CarouselWidget(
     private var cursor = CursorScreen.Cursor.DEFAULT
 
     init {
-        this.height = displays.maxOf(Display::getHeight)
+        this.height = displays.maxOfOrNull(Display::getHeight) ?: 0
         this.width = width
     }
 

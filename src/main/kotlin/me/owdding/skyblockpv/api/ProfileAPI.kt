@@ -32,5 +32,8 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
     }
     override fun getKey(data: UUID) = data
 
-    suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = getData(uuid).getOrNull() ?: emptyList()
+    suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = getData(uuid).getOrElse {
+        SkyBlockPv.error("Failed to get profiles for $uuid", it)
+        emptyList()
+    }
 }

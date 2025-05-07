@@ -12,7 +12,7 @@ data class MuseumData(val items: List<MuseumEntry>) {
     companion object {
         fun fromJson(profile: SkyBlockProfile, members: JsonObject?): MuseumData? {
             val asJsonObject = members?.getPath("${profile.userId.toDashlessString()}.items")
-                ?.let { it as? JsonObject } ?: return null
+                ?.let { it as? JsonObject } ?: return MuseumData(emptyList())
             val map = asJsonObject.entrySet().map { it.key to it.value as JsonObject }.mapNotNull {
                 it.second.getPath("items.data")?.getNbt()?.getListOrEmpty("i")?.let { value -> it.first to value }
             }.map { MuseumEntry(it.first, it.second.map { item -> lazy { item.legacyStack() } }) }

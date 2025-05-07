@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApi
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import net.minecraft.network.chat.Component
@@ -39,7 +40,9 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
         initiatedWithData = false
         isDoneLoading = false
         CoroutineScope(Dispatchers.IO).launch {
-            this@AbstractCategorizedLoadingScreen.data = api.getData(profile)
+            this@AbstractCategorizedLoadingScreen.data = api.getData(profile).onFailure { exception ->
+                SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
+            }
 
             isDoneLoading = true
             if (!initiatedWithData) {
