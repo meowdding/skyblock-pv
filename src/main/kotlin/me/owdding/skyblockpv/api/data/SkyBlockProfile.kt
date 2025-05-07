@@ -36,7 +36,7 @@ data class SkyBlockProfile(
     val firstJoin: Long,
     val fairySouls: Int,
     val skill: Map<String, Long>,
-    val collections: List<CollectionItem>,
+    val collections: List<CollectionItem>?,
     val mobData: List<MobData>,
     val bestiaryData: List<BestiaryMobData>,
     val slayer: Map<String, SlayerTypeData>,
@@ -55,7 +55,7 @@ data class SkyBlockProfile(
     val chocolateFactoryData: CfData?,
     val rift: RiftData?,
     val crimsonIsleData: CrimsonIsleData,
-    val minions: List<String>,
+    val minions: List<String>?,
 ) {
     companion object {
 
@@ -120,8 +120,9 @@ data class SkyBlockProfile(
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
                 crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data")),
-                minions = playerData?.getAsJsonArray("crafted_generators").asStringList().filter { it.isNotBlank() }
-                    .sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
+                minions = playerData?.getAsJsonArray("crafted_generators")?.asStringList()
+                    ?.filter { it.isNotBlank() }
+                    ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
             )
         }
 
@@ -137,8 +138,9 @@ data class SkyBlockProfile(
             return skills.sortToSkillsOrder()
         }
 
-        private fun JsonObject.getCollectionData(): List<CollectionItem> {
-            val playerCollections = this["collection"].asMap { id, amount -> id to amount.asLong(0) }
+        private fun JsonObject.getCollectionData(): List<CollectionItem>? {
+            val collections = this["collection"] ?: return null
+            val playerCollections = collections.asMap { id, amount -> id to amount.asLong(0) }
             val allCollections =
                 CollectionAPI.collectionData.entries.flatMap { it.value.items.entries }.associate { it.key to it.value }.sortToCollectionsOrder()
             return allCollections.map { (id, _) ->

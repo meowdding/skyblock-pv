@@ -14,7 +14,7 @@ import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     AbstractCategorizedScreen("COLLECTION", gameProfile, profile) {
-    override val categories: List<Category> get() = CollectionCategories.entries
+    override val categories: List<Category> get() = Category.getCategories<CollectionCategories>(profile)
 }
 
 enum class CollectionCategories(val screen: KClass<out BaseCollectionScreen>, override val icon: ItemStack) : Category {
@@ -32,10 +32,25 @@ enum class CollectionCategories(val screen: KClass<out BaseCollectionScreen>, ov
             if (it is CommonCollectionScreen) {
                 return@let it.category == this.name
             } else return@let it::class.isSubclassOf(screen)
-        } ?: false
+        } == true
 
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BasePvScreen =
         if (screen == CommonCollectionScreen::class) CommonCollectionScreen(gameProfile, profile, this.name) else screen.constructors.first()
             .call(gameProfile, profile)
+
+    override fun canDisplay(profile: SkyBlockProfile?) = when (this) {
+        MINION -> profile?.minions != null
+        else -> profile?.collections != null
+    }
+
+    companion object {
+
+        fun createScreen(gameProfile: GameProfile, profile: SkyBlockProfile?): BasePvScreen {
+            if (profile?.collections == null) {
+                return MINION.create(gameProfile, profile)
+            }
+            return FARMING.create(gameProfile, profile)
+        }
+    }
 }
 

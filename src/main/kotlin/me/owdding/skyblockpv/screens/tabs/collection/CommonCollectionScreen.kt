@@ -22,7 +22,7 @@ class CommonCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val width = uiWidth - 20
 
         val profile = profile ?: return LayoutFactory.frame {}
-        val filteredCollections = profile.collections.filter { it.category == category }
+        val filteredCollections = profile.collections?.filter { it.category == category } ?: return LayoutFactory.frame {}
         return LayoutFactory.frame {
             display(
                 buildList {

@@ -11,6 +11,7 @@ import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 
@@ -54,4 +55,24 @@ interface Category {
     val isSelected: Boolean get() = false
 
     fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): Screen
+
+    fun canDisplay(profile: SkyBlockProfile?): Boolean {
+        return true
+    }
+
+    companion object {
+
+        inline fun <reified T> getCategories(profile: SkyBlockProfile?): List<T> where T : Enum<T>, T : Category {
+            return T::class.java.enumConstants.filter { it.canDisplay(profile) }
+        }
+
+        inline fun <reified T> getTabState(profile: SkyBlockProfile?): TriState where T : Enum<T>, T : Category {
+            val visibleDisplays = getCategories<T>(profile)
+            return when {
+                visibleDisplays.isEmpty() -> TriState.FALSE
+                visibleDisplays.size == T::class.java.enumConstants.size -> TriState.TRUE
+                else -> TriState.DEFAULT
+            }
+        }
+    }
 }
