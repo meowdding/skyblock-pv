@@ -53,7 +53,7 @@ object Utils {
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
-        if (username == McPlayer.name) {
+        if (username.equals(McPlayer.name, true)) {
             callback(McClient.self.gameProfile)
             isFetchingGameProfile = false
             return
