@@ -152,6 +152,10 @@ ksp {
     arg("meowdding.codecs.package", "me.owdding.skyblockpv.generated")
 }
 
+tasks.remapJar {
+    archiveBaseName = "SkyBlockPv"
+}
+
 fun ExternalModuleDependency.withMcVersion(): ExternalModuleDependency {
     return DefaultMinimalDependency(
         DefaultModuleIdentifier.newId(this.group, this.name.replace("<mc_version>", libs.versions.minecraft.get())),
