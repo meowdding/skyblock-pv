@@ -132,7 +132,7 @@ data class GlaciteData(
     companion object {
         fun fromJson(json: JsonObject): GlaciteData {
             return GlaciteData(
-                fossilsDonated = json.getAsJsonArray("fossils_donated").map { it.asString("") },
+                fossilsDonated = json["fossils_donated"].asList { it.asString("") },
                 fossilDust = json["fossil_dust"].asInt(0),
                 corpsesLooted = json.getAsJsonObject("corpses_looted").asMap { id, amount -> id to amount.asInt(0) },
                 mineshaftsEntered = json["mineshafts_entered"].asInt(0),
