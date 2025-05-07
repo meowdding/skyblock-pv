@@ -13,6 +13,7 @@ import me.owdding.skyblockpv.screens.tabs.combat.BaseCombatScreen
 import me.owdding.skyblockpv.screens.tabs.combat.DungeonScreen
 import me.owdding.skyblockpv.screens.tabs.farming.BaseFarmingScreen
 import me.owdding.skyblockpv.screens.tabs.farming.FarmingScreen
+import me.owdding.skyblockpv.screens.tabs.general.BaseGeneralScreen
 import me.owdding.skyblockpv.screens.tabs.general.MainScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.InventoryScreen
@@ -33,7 +34,7 @@ enum class PvTab(
     private val constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen,
     private val icon: (GameProfile?) -> ItemStack,
 ) {
-    MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
+    MAIN(BaseGeneralScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
     COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
     COLLECTION(BaseCollectionScreen::class, CollectionCategories.FARMING::create, Items.ITEM_FRAME.defaultInstance),
