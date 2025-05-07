@@ -8,6 +8,7 @@ import me.owdding.skyblockpv.screens.tabs.ChocolateFactoryScreen
 import me.owdding.skyblockpv.screens.tabs.FishingScreen
 import me.owdding.skyblockpv.screens.tabs.MainScreen
 import me.owdding.skyblockpv.screens.tabs.PetScreen
+import me.owdding.skyblockpv.screens.tabs.base.Category
 import me.owdding.skyblockpv.screens.tabs.collection.BaseCollectionScreen
 import me.owdding.skyblockpv.screens.tabs.collection.CollectionCategories
 import me.owdding.skyblockpv.screens.tabs.combat.BaseCombatScreen
@@ -18,10 +19,12 @@ import me.owdding.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.InventoryScreen
 import me.owdding.skyblockpv.screens.tabs.mining.BaseMiningScreen
 import me.owdding.skyblockpv.screens.tabs.mining.MainMiningScreen
+import me.owdding.skyblockpv.screens.tabs.mining.MiningCategory
 import me.owdding.skyblockpv.screens.tabs.museum.BaseMuseumScreen
 import me.owdding.skyblockpv.screens.tabs.museum.MuseumItemScreen
 import me.owdding.skyblockpv.screens.tabs.rift.BaseRiftScreen
 import me.owdding.skyblockpv.screens.tabs.rift.MainRiftScreen
+import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
@@ -36,7 +39,7 @@ enum class PvTab(
     MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
     COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
-    COLLECTION(BaseCollectionScreen::class, CollectionCategories.FARMING::create, Items.ITEM_FRAME.defaultInstance),
+    COLLECTION(BaseCollectionScreen::class, CollectionCategories::createScreen, Items.ITEM_FRAME.defaultInstance),
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
@@ -59,6 +62,13 @@ enum class PvTab(
     )
 
     fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
+
+    fun getTabState(profile: SkyBlockProfile?): TriState = when (this) {
+        INVENTORY -> if (profile?.inventory != null) TriState.TRUE else TriState.FALSE
+        COLLECTION -> Category.getTabState<CollectionCategories>(profile)
+        MINING -> Category.getTabState<MiningCategory>(profile)
+        else -> TriState.TRUE
+    }
 
     fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): BasePvScreen {
         return constructor.invoke(gameProfile, profile)

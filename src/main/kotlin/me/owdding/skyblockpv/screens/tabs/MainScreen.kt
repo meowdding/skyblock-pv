@@ -25,16 +25,19 @@ import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
 import me.owdding.skyblockpv.feature.NetworthCalculator
 import me.owdding.skyblockpv.screens.BasePvScreen
+import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.area.hub.BazaarAPI
@@ -406,4 +409,22 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         ) { _, amount -> amount.shorten() }
     }
 
+    override fun onProfileSwitch(profile: SkyBlockProfile) {
+        val disabledTabs = PvTab.entries.filter { it.getTabState(profile) != TriState.TRUE }
+        if (disabledTabs.isNotEmpty()) {
+            FailedToLoadToast.add(
+                profile,
+                Displays.background(
+                    SkyBlockPv.id("buttons/dark/disabled"),
+                    Displays.padding(5, Displays.column(
+                        Displays.text("§dSbPv§r: Disabled Tabs on Profile", { TextColor.RED.toUInt() }),
+                        Displays.text("Due to missing data or disabled apis,", { TextColor.RED.toUInt() }),
+                        Displays.text("the following tabs are disabled or altered:", { TextColor.RED.toUInt() }),
+                        Displays.text(disabledTabs.joinToString(", ") { it.name.toTitleCase() }, { TextColor.RED.toUInt() }),
+                    ))
+                ),
+                5000,
+            )
+        }
+    }
 }

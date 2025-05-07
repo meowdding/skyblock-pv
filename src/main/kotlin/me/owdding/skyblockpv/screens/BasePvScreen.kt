@@ -36,6 +36,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
+import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -247,6 +248,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     private fun createTabs() = LayoutFactory.horizontal(2) {
         // as you can see, maya has no idea what she is doing
         PvTab.entries.forEach { tab ->
+            if (tab.getTabState(profile) == TriState.FALSE) return@forEach
+
             val button = Button()
             button.setSize(20, 31)
             if (tab.isSelected()) {
