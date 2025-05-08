@@ -1,17 +1,19 @@
 package me.owdding.skyblockpv.data.repo
 
 import me.owdding.ktcodecs.GenerateCodec
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
-@Module
-object SackCodecs {
-    var data: List<Sack>
+@LoadData
+object SackCodecs : ExtraData {
+    lateinit var data: List<Sack>
         private set
 
-    init {
+
+    override fun load() {
         data = Utils.loadRepoData("sacks", CodecUtils.list())
     }
 

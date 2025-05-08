@@ -2,10 +2,11 @@ package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.SkillData
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
@@ -14,7 +15,6 @@ import tech.thatgravyboat.skyblockapi.utils.http.Http
 
 private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/skills"
 
-@Module
 object SkillAPI {
     var skills: List<Skill> = emptyList()
         private set
@@ -50,10 +50,6 @@ object SkillAPI {
         val skillApiId get() = "SKILL_$id"
     }
 
-    init {
-        Skills.initialize()
-    }
-
     enum class Skills : Skill {
         COMBAT,
         FISHING,
@@ -79,8 +75,9 @@ object SkillAPI {
         override val id: String = name
         override val icon: ResourceLocation by lazy { SkyBlockPv.id("icon/skill/${id.lowercase()}") }
 
-        companion object {
-            fun initialize() {
+        @LoadData
+        companion object : ExtraData {
+            override fun load() {
                 runBlocking {
                     val skills = get()?.getAsJsonObject("skills") ?: return@runBlocking
                     SkillAPI.skills = skills.entrySet().map { (key, value) ->

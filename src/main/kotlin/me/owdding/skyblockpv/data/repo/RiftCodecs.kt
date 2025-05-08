@@ -1,16 +1,17 @@
 package me.owdding.skyblockpv.data.repo
 
 import me.owdding.ktcodecs.GenerateCodec
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
-@Module
-object RiftCodecs {
-    var data: RiftRepoData
+@LoadData
+object RiftCodecs : ExtraData {
+    lateinit var data: RiftRepoData
         private set
 
-    init {
+    override fun load() {
         data = Utils.loadRepoData("rift")
     }
 

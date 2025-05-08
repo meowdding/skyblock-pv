@@ -3,18 +3,20 @@ package me.owdding.skyblockpv.data.repo
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 
-@Module
-object PetCodecs {
+@LoadData
+object PetCodecs : ExtraData {
     private val rarityOffsets: MutableList<Int> = mutableListOf()
     private val xpCurve: MutableList<Int> = mutableListOf()
     private val overwrites: MutableMap<String, Data> = mutableMapOf()
     private val defaultData = Data()
 
-    init {
+
+    override fun load() {
         Utils.loadRepoData<PetData>("pets").let {
             this.rarityOffsets.addAll(it.rarityOffsets)
             this.xpCurve.addAll(it.xpCurve)
