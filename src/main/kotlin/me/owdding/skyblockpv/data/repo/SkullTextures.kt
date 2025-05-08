@@ -2,6 +2,8 @@ package me.owdding.skyblockpv.data.repo
 
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 
 enum class SkullTextures(var texture: String = "") {
     WITHER_ESSENCE,
@@ -25,8 +27,9 @@ enum class SkullTextures(var texture: String = "") {
 
     val skull by lazy { createSkull(texture) }
 
-    companion object {
-        init {
+    @LoadData
+    companion object : ExtraData {
+        override fun load() {
             val textures = Utils.loadFromRepo<Map<String, String>>("skull_textures") ?: emptyMap()
             textures.entries.forEach { (key, texture) -> valueOf(key.uppercase()).texture = texture }
         }

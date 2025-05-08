@@ -9,19 +9,20 @@ import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.ktcodecs.Unnamed
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.DispatchedCodec
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.codecs.ReservedUnboundMapCodec
 
 typealias BestiaryIcon = Either<String, Pair<String, String>>
 typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, ComplexBestiaryCategoryEntry>
 
-@Module
-object BestiaryCodecs {
+@LoadData
+object BestiaryCodecs : ExtraData {
 
-    var data: BestiaryRepoData
+    lateinit var data: BestiaryRepoData
         private set
 
     @IncludedCodec(named = "be§icon")
@@ -79,7 +80,7 @@ object BestiaryCodecs {
         ),
     )
 
-    init {
+    override fun load() {
         data = Utils.loadRepoData<BestiaryRepoData>("bestiary")
     }
 }

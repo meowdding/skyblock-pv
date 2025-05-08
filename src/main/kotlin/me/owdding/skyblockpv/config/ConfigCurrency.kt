@@ -2,17 +2,18 @@ package me.owdding.skyblockpv.config
 
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
-import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 
 private const val URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json"
 
-@Module
-object CurrenciesAPI {
+@LoadData
+object CurrenciesAPI : ExtraData {
 
     private val conversions = mutableMapOf<String, Double>()
 
-    init {
+    override fun load() {
         runBlocking {
             val data = Http.getResult<JsonObject>(URL).getOrNull() ?: return@runBlocking
             val conversions = data.getAsJsonObject("usd")

@@ -3,17 +3,17 @@ package me.owdding.skyblockpv.data.repo
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
-@Module
-object MinionCodecs {
-    val miscData: MiscData
+@LoadData
+object MinionCodecs : ExtraData {
+    lateinit var miscData: MiscData
     val categories: MutableList<MinionCategory> = mutableListOf()
-
-    init {
+    override fun load() {
         Utils.loadRepoData<Data>("minions").let { data ->
             this.miscData = data.miscData
             this.categories.addAll(data.categories)
