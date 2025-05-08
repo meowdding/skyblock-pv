@@ -42,7 +42,7 @@ object PlayerDbAPI {
                 val profile = GameProfile(uuid, name)
 
                 val gson = GsonBuilder().registerTypeAdapter(PropertyMap::class.java, Serializer()).create()
-                val property = gson.fromJson<PropertyMap?>(player.get("properties"), PropertyMap::class.java)
+                val property = gson.fromJson(player.get("properties"), PropertyMap::class.java)
                 profile.properties.putAll(property)
 
                 profile

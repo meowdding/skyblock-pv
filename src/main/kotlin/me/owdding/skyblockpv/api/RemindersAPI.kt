@@ -2,9 +2,12 @@ package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonArray
 import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
+import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.ktcodecs.IncludedCodec
+import me.owdding.ktcodecs.NamedCodec
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentSerialization
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
@@ -21,8 +24,6 @@ import kotlin.io.path.writeText
 @Module
 object RemindersAPI {
 
-    private val CODEC = Reminder.CODEC.listOf()
-
     private val file = SkyBlockPv.configDir.resolve("reminders.json")
     private val reminders = mutableListOf<Reminder>()
 
@@ -30,7 +31,7 @@ object RemindersAPI {
         if (!file.exists()) {
             file.parent.createDirectories()
         } else {
-            file.readText().readJson<JsonArray>().toData(CODEC)?.let {
+            file.readText().readJson<JsonArray>().toData(SkyBlockPVCodecs.getCodec<Reminder>().listOf())?.let {
                 reminders.addAll(it)
                 reminders.sortBy(Reminder::timestamp)
             }
@@ -38,7 +39,7 @@ object RemindersAPI {
     }
 
     private fun save() {
-        reminders.toJson(CODEC)?.let {
+        reminders.toJson(SkyBlockPVCodecs.getCodec<Reminder>().listOf())?.let {
             file.writeText(it.toString())
         }
     }
@@ -80,20 +81,14 @@ object RemindersAPI {
         save()
     }
 
+    @IncludedCodec(named = "reminder§message")
+    val component: Codec<Component> = ComponentSerialization.CODEC
+
 }
 
+@GenerateCodec
 data class Reminder(
     val id: String,
-    val message: Component,
+    @NamedCodec("reminder§message") val message: Component,
     val timestamp: Long,
-) {
-
-    companion object {
-
-        val CODEC = RecordCodecBuilder.create { instance -> instance.group(
-            Codec.STRING.fieldOf("id").forGetter(Reminder::id),
-            ComponentSerialization.CODEC.fieldOf("message").forGetter(Reminder::message),
-            Codec.LONG.fieldOf("timestamp").forGetter(Reminder::timestamp),
-        ).apply(instance, ::Reminder) }
-    }
-}
+)

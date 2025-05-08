@@ -21,22 +21,31 @@ import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.config.Config
+import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
+import me.owdding.skyblockpv.feature.NetworthCalculator
+import me.owdding.skyblockpv.screens.BasePvScreen
+import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.client.gui.layouts.Layout
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
+import tech.thatgravyboat.skyblockapi.api.area.hub.BazaarAPI
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -49,6 +58,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseGeneralScreen(gameProfile, profile) {
 
@@ -104,9 +114,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 grayText("First Join: ${SimpleDateFormat("yyyy.MM.dd").format(profile.firstJoin)}")
                     .withTooltip(SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)),
             )
-            display(
-                grayText("Skill Avg: ${skillAvg.round()}"),
-            )
+            display(grayText("Skill Avg: ${skillAvg.round()}"))
+            string("Fairy Souls: ${profile.fairySouls}")
 
             display(
                 listOf(
@@ -114,7 +123,54 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     PronounsDbAPI.getDisplay(gameProfile.id),
                 ).toRow().withTooltip("Provided by https://pronoundb.org/"),
             )
-            string("Fairy Souls: ${profile.fairySouls}")
+
+            horizontalDisplay {
+                display(grayText("Net worth: "))
+                ExtraDisplays.completableDisplay(
+                    NetworthCalculator.calculateNetworthAsync(profile),
+                    {
+                        val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
+                        val networthCookies = if (cookiePrice > 0) (it / cookiePrice).roundToInt() else 0
+                        val networthUSD = ((networthCookies * 325.0) / 675.0) * 4.99
+
+                        val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
+
+                        grayText(it.shorten()).withTooltip {
+                            if (cookiePrice <= 0) return@withTooltip
+
+                            this.add {
+                                this.append("Networth: ") { this.color = TextColor.YELLOW }
+                                this.append(it.toFormattedString()) { this.color = TextColor.GREEN }
+                            }
+
+                            this.add {
+                                this.append("Net worth in Cookies: ") { this.color = TextColor.YELLOW }
+                                this.append(networthCookies.toFormattedString()) { this.color = TextColor.GOLD }
+                            }
+
+                            this.add {
+                                this.append("Net worth in ${currency.name}: ") { this.color = TextColor.YELLOW }
+                                val formattedNetworth = networthConverted.roundToInt().toFormattedString()
+                                this.append("$$formattedNetworth ${currency.name}") { this.color = TextColor.GREEN }
+                            }
+
+                            this.space()
+                            this.add("Note: You can change the currency in the settings using /sbpv.") { this.color = TextColor.GRAY }
+                        }
+                    },
+                    { error ->
+                        grayText("Failed to load").withTooltip {
+                            this.add(Text.of("An error occurred: ") { this.color = TextColor.RED })
+                            error.stackTraceToString().lines().forEach { line ->
+                                this.add(Text.of(line) { this.color = TextColor.RED })
+                            }
+                        }
+                    },
+                    {
+                        grayText("Loading...")
+                    },
+                ).let(this::display)
+            }
         }
 
         widget(PvWidgets.getMainContentWidget(infoColumn, width))
@@ -275,7 +331,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         addSection(
             title = "Slayer",
             data = SlayerCodecs.data.map { (k, v) ->
-                val data = profile.slayer[v.id] ?: SlayerTypeData(0, emptyMap(), emptyMap())
+                val data = profile.slayer[v.id] ?: SlayerTypeData.EMPTY
                 Pair(k, Pair(v, data))
             }.asSequence(),
             getIcon = { name ->
@@ -358,4 +414,22 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         ) { _, amount -> amount.shorten() }
     }
 
+    override fun onProfileSwitch(profile: SkyBlockProfile) {
+        val disabledTabs = PvTab.entries.filter { it.getTabState(profile) != TriState.TRUE }
+        if (disabledTabs.isNotEmpty()) {
+            FailedToLoadToast.add(
+                profile,
+                Displays.background(
+                    SkyBlockPv.id("buttons/dark/disabled"),
+                    Displays.padding(5, Displays.column(
+                        Displays.text("§dSbPv§r: Disabled Tabs on Profile", { TextColor.RED.toUInt() }),
+                        Displays.text("Due to missing data or disabled apis,", { TextColor.RED.toUInt() }),
+                        Displays.text("the following tabs are disabled or altered:", { TextColor.RED.toUInt() }),
+                        Displays.text(disabledTabs.joinToString(", ") { it.name.toTitleCase() }, { TextColor.RED.toUInt() }),
+                    ))
+                ),
+                5000,
+            )
+        }
+    }
 }

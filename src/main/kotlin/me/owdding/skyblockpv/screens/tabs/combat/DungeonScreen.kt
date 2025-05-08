@@ -73,10 +73,12 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val catacombsCompl = dungeonData.dungeonTypes["catacombs"]?.tierCompletions
         val masterModeCompl = dungeonData.dungeonTypes["master_catacombs"]?.tierCompletions
 
+        val runCounts = (countRuns(catacombsCompl) + countRuns(masterModeCompl)).coerceAtLeast(1)
+
         val mainContent = LayoutFactory.vertical {
             string("Class Average: ${classToLevel?.map { it.value }?.toList()?.average()}")
             string("Secrets: ${dungeonData.secrets.toFormattedString()}")
-            string("Secrets/Run: ${(dungeonData.secrets / (countRuns(catacombsCompl) + countRuns(masterModeCompl))).round()}")
+            string("Secrets/Run: ${(dungeonData.secrets / runCounts).round()}")
         }
 
         return PvWidgets.label("Dungeon Info", mainContent, 20)

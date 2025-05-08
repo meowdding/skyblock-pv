@@ -9,6 +9,7 @@ import me.owdding.skyblockpv.api.PvAPI
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.DevConfig
+import me.owdding.skyblockpv.generated.SkyBlockPVExtraData
 import me.owdding.skyblockpv.generated.SkyBlockPVModules
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.Utils
@@ -21,6 +22,7 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import java.util.concurrent.CompletableFuture
 
 @Module
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
@@ -35,6 +37,10 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     override fun onInitialize() {
         Config.register(configurator)
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
+
+        SkyBlockPVExtraData.collected.forEach {
+            CompletableFuture.runAsync { it.load() }
+        }
 
         runBlocking { PvAPI.authenticate() }
     }

@@ -15,13 +15,10 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
 
     override fun decode(data: JsonObject, originalData: UUID): List<SkyBlockProfile> {
         val startTime = System.currentTimeMillis()
-        SkyBlockPv.info("Started Parsing Profiles")
 
         val profiles = data.getAsJsonArray("profiles").map {
             CompletableFuture.supplyAsync {
-                val profileStartTime = System.currentTimeMillis()
                 val profile = SkyBlockProfile.fromJson(it.asJsonObject, originalData)
-                SkyBlockPv.info("${profile?.id?.name} took ${(System.currentTimeMillis() - profileStartTime).toFormattedString()}ms")
                 profile
             }
         }
@@ -29,11 +26,14 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
         CompletableFuture.allOf(*profiles.toTypedArray()).join()
 
         val diff = System.currentTimeMillis() - startTime
-        SkyBlockPv.info("Finished parsing after ${diff.toFormattedString()}ms")
+        if (SkyBlockPv.isDevMode) SkyBlockPv.info("Finished parsing after ${diff.toFormattedString()}ms")
 
         return profiles.mapNotNull { future -> future.resultNow() }
     }
     override fun getKey(data: UUID) = data
 
-    suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = getData(uuid).getOrNull() ?: emptyList()
+    suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = getData(uuid).getOrElse {
+        SkyBlockPv.error("Failed to get profiles for $uuid", it)
+        emptyList()
+    }
 }

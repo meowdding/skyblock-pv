@@ -2,11 +2,10 @@ package me.owdding.skyblockpv.data.api.skills
 
 
 import com.google.gson.JsonObject
-import com.mojang.serialization.Codec
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.ChatFormatting
-import net.minecraft.util.StringRepresentable
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
@@ -134,7 +133,7 @@ data class GlaciteData(
     companion object {
         fun fromJson(json: JsonObject): GlaciteData {
             return GlaciteData(
-                fossilsDonated = json.getAsJsonArray("fossils_donated").map { it.asString("") },
+                fossilsDonated = json["fossils_donated"].asList { it.asString("") },
                 fossilDust = json["fossil_dust"].asInt(0),
                 corpsesLooted = json.getAsJsonObject("corpses_looted").asMap { id, amount -> id to amount.asInt(0) },
                 mineshaftsEntered = json["mineshafts_entered"].asInt(0),
@@ -190,20 +189,14 @@ enum class RockBracket(val oresRequired: Int, val rarity: SkyBlockRarity) {
     }
 }
 
-enum class PowderType(val formatting: ChatFormatting) : StringRepresentable {
+enum class PowderType(val formatting: ChatFormatting) {
     MITHRIL(ChatFormatting.DARK_GREEN),
     GEMSTONE(ChatFormatting.LIGHT_PURPLE),
     GLACITE(ChatFormatting.AQUA);
-
-    override fun getSerializedName() = name
-
-    companion object {
-        val CODEC: Codec<PowderType> = StringRepresentable.fromEnum { entries.toTypedArray() }
-    }
 }
 
-@Module
-object FossilTypes {
+@LoadData
+object FossilTypes : ExtraData {
 
     data class Fossil(
         val id: String,
@@ -214,7 +207,7 @@ object FossilTypes {
     var fossils: List<Fossil> = listOf()
         private set
 
-    init {
+    override fun load() {
         Utils.loadFromRepo<JsonObject>("fossils")?.asMap { id, data ->
             val obj = data.asJsonObject
             id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))

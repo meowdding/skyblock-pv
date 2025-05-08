@@ -11,6 +11,7 @@ import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 
@@ -29,21 +30,21 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
         layout.visitWidgets(this::addRenderableWidget)
 
 
-        this.categories.fold(Layouts.row().withGap(2)) { layout, category ->
+        this.categories.fold(Layouts.column().withGap(2)) { layout, category ->
             val button = Button()
-                .withSize(20, 31)
-                .withTexture(if (category.isSelected) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP)
+                .withSize(31, 20)
+                .withTexture(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT)
                 .withCallback { McClient.tell { McClient.setScreen(category.create(gameProfile, profile)) } }
                 .withRenderer(
                     WidgetRenderers.padded(
-                        4, 0, 9, 0,
+                        0, 4, 0, 9,
                         WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
                     ),
                 )
 
             button.active = !category.isSelected
             layout.withChild(button)
-        }.withPosition(bg.x + 20, bg.y - 22).build(this::addRenderableWidget)
+        }.withPosition(bg.x + bg.width - 9, bg.y + 20).build(this::addRenderableWidget)
     }
 
 }
@@ -54,4 +55,24 @@ interface Category {
     val isSelected: Boolean get() = false
 
     fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): Screen
+
+    fun canDisplay(profile: SkyBlockProfile?): Boolean {
+        return true
+    }
+
+    companion object {
+
+        inline fun <reified T> getCategories(profile: SkyBlockProfile?): List<T> where T : Enum<T>, T : Category {
+            return T::class.java.enumConstants.filter { it.canDisplay(profile) }
+        }
+
+        inline fun <reified T> getTabState(profile: SkyBlockProfile?): TriState where T : Enum<T>, T : Category {
+            val visibleDisplays = getCategories<T>(profile)
+            return when {
+                visibleDisplays.isEmpty() -> TriState.FALSE
+                visibleDisplays.size == T::class.java.enumConstants.size -> TriState.TRUE
+                else -> TriState.DEFAULT
+            }
+        }
+    }
 }

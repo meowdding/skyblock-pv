@@ -36,7 +36,7 @@ data class SkyBlockProfile(
     val firstJoin: Long,
     val fairySouls: Int,
     val skill: Map<String, Long>,
-    val collections: List<CollectionItem>,
+    val collections: List<CollectionItem>?,
     val mobData: List<MobData>,
     val bestiaryData: List<BestiaryMobData>,
     val slayer: Map<String, SlayerTypeData>,
@@ -55,7 +55,7 @@ data class SkyBlockProfile(
     val chocolateFactoryData: CfData?,
     val rift: RiftData?,
     val crimsonIsleData: CrimsonIsleData,
-    val minions: List<String>,
+    val minions: List<String>?,
 ) {
     companion object {
 
@@ -101,8 +101,7 @@ data class SkyBlockProfile(
                 mining = member.getAsJsonObject("mining_core")?.let { MiningCore.fromJson(it) },
                 forge = member.getAsJsonObject("forge")?.let { Forge.fromJson(it) },
                 glacite = member.getAsJsonObject("glacite_player_data")?.let { GlaciteData.fromJson(it) },
-                tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed")?.asJsonArray
-                    ?.map { it.asString("") }?.filter { it.isNotBlank() } ?: emptyList(),
+                tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() },
                 pets = member.getAsJsonObject("pets_data").getAsJsonArray("pets").map { Pet.fromJson(it.asJsonObject) },
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
@@ -121,9 +120,9 @@ data class SkyBlockProfile(
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
                 crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data")),
-                // todo: asStringList or smth
-                minions = playerData?.getAsJsonArray("crafted_generators").asList { it.asString("") }.filterNot { it.isEmpty() }
-                    .sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
+                minions = playerData?.getAsJsonArray("crafted_generators")?.asStringList()
+                    ?.filter { it.isNotBlank() }
+                    ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
             )
         }
 
@@ -139,16 +138,15 @@ data class SkyBlockProfile(
             return skills.sortToSkillsOrder()
         }
 
-        private fun JsonObject.getCollectionData(): List<CollectionItem> {
-            val playerCollections = this["collection"].asMap { id, amount -> id to amount.asLong(0) }
+        private fun JsonObject.getCollectionData(): List<CollectionItem>? {
+            val collections = this["collection"] ?: return null
+            val playerCollections = collections.asMap { id, amount -> id to amount.asLong(0) }
             val allCollections =
                 CollectionAPI.collectionData.entries.flatMap { it.value.items.entries }.associate { it.key to it.value }.sortToCollectionsOrder()
             return allCollections.map { (id, _) ->
                 id to (playerCollections[id] ?: 0)
             }.mapNotNull { (id, amount) ->
-                CollectionAPI.getCategoryByItemName(id)?.let {
-                    CollectionItem(it, id, amount)
-                }
+                CollectionAPI.getCategoryByItemName(id)?.let { CollectionItem(it, id, amount) }
             }
         }
 
@@ -178,16 +176,7 @@ data class SkyBlockProfile(
             }
         }
 
-        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { name, jsonElement ->
-            val data = jsonElement.asJsonObject
-            name to SlayerTypeData(
-                exp = data["xp"].asLong(0),
-                bossAttemptsTier = data.entrySet().filter { it.key.startsWith("boss_attempts_tier_") }
-                    .associate { it.key.filter { it.isDigit() }.toInt() to it.value.asInt },
-                bossKillsTier = data.entrySet().filter { it.key.startsWith("boss_kills_tier_") }
-                    .associate { it.key.filter { it.isDigit() }.toInt() to it.value.asInt },
-            )
-        }.sortToSlayerOrder()
+        private fun JsonObject.getSlayerData() = this["slayer_bosses"].asMap { n, e -> n to SlayerTypeData.fromJson(e.asJsonObject) }.sortToSlayerOrder()
 
         private fun JsonObject?.parseEssencePerks(): Map<String, Int> {
             val perks = this?.asMap { id, amount -> id to amount.asInt(0) } ?: emptyMap()

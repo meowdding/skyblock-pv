@@ -44,7 +44,7 @@ object PvWidgets {
         val toolsToDisplay = (ItemPredicateHelper.getItemsMatching(
             profile,
             ItemPredicates.AnySkyblockID(tools),
-        )?.sortedByDescending(score) ?: emptyList()).distinctBy { it.getData(DataTypes.ID) }.take(maxAmount).toMutableList()
+        )?.sortedByDescending(score) ?: emptyList()).take(maxAmount).toMutableList()
 
         while (toolsToDisplay.size < maxAmount) {
             toolsToDisplay.add(Items.AIR.defaultInstance)

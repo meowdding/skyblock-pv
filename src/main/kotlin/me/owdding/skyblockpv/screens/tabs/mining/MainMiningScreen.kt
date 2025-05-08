@@ -41,7 +41,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         val info = getInformation(profile)
         val powder = getPowder(mining)
-        val crystal = getCrystal(mining)
+        val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: LayoutFactory.vertical {}
         val forge = getForge()
 
         return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) > uiWidth) {
@@ -167,6 +167,8 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 }
                 display.asWidget()
             }
+
+            if (convertedElements.isEmpty()) return@vertical
 
             val elementsPerRow = width / (convertedElements.first().width + 5)
             if (elementsPerRow < 1) return@vertical

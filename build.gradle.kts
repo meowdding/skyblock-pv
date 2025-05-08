@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.gradle.KspTask
 import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
 import org.gradle.api.internal.artifacts.dependencies.DefaultMinimalDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultMutableVersionConstraint
@@ -59,6 +60,8 @@ repositories {
 dependencies {
     compileOnly(libs.meowdding.ktmodules)
     ksp(libs.meowdding.ktmodules)
+    compileOnly(libs.meowdding.ktcodecs)
+    ksp(libs.meowdding.ktcodecs)
 
     minecraft(libs.minecraft)
     @Suppress("UnstableApiUsage")
@@ -118,6 +121,7 @@ idea {
 
 repo {
     hotm { includeAll() }
+    sacks { includeAll() }
 }
 
 compactingResources {
@@ -137,9 +141,19 @@ compactingResources {
     downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/bestiary.json", "bestiary.json")
 }
 
+tasks.withType<KspTask> {
+    outputs.upToDateWhen { false }
+}
+
 ksp {
     arg("meowdding.modules.project_name", project.name)
     arg("meowdding.modules.package", "me.owdding.skyblockpv.generated")
+    arg("meowdding.codecs.project_name", project.name)
+    arg("meowdding.codecs.package", "me.owdding.skyblockpv.generated")
+}
+
+tasks.remapJar {
+    archiveBaseName = "SkyBlockPv"
 }
 
 fun ExternalModuleDependency.withMcVersion(): ExternalModuleDependency {

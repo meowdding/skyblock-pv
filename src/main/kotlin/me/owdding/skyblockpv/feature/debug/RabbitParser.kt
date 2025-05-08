@@ -10,9 +10,9 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerCloseEvent
 import tech.thatgravyboat.skyblockapi.api.events.screen.InventoryChangeEvent
+import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
-import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import java.nio.file.Files
 
 @Module
@@ -31,7 +31,7 @@ object RabbitParser {
         if (!listOf(Items.PLAYER_HEAD, Items.GRAY_DYE).any { event.item.`is`(it) }) return
 
         val rarity = event.item.getData(DataTypes.RARITY) ?: return
-        val name = event.item.hoverName.stripped
+        val name = event.item.cleanName
         val probablyApiName = name.split(" ", "-").joinToString("_").lowercase().let {
             incorrectApiNames[it] ?: it
         }

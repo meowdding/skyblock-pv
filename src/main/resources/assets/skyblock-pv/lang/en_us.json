@@ -32,6 +32,10 @@
         "spying": {
             "@value": "Spying Button",
             "desc": "Add a button to the Hypixel Profile Viewer that allows you to open our Profile Viewer directly."
+        },
+        "currency": {
+            "@value": "Networth Currency",
+            "desc": "The currency to use for the networth to IRL currency conversion."
         }
     },
     "dev": {

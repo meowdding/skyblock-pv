@@ -5,7 +5,7 @@
 <div align="center">
 
 [![Discord](https://img.shields.io/discord/1296157888343179264?color=8c03fc&label=Discord&logo=discord&logoColor=white)](https://discord.gg/FsRc2GUwZR)
-<!--[![Modrinth](https://img.shields.io/modrinth/dt/skyblock-profile-viewer?color=%23007EA7&label=Modrinth Downloads&style=for-the-badge)](https://modrinth.com/mod/skyblock-profile-viewer)-->
+[![Modrinth](https://img.shields.io/modrinth/dt/8yqXwFLl?style=flat&logo=modrinth)](https://modrinth.com/mod/skyblock-profile-viewer)
 
 </div>
 
@@ -38,7 +38,7 @@ Switch between EnderChest, Backpack, ... pages using the custom build Carousel o
 ### 🎣 Fishing Tab
 
 <img src="./.github/images/fishing.png" width="720" alt="" title="Fishing">
-All fishing related information, so Essence Upgrades, Trophy Fish, Gear, Stats, ... in one beautiful tab.
+All fishing related information, so Essence Upgrades, Trophy Fish, Gear, Stats, ... in one tab.
 
 ### 🔍 And many more tabs...
 
@@ -53,6 +53,7 @@ as of 2025-04-16
 - Combat
     - Dungeons
     - Bestiary
+  - Crimson Isle
     - Mob Kills
 - Inventory
     - Main Inventory
@@ -66,6 +67,7 @@ as of 2025-04-16
     - Fishing Bag
     - Quiver
 - Collections
+    - With Minions
 - Mining
     - Main Mining
     - Mining Gear

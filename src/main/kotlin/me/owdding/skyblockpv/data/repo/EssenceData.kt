@@ -1,36 +1,30 @@
 package me.owdding.skyblockpv.data.repo
 
-import com.google.gson.annotations.SerializedName
-import me.owdding.ktmodules.Module
+import com.mojang.serialization.Codec
+import me.owdding.ktcodecs.FieldName
+import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.displays.withTranslatedTooltip
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
-data class RepoEssenceData(
-    val shops: Map<String, Map<String, RepoEssencePerk>>,
-)
-
+@GenerateCodec
 data class RepoEssencePerk(
     val name: String,
-    @SerializedName("max_level") val maxLevel: Int,
+    @FieldName("max_level") val maxLevel: Int,
 )
 
-@Module
-object EssenceData {
-    var allPerks: Map<String, RepoEssencePerk>
+@LoadData
+object EssenceData : ExtraData {
+    lateinit var allPerks: Map<String, RepoEssencePerk>
         private set
-
-    init {
-        allPerks = Utils.loadFromRepo<RepoEssenceData>("essence_perks")
-            ?.let(RepoEssenceData::shops)
-            ?.flatMap { it.value.entries }
-            ?.associate { it.key to it.value } ?: emptyMap()
-    }
 
     fun LayoutBuilder.addFishingPerk(profile: SkyBlockProfile, id: String) {
         addPerk(profile, id, "fishing")
@@ -56,5 +50,10 @@ object EssenceData {
             false,
         )
         display(display.withTranslatedTooltip("skyblockpv.essence.$category.$id"))
+    }
+
+    override fun load() {
+        allPerks = Utils.loadRepoData("essence_perks", Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>()))
+            .flatMap { it.value.entries }.associateBy({ it.key }, { it.value })
     }
 }

@@ -1,10 +1,13 @@
 package me.owdding.skyblockpv.utils
 
+import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
+import com.mojang.serialization.Codec
 import earth.terrarium.olympus.client.pipelines.RoundedRectanage
 import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
+import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.screens.PvTab
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
@@ -13,8 +16,10 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.nio.file.Files
 import java.util.*
@@ -48,6 +53,11 @@ object Utils {
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
         isFetchingGameProfile = true
+        if (username.equals(McPlayer.name, true)) {
+            callback(McClient.self.gameProfile)
+            isFetchingGameProfile = false
+            return
+        }
         PlayerDbAPI.getProfile(username).takeUnless { it?.id == Util.NIL_UUID }?.let {
             callback(it)
             isFetchingGameProfile = false
@@ -73,6 +83,22 @@ object Utils {
             SkyBlockPv.error("Failed to load $file from repo", e)
             null
         }
+    }
+
+    internal inline fun <reified T : Any> loadRepoData(file: String): T {
+        return loadRepoData<T, T>(file) { it }
+    }
+
+    internal inline fun <reified T : Any, B : Any> loadRepoData(file: String, modifier: (Codec<T>) -> Codec<B>): B {
+        return loadFromRepo<JsonElement>(file).toDataOrThrow(SkyBlockPVCodecs.getCodec<T>().let(modifier))
+    }
+
+    internal inline fun <B : Any> loadRepoData(file: String, supplier: () -> Codec<B>): B {
+        return loadFromRepo<JsonElement>(file).toDataOrThrow(supplier())
+    }
+
+    internal fun <B : Any> loadRepoData(file: String, codec: Codec<B>): B {
+        return loadFromRepo<JsonElement>(file).toDataOrThrow(codec)
     }
 
     fun text(
