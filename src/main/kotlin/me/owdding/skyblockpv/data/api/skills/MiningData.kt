@@ -2,8 +2,9 @@ package me.owdding.skyblockpv.data.api.skills
 
 
 import com.google.gson.JsonObject
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.ChatFormatting
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
@@ -194,8 +195,8 @@ enum class PowderType(val formatting: ChatFormatting) {
     GLACITE(ChatFormatting.AQUA);
 }
 
-@Module
-object FossilTypes {
+@LoadData
+object FossilTypes : ExtraData {
 
     data class Fossil(
         val id: String,
@@ -206,7 +207,7 @@ object FossilTypes {
     var fossils: List<Fossil> = listOf()
         private set
 
-    init {
+    override fun load() {
         Utils.loadFromRepo<JsonObject>("fossils")?.asMap { id, data ->
             val obj = data.asJsonObject
             id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))

@@ -7,11 +7,12 @@ import com.notkamui.keval.keval
 import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
 import me.owdding.ktcodecs.*
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.data.api.skills.PowderType
 import me.owdding.skyblockpv.generated.DispatchHelper
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -27,8 +28,8 @@ enum class MiningNodes(override val type: KClass<out MiningNode>) : DispatchHelp
     SPACER(SpacerNode::class),
     ;
 
-    @Module
-    companion object {
+    @LoadData
+    companion object : ExtraData {
         @IncludedCodec(named = "hotm§reward_formula")
         val rewardFormulaCodec: Codec<Map<String, String>> = Codec.either(
             Codec.STRING.xmap({ mapOf("reward" to it) }, { it["reward"] }),
@@ -37,10 +38,13 @@ enum class MiningNodes(override val type: KClass<out MiningNode>) : DispatchHelp
             { Either.unwrap(it) },
             { if (it.size == 1) Either.left(it) else Either.right(it) },
         )
-
-        val miningNodes: List<MiningNode> = Utils.loadRepoData("hotm", CodecUtils.list())
+        lateinit var miningNodes: List<MiningNode>
 
         fun getType(id: String) = valueOf(id.uppercase())
+
+        override fun load() {
+            miningNodes = Utils.loadRepoData("hotm", CodecUtils.list())
+        }
     }
 }
 

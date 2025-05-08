@@ -10,12 +10,13 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.ktmodules.Module
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.util.StringRepresentable
@@ -75,8 +76,8 @@ object GardenCodecs {
         ).xmap({ Either.unwrap(it) }, { if (it.bundle) Either.right(it) else Either.left(it) })
 }
 
-@Module
-data object StaticGardenData {
+@LoadData
+data object StaticGardenData : ExtraData {
     lateinit var barnSkins: Map<String, StaticBarnSkin>
         private set
     lateinit var composterData: Map<ComposterUpgrade, StaticComposterData>
@@ -110,7 +111,8 @@ data object StaticGardenData {
         val tools: Map<GardenResource, StaticToolInfo>,
     )
 
-    init {
+
+    override fun load() {
         init(Utils.loadRepoData<GardenData>("garden_data"))
     }
 

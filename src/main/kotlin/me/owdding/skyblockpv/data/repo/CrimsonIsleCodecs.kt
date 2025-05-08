@@ -6,14 +6,15 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
-@Module
-object CrimsonIsleCodecs {
+@LoadData
+object CrimsonIsleCodecs : ExtraData {
     val factionRanks = mutableListOf<ThresholdData<String>>()
     val factionNameMap = mutableMapOf<String, Component>()
 
@@ -81,7 +82,7 @@ object CrimsonIsleCodecs {
         val kuudra: KuudraCodecs.Data,
     )
 
-    init {
+    override fun load() {
         val data = Utils.loadRepoData<Data>("crimson_isle")
         this.factionNameMap.putAll(data.nameMap)
         this.factionRanks.addAll(data.factionRanks)

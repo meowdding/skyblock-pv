@@ -6,15 +6,16 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.ktmodules.Module
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 
-@Module
-object CfCodecs {
-    var data: CfRepoData
+@LoadData
+object CfCodecs : ExtraData {
+    lateinit var data: CfRepoData
         private set
 
     @IncludedCodec(named = "cf§texture_list")
@@ -23,7 +24,7 @@ object CfCodecs {
         { it.associate { value -> value.id to value.texture } },
     )
 
-    init {
+    override fun load() {
         data = Utils.loadRepoData<CfRepoData>("chocolate_factory")
     }
 

@@ -2,16 +2,17 @@ package me.owdding.skyblockpv.data.repo
 
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
-import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.LoadData
 
-@Module
-object SlayerCodecs {
-    var data: Map<String, Slayer> = emptyMap()
+@LoadData
+object SlayerCodecs : ExtraData {
+    lateinit var data: Map<String, Slayer>
         private set
 
-    init {
+    override fun load() {
         data = Utils.loadRepoData("slayer", CodecUtils.map())
     }
 
