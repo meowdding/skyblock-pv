@@ -34,6 +34,8 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
     val isDevMode get() = McClient.isDev || DevConfig.devMode
 
+    val backgroundTexture = id("buttons/normal")
+
     override fun onInitialize() {
         Config.register(configurator)
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
