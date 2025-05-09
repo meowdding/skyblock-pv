@@ -63,7 +63,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
             .withRenderer(DisplayWidget.displayRenderer(display))
             .withCallback {
                 selectedPet = pet
-                this.rebuildWidgets()
+                this.safelyRebuild()
             }
     }
 

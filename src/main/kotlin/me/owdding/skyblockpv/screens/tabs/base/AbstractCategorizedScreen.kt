@@ -6,6 +6,7 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.layouts.Layouts
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import net.minecraft.client.gui.layouts.FrameLayout
@@ -29,22 +30,35 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
         FrameLayout.centerInRectangle(layout, bg.x, bg.y, uiWidth, uiHeight)
         layout.visitWidgets(this::addRenderableWidget)
 
+        val x = if (Config.alignCategoryButtonsLeft) bg.x - 22 else bg.x + bg.width - 9
+        val y = bg.y + 20
 
         this.categories.fold(Layouts.column().withGap(2)) { layout, category ->
             val button = Button()
                 .withSize(31, 20)
-                .withTexture(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT)
                 .withCallback { McClient.setScreenAsync(category.create(gameProfile, profile)) }
-                .withRenderer(
+
+            if (Config.alignCategoryButtonsLeft) {
+                button.withTexture(if (category.isSelected) ExtraConstants.TAB_LEFT_SELECTED else ExtraConstants.TAB_LEFT)
+                button.withRenderer(
+                    WidgetRenderers.padded(
+                        0, 9, 0, 4,
+                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
+                    ),
+                )
+            } else {
+                button.withTexture(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT)
+                button.withRenderer(
                     WidgetRenderers.padded(
                         0, 4, 0, 9,
                         WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
                     ),
                 )
+            }
 
             button.active = !category.isSelected
             layout.withChild(button)
-        }.withPosition(bg.x + bg.width - 9, bg.y + 20).build(this::addRenderableWidget)
+        }.withPosition(x, y).build(this::addRenderableWidget)
     }
 
 }

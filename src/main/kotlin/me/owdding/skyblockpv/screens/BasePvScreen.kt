@@ -91,7 +91,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     abstract fun create(bg: DisplayWidget)
 
-    private fun safelyRebuild() {
+    protected fun safelyRebuild() {
         if (this.minecraft == null) return
         rebuildWidgets()
     }
@@ -207,7 +207,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
             .withSize(60, 20)
             .withTexture(ExtraConstants.BUTTON_DARK)
-            .withCallback { this@BasePvScreen.rebuildWidgets() }
+            .withCallback { this@BasePvScreen.safelyRebuild() }
 
         val hoverText = Text.multiline(
             "Screen: ${this@BasePvScreen.width}x${this@BasePvScreen.height}",
@@ -338,7 +338,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 builder.withCallback { profile ->
                     this.profile = profile ?: return@withCallback
                     this.onProfileSwitch(profile)
-                    this.rebuildWidgets()
+                    this.safelyRebuild()
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
             },

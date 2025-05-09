@@ -38,4 +38,8 @@ object Config : ConfigKt("skyblockpv/config") {
     var currency by enum(ConfigCurrency.USD) {
         this.translation = "skyblockpv.config.currency"
     }
+
+    var alignCategoryButtonsLeft by boolean(true) {
+        this.translation = "skyblockpv.config.align_category_buttons_left"
+    }
 }
