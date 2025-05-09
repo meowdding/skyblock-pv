@@ -47,6 +47,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import java.lang.reflect.Type
 import java.nio.file.Files
 import kotlin.time.Duration.Companion.seconds
@@ -208,6 +209,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             .withRenderer(WidgetRenderers.text(Text.of("Screen Size")))
             .withSize(60, 20)
             .withTexture(ExtraConstants.BUTTON_DARK)
+            .withCallback { McClient.self.keyboardHandler.clipboard = hoverText.stripped }
             .withTooltip(hoverText)
 
         val saveButton = Button()
