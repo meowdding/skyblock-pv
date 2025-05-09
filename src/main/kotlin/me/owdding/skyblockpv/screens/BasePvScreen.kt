@@ -37,6 +37,7 @@ import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.util.TriState
@@ -54,7 +55,7 @@ import kotlin.time.Duration.Companion.seconds
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
-abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var profile: SkyBlockProfile? = null) : BaseCursorScreen(CommonText.EMPTY) {
+abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, profile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
 
     val starttime = System.currentTimeMillis()
     var profiles: List<SkyBlockProfile> = emptyList()
@@ -66,10 +67,14 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
     open val tabTitle: Component get() = Text.translatable("skyblockpv.tab.${name.lowercase()}")
 
+    lateinit var profile: SkyBlockProfile
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             profiles = ProfileAPI.getProfiles(gameProfile.id)
-            profile = profile ?: profiles.find { it.selected }
+            (profile ?: profiles.find { it.selected })?.let {
+                this@BasePvScreen.profile = it
+            }
             if (!initedWithProfile) {
                 McClient.tell { safelyRebuild() }
             }
@@ -91,16 +96,19 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         rebuildWidgets()
     }
 
+    fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
+    fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
+
     override fun init() {
         val bg = Displays.background(SkyBlockPv.backgroundTexture, uiWidth, uiHeight).asWidget()
 
         FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
-        bg.visitWidgets(this::addRenderableOnly)
+        bg.applyLayout()
 
         addLoader()
-        createTopRow(bg).setPos(5, 5).visitWidgets(this::addRenderableWidget)
+        createTopRow(bg).applyLayout(5, 5)
 
-        val profile = profile ?: return
+        if (!this::profile.isInitialized) return
         initedWithProfile = true
 
         try {
@@ -149,7 +157,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     override fun isPauseScreen() = false
 
     private fun addLoader() {
-        if (this.profile != null) return
+        if (this::profile.isInitialized) return
 
         val loading = ExtraDisplays.loading().asWidget()
         FrameLayout.centerInRectangle(loading, 0, 0, this.width, this.height)
@@ -178,7 +186,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         }
 
         FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-        errorWidget.visitWidgets(this::addRenderableWidget)
+        errorWidget.applyLayout()
     }
 
     private fun createTopRow(bg: DisplayWidget) = LayoutFactory.horizontal(5) {
@@ -332,7 +340,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             { button -> button.withSize(width, 20) },
             { builder ->
                 builder.withCallback { profile ->
-                    this.profile = profile
+                    this.profile = profile ?: return@withCallback
                     this.onProfileSwitch(profile)
                     this.rebuildWidgets()
                 }
