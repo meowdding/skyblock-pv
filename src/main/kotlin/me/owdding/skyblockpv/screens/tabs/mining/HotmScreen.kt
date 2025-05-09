@@ -32,7 +32,7 @@ import kotlin.math.roundToInt
 class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val mining = profile?.mining ?: return LayoutFactory.horizontal { }
+        val mining = profile.mining ?: return LayoutFactory.empty()
         val gridLayout = GridLayout()
 
         // nodes that are unlocked but not in the repo:

@@ -23,7 +23,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutFactory.frame { }
         val crimsonIsleData = profile.crimsonIsleData
         if (bg.width < 400) {
             return LayoutFactory.vertical(5) {

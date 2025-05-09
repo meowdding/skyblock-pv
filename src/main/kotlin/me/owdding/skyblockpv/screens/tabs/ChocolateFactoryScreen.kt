@@ -36,7 +36,6 @@ import java.time.Instant
 class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("CHOCOLATE_FACTORY", gameProfile, profile) {
 
     override fun create(bg: DisplayWidget) {
-        val profile = profile ?: return
         val cf = profile.chocolateFactoryData ?: return
 
         val employees = getEmployees(cf)

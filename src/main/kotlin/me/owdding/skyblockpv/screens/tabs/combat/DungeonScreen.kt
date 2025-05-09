@@ -18,13 +18,13 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 
 class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     val classToLevel by lazy {
-        profile?.dungeonData?.classExperience?.map { (name, xp) ->
+        this.profile.dungeonData?.classExperience?.map { (name, xp) ->
             name to (levelXpMap.entries.findLast { it.value < xp }?.key ?: 50)
         }?.toMap()
     }
 
     val classToProgress by lazy {
-        profile?.dungeonData?.classExperience?.map { (name, xp) ->
+        this.profile.dungeonData?.classExperience?.map { (name, xp) ->
             val level = classToLevel?.get(name)!!
             val currentXp = levelXpMap[level]!!
             val nextXp = levelXpMap[level + 1]
@@ -34,7 +34,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val dungeonData = profile?.dungeonData ?: return LayoutFactory.vertical {
+        val dungeonData = profile.dungeonData ?: return LayoutFactory.vertical {
             string("No Dungeon Data")
         }
 
@@ -58,12 +58,6 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     widget(createRunsDisplay(dungeonData))
                 }
             }
-        }
-
-        return LayoutFactory.horizontal(5) {
-            widget(createInfoBoxDisplay(dungeonData))
-            widget(createLevelingDisplay(dungeonData))
-            widget(createRunsDisplay(dungeonData))
         }
     }
 
@@ -195,6 +189,4 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         50 to 569809640,
     )
     // endregion
-
-
 }

@@ -22,7 +22,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutFactory.horizontal { }
         val glacite = profile.glacite ?: return LayoutFactory.horizontal { }
         val columnWidth = uiWidth / 2
 

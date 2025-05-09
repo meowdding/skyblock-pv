@@ -80,7 +80,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         }
 
     private fun BestiaryMobEntry.getItem(): Display {
-        val kills = profile?.bestiaryData?.filter { mobs.contains(it.mobId) }?.sumOf { it.kills } ?: 0
+        val kills = profile.bestiaryData.filter { mobs.contains(it.mobId) }.sumOf { it.kills }
         val fullBracket = BestiaryCodecs.data.brackets[bracket] ?: emptyList()
         val maxLevel = fullBracket.indexOf(cap) + 1
         val bracket = fullBracket.take(maxLevel)

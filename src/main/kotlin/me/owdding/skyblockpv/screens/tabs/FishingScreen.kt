@@ -43,8 +43,6 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     override fun create(bg: DisplayWidget) {
-        val profile = profile ?: return
-
         val infoWidget = getInfoWidget(profile)
         val statWidget = getStatWidget(profile)
         val gearWidget = getGearWidget(profile)

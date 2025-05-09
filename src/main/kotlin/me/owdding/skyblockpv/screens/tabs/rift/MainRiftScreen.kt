@@ -30,7 +30,7 @@ import java.time.Instant
 
 class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal(5, 0.5f) {
-        val rift = profile?.rift ?: run {
+        val rift = profile.rift ?: run {
             string("Failed to load rift profile data") {
                 color = TextColor.RED
             }
@@ -38,7 +38,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         }
 
         val trophy = getTrophy(rift, RiftCodecs.data)
-        val info = getInformation(profile!!, RiftCodecs.data)
+        val info = getInformation(profile, rift, RiftCodecs.data)
 
         if (trophy.width + info.width + 5 > bg.width) {
             widget(
@@ -55,10 +55,9 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         }
     }
 
-    private fun getInformation(profile: SkyBlockProfile, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
+    private fun getInformation(profile: SkyBlockProfile, rift: RiftData, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
         "Information",
         LayoutFactory.vertical {
-            val rift = profile.rift!!
 
             string("Motes: ") {
                 color = TextColor.DARK_GRAY

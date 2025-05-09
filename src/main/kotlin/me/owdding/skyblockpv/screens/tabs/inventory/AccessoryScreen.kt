@@ -7,7 +7,7 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.world.item.ItemStack
 
 class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
-    private val accessories get() = profile?.inventory?.talismans ?: emptyList()
+    private val accessories get() = profile.inventory?.talismans ?: emptyList()
 
     override fun getInventories(): List<Display> = accessories.map { PvWidgets.createInventory(it.talismans.inventory) }
 
