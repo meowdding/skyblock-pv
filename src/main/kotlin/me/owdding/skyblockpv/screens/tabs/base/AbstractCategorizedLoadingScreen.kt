@@ -46,13 +46,13 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
 
             isDoneLoading = true
             if (!initiatedWithData) {
-                McClient.tell { rebuildWidgets() }
+                McClient.tell { safelyRebuild() }
             }
         }
 
         Scheduling.schedule(10.seconds) {
             if (data == null) {
-                McClient.tell { rebuildWidgets() }
+                McClient.tell { safelyRebuild() }
             }
         }
     }

@@ -12,4 +12,7 @@ object ExtraConstants {
 
     var TAB_RIGHT = WidgetSprites(id("tabs/right/normal"), id("tabs/right/normal"), id("tabs/right/hovered"))
     var TAB_RIGHT_SELECTED = WidgetSprites(id("tabs/right/selected"), id("tabs/right/selected"), id("tabs/right/selected_hovered"))
+
+    var TAB_LEFT = WidgetSprites(id("tabs/left/normal"), id("tabs/left/normal"), id("tabs/left/hovered"))
+    var TAB_LEFT_SELECTED = WidgetSprites(id("tabs/left/selected"), id("tabs/left/selected"), id("tabs/left/selected_hovered"))
 }
