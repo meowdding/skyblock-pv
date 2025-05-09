@@ -186,7 +186,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             .withSize(20, 20)
             .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
             .withTexture(null)
-            .withCallback { McClient.tell { McClient.setScreen(ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen)) } }
+            .withCallback { McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen)) }
             .withTooltip(Text.multiline("Open Settings.", "You can also use /sbpv"))
 
         widget(settingsButton)
@@ -272,7 +272,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             if (tab.isSelected()) {
                 button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
             } else {
-                button.withCallback { McClient.tell { McClient.setScreen(tab.create(gameProfile, profile)) } }
+                button.withCallback { McClient.setScreenAsync(tab.create(gameProfile, profile)) }
                 button.withTexture(ExtraConstants.TAB_TOP)
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
@@ -290,14 +290,12 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     private fun createSearch(bg: DisplayWidget): LayoutElement {
         val width = 100
 
-        val usernameState = State.of<String>(gameProfile.name)
+        val usernameState = State.of(gameProfile.name)
         val username = Widgets.textInput(usernameState) { box ->
             box.withEnterCallback {
                 Utils.fetchGameProfile(box.value) { profile ->
                     profile?.let {
-                        McClient.tell {
-                            McClient.setScreen(PvTab.MAIN.create(it))
-                        }
+                        McClient.setScreenAsync(PvTab.MAIN.create(it))
                     }
                 }
             }

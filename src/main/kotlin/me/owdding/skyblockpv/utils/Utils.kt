@@ -72,7 +72,7 @@ object Utils {
         if (profile == null) {
             ChatUtils.chat("§cPlayer could not be found")
         } else {
-            McClient.tell { McClient.setScreen(PvTab.MAIN.create(profile)) }
+            McClient.setScreenAsync(PvTab.MAIN.create(profile))
         }
     }
 
