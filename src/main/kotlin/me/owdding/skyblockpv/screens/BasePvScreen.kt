@@ -135,16 +135,12 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 }
             }
             FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-            errorWidget.visitWidgets(this::addRenderableWidget)
+            errorWidget.applyLayout()
         }
 
-        val tabs = createTabs().setPos(bg.x + 20, bg.y - 22)
-        tabs.visitWidgets(this::addRenderableWidget)
-
-        val username = createSearch(bg)
-        username.visitWidgets(this::addRenderableWidget)
-        val dropdown = createProfileDropdown(bg)
-        dropdown.visitWidgets(this::addRenderableWidget)
+        createTabs().applyLayout(bg.x + 20, bg.y - 22)
+        createSearch(bg).applyLayout()
+        createProfileDropdown(bg).applyLayout()
 
         addRenderableOnly(
             Widgets.text(this.tabTitle)

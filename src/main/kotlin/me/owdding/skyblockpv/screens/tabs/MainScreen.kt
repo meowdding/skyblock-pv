@@ -42,8 +42,8 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
-import tech.thatgravyboat.skyblockapi.api.area.hub.BazaarAPI
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
+import tech.thatgravyboat.skyblockapi.api.remote.pricing.BazaarAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
@@ -68,7 +68,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val leftStuff = LayoutFactory.vertical(10) {
             spacer()
-            widget(getSkillSection(profile!!, sideColumnWidth - 20))
+            widget(getSkillSection(profile, sideColumnWidth - 20))
             widget(getSlayerSection(sideColumnWidth - 20))
             widget(getEssenceSection(sideColumnWidth - 20))
         }
@@ -82,10 +82,10 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             return LayoutFactory.horizontal {
                 vertical {
                     spacer(height = 10)
-                    widget(getGeneralInfo(profile!!, sideColumnWidth))
+                    widget(getGeneralInfo(profile, sideColumnWidth))
                 }
                 vertical {
-                    val player = getPlayerDisplay(profile!!, middleColumnWidth)
+                    val player = getPlayerDisplay(profile, middleColumnWidth)
                     player.arrangeElements()
                     spacer(height = (uiHeight - player.height) / 2)
                     widget(player)
@@ -97,7 +97,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         LayoutFactory.horizontal {
             val newWidth = (uiWidth * 0.35).toInt()
             vertical {
-                val playerDisplay = getPlayerDisplay(profile!!, newWidth)
+                val playerDisplay = getPlayerDisplay(profile, newWidth)
                 playerDisplay.arrangeElements()
                 spacer(newWidth, (uiHeight - playerDisplay.height) / 2)
                 horizontal {
@@ -108,10 +108,10 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             val width = uiWidth - newWidth - 40
             widget(
                 LayoutFactory.vertical(10) {
-                    widget(getGeneralInfo(profile!!, width)) {
+                    widget(getGeneralInfo(profile, width)) {
                         alignHorizontallyCenter()
                     }
-                    widget(getSkillSection(profile!!, width))
+                    widget(getSkillSection(profile, width))
                     widget(getSlayerSection(width))
                     widget(getEssenceSection(width))
                 }.asScrollable(width + 27, uiHeight),
@@ -365,7 +365,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     fun getEssenceSection(width: Int): LayoutElement {
-        val essence = profile?.currency?.essence?.asSequence()?.map { it.toPair() } ?: emptySequence()
+        val essence = profile.currency?.essence?.asSequence()?.map { it.toPair() } ?: emptySequence()
         if (essence.sumOf { it.second } == 0L) return LayoutFactory.empty()
         return createSection(
             title = "Essence",
@@ -391,7 +391,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         title = "Slayer",
         width = width,
         data = SlayerCodecs.data.map { (k, v) ->
-            val data = profile?.slayer[v.id] ?: SlayerTypeData.EMPTY
+            val data = profile.slayer[v.id] ?: SlayerTypeData.EMPTY
             Pair(k, Pair(v, data))
         }.asSequence(),
         getIcon = ::getIconFromSlayerName,

@@ -10,7 +10,7 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 
 class RiftInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal {
-        val inventory = profile?.rift?.inventory ?: return@horizontal
+        val inventory = profile.rift?.inventory ?: return@horizontal
         val armor = inventory.armor
         val equipment = inventory.equipment
 

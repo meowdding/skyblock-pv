@@ -63,8 +63,8 @@ enum class PvTab(
 
     fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
 
-    fun getTabState(profile: SkyBlockProfile?): TriState = when (this) {
-        INVENTORY -> if (profile?.inventory != null) TriState.TRUE else TriState.FALSE
+    fun getTabState(profile: SkyBlockProfile): TriState = when (this) {
+        INVENTORY -> if (profile.inventory != null) TriState.TRUE else TriState.FALSE
         COLLECTION -> Category.getTabState<CollectionCategories>(profile)
         MINING -> Category.getTabState<MiningCategory>(profile)
         else -> TriState.TRUE
@@ -75,6 +75,6 @@ enum class PvTab(
     }
 
     fun getIcon(gameProfile: GameProfile?): ItemStack {
-        return icon.invoke(gameProfile)
+        return icon(gameProfile)
     }
 }

@@ -10,7 +10,7 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 
 class ItemVaultScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal {
-        val inventoryItems = profile?.inventory?.personalVault?.inventory.orEmpty(36)
+        val inventoryItems = profile.inventory?.personalVault?.inventory.orEmpty(36)
         widget(PvWidgets.createInventory(inventoryItems).asWidget().center(-1, height))
     }
 }

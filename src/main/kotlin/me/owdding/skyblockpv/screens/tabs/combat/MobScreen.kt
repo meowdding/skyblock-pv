@@ -20,7 +20,7 @@ class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
         val row = LinearLayout.horizontal().spacing(5)
 
-        val mobData = profile?.mobData?.combineMobs() ?: emptyList()
+        val mobData = profile.mobData.combineMobs()
         val sortedByKills = mobData.filter { it.kills != 0L }.sortedByDescending { it.kills }
         val sortedByDeaths = mobData.filter { it.deaths != 0L }.sortedByDescending { it.deaths }
 
