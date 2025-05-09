@@ -71,13 +71,13 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             profiles = ProfileAPI.getProfiles(gameProfile.id)
             profile = profile ?: profiles.find { it.selected }
             if (!initedWithProfile) {
-                McClient.tell { rebuildWidgets() }
+                McClient.tell { safelyRebuild() }
             }
         }
 
         Scheduling.schedule(10.seconds) {
             if (profile == null) {
-                McClient.tell { rebuildWidgets() }
+                McClient.tell { safelyRebuild() }
             }
         }
     }
@@ -85,6 +85,11 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     fun isProfileOfUser() = gameProfile.id == McPlayer.uuid
 
     abstract fun create(bg: DisplayWidget)
+
+    private fun safelyRebuild() {
+        if (this.minecraft == null) return
+        rebuildWidgets()
+    }
 
     override fun init() {
         val bg = Displays.background(SkyBlockPv.backgroundTexture, uiWidth, uiHeight).asWidget()
