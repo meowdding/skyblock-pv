@@ -26,8 +26,8 @@ object NetworthCalculator {
             sacks,
             pets,
             profile.currency?.purse,
-            profile.currency?.soloBank,
-            profile.currency?.mainBank,
+            profile.bank?.profileBank,
+            profile.bank?.soloBank,
         ).sum()
     }
 
