@@ -34,7 +34,7 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
             val button = Button()
                 .withSize(31, 20)
                 .withTexture(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT)
-                .withCallback { McClient.tell { McClient.setScreen(category.create(gameProfile, profile)) } }
+                .withCallback { McClient.setScreenAsync(category.create(gameProfile, profile)) }
                 .withRenderer(
                     WidgetRenderers.padded(
                         0, 4, 0, 9,

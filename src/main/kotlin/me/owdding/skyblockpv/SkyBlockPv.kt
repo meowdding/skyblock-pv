@@ -51,9 +51,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     fun onRegisterCommands(event: RegisterCommandsEvent) {
         event.register("pv") {
             callback {
-                McClient.tell {
-                    McClient.setScreen(PvTab.MAIN.create(McClient.self.gameProfile))
-                }
+                McClient.setScreenAsync(PvTab.MAIN.create(McClient.self.gameProfile))
             }
             then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 callback {
@@ -62,12 +60,8 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             }
         }
 
-        event.register("sbpv") {
-            callback {
-                McClient.tell {
-                    McClient.setScreen(ResourcefulConfigScreen.getFactory("sbpv").apply(null))
-                }
-            }
+        event.registerWithCallback("sbpv") {
+            McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(null))
         }
     }
 
