@@ -6,16 +6,19 @@ import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
+import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
@@ -32,6 +35,7 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
@@ -88,7 +92,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         bg.visitWidgets(this::addRenderableOnly)
 
         addLoader()
-
+        createTopRow(bg).setPos(5, 5).visitWidgets(this::addRenderableWidget)
 
         val profile = profile ?: return
         initedWithProfile = true
@@ -127,10 +131,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         username.visitWidgets(this::addRenderableWidget)
         val dropdown = createProfileDropdown(bg)
         dropdown.visitWidgets(this::addRenderableWidget)
-
-
-        if (SkyBlockPv.isDevMode) createDevRow(bg).visitWidgets(this::addRenderableWidget)
-
 
         addRenderableOnly(
             Widgets.text(this.tabTitle)
@@ -175,7 +175,23 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         errorWidget.visitWidgets(this::addRenderableWidget)
     }
 
-    private fun createDevRow(bg: DisplayWidget) = LayoutFactory.horizontal(5) {
+    private fun createTopRow(bg: DisplayWidget) = LayoutFactory.horizontal(5) {
+        createUserRow()
+        if (SkyBlockPv.isDevMode) createDevRow(bg)
+    }
+
+    private fun LayoutBuilder.createUserRow() = horizontal(5) {
+        val settingsButton = Button()
+            .withSize(20, 20)
+            .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
+            .withTexture(null)
+            .withCallback { McClient.tell { McClient.setScreen(ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen)) } }
+            .withTooltip(Text.multiline("Open Settings.", "You can also use /sbpv"))
+
+        widget(settingsButton)
+    }
+
+    private fun LayoutBuilder.createDevRow(bg: DisplayWidget) = horizontal(5) {
         // Useful for hotswaps
         val refreshButton = Button()
             .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))

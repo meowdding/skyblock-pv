@@ -72,4 +72,5 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     }
 
     fun id(path: String) = ResourceLocation.fromNamespaceAndPath("skyblock-pv", path)
+    fun olympusId(path: String) = ResourceLocation.fromNamespaceAndPath("olympus", path)
 }
