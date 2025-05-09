@@ -53,6 +53,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
@@ -136,14 +137,37 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
 
             string("Purse: ${profile.currency?.purse?.toFormattedString()}")
-            string(
-                buildString {
-                    append("Bank: ")
-                    val soloBank = profile.currency?.soloBank.takeIf { it != 0L }?.toFormattedString()
-                    val mainBank = profile.currency?.mainBank.takeIf { it != 0L }?.toFormattedString()
+            display(
+                grayText(
+                    buildString {
+                        append("Bank: ")
+                        val soloBank = profile.bank?.soloBank.takeIf { it != 0L }?.toFormattedString()
+                        val mainBank = profile.bank?.profileBank.takeIf { it != 0L }?.toFormattedString()
 
-                    if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
-                    else append(soloBank ?: mainBank ?: "0")
+                        if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
+                        else append(soloBank ?: mainBank ?: "0")
+                    },
+                ).withTooltip {
+                    val bank = profile.bank ?: return@withTooltip
+                    this.add("§7Solo Bank: §6${bank.soloBank.toFormattedString()}")
+                    this.add("§7Profile Bank: §6${bank.profileBank.toFormattedString()}")
+
+                    if (bank.history.isEmpty()) return@withTooltip
+
+                    this.space()
+                    this.add("§7Bank History: ")
+                    this.add("                                           ") {
+                        strikethrough = true
+                        color = TextColor.DARK_GRAY
+                    }
+                    bank.history.forEach {
+                        this.add("§6${it.amount.toFormattedString()} §7${it.action.toTitleCase()} by §b${it.initiator}")
+                        this.add("§7Date: §e${SimpleDateFormat("yyyy.MM.dd HH:mm").format(it.timestamp)}")
+                        this.add("                                           ") {
+                            strikethrough = true
+                            color = TextColor.DARK_GRAY
+                        }
+                    }
                 },
             )
             string("Cookie Buff: ${"§aActive".takeIf { profile.currency?.cookieBuffActive == true } ?: "§cInactive"}")
@@ -303,7 +327,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }.toList()
 
         val elementsPerRow = (convertedElements.firstOrNull()?.width?.plus(10))?.let { width / it } ?: 0
-        if (elementsPerRow < 1) return LayoutFactory.frame {}
+        if (elementsPerRow < 1) return LayoutFactory.empty()
 
         convertedElements.chunked(elementsPerRow).forEach { chunk ->
             val element = LinearLayout.horizontal().spacing(5)

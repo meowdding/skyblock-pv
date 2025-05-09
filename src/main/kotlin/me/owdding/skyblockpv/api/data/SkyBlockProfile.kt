@@ -6,10 +6,8 @@ import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
-import me.owdding.skyblockpv.data.api.CfData
-import me.owdding.skyblockpv.data.api.CollectionItem
+import me.owdding.skyblockpv.data.api.*
 import me.owdding.skyblockpv.data.api.Currency
-import me.owdding.skyblockpv.data.api.RiftData
 import me.owdding.skyblockpv.data.api.skills.*
 import me.owdding.skyblockpv.data.api.skills.combat.*
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
@@ -31,6 +29,7 @@ data class SkyBlockProfile(
     val profileType: ProfileType = ProfileType.UNKNOWN,
 
     val currency: Currency?,
+    val bank: Bank?,
     val inventory: InventoryData?,
     /**Level to Progress*/
     val skyBlockLevel: Pair<Int, Int>,
@@ -87,6 +86,7 @@ data class SkyBlockProfile(
 
                 inventory = member.getAsJsonObject("inventory")?.let { InventoryData.fromJson(it) },
                 currency = member.getAsJsonObject("currencies")?.let { Currency.fromJson(it) },
+                bank = Bank.fromJson(json, member),
                 firstJoin = profile["first_join"].asLong(0),
                 fairySouls = member.getPath("fairy_soul.total_collected").asInt(0),
                 skyBlockLevel = run {
