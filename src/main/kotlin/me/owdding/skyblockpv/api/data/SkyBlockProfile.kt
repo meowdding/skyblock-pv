@@ -15,6 +15,7 @@ import me.owdding.skyblockpv.data.api.skills.combat.*
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
+import me.owdding.skyblockpv.feature.NetworthCalculator
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import net.minecraft.Util
@@ -57,6 +58,8 @@ data class SkyBlockProfile(
     val crimsonIsleData: CrimsonIsleData,
     val minions: List<String>?,
 ) {
+    val netWorth by lazy { NetworthCalculator.calculateNetworthAsync(this) }
+
     companion object {
 
         fun fromJson(json: JsonObject, user: UUID): SkyBlockProfile? {

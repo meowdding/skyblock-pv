@@ -23,7 +23,6 @@ import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
-import me.owdding.skyblockpv.feature.NetworthCalculator
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
@@ -122,7 +121,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             horizontalDisplay {
                 display(grayText("Net worth: "))
                 ExtraDisplays.completableDisplay(
-                    NetworthCalculator.calculateNetworthAsync(profile),
+                    profile.netWorth,
                     {
                         val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
                         val networthCookies = if (cookiePrice > 0) (it / cookiePrice).roundToInt() else 0
