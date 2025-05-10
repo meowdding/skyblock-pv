@@ -29,7 +29,7 @@ enum class SkullTextures(var texture: String = "") {
 
     @LoadData
     companion object : ExtraData {
-        override fun load() {
+        override suspend fun load() {
             val textures = Utils.loadFromRepo<Map<String, String>>("skull_textures") ?: emptyMap()
             textures.entries.forEach { (key, texture) -> valueOf(key.uppercase()).texture = texture }
         }

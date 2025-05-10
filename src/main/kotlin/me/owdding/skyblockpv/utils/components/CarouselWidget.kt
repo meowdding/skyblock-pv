@@ -4,15 +4,15 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen
 import earth.terrarium.olympus.client.components.base.BaseWidget
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import earth.terrarium.olympus.client.layouts.Layouts
-import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import earth.terrarium.olympus.client.ui.UIConstants
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.client.gui.layouts.LayoutSettings
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissorRange
 import tech.thatgravyboat.skyblockapi.utils.extentions.translated
@@ -140,8 +140,11 @@ class CarouselWidget(
                 }
         }
 
-        return buttons.chunked(9)
-            .map { it.fold(Layouts.row().withGap(1), LinearViewLayout::withChild) }
-            .fold(Layouts.column().withGap(1), LinearViewLayout::withChild)
+        val rows = buttons.chunked(9).map { LayoutFactory.horizontal(1) { widget(it) } }
+        return LayoutFactory.vertical(1) {
+            rows.forEach { it ->
+                widget(it, LayoutSettings::alignHorizontallyCenter)
+            }
+        }
     }
 }

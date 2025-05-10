@@ -21,8 +21,8 @@ class CommonCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     override fun getLayout(bg: DisplayWidget): Layout {
         val width = uiWidth - 20
 
-        val profile = profile ?: return LayoutFactory.frame {}
-        val filteredCollections = profile.collections?.filter { it.category == category } ?: return LayoutFactory.frame {}
+        val profile = profile
+        val filteredCollections = profile.collections?.filter { it.category == category } ?: return LayoutFactory.empty()
         return LayoutFactory.frame {
             display(
                 buildList {

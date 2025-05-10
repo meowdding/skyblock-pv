@@ -16,28 +16,29 @@ import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.PronounsDbAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
-import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
-import me.owdding.skyblockpv.feature.NetworthCalculator
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
+import me.owdding.skyblockpv.screens.tabs.general.NetworthDisplay
+import me.owdding.skyblockpv.screens.tabs.general.PronounDisplay
 import me.owdding.skyblockpv.utils.FakePlayer
+import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.client.gui.layouts.Layout
-import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
@@ -45,7 +46,6 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
-import tech.thatgravyboat.skyblockapi.api.area.hub.BazaarAPI
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -57,8 +57,8 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
-import kotlin.math.roundToInt
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseGeneralScreen(gameProfile, profile) {
 
@@ -69,16 +69,60 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
-        return LayoutFactory.horizontal {
-            widget(createLeftColumn(profile!!, sideColumnWidth))
-            widget(createMiddleColumn(profile!!, middleColumnWidth))
-            widget(createRightColumn(profile!!, sideColumnWidth))
+        val leftStuff = LayoutFactory.vertical(10) {
+            spacer()
+            widget(getSkillSection(profile, sideColumnWidth - 20))
+            widget(getSlayerSection(sideColumnWidth - 20))
+            widget(getEssenceSection(sideColumnWidth - 20))
         }
+
+
+        fun Layout.applyLayout() {
+            this.setPos(bg.x, bg.y).visitWidgets(this@MainScreen::addRenderableWidget)
+        }
+
+        if (leftStuff.height < uiHeight) {
+            return LayoutFactory.horizontal {
+                vertical {
+                    spacer(height = 10)
+                    widget(getGeneralInfo(profile, sideColumnWidth))
+                }
+                vertical {
+                    val player = getPlayerDisplay(profile, middleColumnWidth)
+                    player.arrangeElements()
+                    spacer(height = (uiHeight - player.height) / 2)
+                    widget(player)
+                }
+                widget(leftStuff)
+            }.applyLayout()
+        }
+
+        LayoutFactory.horizontal {
+            val newWidth = (uiWidth * 0.35).toInt()
+            vertical {
+                val playerDisplay = getPlayerDisplay(profile, newWidth)
+                playerDisplay.arrangeElements()
+                spacer(newWidth, (uiHeight - playerDisplay.height) / 2)
+                horizontal {
+                    spacer(10)
+                    widget(playerDisplay)
+                }
+            }
+            val width = uiWidth - newWidth - 40
+            widget(
+                LayoutFactory.vertical(10) {
+                    widget(getGeneralInfo(profile, width)) {
+                        alignHorizontallyCenter()
+                    }
+                    widget(getSkillSection(profile, width))
+                    widget(getSlayerSection(width))
+                    widget(getEssenceSection(width))
+                }.asScrollable(width + 27, uiHeight),
+            )
+        }.applyLayout()
     }
 
-    private fun createLeftColumn(profile: SkyBlockProfile, width: Int) = LayoutFactory.vertical(alignment = 0.5f) {
-        spacer(height = 5)
-
+    private fun getGeneralInfo(profile: SkyBlockProfile, width: Int) = LayoutFactory.vertical(alignment = 0.5f) {
         val irrelevantSkills = listOf(
             "SKILL_RUNECRAFTING",
             "SKILL_SOCIAL",
@@ -95,14 +139,37 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
 
             string("Purse: ${profile.currency?.purse?.toFormattedString()}")
-            string(
-                buildString {
-                    append("Bank: ")
-                    val soloBank = profile.currency?.soloBank.takeIf { it != 0L }?.toFormattedString()
-                    val mainBank = profile.currency?.mainBank.takeIf { it != 0L }?.toFormattedString()
+            display(
+                grayText(
+                    buildString {
+                        append("Bank: ")
+                        val soloBank = profile.bank?.soloBank.takeIf { it != 0L }?.shorten(2)
+                        val mainBank = profile.bank?.profileBank.takeIf { it != 0L }?.shorten(2)
 
-                    if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
-                    else append(soloBank ?: mainBank ?: "0")
+                        if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
+                        else append(soloBank ?: mainBank ?: "0")
+                    },
+                ).withTooltip {
+                    val bank = profile.bank ?: return@withTooltip
+                    this.add("§7Solo Bank: §6${bank.soloBank.toFormattedString()}")
+                    this.add("§7Profile Bank: §6${bank.profileBank.toFormattedString()}")
+
+                    if (bank.history.isEmpty()) return@withTooltip
+
+                    this.space()
+                    this.add("§7Bank History: ")
+                    this.add("                                           ") {
+                        strikethrough = true
+                        color = TextColor.DARK_GRAY
+                    }
+                    bank.history.forEach {
+                        this.add("§6${it.amount.toFormattedString()} §7${it.action.toTitleCase()} by §b${it.initiator}")
+                        this.add("§7Date: §e${SimpleDateFormat("yyyy.MM.dd HH:mm").format(it.timestamp)}")
+                        this.add("                                           ") {
+                            strikethrough = true
+                            color = TextColor.DARK_GRAY
+                        }
+                    }
                 },
             )
             string("Cookie Buff: ${"§aActive".takeIf { profile.currency?.cookieBuffActive == true } ?: "§cInactive"}")
@@ -117,66 +184,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             display(grayText("Skill Avg: ${skillAvg.round()}"))
             string("Fairy Souls: ${profile.fairySouls}")
 
-            display(
-                listOf(
-                    grayText("Pronouns: "),
-                    PronounsDbAPI.getDisplay(gameProfile.id),
-                ).toRow().withTooltip("Provided by https://pronoundb.org/"),
-            )
-
-            horizontalDisplay {
-                display(grayText("Net worth: "))
-                ExtraDisplays.completableDisplay(
-                    NetworthCalculator.calculateNetworthAsync(profile),
-                    {
-                        val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
-                        val networthCookies = if (cookiePrice > 0) (it / cookiePrice).roundToInt() else 0
-                        val networthUSD = ((networthCookies * 325.0) / 675.0) * 4.99
-
-                        val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
-
-                        grayText(it.shorten()).withTooltip {
-                            if (cookiePrice <= 0) return@withTooltip
-
-                            this.add {
-                                this.append("Networth: ") { this.color = TextColor.YELLOW }
-                                this.append(it.toFormattedString()) { this.color = TextColor.GREEN }
-                            }
-
-                            this.add {
-                                this.append("Net worth in Cookies: ") { this.color = TextColor.YELLOW }
-                                this.append(networthCookies.toFormattedString()) { this.color = TextColor.GOLD }
-                            }
-
-                            this.add {
-                                this.append("Net worth in ${currency.name}: ") { this.color = TextColor.YELLOW }
-                                val formattedNetworth = networthConverted.roundToInt().toFormattedString()
-                                this.append("$$formattedNetworth ${currency.name}") { this.color = TextColor.GREEN }
-                            }
-
-                            this.space()
-                            this.add("Note: You can change the currency in the settings using /sbpv.") { this.color = TextColor.GRAY }
-                        }
-                    },
-                    { error ->
-                        grayText("Failed to load").withTooltip {
-                            this.add(Text.of("An error occurred: ") { this.color = TextColor.RED })
-                            error.stackTraceToString().lines().forEach { line ->
-                                this.add(Text.of(line) { this.color = TextColor.RED })
-                            }
-                        }
-                    },
-                    {
-                        grayText("Loading...")
-                    },
-                ).let(this::display)
-            }
+            display(NetworthDisplay.getNetworthDisplay(profile))
         }
 
         widget(PvWidgets.getMainContentWidget(infoColumn, width))
     }
 
-    private fun createMiddleColumn(profile: SkyBlockProfile, width: Int): LinearLayout {
+    private fun getPlayerDisplay(profile: SkyBlockProfile, width: Int): LinearLayout {
         val height = (width * 1.1).toInt()
         val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
         val skyblockLvl = profile.skyBlockLevel.first
@@ -227,177 +241,113 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         val layout = LinearLayout.vertical()
-        layout.addChild(SpacerElement.height((uiHeight - playerWidget.height) / 2))
         layout.addChild(playerWidget)
         layout.addChild(SpacerElement.height(5))
         layout.addChild(statusButtonWidget)
+        layout.addChild(SpacerElement.height(3))
+        if (Config.showPronouns) {
+            layout.addChild(PronounDisplay.getPronounDisplay(gameProfile.id, width).asWidget())
+        }
 
         return layout
     }
 
-    private fun createRightColumn(profile: SkyBlockProfile, width: Int) = LayoutFactory.vertical(alignment = 0.5f) {
-        spacer(height = 5)
+    fun <D, T> createSection(
+        title: String,
+        titleIcon: ResourceLocation? = null,
+        width: Int,
+        data: Sequence<Pair<D, T>>,
+        getToolTip: (D, T) -> Component? = { _, _ -> null },
+        getIcon: (D) -> Any,
+        getLevel: (D, T) -> Any,
+    ): LayoutElement {
+        val mainContent = LinearLayout.vertical().spacing(5)
 
-        fun <D, T> addSection(
-            title: String,
-            titleIcon: ResourceLocation? = null,
-            data: Sequence<Pair<D, T>>,
-            getToolTip: (D, T) -> Component? = { _, _ -> null },
-            getIcon: (D) -> Any,
-            getLevel: (D, T) -> Any,
-        ) {
-            val mainContent = LinearLayout.vertical().spacing(5)
-
-            val convertedElements = data.map { (name, data) ->
-                val level = getLevel(name, data).toString()
-                val iconValue = getIcon(name)
-                val icon = when (iconValue) {
-                    is ResourceLocation -> Displays.sprite(iconValue, 12, 12)
-                    is ItemStack -> Displays.item(iconValue, 12, 12)
-                    else -> error("Invalid icon type")
-                }
-                val display = listOf(
-                    icon,
-                    Displays.padding(0, 0, 2, 0, Displays.text(level, color = { 0x555555u }, shadow = false)),
-                ).toRow(1)
-                val skillDisplay = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, display))
-                (getToolTip(name, data)?.let { skillDisplay.withTooltip(it) } ?: skillDisplay).asWidget()
-            }.toList()
-
-            val elementsPerRow = width / (convertedElements.firstOrNull()?.width?.plus(10) ?: return)
-            if (elementsPerRow < 1) return
-
-            convertedElements.chunked(elementsPerRow).forEach { chunk ->
-                val element = LinearLayout.horizontal().spacing(5)
-                chunk.forEach { element.addChild(it) }
-                mainContent.addChild(element.centerHorizontally(width))
+        val convertedElements = data.map { (name, data) ->
+            val level = getLevel(name, data).toString()
+            val iconValue = getIcon(name)
+            val icon = when (iconValue) {
+                is ResourceLocation -> Displays.sprite(iconValue, 12, 12)
+                is ItemStack -> Displays.item(iconValue, 12, 12)
+                else -> error("Invalid icon type")
             }
+            val display = listOf(
+                icon,
+                Displays.padding(0, 0, 2, 0, Displays.text(level, color = { 0x555555u }, shadow = false)),
+            ).toRow(1)
+            val skillDisplay = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, display))
+            (getToolTip(name, data)?.let { skillDisplay.withTooltip(it) } ?: skillDisplay).asWidget()
+        }.toList()
 
-            mainContent.arrangeElements()
+        val elementsPerRow = (convertedElements.firstOrNull()?.width?.plus(10))?.let { width / it } ?: 0
+        if (elementsPerRow < 1) return LayoutFactory.empty()
 
-            widget(PvWidgets.getTitleWidget(title, width, titleIcon))
-            widget(PvWidgets.getMainContentWidget(mainContent, width))
+        convertedElements.chunked(elementsPerRow).forEach { chunk ->
+            val element = LinearLayout.horizontal().spacing(5)
+            chunk.forEach { element.addChild(it) }
+            mainContent.addChild(element.centerHorizontally(width))
         }
 
-        addSection(
-            title = "Skills",
-            titleIcon = SkyBlockPv.id("icon/item/sword"),
-            data = profile.skill.asSequence().map { SkillAPI.getSkill(it.key) to it.value },
-            getToolTip = { skill, num ->
-                SkillAPI.getProgressToNextLevel(skill, num, profile).let { progress ->
-                    TooltipBuilder().apply {
-                        add(skill.data.name) { this.color = TextColor.YELLOW }
-                        add("Exp: ${num.shorten()}") { this.color = TextColor.GRAY }
-                        add("Progress: ") {
-                            this.color = TextColor.GRAY
-                            if (progress == 1f) {
-                                append("Maxed!") { this.color = TextColor.RED }
-                            } else if (skill.hasFloatingLevelCap() && SkillAPI.getSkillLevel(skill, num, profile) == skill.maxLevel(profile)) {
-                                append("Reached max skill cap!") { this.color = TextColor.DARK_PURPLE }
-                            } else {
-                                append("${(progress * 100).round()}% to next") { this.color = TextColor.GREEN }
-                            }
-                        }
-                        if (skill.data.maxLevel != SkillAPI.getSkillLevel(skill, num, profile)) {
-                            add("Progress to max: ") {
-                                this.color = TextColor.GRAY
-                                val expRequired = SkillAPI.getExpRequired(skill, skill.data.maxLevel)
-                                if (expRequired == null) {
-                                    append("Unknown") { this.color = TextColor.RED }
-                                    return@add
-                                }
+        mainContent.arrangeElements()
 
-                                append(num.toFormattedString()) { this.color = TextColor.YELLOW }
-                                append("/") { this.color = TextColor.GOLD }
-                                append(expRequired.shorten()) { this.color = TextColor.YELLOW }
-                                append(
-                                    Text.of(((num.toFloat() / expRequired) * 100).round()) {
-                                        append("%")
-                                        this.color = TextColor.GREEN
-                                    }.wrap(" (", ")"),
-                                )
-                            }
-                        }
-                    }.build()
-                }
-            },
-            getIcon = SkillAPI.Skill::icon,
-        ) { name, num ->
-            SkillAPI.getSkillLevel(name, num, profile)
-        }
+        return PvWidgets.label(title, mainContent, icon = titleIcon)
+    }
 
-        spacer(height = 10)
-
-        addSection(
-            title = "Slayer",
-            data = SlayerCodecs.data.map { (k, v) ->
-                val data = profile.slayer[v.id] ?: SlayerTypeData.EMPTY
-                Pair(k, Pair(v, data))
-            }.asSequence(),
-            getIcon = { name ->
-                getIconFromSlayerName(name) // TODO: if addSection gets ever removed, include the icon in slayerdata
-            },
-            getToolTip = { name, pair ->
-                val (repo, data) = pair
+    fun getSkillSection(profile: SkyBlockProfile, width: Int) = createSection(
+        title = "Skills",
+        titleIcon = SkyBlockPv.id("icon/item/sword"),
+        data = profile.skill.asSequence().map { SkillAPI.getSkill(it.key) to it.value },
+        getToolTip = { skill, num ->
+            SkillAPI.getProgressToNextLevel(skill, num, profile).let { progress ->
                 TooltipBuilder().apply {
-                    add(name.toTitleCase()) { this.color = TextColor.YELLOW }
-                    add("Kills: ") {
+                    add(skill.data.name) { this.color = TextColor.YELLOW }
+                    add("Exp: ${num.shorten()}") { this.color = TextColor.GRAY }
+                    add("Progress: ") {
                         this.color = TextColor.GRAY
-                        Text.join(
-                            (0 until repo.maxBossTier).map {
-                                Text.of(data.bossKillsTier[it]?.toFormattedString() ?: "0") { this.color = TextColor.GRAY }
-                            },
-                            separator = Text.of("/") { this.color = TextColor.DARK_GRAY },
-                        ).let { append(it) }
-                    }
-                    add("Exp: ") {
-                        this.color = TextColor.GRAY
-                        append(data.exp.toFormattedString()) { this.color = TextColor.YELLOW }
-
-                        val percentage = data.exp / repo.leveling.last().toDouble() * 100
-                        if (percentage >= 100) {
-                            append(" Maxed!") { this.color = TextColor.RED }
+                        if (progress == 1f) {
+                            append("Maxed!") { this.color = TextColor.RED }
+                        } else if (skill.hasFloatingLevelCap() && SkillAPI.getSkillLevel(skill, num, profile) == skill.maxLevel(profile)) {
+                            append("Reached max skill cap!") { this.color = TextColor.DARK_PURPLE }
                         } else {
-                            append("/") { this.color = TextColor.GOLD }
-                            append(repo.leveling.last().toFormattedString()) { this.color = TextColor.YELLOW }
-                            append(
-                                Text.of(((data.exp.toFloat() / repo.leveling.last()) * 100).round()) {
-                                    append("%")
-                                    this.color = TextColor.GREEN
-                                }.wrap(" (", ")"),
-                            )
+                            append("${(progress * 100).round()}% to next") { this.color = TextColor.GREEN }
                         }
                     }
-
-                    if (repo.getLevel(data.exp) != repo.maxLevel) {
-                        add("Next Level: ") {
+                    if (skill.data.maxLevel != SkillAPI.getSkillLevel(skill, num, profile)) {
+                        add("Progress to max: ") {
                             this.color = TextColor.GRAY
-                            append(data.exp.toFormattedString()) { this.color = TextColor.YELLOW }
+                            val expRequired = SkillAPI.getExpRequired(skill, skill.data.maxLevel)
+                            if (expRequired == null) {
+                                append("Unknown") { this.color = TextColor.RED }
+                                return@add
+                            }
+
+                            append(num.toFormattedString()) { this.color = TextColor.YELLOW }
                             append("/") { this.color = TextColor.GOLD }
-                            append(repo.leveling[repo.getLevel(data.exp)].toFormattedString()) { this.color = TextColor.YELLOW }
+                            append(expRequired.shorten()) { this.color = TextColor.YELLOW }
                             append(
-                                Text.of(((data.exp.toFloat() / repo.leveling[repo.getLevel(data.exp)]) * 100).round()) {
+                                Text.of(((num.toFloat() / expRequired) * 100).round()) {
                                     append("%")
                                     this.color = TextColor.GREEN
                                 }.wrap(" (", ")"),
                             )
                         }
                     }
-
                 }.build()
-            },
-        )
-        { name, data ->
-            data.first.getLevel(data.second.exp)
-        }
+            }
+        },
+        width = width,
+        getIcon = SkillAPI.Skill::icon,
+    ) { name, num ->
+        SkillAPI.getSkillLevel(name, num, profile)
+    }
 
-        spacer(height = 10)
-
+    fun getEssenceSection(width: Int): LayoutElement {
         val essence = profile.currency?.essence?.asSequence()?.map { it.toPair() } ?: emptySequence()
-        if (essence.sumOf { it.second } == 0L) return@vertical
-        addSection(
+        if (essence.sumOf { it.second } == 0L) return LayoutFactory.empty()
+        return createSection(
             title = "Essence",
             data = essence,
+            width = width,
             getIcon = {
                 when (it) {
                     "WITHER" -> SkullTextures.WITHER_ESSENCE
@@ -414,6 +364,68 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         ) { _, amount -> amount.shorten() }
     }
 
+    fun getSlayerSection(width: Int) = createSection(
+        title = "Slayer",
+        width = width,
+        data = SlayerCodecs.data.map { (k, v) ->
+            val data = profile.slayer[v.id] ?: SlayerTypeData.EMPTY
+            Pair(k, Pair(v, data))
+        }.asSequence(),
+        getIcon = ::getIconFromSlayerName,
+        getToolTip = { name, pair ->
+            val (repo, data) = pair
+            TooltipBuilder().apply {
+                add(name.toTitleCase()) { this.color = TextColor.YELLOW }
+                add("Kills: ") {
+                    this.color = TextColor.GRAY
+                    Text.join(
+                        (0 until repo.maxBossTier).map {
+                            Text.of(data.bossKillsTier[it]?.toFormattedString() ?: "0") { this.color = TextColor.GRAY }
+                        },
+                        separator = Text.of("/") { this.color = TextColor.DARK_GRAY },
+                    ).let { append(it) }
+                }
+                add("Exp: ") {
+                    this.color = TextColor.GRAY
+                    append(data.exp.toFormattedString()) { this.color = TextColor.YELLOW }
+
+                    val percentage = data.exp / repo.leveling.last().toDouble() * 100
+                    if (percentage >= 100) {
+                        append(" Maxed!") { this.color = TextColor.RED }
+                    } else {
+                        append("/") { this.color = TextColor.GOLD }
+                        append(repo.leveling.last().toFormattedString()) { this.color = TextColor.YELLOW }
+                        append(
+                            Text.of(((data.exp.toFloat() / repo.leveling.last()) * 100).round()) {
+                                append("%")
+                                this.color = TextColor.GREEN
+                            }.wrap(" (", ")"),
+                        )
+                    }
+                }
+
+                if (repo.getLevel(data.exp) != repo.maxLevel) {
+                    add("Next Level: ") {
+                        this.color = TextColor.GRAY
+                        append(data.exp.toFormattedString()) { this.color = TextColor.YELLOW }
+                        append("/") { this.color = TextColor.GOLD }
+                        append(repo.leveling[repo.getLevel(data.exp)].toFormattedString()) { this.color = TextColor.YELLOW }
+                        append(
+                            Text.of(((data.exp.toFloat() / repo.leveling[repo.getLevel(data.exp)]) * 100).round()) {
+                                append("%")
+                                this.color = TextColor.GREEN
+                            }.wrap(" (", ")"),
+                        )
+                    }
+                }
+
+            }.build()
+        },
+    )
+    { name, data ->
+        data.first.getLevel(data.second.exp)
+    }
+
     override fun onProfileSwitch(profile: SkyBlockProfile) {
         val disabledTabs = PvTab.entries.filter { it.getTabState(profile) != TriState.TRUE }
         if (disabledTabs.isNotEmpty()) {
@@ -421,12 +433,15 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 profile,
                 Displays.background(
                     SkyBlockPv.id("buttons/dark/disabled"),
-                    Displays.padding(5, Displays.column(
-                        Displays.text("§dSbPv§r: Disabled Tabs on Profile", { TextColor.RED.toUInt() }),
-                        Displays.text("Due to missing data or disabled apis,", { TextColor.RED.toUInt() }),
-                        Displays.text("the following tabs are disabled or altered:", { TextColor.RED.toUInt() }),
-                        Displays.text(disabledTabs.joinToString(", ") { it.name.toTitleCase() }, { TextColor.RED.toUInt() }),
-                    ))
+                    Displays.padding(
+                        5,
+                        Displays.column(
+                            Displays.text("§dSbPv§r: Disabled Tabs on Profile", { TextColor.RED.toUInt() }),
+                            Displays.text("Due to missing data or disabled apis,", { TextColor.RED.toUInt() }),
+                            Displays.text("the following tabs are disabled or altered:", { TextColor.RED.toUInt() }),
+                            Displays.text(disabledTabs.joinToString(", ") { it.name.toTitleCase() }, { TextColor.RED.toUInt() }),
+                        ),
+                    ),
                 ),
                 5000,
             )

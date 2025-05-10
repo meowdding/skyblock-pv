@@ -30,8 +30,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutFactory.frame {}
-
         val resourcesDisplay = GardenResource.actualValues.map {
             ExtraDisplays.inventoryBackground(
                 3, Orientation.VERTICAL,

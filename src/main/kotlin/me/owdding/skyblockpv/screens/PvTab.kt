@@ -25,6 +25,7 @@ import me.owdding.skyblockpv.screens.tabs.museum.BaseMuseumScreen
 import me.owdding.skyblockpv.screens.tabs.museum.MuseumItemScreen
 import me.owdding.skyblockpv.screens.tabs.rift.BaseRiftScreen
 import me.owdding.skyblockpv.screens.tabs.rift.MainRiftScreen
+import me.owdding.skyblockpv.screens.tabs.rift.RiftCategory
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -64,10 +65,11 @@ enum class PvTab(
 
     fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
 
-    fun getTabState(profile: SkyBlockProfile?): TriState = when (this) {
-        INVENTORY -> if (profile?.inventory != null) TriState.TRUE else TriState.FALSE
+    fun getTabState(profile: SkyBlockProfile): TriState = when (this) {
+        INVENTORY -> if (profile.inventory != null) TriState.TRUE else TriState.FALSE
         COLLECTION -> Category.getTabState<CollectionCategories>(profile)
         MINING -> Category.getTabState<MiningCategory>(profile)
+        RIFT -> Category.getTabState<RiftCategory>(profile)
         else -> TriState.TRUE
     }
 
@@ -76,6 +78,6 @@ enum class PvTab(
     }
 
     fun getIcon(gameProfile: GameProfile?): ItemStack {
-        return icon.invoke(gameProfile)
+        return icon(gameProfile)
     }
 }

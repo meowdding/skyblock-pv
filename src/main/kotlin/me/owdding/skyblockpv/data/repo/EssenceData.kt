@@ -52,7 +52,7 @@ object EssenceData : ExtraData {
         display(display.withTranslatedTooltip("skyblockpv.essence.$category.$id"))
     }
 
-    override fun load() {
+    override suspend fun load() {
         allPerks = Utils.loadRepoData("essence_perks", Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>()))
             .flatMap { it.value.entries }.associateBy({ it.key }, { it.value })
     }

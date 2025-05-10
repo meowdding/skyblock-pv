@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonObject
-import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.data.api.CollectionCategory
 import me.owdding.skyblockpv.data.api.CollectionEntry
 import me.owdding.skyblockpv.utils.codecs.ExtraData
@@ -53,12 +52,10 @@ object CollectionAPI : ExtraData {
 
 
     private suspend fun get(): JsonObject? = Http.getResult<JsonObject>(url = API_URL).getOrNull()
-    override fun load() {
-        runBlocking {
-            val collections = get()?.getAsJsonObject("collections") ?: return@runBlocking
-            collectionData = collections.entrySet().associate { (key, value) ->
-                key to value.asJsonObject.toCollectionCategory()
-            }
+    override suspend fun load() {
+        val collections = get()?.getAsJsonObject("collections") ?: return
+        collectionData = collections.entrySet().associate { (key, value) ->
+            key to value.asJsonObject.toCollectionCategory()
         }
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items
 
 class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
 
-    private val inventory get() = profile?.inventory
+    private val inventory get() = profile.inventory
     private val activeArmor get() = inventory?.armorItems?.inventory.orEmpty(4).asReversed()
     private val wardrobe get() = inventory?.wardrobe
     private val selected get() = wardrobe?.equippedArmor?.takeUnless { it == -1 }?.minus(1) ?: -1
@@ -24,7 +24,7 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     override fun getInventories(): List<Display> = armor.mapIndexed { index, inventory ->
         if (selected != -1 && selected / 9 == index) {
             inventory.chunked(9).mapIndexed { index, row ->
-                var row = row.toMutableList()
+                val row = row.toMutableList()
                 row[selected % 9] = activeArmor[index]
                 row
             }.flatten()

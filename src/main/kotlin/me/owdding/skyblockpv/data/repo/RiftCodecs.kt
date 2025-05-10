@@ -11,7 +11,7 @@ object RiftCodecs : ExtraData {
     lateinit var data: RiftRepoData
         private set
 
-    override fun load() {
+    override suspend fun load() {
         data = Utils.loadRepoData("rift")
     }
 

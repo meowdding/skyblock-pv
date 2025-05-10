@@ -2,14 +2,11 @@ package me.owdding.skyblockpv.data.api
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToEssenceOrder
-import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
-import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
-import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.json.getPath
 
 data class Currency(
     val purse: Long,
-    val mainBank: Long,
-    val soloBank: Long = 0,
     val motes: Long,
     val cookieBuffActive: Boolean,
     val essence: Map<String, Long>,
@@ -18,11 +15,42 @@ data class Currency(
         fun fromJson(json: JsonObject) = Currency(
             purse = json["coin_purse"].asLong(0),
             motes = json["motes_purse"].asLong(0),
-            mainBank = json["banking"].asLong(0),
-            soloBank = json.getAsJsonObject("banking")?.get("balance").asLong(0),
             cookieBuffActive = json["cookie_buff_active"].asBoolean(false),
             // todo: add missing essences if not unlocked
             essence = json["essence"].asMap { id, obj -> id to obj.asJsonObject["current"].asLong(0) }.sortToEssenceOrder(),
+        )
+    }
+}
+
+data class Bank(
+    val profileBank: Long,
+    val soloBank: Long,
+    val history: List<Transaction>,
+) {
+    companion object {
+        fun fromJson(json: JsonObject, member: JsonObject): Bank? {
+            if (!json.has("banking")) return null
+            return Bank(
+                profileBank = json.getPath("banking.balance").asLong(0),
+                soloBank = member.getPath("profile.bank_account").asLong(0),
+                history = json.getPath("banking.transactions").asList { Transaction.fromJson(it.asJsonObject) }.sortedByDescending { it.timestamp }.take(7),
+            )
+        }
+    }
+}
+
+data class Transaction(
+    val amount: Long,
+    val timestamp: Long,
+    val action: String,
+    val initiator: String,
+) {
+    companion object {
+        fun fromJson(json: JsonObject) = Transaction(
+            amount = json["amount"].asLong(0),
+            timestamp = json["timestamp"].asLong(0),
+            action = json["action"].asString(""),
+            initiator = json["initiator_name"].asString(""),
         )
     }
 }

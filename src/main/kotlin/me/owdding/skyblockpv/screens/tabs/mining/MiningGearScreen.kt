@@ -18,8 +18,6 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutFactory.horizontal { }
-
         return LayoutFactory.horizontal(5, 0.5f) {
             widget(
                 PvWidgets.armorAndEquipment(

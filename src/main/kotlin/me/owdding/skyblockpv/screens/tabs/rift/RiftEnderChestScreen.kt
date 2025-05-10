@@ -15,7 +15,7 @@ class RiftEnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? =
     private var carousel: CarouselWidget? = null
 
     override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
-        val inventories = profile?.rift?.inventory?.enderChest?.map { PvWidgets.createInventory(it) } ?: return@vertical
+        val inventories = profile.rift?.inventory?.enderChest?.map { PvWidgets.createInventory(it) } ?: return@vertical
         val icons = List(inventories.size) { Items.ENDER_CHEST.defaultInstance }
 
         carousel = CarouselWidget(

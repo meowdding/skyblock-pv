@@ -6,17 +6,19 @@ import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
+import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
-import earth.terrarium.olympus.client.ui.UIConstants
 import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
@@ -33,7 +35,9 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.util.TriState
@@ -44,13 +48,14 @@ import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import java.lang.reflect.Type
 import java.nio.file.Files
 import kotlin.time.Duration.Companion.seconds
 
 private const val ASPECT_RATIO = 9.0 / 16.0
 
-abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var profile: SkyBlockProfile? = null) : BaseCursorScreen(CommonText.EMPTY) {
+abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, profile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
 
     val starttime = System.currentTimeMillis()
     var profiles: List<SkyBlockProfile> = emptyList()
@@ -62,18 +67,22 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
     open val tabTitle: Component get() = Text.translatable("skyblockpv.tab.${name.lowercase()}")
 
+    lateinit var profile: SkyBlockProfile
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             profiles = ProfileAPI.getProfiles(gameProfile.id)
-            profile = profile ?: profiles.find { it.selected }
+            (profile ?: profiles.find { it.selected })?.let {
+                this@BasePvScreen.profile = it
+            }
             if (!initedWithProfile) {
-                McClient.tell { rebuildWidgets() }
+                McClient.tell { safelyRebuild() }
             }
         }
 
         Scheduling.schedule(10.seconds) {
             if (profile == null) {
-                McClient.tell { rebuildWidgets() }
+                McClient.tell { safelyRebuild() }
             }
         }
     }
@@ -82,16 +91,24 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
 
     abstract fun create(bg: DisplayWidget)
 
+    protected fun safelyRebuild() {
+        if (this.minecraft == null) return
+        rebuildWidgets()
+    }
+
+    fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
+    fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
+
     override fun init() {
-        val bg = Displays.background(UIConstants.BUTTON.enabled, uiWidth, uiHeight).asWidget()
+        val bg = Displays.background(SkyBlockPv.backgroundTexture, uiWidth, uiHeight).asWidget()
 
         FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
-        bg.visitWidgets(this::addRenderableOnly)
+        bg.applyLayout()
 
         addLoader()
+        createTopRow(bg).applyLayout(5, 5)
 
-
-        val profile = profile ?: return
+        if (!this::profile.isInitialized) return
         initedWithProfile = true
 
         try {
@@ -118,20 +135,12 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
                 }
             }
             FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-            errorWidget.visitWidgets(this::addRenderableWidget)
+            errorWidget.applyLayout()
         }
 
-        val tabs = createTabs().setPos(bg.x + 20, bg.y - 22)
-        tabs.visitWidgets(this::addRenderableWidget)
-
-        val username = createSearch(bg)
-        username.visitWidgets(this::addRenderableWidget)
-        val dropdown = createProfileDropdown(bg)
-        dropdown.visitWidgets(this::addRenderableWidget)
-
-
-        if (SkyBlockPv.isDevMode) createDevRow(bg).visitWidgets(this::addRenderableWidget)
-
+        createTabs().applyLayout(bg.x + 20, bg.y - 22)
+        createSearch(bg).applyLayout()
+        createProfileDropdown(bg).applyLayout()
 
         addRenderableOnly(
             Widgets.text(this.tabTitle)
@@ -144,7 +153,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     override fun isPauseScreen() = false
 
     private fun addLoader() {
-        if (this.profile != null) return
+        if (this::profile.isInitialized) return
 
         val loading = ExtraDisplays.loading().asWidget()
         FrameLayout.centerInRectangle(loading, 0, 0, this.width, this.height)
@@ -173,16 +182,32 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
         }
 
         FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-        errorWidget.visitWidgets(this::addRenderableWidget)
+        errorWidget.applyLayout()
     }
 
-    private fun createDevRow(bg: DisplayWidget) = LayoutFactory.horizontal(5) {
+    private fun createTopRow(bg: DisplayWidget) = LayoutFactory.horizontal(5) {
+        createUserRow()
+        if (SkyBlockPv.isDevMode) createDevRow(bg)
+    }
+
+    private fun LayoutBuilder.createUserRow() = horizontal(5) {
+        val settingsButton = Button()
+            .withSize(20, 20)
+            .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
+            .withTexture(null)
+            .withCallback { McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen)) }
+            .withTooltip(Text.multiline("Open Settings.", "You can also use /sbpv"))
+
+        widget(settingsButton)
+    }
+
+    private fun LayoutBuilder.createDevRow(bg: DisplayWidget) = horizontal(5) {
         // Useful for hotswaps
         val refreshButton = Button()
             .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
             .withSize(60, 20)
             .withTexture(ExtraConstants.BUTTON_DARK)
-            .withCallback { this@BasePvScreen.rebuildWidgets() }
+            .withCallback { this@BasePvScreen.safelyRebuild() }
 
         val hoverText = Text.multiline(
             "Screen: ${this@BasePvScreen.width}x${this@BasePvScreen.height}",
@@ -193,6 +218,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             .withRenderer(WidgetRenderers.text(Text.of("Screen Size")))
             .withSize(60, 20)
             .withTexture(ExtraConstants.BUTTON_DARK)
+            .withCallback { McClient.self.keyboardHandler.clipboard = hoverText.stripped }
             .withTooltip(hoverText)
 
         val saveButton = Button()
@@ -255,7 +281,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             if (tab.isSelected()) {
                 button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
             } else {
-                button.withCallback { McClient.tell { McClient.setScreen(tab.create(gameProfile, profile)) } }
+                button.withCallback { McClient.setScreenAsync(tab.create(gameProfile, profile)) }
                 button.withTexture(ExtraConstants.TAB_TOP)
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
@@ -273,14 +299,12 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
     private fun createSearch(bg: DisplayWidget): LayoutElement {
         val width = 100
 
-        val usernameState = State.of<String>(gameProfile.name)
+        val usernameState = State.of(gameProfile.name)
         val username = Widgets.textInput(usernameState) { box ->
             box.withEnterCallback {
                 Utils.fetchGameProfile(box.value) { profile ->
                     profile?.let {
-                        McClient.tell {
-                            McClient.setScreen(PvTab.MAIN.create(it))
-                        }
+                        McClient.setScreenAsync(PvTab.MAIN.create(it))
                     }
                 }
             }
@@ -312,9 +336,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, var 
             { button -> button.withSize(width, 20) },
             { builder ->
                 builder.withCallback { profile ->
-                    this.profile = profile
+                    this.profile = profile ?: return@withCallback
                     this.onProfileSwitch(profile)
-                    this.rebuildWidgets()
+                    this.safelyRebuild()
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
             },

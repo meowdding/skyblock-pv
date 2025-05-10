@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
 class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
-    private val sackItems get() = profile?.inventory?.sacks ?: emptyMap()
+    private val sackItems get() = profile.inventory?.sacks ?: emptyMap()
     private val sackDisplays: Map<ItemStack, Display>
         get() = SackCodecs.data.mapNotNull {
             val sackItems = it.items.associateWith { sackItems[it] ?: 0 }

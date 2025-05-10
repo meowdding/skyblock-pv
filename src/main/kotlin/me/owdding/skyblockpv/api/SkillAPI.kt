@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonObject
-import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.SkillData
@@ -77,17 +76,15 @@ object SkillAPI {
 
         @LoadData
         companion object : ExtraData {
-            override fun load() {
-                runBlocking {
-                    val skills = get()?.getAsJsonObject("skills") ?: return@runBlocking
-                    SkillAPI.skills = skills.entrySet().map { (key, value) ->
-                        val skillData = value.asJsonObject.toSkillData()
+            override suspend fun load() {
+                val skills = get()?.getAsJsonObject("skills") ?: return
+                SkillAPI.skills = skills.entrySet().map { (key, value) ->
+                    val skillData = value.asJsonObject.toSkillData()
 
-                        runCatching {
-                            Skills.valueOf(key).also { skill -> skill.internalSkillData = skillData }
-                        }.getOrElse {
-                            UnknownSkill(key, skillData)
-                        }
+                    runCatching {
+                        Skills.valueOf(key).also { skill -> skill.internalSkillData = skillData }
+                    }.getOrElse {
+                        UnknownSkill(key, skillData)
                     }
                 }
             }

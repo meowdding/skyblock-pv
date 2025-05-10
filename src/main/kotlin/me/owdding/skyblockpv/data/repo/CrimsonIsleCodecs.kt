@@ -82,7 +82,7 @@ object CrimsonIsleCodecs : ExtraData {
         val kuudra: KuudraCodecs.Data,
     )
 
-    override fun load() {
+    override suspend fun load() {
         val data = Utils.loadRepoData<Data>("crimson_isle")
         this.factionNameMap.putAll(data.nameMap)
         this.factionRanks.addAll(data.factionRanks)

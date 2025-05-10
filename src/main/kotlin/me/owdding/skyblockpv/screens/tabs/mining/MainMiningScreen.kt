@@ -36,12 +36,11 @@ import kotlin.time.toDuration
 class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val profile = profile ?: return LayoutFactory.horizontal { }
-        val mining = profile.mining ?: return LayoutFactory.horizontal { }
+        val mining = profile.mining ?: return LayoutFactory.empty()
 
         val info = getInformation(profile)
         val powder = getPowder(mining)
-        val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: LayoutFactory.vertical {}
+        val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: LayoutFactory.empty()
         val forge = getForge()
 
         return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) > uiWidth) {
@@ -183,9 +182,9 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     )
 
     private fun getForge(): Layout? {
-        val forgeSlots = profile?.forge?.slots ?: return null
+        val forgeSlots = profile.forge?.slots ?: return null
         if (forgeSlots.isEmpty()) return null
-        val quickForgeLevel = profile?.mining?.nodes?.entries?.find { it.key == "forge_time" }?.value ?: 0
+        val quickForgeLevel = profile.mining?.nodes?.entries?.find { it.key == "forge_time" }?.value ?: 0
 
         return PvWidgets.label(
             "Forge",

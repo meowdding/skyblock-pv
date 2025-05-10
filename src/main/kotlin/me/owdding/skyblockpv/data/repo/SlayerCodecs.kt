@@ -12,7 +12,7 @@ object SlayerCodecs : ExtraData {
     lateinit var data: Map<String, Slayer>
         private set
 
-    override fun load() {
+    override suspend fun load() {
         data = Utils.loadRepoData("slayer", CodecUtils.map())
     }
 

@@ -6,15 +6,14 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.PropertyMap
 import com.mojang.authlib.properties.PropertyMap.Serializer
 import kotlinx.coroutines.runBlocking
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.asUUID
 import tech.thatgravyboat.skyblockapi.utils.http.Http
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 private const val API_URL = "https://playerdb.co/api/player/minecraft/%s"
-private val identifier = String(Base64.getDecoder().decode("Y29udGFjdEB0aGF0Z3Jhdnlib2F0LnRlY2g="))
 
 object PlayerDbAPI {
 
@@ -55,7 +54,7 @@ object PlayerDbAPI {
     private suspend fun get(name: String): JsonObject? {
         return Http.getResult<JsonObject>(
             url = API_URL.format(name),
-            headers = mapOf("User-Agent" to "SkyBlockPv $identifier"),
+            headers = mapOf("User-Agent" to SkyBlockPv.useragent),
         ).map { it.takeIf { it.get("success")?.asBoolean == true } }.getOrNull()
     }
 

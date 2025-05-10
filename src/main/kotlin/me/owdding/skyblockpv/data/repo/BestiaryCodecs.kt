@@ -80,7 +80,7 @@ object BestiaryCodecs : ExtraData {
         ),
     )
 
-    override fun load() {
+    override suspend fun load() {
         data = Utils.loadRepoData<BestiaryRepoData>("bestiary")
     }
 }

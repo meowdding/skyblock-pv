@@ -23,7 +23,7 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     data class MinionContext(val type: String, val maxObtainedLevel: Int)
 
     fun getInventories(): List<Display> {
-        val minions = profile?.minions ?: emptyList()
+        val minions = profile.minions ?: emptyList()
 
         return MinionCodecs.categories.sortedBy { it.index }.map {
             ExtraDisplays.inventoryBackground(5, 4, createMinions(it, minions).withPadding(2))

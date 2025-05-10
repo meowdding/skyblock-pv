@@ -207,7 +207,7 @@ object FossilTypes : ExtraData {
     var fossils: List<Fossil> = listOf()
         private set
 
-    override fun load() {
+    override suspend fun load() {
         Utils.loadFromRepo<JsonObject>("fossils")?.asMap { id, data ->
             val obj = data.asJsonObject
             id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))

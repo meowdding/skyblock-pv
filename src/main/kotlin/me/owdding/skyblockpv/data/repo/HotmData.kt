@@ -42,7 +42,7 @@ enum class MiningNodes(override val type: KClass<out MiningNode>) : DispatchHelp
 
         fun getType(id: String) = valueOf(id.uppercase())
 
-        override fun load() {
+        override suspend fun load() {
             miningNodes = Utils.loadRepoData("hotm", CodecUtils.list())
         }
     }

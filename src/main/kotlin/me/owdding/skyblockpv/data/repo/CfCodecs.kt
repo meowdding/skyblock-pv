@@ -24,7 +24,7 @@ object CfCodecs : ExtraData {
         { it.associate { value -> value.id to value.texture } },
     )
 
-    override fun load() {
+    override suspend fun load() {
         data = Utils.loadRepoData<CfRepoData>("chocolate_factory")
     }
 
