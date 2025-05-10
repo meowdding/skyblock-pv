@@ -15,6 +15,8 @@ import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.Utils
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.api.ModContainer
+import net.fabricmc.loader.api.Version
 import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,13 +24,16 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import java.nio.file.Path
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 @Module
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
-    val mod = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
-    val version = mod.metadata.version
-    val configDir = FabricLoader.getInstance().configDir.resolve("skyblockpv")
+    val mod: ModContainer = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
+    val version: Version = mod.metadata.version
+    val configDir: Path = FabricLoader.getInstance().configDir.resolve("skyblockpv")
+    val useragent: String = "SkyBlockPV ${version.friendlyString} (${String(Base64.getDecoder().decode("Y29udGFjdEB0aGF0Z3Jhdnlib2F0LnRlY2g="))}})"
 
     val configurator = Configurator("sbpv")
 
