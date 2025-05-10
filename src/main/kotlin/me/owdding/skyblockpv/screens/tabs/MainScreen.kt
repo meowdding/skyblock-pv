@@ -141,8 +141,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 grayText(
                     buildString {
                         append("Bank: ")
-                        val soloBank = profile.bank?.soloBank.takeIf { it != 0L }?.toFormattedString()
-                        val mainBank = profile.bank?.profileBank.takeIf { it != 0L }?.toFormattedString()
+                        val soloBank = profile.bank?.soloBank.takeIf { it != 0L }?.shorten(2)
+                        val mainBank = profile.bank?.profileBank.takeIf { it != 0L }?.shorten(2)
 
                         if (soloBank != null && mainBank != null) append("$soloBank/$mainBank")
                         else append(soloBank ?: mainBank ?: "0")
