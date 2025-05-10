@@ -8,11 +8,6 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
-import me.owdding.lib.displays.DisplayWidget
-import me.owdding.lib.displays.Displays
-import me.owdding.lib.displays.asWidget
-import me.owdding.lib.displays.toRow
-import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.SkyBlockPv
@@ -25,18 +20,14 @@ import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
-import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
-import me.owdding.skyblockpv.screens.tabs.general.NetworthDisplay
-import me.owdding.skyblockpv.screens.tabs.general.PronounDisplay
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
-import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LinearLayout
@@ -82,7 +73,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         if (leftStuff.height < uiHeight) {
-            return LayoutFactory.horizontal {
+            LayoutFactory.horizontal {
                 vertical {
                     spacer(height = 10)
                     widget(getGeneralInfo(profile, sideColumnWidth))
@@ -95,6 +86,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 }
                 widget(leftStuff)
             }.applyLayout()
+
+            return LayoutFactory.empty()
         }
 
         LayoutFactory.horizontal {
@@ -120,6 +113,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 }.asScrollable(width + 27, uiHeight),
             )
         }.applyLayout()
+
+        return LayoutFactory.empty()
     }
 
     private fun getGeneralInfo(profile: SkyBlockProfile, width: Int) = LayoutFactory.vertical(alignment = 0.5f) {
