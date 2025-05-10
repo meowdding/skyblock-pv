@@ -13,7 +13,7 @@ object SackCodecs : ExtraData {
         private set
 
 
-    override fun load() {
+    override suspend fun load() {
         data = Utils.loadRepoData("sacks", CodecUtils.list())
     }
 

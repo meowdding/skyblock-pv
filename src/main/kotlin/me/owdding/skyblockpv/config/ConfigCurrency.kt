@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.config
 
 import com.google.gson.JsonObject
-import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.utils.http.Http
@@ -13,15 +12,13 @@ object CurrenciesAPI : ExtraData {
 
     private val conversions = mutableMapOf<String, Double>()
 
-    override fun load() {
-        runBlocking {
-            val data = Http.getResult<JsonObject>(URL).getOrNull() ?: return@runBlocking
-            val conversions = data.getAsJsonObject("usd")
-            for (entry in conversions.entrySet()) {
-                val key = entry.key
-                val value = entry.value.asDouble
-                CurrenciesAPI.conversions[key] = value
-            }
+    override suspend fun load() {
+        val data = Http.getResult<JsonObject>(URL).getOrNull() ?: return
+        val conversions = data.getAsJsonObject("usd")
+        for (entry in conversions.entrySet()) {
+            val key = entry.key
+            val value = entry.value.asDouble
+            CurrenciesAPI.conversions[key] = value
         }
     }
 

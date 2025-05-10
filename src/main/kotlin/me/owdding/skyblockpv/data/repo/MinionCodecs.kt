@@ -13,7 +13,8 @@ import net.minecraft.world.item.ItemStack
 object MinionCodecs : ExtraData {
     lateinit var miscData: MiscData
     val categories: MutableList<MinionCategory> = mutableListOf()
-    override fun load() {
+
+    override suspend fun load() {
         Utils.loadRepoData<Data>("minions").let { data ->
             this.miscData = data.miscData
             this.categories.addAll(data.categories)
