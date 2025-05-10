@@ -11,7 +11,6 @@ import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.PronounsDbAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
 import me.owdding.skyblockpv.api.StatusAPI
@@ -26,6 +25,7 @@ import me.owdding.skyblockpv.data.repo.SlayerCodecs
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
+import me.owdding.skyblockpv.screens.tabs.general.PronounDisplay
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
@@ -182,13 +182,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             display(grayText("Skill Avg: ${skillAvg.round()}"))
             string("Fairy Souls: ${profile.fairySouls}")
 
-            display(
-                listOf(
-                    grayText("Pronouns: "),
-                    PronounsDbAPI.getDisplay(gameProfile.id),
-                ).toRow().withTooltip("Provided by https://pronoundb.org/"),
-            )
-
             horizontalDisplay {
                 display(grayText("Net worth: "))
                 ExtraDisplays.completableDisplay(
@@ -295,6 +288,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         layout.addChild(playerWidget)
         layout.addChild(SpacerElement.height(5))
         layout.addChild(statusButtonWidget)
+        layout.addChild(SpacerElement.height(3))
+        layout.addChild(PronounDisplay.getPronounDisplay(gameProfile.id, width).asWidget())
 
         return layout
     }

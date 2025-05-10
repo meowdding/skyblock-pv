@@ -1,0 +1,36 @@
+{
+    "pride": [
+        "#F47C7C",
+        "#FFC268",
+        "#F7F48B",
+        "#A1DE93",
+        "#70A1D7",
+        "#957DAD"
+    ],
+    "pride_bi": [
+        "#D872AC",
+        "#D872AC",
+        "#957DAD",
+        "#6AA9ED",
+        "#6AA9ED"
+    ],
+    "pride_lesbian": [
+        "#EB765A",
+        "#FBAB74",
+        "#FFFFFF",
+        "#F295CC",
+        "#A36088"
+    ],
+    "pride_pan": [
+        "#FF82B1",
+        "#F7F48B",
+        "#8BD1F9"
+    ],
+    "pride_trans": [
+        "#55CDFC",
+        "#F7A8B8" ,
+        "#FFFFFF" ,
+        "#F7A8B8" ,
+        "#55CDFC"
+    ]
+}
