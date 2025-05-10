@@ -24,6 +24,7 @@ import me.owdding.skyblockpv.screens.tabs.museum.BaseMuseumScreen
 import me.owdding.skyblockpv.screens.tabs.museum.MuseumItemScreen
 import me.owdding.skyblockpv.screens.tabs.rift.BaseRiftScreen
 import me.owdding.skyblockpv.screens.tabs.rift.MainRiftScreen
+import me.owdding.skyblockpv.screens.tabs.rift.RiftCategory
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -67,6 +68,7 @@ enum class PvTab(
         INVENTORY -> if (profile.inventory != null) TriState.TRUE else TriState.FALSE
         COLLECTION -> Category.getTabState<CollectionCategories>(profile)
         MINING -> Category.getTabState<MiningCategory>(profile)
+        RIFT -> Category.getTabState<RiftCategory>(profile)
         else -> TriState.TRUE
     }
 

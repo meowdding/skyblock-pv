@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("RIFT", gameProfile, profile) {
-    override val categories: List<Category> get() = RiftCategory.entries
+    override val categories: List<Category> get() = Category.getCategories<RiftCategory>(profile)
 }
 
 enum class RiftCategory(val screen: KClass<out BaseRiftScreen>, override val icon: ItemStack) : Category {
@@ -23,4 +23,9 @@ enum class RiftCategory(val screen: KClass<out BaseRiftScreen>, override val ico
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): Screen = screen.constructors.first().call(gameProfile, profile)
+
+    override fun canDisplay(profile: SkyBlockProfile?) = when (this) {
+        ENDER_CHEST -> profile?.rift?.inventory?.enderChest?.isNotEmpty() == true
+        else -> true
+    }
 }

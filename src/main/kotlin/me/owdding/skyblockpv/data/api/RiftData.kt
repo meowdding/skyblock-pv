@@ -54,7 +54,7 @@ data class RiftInventory(
             return RiftInventory(
                 inventory = json.getAsJsonObject("inv_contents").getInventory(),
                 armor = json.getAsJsonObject("inv_armor").getInventory(),
-                enderChest = json.getAsJsonObject("ender_chest_contents").getInventory().chunked(45),
+                enderChest = json.getAsJsonObject("ender_chest_contents")?.getInventory()?.chunked(45) ?: emptyList(),
                 equipment = json.getAsJsonObject("equipment_contents").getInventory(),
             )
         }
