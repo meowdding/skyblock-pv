@@ -17,7 +17,6 @@ import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
-import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
@@ -25,6 +24,7 @@ import me.owdding.skyblockpv.data.repo.SlayerCodecs
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
+import me.owdding.skyblockpv.screens.tabs.general.NetworthDisplay
 import me.owdding.skyblockpv.screens.tabs.general.PronounDisplay
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
@@ -32,7 +32,6 @@ import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
-import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LinearLayout
@@ -43,7 +42,6 @@ import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
-import tech.thatgravyboat.skyblockapi.api.remote.pricing.BazaarAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
@@ -55,7 +53,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
-import kotlin.math.roundToInt
 
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
@@ -182,53 +179,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             display(grayText("Skill Avg: ${skillAvg.round()}"))
             string("Fairy Souls: ${profile.fairySouls}")
 
-            horizontalDisplay {
-                display(grayText("Net worth: "))
-                ExtraDisplays.completableDisplay(
-                    profile.netWorth,
-                    {
-                        val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
-                        val networthCookies = if (cookiePrice > 0) (it / cookiePrice).roundToInt() else 0
-                        val networthUSD = ((networthCookies * 325.0) / 675.0) * 4.99
-
-                        val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
-
-                        grayText(it.shorten()).withTooltip {
-                            if (cookiePrice <= 0) return@withTooltip
-
-                            this.add {
-                                this.append("Networth: ") { this.color = TextColor.YELLOW }
-                                this.append(it.toFormattedString()) { this.color = TextColor.GREEN }
-                            }
-
-                            this.add {
-                                this.append("Net worth in Cookies: ") { this.color = TextColor.YELLOW }
-                                this.append(networthCookies.toFormattedString()) { this.color = TextColor.GOLD }
-                            }
-
-                            this.add {
-                                this.append("Net worth in ${currency.name}: ") { this.color = TextColor.YELLOW }
-                                val formattedNetworth = networthConverted.roundToInt().toFormattedString()
-                                this.append("$$formattedNetworth ${currency.name}") { this.color = TextColor.GREEN }
-                            }
-
-                            this.space()
-                            this.add("Note: You can change the currency in the settings using /sbpv.") { this.color = TextColor.GRAY }
-                        }
-                    },
-                    { error ->
-                        grayText("Failed to load").withTooltip {
-                            this.add(Text.of("An error occurred: ") { this.color = TextColor.RED })
-                            error.stackTraceToString().lines().forEach { line ->
-                                this.add(Text.of(line) { this.color = TextColor.RED })
-                            }
-                        }
-                    },
-                    {
-                        grayText("Loading...")
-                    },
-                ).let(this::display)
-            }
+            display(NetworthDisplay.getNetworthDisplay(profile))
         }
 
         widget(PvWidgets.getMainContentWidget(infoColumn, width))
