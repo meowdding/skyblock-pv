@@ -31,15 +31,10 @@ object Config : ConfigKt("skyblockpv/config") {
         category(DevConfig)
     }
 
-    var profileSpying by boolean(true) {
-        this.translation = "skyblockpv.config.spying"
-    }
+    var profileSpying by boolean(true) { this.translation = "skyblockpv.config.spying" }
+    var currency by enum(ConfigCurrency.USD) { this.translation = "skyblockpv.config.currency" }
+    var alignCategoryButtonsLeft by boolean(true) { this.translation = "skyblockpv.config.align_category_buttons_left" }
+    var showPronouns by boolean(true) { this.translation = "skyblockpv.config.show_pronouns" }
 
-    var currency by enum(ConfigCurrency.USD) {
-        this.translation = "skyblockpv.config.currency"
-    }
 
-    var alignCategoryButtonsLeft by boolean(true) {
-        this.translation = "skyblockpv.config.align_category_buttons_left"
-    }
 }

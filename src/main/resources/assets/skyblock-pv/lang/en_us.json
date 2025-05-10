@@ -36,6 +36,14 @@
         "currency": {
             "@value": "Networth Currency",
             "desc": "The currency to use for the networth to IRL currency conversion."
+        },
+        "align_category_buttons_left": {
+            "@value": "Align Category Buttons Left",
+            "desc": "Align the category buttons to the left side of the screen instead of the right."
+        },
+        "show_pronouns": {
+            "@value": "Show Pronouns",
+            "desc": "Show the pronouns of the player in the profile viewer if available."
         }
     },
     "dev": {

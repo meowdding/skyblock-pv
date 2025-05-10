@@ -289,7 +289,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         layout.addChild(SpacerElement.height(5))
         layout.addChild(statusButtonWidget)
         layout.addChild(SpacerElement.height(3))
-        layout.addChild(PronounDisplay.getPronounDisplay(gameProfile.id, width).asWidget())
+        if (Config.showPronouns) {
+            layout.addChild(PronounDisplay.getPronounDisplay(gameProfile.id, width).asWidget())
+        }
 
         return layout
     }
