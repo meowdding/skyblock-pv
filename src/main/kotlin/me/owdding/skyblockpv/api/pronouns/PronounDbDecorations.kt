@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec
 import com.teamresourceful.resourcefullib.common.color.Color
 import eu.pb4.placeholders.api.node.parent.GradientNode
 import eu.pb4.placeholders.api.node.parent.GradientNode.GradientProvider
-import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
@@ -21,11 +20,9 @@ object PronounDbDecorations : ExtraData {
 
     private var decorations: Map<String, DecorationDefinition> = emptyMap()
 
-    override fun load() {
-        runBlocking {
-            runCatching {
-                decorations = Utils.loadRepoData<Map<String, DecorationDefinition>>("pronoun_decorations", CODEC)
-            }
+    override suspend fun load() {
+        runCatching {
+            decorations = Utils.loadRepoData<Map<String, DecorationDefinition>>("pronoun_decorations", CODEC)
         }
     }
 

@@ -112,7 +112,7 @@ data object StaticGardenData : ExtraData {
     )
 
 
-    override fun load() {
+    override suspend fun load() {
         init(Utils.loadRepoData<GardenData>("garden_data"))
     }
 

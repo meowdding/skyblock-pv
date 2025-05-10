@@ -16,7 +16,7 @@ object PetCodecs : ExtraData {
     private val defaultData = Data()
 
 
-    override fun load() {
+    override suspend fun load() {
         Utils.loadRepoData<PetData>("pets").let {
             this.rarityOffsets.addAll(it.rarityOffsets)
             this.xpCurve.addAll(it.xpCurve)

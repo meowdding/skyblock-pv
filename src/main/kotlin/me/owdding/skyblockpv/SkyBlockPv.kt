@@ -46,7 +46,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
         SkyBlockPVExtraData.collected.forEach {
-            CompletableFuture.runAsync { it.load() }
+            CompletableFuture.runAsync { runBlocking { it.load() } }
         }
 
         runBlocking { PvAPI.authenticate() }
