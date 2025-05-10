@@ -10,17 +10,17 @@ import net.minecraft.world.item.Items
 
 class MiscBagScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
     override fun getInventories(): List<Display> = listOf(
+        PvWidgets.createInventory(profile.inventory?.personalVault?.inventory.orEmpty(36)),
         PvWidgets.createInventory(profile.inventory?.potionBag?.inventory.orEmpty(45)),
         PvWidgets.createInventory(profile.inventory?.quiver?.inventory.orEmpty(45)),
         PvWidgets.createInventory(profile.inventory?.fishingBag?.inventory.orEmpty(45)),
-        PvWidgets.createInventory(profile.inventory?.personalVault?.inventory.orEmpty(36)),
     )
 
     override fun getIcons(): List<ItemStack> = listOf(
+        SkullTextures.PERSONAL_VAULT.skull,
         Items.POTION.defaultInstance,
         Items.ARROW.defaultInstance,
         Items.FISHING_ROD.defaultInstance,
-        SkullTextures.PERSONAL_VAULT.skull,
     )
 
     override val itemStackSize = false
