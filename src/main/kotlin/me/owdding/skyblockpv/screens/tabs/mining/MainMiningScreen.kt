@@ -36,11 +36,11 @@ import kotlin.time.toDuration
 class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val mining = profile.mining ?: return LayoutFactory.horizontal { }
+        val mining = profile.mining ?: return LayoutFactory.empty()
 
         val info = getInformation(profile)
         val powder = getPowder(mining)
-        val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: LayoutFactory.vertical {}
+        val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: LayoutFactory.empty()
         val forge = getForge()
 
         return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) > uiWidth) {
