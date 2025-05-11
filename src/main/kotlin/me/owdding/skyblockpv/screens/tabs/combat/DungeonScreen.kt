@@ -7,6 +7,7 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asTable
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.round
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
@@ -75,7 +76,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             string("Secrets/Run: ${(dungeonData.secrets / runCounts).round()}")
         }
 
-        return PvWidgets.label("Dungeon Info", mainContent, 20)
+        return PvWidgets.label("Dungeon Info", mainContent, 20, SkyBlockPv.id("icon/item/clipboard"))
     }
 
     private fun createLevelingDisplay(dungeonData: DungeonData): LayoutElement {

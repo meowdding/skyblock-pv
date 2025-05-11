@@ -128,6 +128,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             addMiningPerk(profile, "return_to_sender")
         },
         padding = 10,
+        SkyBlockPv.id("icon/item/clipboard"),
     )
 
     private fun getPowder(mining: MiningCore) = PvWidgets.label(

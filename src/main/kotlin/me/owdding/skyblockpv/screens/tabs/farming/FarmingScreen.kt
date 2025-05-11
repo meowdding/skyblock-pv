@@ -192,6 +192,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addLevelingPerk(profile.farmingData.perks.farmingLevelCap, "Farming Level Cap", StaticGardenData.miscData.farmingLevelCap)
             addLevelingPerk(profile.farmingData.perks.doubleDrops, "Double Drops", StaticGardenData.miscData.bonusDrops)
         },
+        icon = SkyBlockPv.id("icon/item/clipboard"),
     )
 
     private fun getPets(profile: SkyBlockProfile) = profile.pets.asSequence()
