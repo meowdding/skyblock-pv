@@ -49,6 +49,7 @@ import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import java.lang.reflect.Type
 import java.nio.file.Files
 import kotlin.time.Duration.Companion.seconds
@@ -323,15 +324,24 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             dropdownState,
             profiles,
             { profile ->
-                Text.of(
-                    profile.id.name + when (profile.profileType) {
-                        ProfileType.NORMAL -> ""
-                        ProfileType.BINGO -> " §9Ⓑ"
-                        ProfileType.IRONMAN -> " ♻"
-                        ProfileType.STRANDED -> " §a☀"
-                        ProfileType.UNKNOWN -> " §c§ka"
-                    },
-                )
+                Text.of {
+                    if (profile.selected) {
+                        underlined = true
+                        append("◆ ")
+                    } else {
+                        append("◇ ")
+                    }
+                    append(profile.id.name)
+                    append(
+                        when (profile.profileType) {
+                            ProfileType.NORMAL -> ""
+                            ProfileType.BINGO -> " §9Ⓑ"
+                            ProfileType.IRONMAN -> " ♻"
+                            ProfileType.STRANDED -> " §a☀"
+                            ProfileType.UNKNOWN -> " §c§ka"
+                        },
+                    )
+                }
             },
             { button -> button.withSize(width, 20) },
             { builder ->
