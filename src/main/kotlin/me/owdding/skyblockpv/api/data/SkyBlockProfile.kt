@@ -84,7 +84,7 @@ data class SkyBlockProfile(
                     }
                 },
 
-                inventory = member.getAsJsonObject("inventory")?.let { InventoryData.fromJson(it) },
+                inventory = member.getAsJsonObject("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) },
                 currency = member.getAsJsonObject("currencies")?.let { Currency.fromJson(it) },
                 bank = Bank.fromJson(json, member),
                 firstJoin = profile["first_join"].asLong(0),
