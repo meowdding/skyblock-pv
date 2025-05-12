@@ -53,15 +53,15 @@ import java.lang.reflect.Type
 import java.nio.file.Files
 import kotlin.time.Duration.Companion.seconds
 
-private const val ASPECT_RATIO = 9.0 / 16.0
+private const val ASPECT_RATIO = 16.0 / 9.0
 
 abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, profile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
 
     val starttime = System.currentTimeMillis()
     var profiles: List<SkyBlockProfile> = emptyList()
 
-    val uiWidth get() = (this.width * 0.65).toInt()
-    val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
+    val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
+    val uiHeight get() = (this.height * 0.6).toInt()
 
     var initedWithProfile = false
 
