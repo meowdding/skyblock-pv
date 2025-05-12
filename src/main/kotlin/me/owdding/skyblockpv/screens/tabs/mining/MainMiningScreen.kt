@@ -9,6 +9,7 @@ import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.RemindersAPI
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.data.api.skills.Crystal
 import me.owdding.skyblockpv.data.api.skills.MiningCore
 import me.owdding.skyblockpv.data.api.skills.RockBracket
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk
@@ -34,6 +35,26 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
+
+    val nucleusRunCrystals = listOf(
+        "jade_crystal",
+        "amethyst_crystal",
+        "topaz_crystal",
+        "sapphire_crystal",
+        "amber_crystal",
+    )
+    val glaciteCrystals = listOf(
+        "aquamarine_crystal",
+        "citrine_crystal",
+        "peridot_crystal",
+    )
+    val crystals = listOf(
+        *nucleusRunCrystals.toTypedArray(),
+        "ruby_crystal",
+        "jasper_crystal",
+        "opal_crystal",
+        *glaciteCrystals.toTypedArray(),
+    )
 
     override fun getLayout(bg: DisplayWidget): Layout {
         val mining = profile.mining ?: return LayoutFactory.empty()
@@ -69,13 +90,6 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         LayoutFactory.vertical(3) {
             val mining = profile.mining ?: return@vertical
             fun grayText(text: String) = display(Displays.text(text, color = { 0x555555u }, shadow = false))
-            val nucleusRunCrystals = listOf(
-                "jade_crystal",
-                "amethyst_crystal",
-                "topaz_crystal",
-                "sapphire_crystal",
-                "amber_crystal",
-            )
             val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
             val hotmLevel = mining.getHotmLevel()
 
@@ -151,7 +165,8 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         LayoutFactory.vertical(5) {
             val width = uiWidth / 3
 
-            val convertedElements = mining.crystals.map { (name, crystal) ->
+            val convertedElements = crystals.map { id ->
+                val (name, crystal) = id to (mining.crystals[id] ?: Crystal("NOT_FOUND", 0, 0))
                 val icon = RepoItemsAPI.getItem(name.uppercase()).let { Displays.item(it) }
                 val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
