@@ -61,10 +61,7 @@ as of 2025-04-16
     - Wardrobe
     - Accessory
     - Sacks
-    - Personal Vault
-    - Potion Bag
-    - Fishing Bag
-    - Quiver
+  - Personal Vault, Potion Bag, Fishing Bag, Quiver, Candy Bag, etc.
 - Collections
     - With Minions
 - Mining
