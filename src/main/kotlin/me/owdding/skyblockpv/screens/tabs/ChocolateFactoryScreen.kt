@@ -45,7 +45,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val upgrades = getUpgrades(cf)
 
         LayoutFactory.frame(bg.width, bg.height) {
-            if (maxOf(employees.width, upgrades.width) + info.width + 3 > bg.width) {
+            if (maxOf(employees.width, upgrades.width) + info.width + rarities.width + 6 > bg.width) {
                 widget(
                     LayoutFactory.vertical(3, 0.5f) {
                         widget(employees)
