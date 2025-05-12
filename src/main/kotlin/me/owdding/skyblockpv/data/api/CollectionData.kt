@@ -8,7 +8,7 @@ data class CollectionItem(
     val itemId: String,
     val amount: Long,
 ) {
-    val itemStack by lazy { RepoItemsAPI.getItem(itemId) }
+    val itemStack by RepoItemsAPI.getItemLazy(itemId)
 }
 
 data class CollectionCategory(

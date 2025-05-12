@@ -22,6 +22,6 @@ object SackCodecs : ExtraData {
         val sack: String,
         val items: List<String>,
     ) {
-        val item by lazy { RepoItemsAPI.getItem(sack) }
+        val item by RepoItemsAPI.getItemLazy(sack)
     }
 }

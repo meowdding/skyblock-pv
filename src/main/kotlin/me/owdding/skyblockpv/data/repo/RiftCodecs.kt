@@ -28,6 +28,6 @@ object RiftCodecs : ExtraData {
         val name: String,
     ) {
         val hypixelId = "RIFT_TROPHY_${id.uppercase()}"
-        val item by lazy { RepoItemsAPI.getItem(hypixelId) }
+        val item by RepoItemsAPI.getItemLazy(hypixelId)
     }
 }
