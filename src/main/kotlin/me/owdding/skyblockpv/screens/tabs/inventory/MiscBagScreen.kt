@@ -9,8 +9,8 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
-val greenCandy by lazy { RepoItemsAPI.getItem("GREEN_CANDY") }
-val carnivalMaskBag by lazy { RepoItemsAPI.getItem("CARNIVAL_MASK_BAG") }
+val greenCandy by RepoItemsAPI.getItemLazy("GREEN_CANDY")
+val carnivalMaskBag by RepoItemsAPI.getItemLazy("CARNIVAL_MASK_BAG")
 
 class MiscBagScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
     override fun getInventories(): List<Display> = listOf(
