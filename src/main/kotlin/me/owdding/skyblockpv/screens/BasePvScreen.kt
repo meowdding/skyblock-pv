@@ -62,7 +62,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     var profiles: List<SkyBlockProfile> = emptyList()
 
     val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
-    val uiHeight get() = (this.height * 0.6).toInt()
+    val uiHeight get() = (this.height * 0.65).toInt()
 
     var initedWithProfile = false
 
