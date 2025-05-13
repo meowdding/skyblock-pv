@@ -22,10 +22,7 @@ import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
 import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
-import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
-import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
-import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
-import tech.thatgravyboat.skyblockapi.utils.extentions.asStringList
+import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.util.*
 
@@ -108,7 +105,7 @@ data class SkyBlockProfile(
                 forge = member.getAs<JsonObject>("forge")?.let { Forge.fromJson(it) },
                 glacite = member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData.fromJson(it) },
                 tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() },
-                pets = member.getPathAs<JsonArray>("pets_data.pets")?.map { Pet.fromJson(it.asJsonObject) } ?: emptyList(),
+                pets = member.getPathAs<JsonArray>("pets_data.pets").asList { Pet.fromJson(it.asJsonObject) },
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
                 essenceUpgrades = playerData?.getAs<JsonObject>("perks").parseEssencePerks(),
@@ -124,7 +121,7 @@ data class SkyBlockProfile(
                 },
                 farmingData = FarmingData.fromJson(member.getAs("jacobs_contest")),
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
-                rift = playerStats?.getAs<JsonObject>("rift")?.let { stats -> RiftData.fromJson(member.getAs("rift"), stats) },
+                rift = playerStats?.getAs<JsonObject>("rift")?.let { stats -> member.getAs<JsonObject>("rift")?.let { RiftData.fromJson(it, stats) } },
                 crimsonIsleData = CrimsonIsleData.fromJson(member.getAs("nether_island_player_data")),
                 minions = playerData?.getAs<JsonArray>("crafted_generators")?.asStringList()
                     ?.filter { it.isNotBlank() }

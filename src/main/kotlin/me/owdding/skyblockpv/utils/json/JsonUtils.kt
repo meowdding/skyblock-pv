@@ -32,5 +32,7 @@ inline fun <reified T> JsonElement.to(): T? {
 }
 
 inline fun <reified T> JsonObject?.getAs(key: String): T? = this?.get(key)?.to<T>()
+inline fun <reified T> JsonObject?.getAs(key: String, fallback: T): T = this.getAs(key) ?: fallback
 inline fun <reified T> JsonObject?.getPathAs(@Language("JSONPath") path: String): T? = this?.getPath(path)?.to<T>()
+inline fun <reified T> JsonObject?.getPathAs(@Language("JSONPath") path: String, fallback: T): T = this.getPathAs(path) ?: fallback
 
