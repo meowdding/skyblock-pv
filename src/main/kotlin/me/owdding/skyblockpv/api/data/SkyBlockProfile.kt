@@ -73,10 +73,10 @@ data class SkyBlockProfile(
             val profile = member.getAs<JsonObject>("profile")
 
             return SkyBlockProfile(
-                selected = json.getAs<Boolean>("selected") == true,
+                selected = json.getAs<Boolean>("selected", false),
                 id = ProfileId(
-                    id = json.getAs("profile_id") ?: Util.NIL_UUID,
-                    name = json.getAs("cute_name") ?: "Unknown",
+                    id = json.getAs("profile_id", Util.NIL_UUID),
+                    name = json.getAs("cute_name", "Unknown"),
                 ),
                 userId = user,
                 profileType = when (json.getAs<String>("game_mode")) {
@@ -88,10 +88,10 @@ data class SkyBlockProfile(
                 inventory = member.getAs<JsonObject>("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) },
                 currency = member.getAs<JsonObject>("currencies")?.let { Currency.fromJson(it) },
                 bank = Bank.fromJson(json, member),
-                firstJoin = profile?.getAs<Long>("first_join") ?: 0,
-                fairySouls = member.getPathAs<Int>("fairy_soul.total_collected") ?: 0,
+                firstJoin = profile.getAs<Long>("first_join", 0L),
+                fairySouls = member.getPathAs<Int>("fairy_soul.total_collected", 0),
                 skyBlockLevel = run {
-                    val experience = member.getPathAs<Int>("leveling.experience") ?: 0
+                    val experience = member.getPathAs<Int>("leveling.experience", 0)
 
                     experience / 100 to (experience % 100)
                 },
@@ -114,9 +114,9 @@ data class SkyBlockProfile(
                     val data = member.getAs<JsonObject>("garden_player_data") ?: return@run GardenData(0, 0, 0)
 
                     return@run GardenData(
-                        data.getAs<Int>("copper") ?: 0,
-                        data.getAs<Int>("larva_consumed") ?: 0,
-                        playerStats?.getAs<Int>("glowing_mushrooms_broken") ?: 0,
+                        data.getAs<Int>("copper", 0),
+                        data.getAs<Int>("larva_consumed", 0),
+                        playerStats.getAs<Int>("glowing_mushrooms_broken", 0),
                     )
                 },
                 farmingData = FarmingData.fromJson(member.getAs("jacobs_contest")),
