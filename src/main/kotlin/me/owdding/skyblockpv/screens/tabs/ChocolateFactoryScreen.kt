@@ -7,6 +7,7 @@ import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.extensions.toReadableString
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.CfData
 import me.owdding.skyblockpv.data.api.RabbitEmployee
@@ -44,7 +45,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val upgrades = getUpgrades(cf)
 
         LayoutFactory.frame(bg.width, bg.height) {
-            if (maxOf(employees.width, upgrades.width) + info.width + 3 > bg.width) {
+            if (maxOf(employees.width, upgrades.width) + info.width + rarities.width + 6 > bg.width) {
                 widget(
                     LayoutFactory.vertical(3, 0.5f) {
                         widget(employees)
@@ -237,6 +238,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 },
             )
         },
+        icon = SkyBlockPv.id("icon/item/clipboard"),
     )
 
     private fun getRarities(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(

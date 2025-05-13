@@ -128,7 +128,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             .map { getSkillLevel(SkillAPI.getSkill(it.key), it.value, profile) }
             .average()
 
-        widget(PvWidgets.getTitleWidget("Info", width))
+        widget(PvWidgets.getTitleWidget("Info", width, SkyBlockPv.id("icon/item/clipboard")))
 
         val infoColumn = LayoutFactory.vertical(2) {
             fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)

@@ -56,6 +56,7 @@ data class SkyBlockProfile(
     val rift: RiftData?,
     val crimsonIsleData: CrimsonIsleData,
     val minions: List<String>?,
+    val maxwell: Maxwell?,
 ) {
     val netWorth by lazy { NetworthCalculator.calculateNetworthAsync(this) }
 
@@ -84,7 +85,7 @@ data class SkyBlockProfile(
                     }
                 },
 
-                inventory = member.getAsJsonObject("inventory")?.let { InventoryData.fromJson(it) },
+                inventory = member.getAsJsonObject("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) },
                 currency = member.getAsJsonObject("currencies")?.let { Currency.fromJson(it) },
                 bank = Bank.fromJson(json, member),
                 firstJoin = profile["first_join"].asLong(0),
@@ -126,6 +127,7 @@ data class SkyBlockProfile(
                 minions = playerData?.getAsJsonArray("crafted_generators")?.asStringList()
                     ?.filter { it.isNotBlank() }
                     ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
+                maxwell = member.getAsJsonObject("accessory_bag_storage")?.let { Maxwell.fromJson(it) },
             )
         }
 
