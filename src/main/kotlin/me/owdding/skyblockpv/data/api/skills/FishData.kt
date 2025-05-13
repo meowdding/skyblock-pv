@@ -20,20 +20,16 @@ data class TrophyFishData(
 ) {
     companion object {
         fun fromJson(member: JsonObject): TrophyFishData {
-            val trophyFishData = member.getAs<JsonObject>("trophy_fish")
-                ?: return TrophyFishData(mapOf(), null, 0, listOf())
+            val trophyFishData = member.getAs<JsonObject>("trophy_fish") ?: return TrophyFishData(mapOf(), null, 0, listOf())
 
             return TrophyFishData(
                 obtainedTypes = trophyFishData.entrySet().mapNotNull {
                     if (!it.value.isJsonPrimitive) return@mapNotNull null
                     return@mapNotNull it.key to it.value.asInt(0)
                 }.toMap(),
-                lastCatch = trophyFishData.get("last_caught").asString("").let {
-                    TrophyFish.fromString(it)
-                },
+                lastCatch = trophyFishData.get("last_caught").asString("").let { TrophyFish.fromString(it) },
                 totalCatches = trophyFishData.get("total_caught").asInt(0),
-                rewards = trophyFishData.get("rewards")?.asJsonArray?.map { it.asInt(0) }?.filterNot { it == 0 }
-                    ?: emptyList(),
+                rewards = trophyFishData.get("rewards")?.asJsonArray?.map { it.asInt(0) }?.filterNot { it == 0 } ?: emptyList(),
             )
         }
     }
