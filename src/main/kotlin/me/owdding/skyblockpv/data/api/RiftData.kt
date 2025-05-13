@@ -28,15 +28,15 @@ data class RiftData(
     val lifetimeMotes: Int,
 ) {
     companion object {
-        fun fromJson(member: JsonObject?, playerStats: JsonObject): RiftData {
+        fun fromJson(member: JsonObject, playerStats: JsonObject): RiftData {
             return RiftData(
-                secondsSitting = member?.getPath("village_plaza.lonely.seconds_sitting").asInt(0).seconds,
-                unlockedEyes = member?.getPath("wither_cage.killed_eyes").asStringList(),
-                deadCat = member?.getPath("dead_cats")?.let { DeadCat.fromJson(it.asJsonObject) } ?: DeadCat(null, emptyList()),
-                foundSouls = member?.getPath("enigma.found_souls").asStringList(),
-                trophies = member?.getPath("gallery.secured_trophies").asList { Trophy.fromJson(it.asJsonObject) },
-                inventory = member?.getPath("inventory")?.let { RiftInventory.fromJson(it.asJsonObject) },
-                grubberStacks = member?.getPath("castle.grubber_stacks").asInt(0),
+                secondsSitting = member.getPath("village_plaza.lonely.seconds_sitting").asInt(0).seconds,
+                unlockedEyes = member.getPath("wither_cage.killed_eyes").asStringList(),
+                deadCat = member.getPath("dead_cats")?.let { DeadCat.fromJson(it.asJsonObject) } ?: DeadCat(null, emptyList()),
+                foundSouls = member.getPath("enigma.found_souls").asStringList(),
+                trophies = member.getPath("gallery.secured_trophies").asList { Trophy.fromJson(it.asJsonObject) },
+                inventory = member.getPath("inventory")?.let { RiftInventory.fromJson(it.asJsonObject) },
+                grubberStacks = member.getPath("castle.grubber_stacks").asInt(0),
                 visits = playerStats.getPath("visits").asInt(0),
                 lifetimeMotes = playerStats.getPath("lifetime_motes_earned").asInt(0),
             )
