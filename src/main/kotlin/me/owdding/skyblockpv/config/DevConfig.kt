@@ -2,18 +2,13 @@ package me.owdding.skyblockpv.config
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import kotlinx.coroutines.runBlocking
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PvAPI
 import net.minecraft.client.gui.components.toasts.SystemToast
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 object DevConfig : CategoryKt("Dev") {
-
-    private val SUPER_USERS = setOf(
-        "503450fc-72c2-4e87-8243-94e264977437",
-        "e90ea9ec-080a-401b-8d10-6a53c407ac53",
-        "b75d7e0a-03d0-4c2a-ae47-809b6b808246"
-    )
 
     var devMode by boolean(false) {
         name = Translated("skyblockpv.dev.dev_mode")
@@ -31,7 +26,7 @@ object DevConfig : CategoryKt("Dev") {
     }
 
     init {
-        if (McClient.self.user.profileId.toString() in SUPER_USERS) {
+        if (SkyBlockPv.isSuperUser) {
             button {
                 title = "skyblockpv.dev.bypass_cache"
                 description = "skyblockpv.dev.bypass_cache.desc"
