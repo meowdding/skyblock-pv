@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonObject
+import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -30,10 +31,20 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
 
         return profiles.mapNotNull { future -> future.resultNow() }
     }
+
     override fun getKey(data: UUID) = data
 
-    suspend fun getProfiles(uuid: UUID): List<SkyBlockProfile> = getData(uuid).getOrElse {
-        SkyBlockPv.error("Failed to get profiles for $uuid", it)
+    suspend fun getProfiles(gameProfile: GameProfile): List<SkyBlockProfile> = getData(gameProfile.id).getOrElse {
+        SkyBlockPv.error(
+            """
+            | -----------------------------------------
+            | Failed to get profiles for:
+            | ${gameProfile.name}
+            | ${gameProfile.id}
+            | -----------------------------------------
+            """.trimMargin(),
+            it,
+        )
         emptyList()
     }
 }

@@ -72,7 +72,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            profiles = ProfileAPI.getProfiles(gameProfile.id)
+            profiles = ProfileAPI.getProfiles(gameProfile)
             (profile ?: profiles.find { it.selected })?.let {
                 this@BasePvScreen.profile = it
             }
