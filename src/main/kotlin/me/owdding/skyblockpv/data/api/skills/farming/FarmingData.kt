@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.data.api.skills.farming
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.repo.GardenResource
+import me.owdding.skyblockpv.utils.json.getAs
 import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
@@ -17,10 +18,10 @@ data class FarmingData(
 ) {
     companion object {
         fun fromJson(data: JsonObject?) = FarmingData(
-            medalInventory = data?.getAsJsonObject("medals_inv").asMap { key, element ->
+            medalInventory = data?.getAs<JsonObject>("medals_inv").asMap { key, element ->
                 MedalType.valueOf(key.uppercase()) to element.asInt(0)
             },
-            perks = FarmingPerks.fromJson(data?.getAsJsonObject("perks")),
+            perks = FarmingPerks.fromJson(data?.getAs<JsonObject>("perks")),
             contest = data?.get("contests").asMap { key, element ->
                 val data = element.asJsonObject
                 key to Contest(

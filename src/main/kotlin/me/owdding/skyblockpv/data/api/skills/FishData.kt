@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -19,8 +20,8 @@ data class TrophyFishData(
 ) {
     companion object {
         fun fromJson(member: JsonObject): TrophyFishData {
-            val trophyFishData =
-                member.getAsJsonObject("trophy_fish") ?: return TrophyFishData(mapOf(), null, 0, listOf())
+            val trophyFishData = member.getAs<JsonObject>("trophy_fish")
+                ?: return TrophyFishData(mapOf(), null, 0, listOf())
 
             return TrophyFishData(
                 obtainedTypes = trophyFishData.entrySet().mapNotNull {

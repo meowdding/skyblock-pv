@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.data.api.skills.combat
 
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.utils.json.getAs
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 
@@ -11,10 +12,10 @@ data class DungeonData(
 ) {
     companion object {
         fun fromJson(json: JsonObject): DungeonData {
-            val dungeonsTypes = json.getAsJsonObject("dungeon_types")
-            val catacombs = dungeonsTypes?.getAsJsonObject("catacombs")?.parseDungeonType()
-            val catacombsMaster = dungeonsTypes?.getAsJsonObject("master_catacombs")?.parseDungeonType()
-            val classExperience = json.getAsJsonObject("player_classes").parseClassExperience()
+            val dungeonsTypes = json.getAs<JsonObject>("dungeon_types")
+            val catacombs = dungeonsTypes.getAs<JsonObject>("catacombs")?.parseDungeonType()
+            val catacombsMaster = dungeonsTypes.getAs<JsonObject>("master_catacombs")?.parseDungeonType()
+            val classExperience = json.getAs<JsonObject>("player_classes").parseClassExperience()
             val secrets = json["secrets"].asLong(0)
 
             return DungeonData(
@@ -27,7 +28,7 @@ data class DungeonData(
             )
         }
 
-        private fun JsonObject.parseClassExperience() = this.asMap { id, data ->
+        private fun JsonObject?.parseClassExperience() = this.asMap { id, data ->
             id to data.asJsonObject["experience"].asLong(0)
         }
 

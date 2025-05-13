@@ -1,5 +1,7 @@
 package me.owdding.skyblockpv.api.data
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.api.CollectionAPI
 import me.owdding.skyblockpv.api.SkillAPI
@@ -16,9 +18,14 @@ import me.owdding.skyblockpv.data.repo.EssenceData
 import me.owdding.skyblockpv.feature.NetworthCalculator
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
+import me.owdding.skyblockpv.utils.json.getAs
+import me.owdding.skyblockpv.utils.json.getPathAs
 import net.minecraft.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
-import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asStringList
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.util.*
 
@@ -64,35 +71,30 @@ data class SkyBlockProfile(
 
         fun fromJson(json: JsonObject, user: UUID): SkyBlockProfile? {
             val member = json.getPath("members.${user.toDashlessString()}")?.asJsonObject ?: return null
-            val playerStats = member.getAsJsonObject("player_stats")
-            val playerData = member.getAsJsonObject("player_data")
-            val profile = member.getAsJsonObject("profile")
+            val playerStats = member.getAs<JsonObject>("player_stats")
+            val playerData = member.getAs<JsonObject>("player_data")
+            val profile = member.getAs<JsonObject>("profile")
 
             return SkyBlockProfile(
-                selected = json["selected"].asBoolean(false),
+                selected = json.getAs<Boolean>("selected") == true,
                 id = ProfileId(
-                    id = json["profile_id"].asUUID(Util.NIL_UUID),
-                    name = json["cute_name"].asString("Unknown"),
+                    id = json.getAs("profile_id") ?: Util.NIL_UUID,
+                    name = json.getAs("cute_name") ?: "Unknown",
                 ),
                 userId = user,
-
-                profileType = json.get("game_mode")?.asString.let {
-                    when (it) {
-                        "ironman" -> ProfileType.IRONMAN
-                        "island" -> ProfileType.STRANDED
-                        "bingo" -> ProfileType.BINGO
-                        else -> ProfileType.NORMAL
-                    }
+                profileType = when (json.getAs<String>("game_mode")) {
+                    "ironman" -> ProfileType.IRONMAN
+                    "island" -> ProfileType.STRANDED
+                    "bingo" -> ProfileType.BINGO
+                    else -> ProfileType.NORMAL
                 },
-
-                inventory = member.getAsJsonObject("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) },
-                currency = member.getAsJsonObject("currencies")?.let { Currency.fromJson(it) },
+                inventory = member.getAs<JsonObject>("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) },
+                currency = member.getAs<JsonObject>("currencies")?.let { Currency.fromJson(it) },
                 bank = Bank.fromJson(json, member),
-                firstJoin = profile["first_join"].asLong(0),
-                fairySouls = member.getPath("fairy_soul.total_collected").asInt(0),
+                firstJoin = profile?.getAs<Long>("first_join") ?: 0,
+                fairySouls = member.getPathAs<Int>("fairy_soul.total_collected") ?: 0,
                 skyBlockLevel = run {
-                    val level = member.getAsJsonObject("leveling")
-                    val experience = level?.get("experience").asInt(0)
+                    val experience = member.getPathAs<Int>("leveling.experience") ?: 0
 
                     experience / 100 to (experience % 100)
                 },
@@ -100,39 +102,39 @@ data class SkyBlockProfile(
                 collections = member.getCollectionData(),
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 bestiaryData = member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList(),
-                slayer = member.getAsJsonObject("slayer")?.getSlayerData() ?: emptyMap(),
-                dungeonData = member.getAsJsonObject("dungeons")?.let { DungeonData.fromJson(it) },
-                mining = member.getAsJsonObject("mining_core")?.let { MiningCore.fromJson(it) },
-                forge = member.getAsJsonObject("forge")?.let { Forge.fromJson(it) },
-                glacite = member.getAsJsonObject("glacite_player_data")?.let { GlaciteData.fromJson(it) },
+                slayer = member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap(),
+                dungeonData = member.getAs<JsonObject>("dungeons")?.let { DungeonData.fromJson(it) },
+                mining = member.getAs<JsonObject>("mining_core")?.let { MiningCore.fromJson(it) },
+                forge = member.getAs<JsonObject>("forge")?.let { Forge.fromJson(it) },
+                glacite = member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData.fromJson(it) },
                 tamingLevelPetsDonated = member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() },
-                pets = member.getAsJsonObject("pets_data").getAsJsonArray("pets").map { Pet.fromJson(it.asJsonObject) },
+                pets = member.getPathAs<JsonArray>("pets_data.pets")?.map { Pet.fromJson(it.asJsonObject) } ?: emptyList(),
                 trophyFish = TrophyFishData.fromJson(member),
                 miscFishData = FishData.fromJson(member, playerStats, playerData),
-                essenceUpgrades = playerData?.getAsJsonObject("perks").parseEssencePerks(),
+                essenceUpgrades = playerData?.getAs<JsonObject>("perks").parseEssencePerks(),
                 petMilestones = playerStats?.getPath("pets.milestone").asMap { id, amount -> id to amount.asInt(0) },
                 gardenData = run {
-                    val data = member.getAsJsonObject("garden_player_data") ?: return@run GardenData(0, 0, 0)
+                    val data = member.getAs<JsonObject>("garden_player_data") ?: return@run GardenData(0, 0, 0)
 
                     return@run GardenData(
-                        data.get("copper").asInt(0),
-                        data.get("larva_consumed").asInt(0),
-                        playerStats.get("glowing_mushrooms_broken").asInt(0),
+                        data.getAs<Int>("copper") ?: 0,
+                        data.getAs<Int>("larva_consumed") ?: 0,
+                        playerStats?.getAs<Int>("glowing_mushrooms_broken") ?: 0,
                     )
                 },
-                farmingData = FarmingData.fromJson(member.getAsJsonObject("jacobs_contest")),
+                farmingData = FarmingData.fromJson(member.getAs("jacobs_contest")),
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
-                rift = playerStats?.getAsJsonObject("rift")?.let { stats -> RiftData.fromJson(member.getAsJsonObject("rift"), stats) },
-                crimsonIsleData = CrimsonIsleData.fromJson(member.getAsJsonObject("nether_island_player_data")),
-                minions = playerData?.getAsJsonArray("crafted_generators")?.asStringList()
+                rift = playerStats?.getAs<JsonObject>("rift")?.let { stats -> RiftData.fromJson(member.getAs("rift"), stats) },
+                crimsonIsleData = CrimsonIsleData.fromJson(member.getAs("nether_island_player_data")),
+                minions = playerData?.getAs<JsonArray>("crafted_generators")?.asStringList()
                     ?.filter { it.isNotBlank() }
                     ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
-                maxwell = member.getAsJsonObject("accessory_bag_storage")?.let { Maxwell.fromJson(it) },
+                maxwell = member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(it) },
             )
         }
 
-        private fun JsonObject.getSkillData(): Map<String, Long> {
-            val skills = this["experience"].asMap { id, amount -> id to amount.asLong(0) }
+        private fun JsonObject?.getSkillData(): Map<String, Long> {
+            val skills = this?.getAs<JsonElement>("experience").asMap { id, amount -> id to amount.asLong(0) }
                 .filterKeys { it != "SKILL_DUNGEONEERING" }
                 .toMutableMap()
 
