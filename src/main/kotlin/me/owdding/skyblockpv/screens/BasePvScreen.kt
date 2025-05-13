@@ -28,6 +28,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.GardenApi
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils
@@ -301,7 +302,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         val width = 100
 
         val usernameState = State.of(gameProfile.name)
-        val username = Widgets.textInput(usernameState) { box ->
+        val username = Widgets.autocomplete<String>(usernameState) { box ->
             box.withEnterCallback {
                 Utils.fetchGameProfile(box.value) { profile ->
                     profile?.let {
@@ -310,6 +311,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 }
             }
         }
+        username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
         username.withPlaceholder("Username...")
         username.withSize(width, 20)
         username.setPosition(bg.x + bg.width - width, bg.y + bg.height)
