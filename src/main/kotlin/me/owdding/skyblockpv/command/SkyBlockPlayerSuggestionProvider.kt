@@ -20,7 +20,8 @@ object SkyBlockPlayerSuggestionProvider : SuggestionProvider<FabricClientCommand
         return builder.buildFuture()
     }
 
-    private fun collectAllNames(vararg sources: SuggestionTypes = SuggestionTypes.entries.toTypedArray()) = sources.flatMap { it.supplier() }
+    private fun collectAllNames(vararg sources: SuggestionTypes = SuggestionTypes.entries.toTypedArray()) =
+        sources.flatMap { it.supplier() }.sortedBy { it.lowercase() }.distinct()
 
     private fun canSuggest(name: String, input: String): Boolean = SharedSuggestionProvider.matchesSubStr(input, name.lowercase())
 
