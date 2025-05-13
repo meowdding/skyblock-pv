@@ -6,7 +6,6 @@
   "client": [
     "PlayerRendererMixin",
     "PlayerRenderStateMixin",
-      "compat.AutocompleteScreenMixin",
     "compat.ProfileViewerScreenMixin"
   ],
   "injectors": {

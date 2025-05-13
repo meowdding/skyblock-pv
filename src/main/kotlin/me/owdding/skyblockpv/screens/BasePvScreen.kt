@@ -311,6 +311,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 }
             }
         }
+        username.withAlwaysShow(true)
         username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
         username.withPlaceholder("Username...")
         username.withSize(width, 20)
