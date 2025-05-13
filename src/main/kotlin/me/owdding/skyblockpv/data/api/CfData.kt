@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.data.api
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import me.owdding.skyblockpv.utils.json.getAs
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
@@ -41,8 +42,8 @@ data class CfData(
                 clickUpgrades = json["click_upgrades"].asInt(0),
                 chocolateMultiplierUpgrades = json["chocolate_multiplier_upgrades"].asInt(0),
                 rabbitRarityUpgrades = json["rabbit_rarity_upgrades"].asInt(0),
-                timeTower = json.getAsJsonObject("time_tower")?.let { TimeTower.fromJson(it) },
-                hitman = json.getAsJsonObject("rabbit_hitmen")?.let { Hitman.fromJson(it) },
+                timeTower = json.getAs<JsonObject>("time_tower")?.let { TimeTower.fromJson(it) },
+                hitman = json.getAs<JsonObject>("rabbit_hitmen")?.let { Hitman.fromJson(it) },
                 lastUpdate = json["last_viewed_chocolate_factory"].asLong(0),
             )
         }

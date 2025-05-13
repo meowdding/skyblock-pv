@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.data.api
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.api.skills.Pet
 import me.owdding.skyblockpv.utils.getNbt
+import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.legacyStack
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
@@ -52,14 +53,14 @@ data class RiftInventory(
     companion object {
         fun fromJson(json: JsonObject): RiftInventory {
             return RiftInventory(
-                inventory = json.getAsJsonObject("inv_contents").getInventory(),
-                armor = json.getAsJsonObject("inv_armor").getInventory(),
-                enderChest = json.getAsJsonObject("ender_chest_contents")?.getInventory()?.chunked(45) ?: emptyList(),
-                equipment = json.getAsJsonObject("equipment_contents").getInventory(),
+                inventory = json.getAs<JsonObject>("inv_contents").getInventory(),
+                armor = json.getAs<JsonObject>("inv_armor").getInventory(),
+                enderChest = json.getAs<JsonObject>("ender_chest_contents").getInventory().chunked(45),
+                equipment = json.getAs<JsonObject>("equipment_contents").getInventory(),
             )
         }
 
-        private fun JsonObject.getInventory() = this.get("data").getNbt().getListOrEmpty("i").map { it.legacyStack() }
+        private fun JsonObject?.getInventory() = this?.get("data")?.getNbt()?.getListOrEmpty("i")?.map { it.legacyStack() } ?: emptyList()
     }
 }
 
