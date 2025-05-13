@@ -218,7 +218,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                 ).withTooltip {
                     add("Paid: ") {
                         color = TextColor.GRAY
-                        val paid = cf.hitman?.slots?.minus(1)?.let { data.hitmanCost[it] } ?: 0
+                        val paid = cf.hitman?.slots?.minus(1)?.takeIf { it >= 0 }?.let { data.hitmanCost[it] } ?: 0
                         val total = data.hitmanCost.last()
                         val percentage = paid.toDouble() / total * 100
 

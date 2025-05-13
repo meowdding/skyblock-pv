@@ -46,7 +46,11 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
         SkyBlockPVExtraData.collected.forEach {
-            CompletableFuture.runAsync { runBlocking { it.load() } }
+            CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
+                McClient.tell {
+                    throw throwable
+                }
+            }
         }
 
         runBlocking { PvAPI.authenticate() }
@@ -70,6 +74,6 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
         }
     }
 
-    fun id(path: String) = ResourceLocation.fromNamespaceAndPath("skyblock-pv", path)
-    fun olympusId(path: String) = ResourceLocation.fromNamespaceAndPath("olympus", path)
+    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("skyblock-pv", path)
+    fun olympusId(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("olympus", path)
 }
