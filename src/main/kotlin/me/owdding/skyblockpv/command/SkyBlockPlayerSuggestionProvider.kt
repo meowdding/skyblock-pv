@@ -12,16 +12,22 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import java.util.concurrent.CompletableFuture
 
 object SkyBlockPlayerSuggestionProvider : SuggestionProvider<FabricClientCommandSource> {
+    fun getSuggestions(input: String) =
+        collectAllNames(SuggestionTypes.PARTY, SuggestionTypes.FRIENDS).filter { input.isBlank() || canSuggest(it, input.lowercase()) }
+
     override fun getSuggestions(context: CommandContext<FabricClientCommandSource?>, builder: SuggestionsBuilder): CompletableFuture<Suggestions?>? {
-        PartyAPI.members.forEach { member -> suggest(builder, member.name) }
-        FriendsAPI.friends.forEach { friend -> suggest(builder, friend.name) }
-        McClient.players.forEach { playerInfo -> suggest(builder, playerInfo.profile.name) }
+        collectAllNames().filter { canSuggest(it, builder.remaining.lowercase()) }.forEach(builder::suggest)
         return builder.buildFuture()
     }
 
-    private fun suggest(builder: SuggestionsBuilder, name: String?) {
-        if (SharedSuggestionProvider.matchesSubStr(builder.remaining.lowercase(), name?.lowercase())) {
-            builder.suggest(name)
-        }
+    private fun collectAllNames(vararg sources: SuggestionTypes = SuggestionTypes.entries.toTypedArray()) = sources.flatMap { it.supplier() }
+
+    private fun canSuggest(name: String, input: String): Boolean = SharedSuggestionProvider.matchesSubStr(input, name.lowercase())
+
+    enum class SuggestionTypes(val supplier: () -> List<String>) {
+        PARTY({ PartyAPI.members.mapNotNull { it.name } }),
+        FRIENDS({ FriendsAPI.friends.map { it.name } }),
+        LOBBY({ McClient.players.map { it.profile.name!! } }),
+        ;
     }
 }
