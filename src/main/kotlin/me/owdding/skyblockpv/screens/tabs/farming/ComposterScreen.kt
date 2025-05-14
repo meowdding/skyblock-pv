@@ -11,9 +11,12 @@ import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.data.repo.StaticComposterData
 import me.owdding.skyblockpv.data.repo.StaticGardenData
+import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
@@ -28,15 +31,25 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.time.Instant
 
 class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
-    override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal {
-        widget(getPlots())
-        widget(
-            LayoutFactory.vertical {
-                widget(getInformation())
-                spacer(0, 10)
-                widget(getUpgrades())
-            },
-        )
+    override fun getLayout(bg: DisplayWidget): Layout {
+        val baseLayout = LayoutFactory.horizontal {
+            widget(getPlots())
+            widget(
+                LayoutFactory.vertical {
+                    widget(getInformation())
+                    spacer(0, 10)
+                    widget(getUpgrades())
+                },
+            )
+        }
+
+        if (baseLayout.fitsIn(bg)) return baseLayout
+
+        return LayoutFactory.vertical(spacing = 5, alignment = 0.5f) {
+            widget(getPlots())
+            widget(getUpgrades())
+            widget(getInformation())
+        }.asScrollable(bg.width - 10, bg.height)
     }
 
     private fun getInformation() = PvWidgets.label(
@@ -255,7 +268,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             val plots = map.map { it.reversed().map { Displays.padding(2, it) }.toColumn() }.toRow()
             display(
                 ExtraDisplays.inventoryBackground(
-                    5,5,
+                    5, 5,
                     Displays.padding(2, plots),
                 ),
             )
