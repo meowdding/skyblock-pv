@@ -9,6 +9,7 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.museum.MuseumArmor
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.data.museum.RepoMuseumData
+import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.displays.DropdownContext
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.withDropdown
@@ -26,6 +27,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
 
     override fun getLayout(bg: DisplayWidget): Layout {
         return LayoutFactory.frame {
+
             val chunked = RepoMuseumData.armor.map {
                 loaded(
                     Displays.item(Items.ORANGE_DYE.defaultInstance.withTooltip {
@@ -39,16 +41,25 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                         }
                     }, showTooltip = true),
                 ) { data -> createArmor(it, data) }
-            }.map { Displays.padding(2, it) }.chunked(15)
+            }.map { Displays.padding(2, it) }.chunked(((bg.width - 20) / 20).coerceAtMost(15))
+
+            val armors = ExtraDisplays.inventoryBackground(
+                chunked.firstOrNull()?.size ?: 0, chunked.size,
+                Displays.padding(2, chunked.map { it.toRow() }.toColumn()),
+            )
+
+            val actualWidget = LayoutFactory.frame { display(armors) }.asScrollable(bg.width - 15, bg.height)
+            widget(actualWidget)
+
 
             display(
-                ExtraDisplays.dropdownOverlay(
-                    ExtraDisplays.inventoryBackground(
-                        chunked.firstOrNull()?.size ?: 0, chunked.size,
-                        Displays.padding(2, chunked.map { it.toRow() }.toColumn()),
+                Displays.row(
+                    ExtraDisplays.dropdownOverlay(
+                        Displays.empty(armors.getWidth(), (actualWidget.height - 20).coerceAtMost(armors.getHeight())),
+                        0x7F000000,
+                        dropdownContext,
                     ),
-                    0x7F000000,
-                    dropdownContext,
+                    Displays.empty(18),
                 ),
             )
         }

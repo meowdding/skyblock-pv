@@ -26,6 +26,7 @@ java {
 }
 
 loom {
+    accessWidenerPath.set(project.layout.projectDirectory.file("src/main/resources/skyblockpv.accesswidener"))
     runs {
         getByName("client") {
             programArg("--quickPlayMultiplayer=hypixel.net")
