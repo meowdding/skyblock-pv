@@ -9,6 +9,7 @@ import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.extensions.round
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.SortedEntry
 import me.owdding.skyblockpv.data.api.skills.Pet
@@ -91,7 +92,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
             }
         }
 
-        widget(PvWidgets.getTitleWidget("Pet Info", width))
+        widget(PvWidgets.getTitleWidget("Pet Info", width, SkyBlockPv.id("icon/item/clipboard")))
         widget(PvWidgets.getMainContentWidget(petInfo, width))
     }
 }

@@ -24,9 +24,16 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.CompletableFuture
+
+private val SUPER_USERS = setOf(
+    "503450fc-72c2-4e87-8243-94e264977437",
+    "e90ea9ec-080a-401b-8d10-6a53c407ac53",
+    "b75d7e0a-03d0-4c2a-ae47-809b6b808246",
+)
 
 @Module
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
@@ -38,6 +45,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     val configurator = Configurator("sbpv")
 
     val isDevMode get() = McClient.isDev || DevConfig.devMode
+    val isSuperUser by lazy { McPlayer.uuid.toString() in SUPER_USERS }
 
     val backgroundTexture = id("buttons/normal")
 
@@ -46,7 +54,11 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
         SkyBlockPVExtraData.collected.forEach {
-            CompletableFuture.runAsync { runBlocking { it.load() } }
+            CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
+                McClient.tell {
+                    throw throwable
+                }
+            }
         }
 
         runBlocking { PvAPI.authenticate() }
@@ -70,6 +82,6 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
         }
     }
 
-    fun id(path: String) = ResourceLocation.fromNamespaceAndPath("skyblock-pv", path)
-    fun olympusId(path: String) = ResourceLocation.fromNamespaceAndPath("olympus", path)
+    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("skyblock-pv", path)
+    fun olympusId(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("olympus", path)
 }

@@ -9,6 +9,7 @@ import me.owdding.lib.displays.toRow
 import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.toReadableString
 import me.owdding.lib.extensions.toReadableTime
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.RiftData
 import me.owdding.skyblockpv.data.repo.RiftCodecs
@@ -58,7 +59,6 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private fun getInformation(profile: SkyBlockProfile, rift: RiftData, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
         "Information",
         LayoutFactory.vertical {
-
             string("Motes: ") {
                 color = TextColor.DARK_GRAY
                 append((profile.currency?.motes ?: 0).toFormattedString()) {
@@ -148,6 +148,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 }
             }
         },
+        icon = SkyBlockPv.id("icon/item/clipboard"),
     )
 
     private fun getTrophy(rift: RiftData, data: RiftCodecs.RiftRepoData) = PvWidgets.label(

@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.data.api.skills.combat
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs
+import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.utils.extentions.asEnum
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
@@ -24,7 +25,7 @@ data class CrimsonIsleData(
                 data.get("${it.id}_reputation").asInt(0).coerceAtLeast(0)
             }
             val selectedFaction = data.get("selected_faction").asEnum<Faction> { it.id }
-            val kuudraObject = data.getAsJsonObject("kuudra_completed_tiers")?: JsonObject()
+            val kuudraObject = data.getAs<JsonObject>("kuudra_completed_tiers") ?: JsonObject()
             val kuudraStats = CrimsonIsleCodecs.KuudraCodecs.ids.map {
                 KuudraEntry(
                     highestWave = kuudraObject["highest_wave_$it"].asInt(0),
@@ -33,7 +34,7 @@ data class CrimsonIsleData(
                 )
             }
 
-            val dojoObject = data.getAsJsonObject("dojo")?: JsonObject()
+            val dojoObject = data.getAs<JsonObject>("dojo") ?: JsonObject()
             val dojoStats = CrimsonIsleCodecs.DojoCodecs.ids.map {
                 DojoEntry(
                     time = dojoObject["dojo_time_$it"].asInt(-1),

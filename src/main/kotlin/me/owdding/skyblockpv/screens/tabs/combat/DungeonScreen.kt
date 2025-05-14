@@ -7,6 +7,7 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asTable
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.round
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
@@ -19,7 +20,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     val classToLevel by lazy {
         this.profile.dungeonData?.classExperience?.map { (name, xp) ->
-            name to (levelXpMap.entries.findLast { it.value < xp }?.key ?: 50)
+            name to (levelXpMap.entries.findLast { it.value < xp }?.key ?: 0)
         }?.toMap()
     }
 
@@ -75,13 +76,13 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             string("Secrets/Run: ${(dungeonData.secrets / runCounts).round()}")
         }
 
-        return PvWidgets.label("Dungeon Info", mainContent, 20)
+        return PvWidgets.label("Dungeon Info", mainContent, 20, SkyBlockPv.id("icon/item/clipboard"))
     }
 
     private fun createLevelingDisplay(dungeonData: DungeonData): LayoutElement {
         val catacombsXp = dungeonData.dungeonTypes["catacombs"]?.experience ?: 0
 
-        val catacombsLevel = levelXpMap.entries.findLast { it.value < catacombsXp }?.key ?: 50
+        val catacombsLevel = levelXpMap.entries.findLast { it.value < catacombsXp }?.key ?: 0
         val catacombsProgressToNext = if (levelXpMap.containsKey(catacombsLevel + 1)) {
             (catacombsXp - levelXpMap[catacombsLevel]!!).toFloat() / (levelXpMap[catacombsLevel + 1]!! - levelXpMap[catacombsLevel]!!)
         } else {
@@ -137,6 +138,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     // region Leveling
     private val levelXpMap = mapOf(
+        0 to 0,
         1 to 50,
         2 to 125,
         3 to 235,

@@ -7,6 +7,7 @@ import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
@@ -226,6 +227,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             )
         },
         padding = 10,
+        SkyBlockPv.id("icon/item/clipboard"),
     )
 
     private fun getStatWidget(profile: SkyBlockProfile) = PvWidgets.label(

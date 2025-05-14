@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.screens.tabs.mining
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.FossilTypes
 import me.owdding.skyblockpv.data.api.skills.GlaciteData
@@ -48,7 +49,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addMiningPerk(profile, "frozen_skin")
         }
 
-        widget(PvWidgets.getTitleWidget("Info", width - 5))
+        widget(PvWidgets.getTitleWidget("Info", width - 5, SkyBlockPv.id("icon/item/clipboard")))
         widget(PvWidgets.getMainContentWidget(info, width - 5))
 
         spacer(width, 5)

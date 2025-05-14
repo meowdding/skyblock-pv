@@ -28,6 +28,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.GardenApi
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils
@@ -49,19 +50,20 @@ import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import java.lang.reflect.Type
 import java.nio.file.Files
 import kotlin.time.Duration.Companion.seconds
 
-private const val ASPECT_RATIO = 9.0 / 16.0
+private const val ASPECT_RATIO = 16.0 / 9.0
 
 abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, profile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
 
     val starttime = System.currentTimeMillis()
     var profiles: List<SkyBlockProfile> = emptyList()
 
-    val uiWidth get() = (this.width * 0.65).toInt()
-    val uiHeight get() = (uiWidth * ASPECT_RATIO).toInt()
+    val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
+    val uiHeight get() = (this.height * 0.65).toInt()
 
     var initedWithProfile = false
 
@@ -71,7 +73,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            profiles = ProfileAPI.getProfiles(gameProfile.id)
+            profiles = ProfileAPI.getProfiles(gameProfile)
             (profile ?: profiles.find { it.selected })?.let {
                 this@BasePvScreen.profile = it
             }
@@ -300,7 +302,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         val width = 100
 
         val usernameState = State.of(gameProfile.name)
-        val username = Widgets.textInput(usernameState) { box ->
+        val username = Widgets.autocomplete<String>(usernameState) { box ->
             box.withEnterCallback {
                 Utils.fetchGameProfile(box.value) { profile ->
                     profile?.let {
@@ -309,6 +311,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 }
             }
         }
+        username.withAlwaysShow(true)
+        username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
         username.withPlaceholder("Username...")
         username.withSize(width, 20)
         username.setPosition(bg.x + bg.width - width, bg.y + bg.height)
@@ -323,15 +327,24 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             dropdownState,
             profiles,
             { profile ->
-                Text.of(
-                    profile.id.name + when (profile.profileType) {
-                        ProfileType.NORMAL -> ""
-                        ProfileType.BINGO -> " §9Ⓑ"
-                        ProfileType.IRONMAN -> " ♻"
-                        ProfileType.STRANDED -> " §a☀"
-                        ProfileType.UNKNOWN -> " §c§ka"
-                    },
-                )
+                Text.of {
+                    if (profile.selected) {
+                        underlined = true
+                        append("◆ ")
+                    } else {
+                        append("◇ ")
+                    }
+                    append(profile.id.name)
+                    append(
+                        when (profile.profileType) {
+                            ProfileType.NORMAL -> ""
+                            ProfileType.BINGO -> " §9Ⓑ"
+                            ProfileType.IRONMAN -> " ♻"
+                            ProfileType.STRANDED -> " §a☀"
+                            ProfileType.UNKNOWN -> " §c§ka"
+                        },
+                    )
+                }
             },
             { button -> button.withSize(width, 20) },
             { builder ->

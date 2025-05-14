@@ -26,6 +26,6 @@ object SlayerCodecs : ExtraData {
         val maxBossTier = bossXp.size
         val maxLevel = leveling.size
 
-        fun getLevel(xp: Long) = leveling.indexOfLast { it < xp } + 1
+        fun getLevel(xp: Long) = leveling.indexOfLast { it <= xp } + 1
     }
 }

@@ -61,6 +61,13 @@
         "sacks_parser": {
             "@value": "Parse Sacks Contents",
             "desc": "Parse all Sack Items"
+        },
+        "bypass_cache": {
+            "@value": "Bypass Cache",
+            "desc": [
+                "Bypass the cache and always fetch data directly from the API.",
+                "<red>This won't work if you aren't a specified dev.</red>"
+            ]
         }
     },
     "tab": {

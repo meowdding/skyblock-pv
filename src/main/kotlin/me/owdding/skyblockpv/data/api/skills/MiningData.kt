@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.ChatFormatting
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
@@ -50,12 +51,12 @@ data class MiningCore(
 
     companion object {
         fun fromJson(json: JsonObject): MiningCore {
-            val nodes = json.getAsJsonObject("nodes").asMap { id, amount -> id to amount.asInt(0) }.filterKeys { !it.startsWith("toggle_") }
-            val toggledNodes = json.getAsJsonObject("nodes").entrySet().filter { it.key.startsWith("toggle") }
-                .map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
-                .filterNot { it.second }
-                .map { it.first }
-            val crystals = json.getAsJsonObject("crystals").asMap { id, data ->
+            val nodes = json.getAs<JsonObject>("nodes").asMap { id, amount -> id to amount.asInt(0) }.filterKeys { !it.startsWith("toggle_") }
+            val toggledNodes = json.getAs<JsonObject>("nodes")?.entrySet()?.filter { it.key.startsWith("toggle") }
+                ?.map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
+                ?.filterNot { it.second }
+                ?.map { it.first } ?: emptyList()
+            val crystals = json.getAs<JsonObject>("crystals").asMap { id, data ->
                 val obj = data.asJsonObject
                 id to Crystal(
                     state = obj["state"].asString(""),
@@ -135,7 +136,7 @@ data class GlaciteData(
             return GlaciteData(
                 fossilsDonated = json["fossils_donated"].asList { it.asString("") },
                 fossilDust = json["fossil_dust"].asInt(0),
-                corpsesLooted = json.getAsJsonObject("corpses_looted").asMap { id, amount -> id to amount.asInt(0) },
+                corpsesLooted = json.getAs<JsonObject>("corpses_looted").asMap { id, amount -> id to amount.asInt(0) },
                 mineshaftsEntered = json["mineshafts_entered"].asInt(0),
             )
         }

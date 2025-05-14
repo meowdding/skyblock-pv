@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.utils
 
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -19,6 +20,10 @@ object ChatUtils {
 
     fun chat(text: Component) {
         Text.join(prefix, text).send()
+    }
+
+    fun MutableComponent.sendWithPrefix() {
+        Text.join(prefix, this).send()
     }
 
 }

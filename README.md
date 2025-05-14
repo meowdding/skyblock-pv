@@ -17,8 +17,7 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 
 > [!WARNING]
 > The mod is still in development, design is subject to change.
-> Screenshots may be very outdated.
-> Visit the [TODO.md](./TODO.md) for a list of features that are planned to be added.
+> Screenshots may be outdated.
 
 ### 🏠 Home Tab
 
@@ -62,10 +61,7 @@ as of 2025-04-16
     - Wardrobe
     - Accessory
     - Sacks
-    - Personal Vault
-    - Potion Bag
-    - Fishing Bag
-    - Quiver
+  - Personal Vault, Potion Bag, Fishing Bag, Quiver, Candy Bag, etc.
 - Collections
     - With Minions
 - Mining
