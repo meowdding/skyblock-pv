@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -26,17 +27,16 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     override fun getLayout(bg: DisplayWidget): Layout {
         val glacite = profile.glacite ?: return LayoutFactory.empty()
-        val columnWidth = uiWidth / 2 - 10
         val normalLayout = LayoutFactory.horizontal(5) {
             spacer(height = uiHeight)
-            vertical(5) {
+            vertical(5, alignment = MIDDLE) {
                 spacer()
-                widget(getInfoWidget(columnWidth, glacite))
-                widget(getFossilWidget(columnWidth, glacite))
+                widget(getInfoWidget(glacite))
+                widget(getFossilWidget(glacite))
             }
-            vertical(5) {
+            vertical(5, alignment = MIDDLE) {
                 spacer()
-                widget(getCorpseWidget(columnWidth, glacite))
+                widget(getCorpseWidget(glacite))
             }
         }
 
@@ -44,16 +44,15 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             return normalLayout
         }
 
-        return LayoutFactory.vertical(5, alignment = 0.5f) {
-            widget(getInfoWidget(width / 2, glacite))
-            widget(getFossilWidget(width / 2, glacite))
-            widget(getCorpseWidget(width / 2, glacite))
+        return LayoutFactory.vertical(5, alignment = MIDDLE) {
+            widget(getInfoWidget(glacite))
+            widget(getFossilWidget(glacite))
+            widget(getCorpseWidget(glacite))
         }.asScrollable(bg.width - 10, bg.height)
     }
 
-    private fun getInfoWidget(width: Int, glacite: GlaciteData) = PvWidgets.label(
+    private fun getInfoWidget(glacite: GlaciteData) = PvWidgets.label(
         title = "Info",
-        width = width,
         element = LayoutFactory.vertical(3) {
             fun grayText(text: String) = display(Displays.text(text, color = { 0x555555u }, shadow = false))
             val fossilDust = glacite.fossilDust
@@ -68,9 +67,8 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         icon = SkyBlockPv.id("icon/item/clipboard"),
     )
 
-    private fun getFossilWidget(width: Int, glacite: GlaciteData) = PvWidgets.label(
+    private fun getFossilWidget(glacite: GlaciteData) = PvWidgets.label(
         title = "Fossils",
-        width = width,
         element = FossilTypes.fossils.map {
             val unlocked = glacite.fossilsDonated.contains(it.id.split("_").first())
             val inPetMenu = profile.pets.any { pet -> pet.type == it.pet }
@@ -103,7 +101,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     )
 
 
-    private fun getCorpseWidget(width: Int, glacite: GlaciteData) = PvWidgets.label(
+    private fun getCorpseWidget(glacite: GlaciteData) = PvWidgets.label(
         "Corpses Looted",
         element = LayoutFactory.vertical(3) {
             fun addCorpse(name: String, color: Int) {
@@ -120,7 +118,6 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addCorpse("umber", TextColor.GOLD)
             addCorpse("vanguard", TextColor.AQUA)
         },
-        width = width - 5,
     )
 
     private val fossilDustConversions = mapOf(

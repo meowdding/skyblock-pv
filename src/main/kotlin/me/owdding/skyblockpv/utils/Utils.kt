@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.utils
 import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.Codec
-import earth.terrarium.olympus.client.pipelines.RoundedRectanage
+import earth.terrarium.olympus.client.pipelines.RoundedRectangle
 import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
@@ -43,7 +43,7 @@ object Utils {
         val yOffset = this.pose().last().pose().m31()
         pushPop {
             translate(-xOffset, -yOffset, 0f)
-            RoundedRectanage.draw(
+            RoundedRectangle.draw(
                 this@drawRoundedRec, (x + xOffset).toInt(), (y + yOffset).toInt(), width, height,
                 backgroundColor, borderColor, width.coerceAtMost(height) * (radius / 100f), borderSize,
             )
