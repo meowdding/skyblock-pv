@@ -1,18 +1,20 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "me.owdding.skyblockpv.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "client": [
-    "PlayerRendererMixin",
-    "PlayerRenderStateMixin",
-    "compat.ProfileViewerScreenMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin",
-  "mixins": [
-    "compat.SkyblockModMessageMixin"
+    "required": true,
+    "minVersion": "0.8",
+    "package": "me.owdding.skyblockpv.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+        "GuiGraphicsMixin",
+        "PlayerRendererMixin",
+        "PlayerRenderStateMixin",
+        "accessors.ScissorStackAccessor",
+        "compat.ProfileViewerScreenMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin",
+    "mixins": [
+        "compat.SkyblockModMessageMixin"
   ]
 }

@@ -2,10 +2,10 @@ package me.owdding.skyblockpv.utils.displays
 
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.displays.Display
-import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.Displays.isMouseOver
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
+import me.owdding.skyblockpv.utils.accessors.withExclusiveScissor
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.util.ARGB
@@ -104,8 +104,8 @@ object ExtraDisplays {
                         graphics.drawRoundedRec(
                             x = (x - size / 2f).toInt(),
                             y = (y - size / 2f).toInt(),
-                            width = size.toInt(),
-                            height = size.toInt(),
+                            width = size,
+                            height = size,
                             backgroundColor = ARGB.color(255.coerceAtMost(alpha), 0x80000000.toInt()),
                             radius = 60,
                         )
@@ -148,18 +148,20 @@ object ExtraDisplays {
             override fun render(graphics: GuiGraphics) {
                 original.render(graphics)
 
-                if (context.isCurrentDropdown(this) && (isMouseOver(original, graphics) || (isOpen && isMouseOver(dropdown, graphics)))) {
-                    isOpen = true
-                    context.currentDropdown = this
-                    graphics.pushPop {
-                        translate(0, 0, 201)
-                        dropdown.render(graphics)
+                graphics.withExclusiveScissor(-10, -10, dropdown.getWidth() + 10, dropdown.getHeight() + 10) {
+                    if (context.isCurrentDropdown(this) && (isMouseOver(original, graphics) || (isOpen && isMouseOver(dropdown, graphics)))) {
+                        isOpen = true
+                        context.currentDropdown = this
+                        graphics.pushPop {
+                            translate(0, 0, 201)
+                            dropdown.render(graphics)
+                        }
+                    } else {
+                        if (context.currentDropdown === this) {
+                            context.currentDropdown = null
+                        }
+                        isOpen = false
                     }
-                } else {
-                    if (context.currentDropdown === this) {
-                        context.currentDropdown = null
-                    }
-                    isOpen = false
                 }
             }
         }
