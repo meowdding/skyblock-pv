@@ -10,14 +10,15 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Pseudo
 @IfModLoaded("skyblocker")
-@Mixin(targets = "de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen")
+@Mixin(targets = "de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen", remap = false)
 public class ProfileViewerScreenMixin {
     @WrapWithCondition(
         method = "lambda$initClass$15",
         at = @At(
             value = "INVOKE",
             target = "Lcom/mojang/brigadier/CommandDispatcher;register(Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;)Lcom/mojang/brigadier/tree/LiteralCommandNode;",
-            ordinal = 0
+            ordinal = 0,
+            remap = false
         )
     )
     private static <S> boolean wrapCommand(CommandDispatcher<S> instance, LiteralArgumentBuilder<S> command) {
