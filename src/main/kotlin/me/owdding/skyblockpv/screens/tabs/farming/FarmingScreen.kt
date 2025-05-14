@@ -17,6 +17,9 @@ import me.owdding.skyblockpv.data.api.skills.farming.MedalType
 import me.owdding.skyblockpv.data.repo.FarmingGear
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.StaticGardenData
+import me.owdding.skyblockpv.utils.LayoutUtils.arranged
+import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -35,13 +38,26 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
-        return LayoutFactory.frame {
+        val baseLayout = LayoutFactory.frame {
             horizontal {
                 widget(getGear(profile))
                 widget(getContests(profile.farmingData))
                 widget(getInfoWidget(profile))
             }
+        }.arranged()
+
+        if (baseLayout.fitsIn(bg)) {
+            return baseLayout
         }
+
+        return LayoutFactory.vertical(5, alignment = 0.5f) {
+            spacer()
+            horizontal(5, alignment = 0.5f) {
+                widget(getGear(profile))
+                widget(getContests(profile.farmingData))
+            }
+            widget(getInfoWidget(profile))
+        }.asScrollable(bg.width - 10, bg.height)
     }
 
     private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
