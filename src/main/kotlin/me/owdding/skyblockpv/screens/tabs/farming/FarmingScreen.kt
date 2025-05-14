@@ -17,7 +17,6 @@ import me.owdding.skyblockpv.data.api.skills.farming.MedalType
 import me.owdding.skyblockpv.data.repo.FarmingGear
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.StaticGardenData
-import me.owdding.skyblockpv.utils.LayoutUtils.arranged
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.Utils.append
@@ -44,7 +43,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 widget(getContests(profile.farmingData))
                 widget(getInfoWidget(profile))
             }
-        }.arranged()
+        }
 
         if (baseLayout.fitsIn(bg)) {
             return baseLayout

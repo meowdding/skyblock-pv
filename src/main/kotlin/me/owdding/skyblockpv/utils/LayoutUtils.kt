@@ -22,8 +22,6 @@ object LayoutUtils {
         return FrameLayout(width, height).also { it.addChild(this) }
     }
 
-    fun Layout.arranged() = this.apply { this.arrangeElements() }
-
     fun Layout.fitsIn(bg: DisplayWidget): Boolean {
         return this.height <= bg.height && this.width <= bg.width
     }
