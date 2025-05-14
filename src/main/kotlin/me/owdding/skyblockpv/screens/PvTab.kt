@@ -14,7 +14,7 @@ import me.owdding.skyblockpv.screens.tabs.combat.BaseCombatScreen
 import me.owdding.skyblockpv.screens.tabs.combat.DungeonScreen
 import me.owdding.skyblockpv.screens.tabs.farming.BaseFarmingScreen
 import me.owdding.skyblockpv.screens.tabs.farming.FarmingScreen
-import me.owdding.skyblockpv.screens.tabs.general.BaseGeneralScreen
+import me.owdding.skyblockpv.screens.tabs.general.GeneralScreenMarker
 import me.owdding.skyblockpv.screens.tabs.general.MainScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.InventoryScreen
@@ -34,11 +34,11 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 enum class PvTab(
-    private val screen: KClass<out BasePvScreen>,
+    private val screen: KClass<*>,
     private val constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen,
     private val icon: (GameProfile?) -> ItemStack,
 ) {
-    MAIN(BaseGeneralScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
+    MAIN(GeneralScreenMarker::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
     COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
     COLLECTION(BaseCollectionScreen::class, CollectionCategories::createScreen, Items.ITEM_FRAME.defaultInstance),

@@ -12,11 +12,13 @@ import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-abstract class BaseGeneralScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("MAIN", gameProfile, profile) {
+interface GeneralScreenMarker
+
+abstract class BaseGeneralScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("MAIN", gameProfile, profile), GeneralScreenMarker {
     override val categories: List<Category> get() = GeneralCategory.entries
 }
 
-abstract class BaseGeneralLoadingScreen<V>(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedLoadingScreen<V>("MAIN", gameProfile, profile) {
+abstract class BaseGeneralLoadingScreen<V>(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedLoadingScreen<V>("MAIN", gameProfile, profile), GeneralScreenMarker {
     override val categories: List<Category> get() = GeneralCategory.entries
 }
 

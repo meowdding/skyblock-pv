@@ -42,7 +42,6 @@ class AuctionsGeneralScreen(gameProfile: GameProfile, profile: SkyBlockProfile? 
 
     override fun getLayout(bg: DisplayWidget): Layout {
 
-
         return loaded(
             LayoutFactory.vertical {},
             LayoutFactory.vertical {},
@@ -53,9 +52,10 @@ class AuctionsGeneralScreen(gameProfile: GameProfile, profile: SkyBlockProfile? 
 
             LayoutFactory.horizontal(PADDING) {
                 this.widget(
-                    PvWidgets.getMainContentWidget(
+                    PvWidgets.label(
+                        "Auctions",
                         Widgets.list { list ->
-                            list.withSize(side - PADDING * 2, height - 14)
+                            list.withSize(side - PADDING * 2, height - 34)
                             list.withContentMargin(CONTENT_PADDING)
                             list.withScrollableY(TriState.UNDEFINED)
                             list.withContents { contents ->
@@ -93,7 +93,7 @@ class AuctionsGeneralScreen(gameProfile: GameProfile, profile: SkyBlockProfile? 
                                 }
                             }
                         },
-                        side,
+                        0,
                     ),
                 )
 
