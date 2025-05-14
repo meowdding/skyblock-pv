@@ -29,9 +29,10 @@ object PvWidgets {
 
     fun iconNumberElement(icon: ItemLike, text: Component) = iconNumberElement(icon.asItem().defaultInstance, text)
 
-    fun label(title: String, element: LayoutElement, padding: Int = 0, icon: ResourceLocation? = null) = LayoutFactory.vertical {
-        widget(getTitleWidget(title, element.width + padding + 20, icon))
-        widget(getMainContentWidget(element, element.width + padding + 20))
+    fun label(title: String, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: ResourceLocation? = null) =
+        LayoutFactory.vertical {
+            widget(getTitleWidget(title, width, icon))
+            widget(getMainContentWidget(element, width))
     }
 
     fun tools(
