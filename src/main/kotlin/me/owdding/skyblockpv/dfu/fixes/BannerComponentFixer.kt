@@ -74,8 +74,8 @@ object BannerItemFixer : DataComponentFixer<BannerPatternLayers> {
 
     override val type: DataComponentType<BannerPatternLayers> = DataComponents.BANNER_PATTERNS
 
-    override fun getData(compoundTag: CompoundTag): BannerPatternLayers? {
-        val tag = compoundTag.getAndRemoveCompound(TAG) ?: return null
+    override fun getData(tag: CompoundTag): BannerPatternLayers? {
+        val tag = tag.getAndRemoveCompound(TAG) ?: return null
         val base = tag.getAndRemoveInt("Base") ?: 0
 
         val listTag = tag.getAndRemoveList("Patterns") ?: return null

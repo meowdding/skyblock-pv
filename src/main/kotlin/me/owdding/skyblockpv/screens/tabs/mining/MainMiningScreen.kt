@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.extensions.sortByKey
@@ -65,19 +66,19 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val forge = getForge()
 
         return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) > uiWidth) {
-            LayoutFactory.vertical(5, 0.5f) {
+            LayoutFactory.vertical(5, MIDDLE) {
                 widget(info)
                 widget(powder)
                 widget(crystal)
                 forge?.let { widget(it) }
             }.asScrollable(uiWidth, uiHeight)
         } else {
-            LayoutFactory.horizontal(5, 0.5f) {
-                vertical(5, 0.5f) {
+            LayoutFactory.horizontal(2, MIDDLE) {
+                vertical(5, MIDDLE) {
                     widget(info)
                     widget(powder)
                 }
-                vertical(5, 0.5f) {
+                vertical(5, MIDDLE) {
                     widget(crystal)
                     forge?.let { widget(it) }
                 }
