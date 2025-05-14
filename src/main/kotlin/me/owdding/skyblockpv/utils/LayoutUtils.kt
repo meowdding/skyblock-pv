@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.utils
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.compound.LayoutWidget
 import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.displays.DisplayWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -19,6 +20,12 @@ object LayoutUtils {
 
     fun LayoutElement.center(width: Int, height: Int): LayoutElement {
         return FrameLayout(width, height).also { it.addChild(this) }
+    }
+
+    fun Layout.arranged() = this.apply { this.arrangeElements() }
+
+    fun Layout.fitsIn(bg: DisplayWidget): Boolean {
+        return this.height <= bg.height && this.width <= bg.width
     }
 
     fun Layout.asScrollable(width: Int, height: Int, init: ListWidget.() -> Unit = {}): Layout {
