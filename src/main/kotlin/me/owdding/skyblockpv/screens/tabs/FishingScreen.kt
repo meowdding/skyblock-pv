@@ -227,7 +227,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             )
         },
         padding = 10,
-        SkyBlockPv.id("icon/item/clipboard"),
+        icon = SkyBlockPv.id("icon/item/clipboard"),
     )
 
     private fun getStatWidget(profile: SkyBlockProfile) = PvWidgets.label(

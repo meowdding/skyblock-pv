@@ -32,6 +32,8 @@ object LegacyDataFixer {
         BannerItemFixer,
         ExtraAttributesFixer,
         FireworkExplosionFixer,
+        RemoveFixer("overrideMeta"),
+        RemoveFixer("AttributeModifiers"),
     )
 
     fun fromTag(tag: Tag): ItemStack? {

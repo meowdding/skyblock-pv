@@ -241,7 +241,10 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         layout.addChild(statusButtonWidget)
         layout.addChild(SpacerElement.height(3))
         if (Config.showPronouns) {
-            layout.addChild(PronounDisplay.getPronounDisplay(gameProfile.id, width).asWidget())
+            layout.addChild(PronounDisplay.getPronounDisplay(gameProfile.id, width)
+                .asWidget()
+                .withTooltip(Text.of("Provided by https://pronoundb.org/"))
+            )
         }
 
         return layout

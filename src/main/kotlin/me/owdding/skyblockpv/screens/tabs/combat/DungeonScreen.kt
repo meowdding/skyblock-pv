@@ -76,7 +76,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             string("Secrets/Run: ${(dungeonData.secrets / runCounts).round()}")
         }
 
-        return PvWidgets.label("Dungeon Info", mainContent, 20, SkyBlockPv.id("icon/item/clipboard"))
+        return PvWidgets.label("Dungeon Info", mainContent, 20, icon = SkyBlockPv.id("icon/item/clipboard"))
     }
 
     private fun createLevelingDisplay(dungeonData: DungeonData): LayoutElement {
