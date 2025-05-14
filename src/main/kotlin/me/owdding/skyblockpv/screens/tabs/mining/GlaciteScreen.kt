@@ -8,7 +8,6 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.FossilTypes
 import me.owdding.skyblockpv.data.api.skills.GlaciteData
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk
-import me.owdding.skyblockpv.utils.LayoutUtils.arranged
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.components.PvWidgets
@@ -39,7 +38,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 spacer()
                 widget(getCorpseWidget(columnWidth, glacite))
             }
-        }.arranged()
+        }
 
         if (normalLayout.fitsIn(bg)) {
             return normalLayout
