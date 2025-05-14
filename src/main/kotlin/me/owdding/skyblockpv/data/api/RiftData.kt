@@ -5,7 +5,6 @@ import me.owdding.skyblockpv.data.api.skills.Pet
 import me.owdding.skyblockpv.utils.getNbt
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.legacyStack
-import me.owdding.skyblockpv.utils.apiItemStacks
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asList
