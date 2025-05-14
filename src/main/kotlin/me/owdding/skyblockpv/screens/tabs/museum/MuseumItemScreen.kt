@@ -21,6 +21,10 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.math.ceil
 
+private const val ROWS = 5
+private const val COLUMNS = 10
+private const val SIZE = ROWS * COLUMNS
+
 class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     BaseMuseumScreen(gameProfile, profile) {
     private var carousel: CarouselWidget? = null
@@ -28,7 +32,7 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     fun getInventories(): List<Display> {
         return RepoMuseumData.museumCategoryMap.entries
             .flatMap { (_, entries) -> createPagesForCategory(entries) }
-            .map { ExtraDisplays.inventoryBackground(9, 6, Displays.padding(2, it)) }
+            .map { ExtraDisplays.inventoryBackground(COLUMNS, ROWS, Displays.padding(2, it)) }
     }
 
     fun createPagesForCategory(items: List<MuseumItem>): List<Display> {
@@ -46,15 +50,15 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         }
 
         return map.flatMap { it.map { Displays.item(it, showTooltip = true) } }
-            .chunked(54)
+            .chunked(SIZE)
             .map { mapItemListToInventories(it) }
             .toList()
     }
 
     fun mapItemListToInventories(item: List<Display>): Display {
-        return item.toMutableList().rightPad(54, Displays.empty(16, 16))
+        return item.toMutableList().rightPad(SIZE, Displays.empty(16, 16))
             .map { Displays.padding(2, it) }
-            .chunked(9)
+            .chunked(COLUMNS)
             .map { it.toRow() }
             .toColumn()
     }
@@ -83,7 +87,7 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     private fun getIcons(): List<RepoMuseumCategory> =
         RepoMuseumData.museumCategoryMap.entries.flatMap { (category, entries) ->
-            val nextUp = ceil(entries.size / 54.0).toInt()
+            val nextUp = ceil(entries.size / SIZE.toDouble()).toInt()
             mutableListOf<RepoMuseumCategory>().rightPad(nextUp, category)
         }
 
@@ -98,7 +102,7 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         )
 
         val map = mutableMapOf<RepoMuseumCategory, Int>()
-        val buttonContainer = carousel!!.getIcons {
+        val buttonContainer = carousel!!.getIcons(perRow = 12) {
             List(inventories.size) { index ->
                 val icon = icons[index]
                 val compute = map.compute(icon) { _, i -> i?.plus(1) ?: 0 }

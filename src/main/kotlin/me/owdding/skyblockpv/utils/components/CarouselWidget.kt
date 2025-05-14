@@ -122,7 +122,7 @@ class CarouselWidget(
 
     override fun getCursor(): CursorScreen.Cursor = cursor
 
-    fun getIcons(displays: () -> List<Display>): Layout {
+    fun getIcons(perRow: Int = 9, displays: () -> List<Display>): Layout {
         val buttons = displays.invoke().mapIndexed { index, it ->
             Button()
                 .withSize(20, 20)
@@ -140,7 +140,7 @@ class CarouselWidget(
                 }
         }
 
-        val rows = buttons.chunked(9).map { LayoutFactory.horizontal(1) { widget(it) } }
+        val rows = buttons.chunked(perRow).map { LayoutFactory.horizontal(1) { widget(it) } }
         return LayoutFactory.vertical(1) {
             rows.forEach { it ->
                 widget(it, LayoutSettings::alignHorizontallyCenter)
