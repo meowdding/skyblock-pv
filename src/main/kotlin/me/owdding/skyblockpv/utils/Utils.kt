@@ -4,6 +4,8 @@ import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.Codec
 import earth.terrarium.olympus.client.pipelines.RoundedRectangle
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
@@ -118,4 +120,8 @@ object Utils {
     fun UUID.toDashlessString(): String = this.toString().replace("-", "")
 
     fun String.fixBase64Padding() = replace(Regex("=+$"), "").let { it + "=".repeat((4 - it.length % 4) % 4) }
+
+    fun <I, O> Iterable<I>.parseParallel(parser: (I) -> O): List<O> = runBlocking {
+        this@parseParallel.map { data -> async { parser.invoke(data) } }.awaitAll()
+    }
 }
