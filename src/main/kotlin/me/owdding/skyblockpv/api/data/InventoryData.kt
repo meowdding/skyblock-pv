@@ -56,9 +56,7 @@ data class InventoryData(
         )
 
         companion object {
-            fun fromJson(json: JsonObject): WardrobeArmor {
-                return WardrobeArmor(Inventory.fromJson(json))
-            }
+            fun fromJson(json: JsonObject): WardrobeArmor = WardrobeArmor(Inventory.fromJson(json))
         }
     }
 
@@ -67,11 +65,7 @@ data class InventoryData(
         val items: Inventory,
     ) {
         companion object {
-            fun fromJson(json: JsonObject): List<EnderChestPage> {
-                val items = json.getInventoryData()
-                return items.chunked(45).map { it.completableInventory() }
-                    .map { EnderChestPage(it) }
-            }
+            fun fromJson(json: JsonObject) = json.getInventoryData().chunked(45).map { it.completableInventory() }.map { EnderChestPage(it) }
         }
     }
 
@@ -80,17 +74,13 @@ data class InventoryData(
         val icon: ItemStack,
     ) {
         companion object {
-            fun icons(json: JsonObject): Map<Int, ItemStack> {
-                return json.entrySet().associate { entry ->
-                    entry.key.toInt() to entry.value.asJsonObject.get("data").getNbt().getListOrEmpty("i").first().legacyStack()
-                }
+            fun icons(json: JsonObject): Map<Int, ItemStack> = json.entrySet().associate { entry ->
+                entry.key.toInt() to entry.value.asJsonObject.get("data").getNbt().getListOrEmpty("i").first().legacyStack()
             }
 
-            fun fromJson(json: JsonObject): Map<Int, Inventory> {
-                return json.entrySet().associate { entry ->
-                    entry.key.toInt() to Inventory.fromJson(entry.value.asJsonObject)
-                }.toList().sortedBy { it.first }.toMap()
-            }
+            fun fromJson(json: JsonObject): Map<Int, Inventory> = json.entrySet().associate { entry ->
+                entry.key.toInt() to Inventory.fromJson(entry.value.asJsonObject)
+            }.toList().sortedBy { it.first }.toMap()
         }
     }
 
@@ -98,10 +88,7 @@ data class InventoryData(
         val talismans: Inventory,
     ) {
         companion object {
-            fun fromJson(json: JsonObject): List<TalismansPage> {
-                val items = json.getInventoryData()
-                return items.chunked(45).map { it.completableInventory() }.map { TalismansPage(it) }
-            }
+            fun fromJson(json: JsonObject) = json.getInventoryData().chunked(45).map { it.completableInventory() }.map { TalismansPage(it) }
         }
     }
 
