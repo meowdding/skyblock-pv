@@ -25,7 +25,7 @@ import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.GardenApi
+import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
@@ -233,10 +233,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             .withRenderer(WidgetRenderers.text(Text.of("Clear Cache")))
             .withSize(60, 20)
             .withTexture(ExtraConstants.BUTTON_DARK)
-            .withCallback {
-                ProfileAPI.clearCache()
-                GardenApi.clearCache()
-            }
+            .withCallback(CachedApis::clearCaches)
 
 
         widget(refreshButton)

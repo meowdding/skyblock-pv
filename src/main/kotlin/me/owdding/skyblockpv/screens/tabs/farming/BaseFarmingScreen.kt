@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
-import me.owdding.skyblockpv.api.GardenApi
+import me.owdding.skyblockpv.api.GardenAPI
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.screens.tabs.base.AbstractCategorizedLoadingScreen
@@ -16,7 +16,7 @@ import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedLoadingScreen<GardenProfile>("FARMING", gameProfile, profile) {
 
-    override val api get() = GardenApi
+    override val api get() = GardenAPI
     override val categories: List<Category> get() = FarmingCategory.entries
 
 }

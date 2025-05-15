@@ -219,7 +219,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         statusButtonWidget.withCallback {
             statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of("§fLoading...")))
             runBlocking {
-                val status = StatusAPI.getStatus(gameProfile.id)
+                val status = StatusAPI.getData(gameProfile.id).getOrNull()
                 if (status == null) {
                     statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of("§4ERROR")))
                     return@runBlocking
