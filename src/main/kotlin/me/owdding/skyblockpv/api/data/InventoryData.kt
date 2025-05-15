@@ -1,12 +1,17 @@
 package me.owdding.skyblockpv.api.data
 
 import com.google.gson.JsonObject
+import me.owdding.lib.extensions.rightPad
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.getNbt
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.legacyStack
+import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.jvm.optionals.getOrNull
 
 data class InventoryData(
     val inventoryItems: Inventory?,
@@ -63,9 +68,9 @@ data class InventoryData(
     ) {
         companion object {
             fun fromJson(json: JsonObject): List<EnderChestPage> {
-                return json.get("data").getNbt().let {
-                    it.getListOrEmpty("i").map { item -> item.legacyStack() }.chunked(45).map { EnderChestPage(Inventory(it)) }
-                }
+                val items = json.getInventoryData()
+                return items.chunked(45).map { it.completableInventory() }
+                    .map { EnderChestPage(it) }
             }
         }
     }
@@ -94,9 +99,8 @@ data class InventoryData(
     ) {
         companion object {
             fun fromJson(json: JsonObject): List<TalismansPage> {
-                return json.get("data").getNbt().getListOrEmpty("i")?.let {
-                    it.map { it.legacyStack() }.chunked(45).map { TalismansPage(Inventory(it)) }
-                } ?: listOf()
+                val items = json.getInventoryData()
+                return items.chunked(45).map { it.completableInventory() }.map { TalismansPage(it) }
             }
         }
     }
@@ -105,11 +109,7 @@ data class InventoryData(
         val inventory: List<ItemStack>,
     ) {
         companion object {
-            fun fromJson(json: JsonObject): Inventory {
-                if (!json.has("data")) return Inventory(listOf())
-                val itemList = json.get("data").getNbt().getListOrEmpty("i")
-                return Inventory(itemList.map { item -> item.legacyStack() })
-            }
+            fun fromJson(json: JsonObject): Inventory = json.getInventoryData().completableInventory()
         }
     }
 
@@ -144,4 +144,25 @@ data class InventoryData(
             )
         }
     }
+}
+
+
+private fun JsonObject.getInventoryData(): List<Tag> = this.get("data")?.getNbt()?.getList("i")?.getOrNull() ?: emptyList()
+
+private fun List<Tag>.createTempInventory(): MutableList<ItemStack> {
+    return CopyOnWriteArrayList<ItemStack>().apply {
+        this.rightPad(this@createTempInventory.size, ItemStack.EMPTY)
+    }
+}
+
+private fun List<Tag>.completableInventory(): InventoryData.Inventory {
+    val list = this.createTempInventory()
+
+    Utils.runAsync {
+        val stacks = this.map { tag -> tag.legacyStack() }
+        list.clear()
+        list.addAll(stacks)
+    }
+
+    return InventoryData.Inventory(list)
 }

@@ -7,8 +7,8 @@ import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.data.museum.MuseumData
-import me.owdding.skyblockpv.utils.Utils.parseParallel
-import java.util.UUID
+import me.owdding.skyblockpv.utils.Utils.mapInParallel
+import java.util.*
 
 object CachedApis {
 
@@ -42,7 +42,7 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
 
     override fun path(data: UUID) = "/profiles/$data"
     override fun decode(data: JsonObject, originalData: UUID) = data.getAsJsonArray("profiles")
-        .parseParallel { element -> SkyBlockProfile.fromJson(element.asJsonObject, originalData) }
+        .mapInParallel { element -> SkyBlockProfile.fromJson(element.asJsonObject, originalData) }
         .filterNotNull()
     override fun getKey(data: UUID) = data
 
