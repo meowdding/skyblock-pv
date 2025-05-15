@@ -3,11 +3,12 @@ package me.owdding.skyblockpv.config
 import com.teamresourceful.resourcefulconfig.api.types.info.ResourcefulConfigLink
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
+import me.owdding.skyblockpv.SkyBlockPv
 
 object Config : ConfigKt("skyblockpv/config") {
 
     override val name get() = TranslatableValue("SkyBlock Profile Viewer")
-    override val description get() = TranslatableValue("Making Modern Pv'able")
+    override val description get() = TranslatableValue("Making Modern Pv'able (v${SkyBlockPv.version})")
     override val links: Array<ResourcefulConfigLink>
         get() = arrayOf(
             ResourcefulConfigLink.create(
