@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.api.data
 
 import com.google.gson.JsonObject
 import me.owdding.lib.extensions.rightPad
+import me.owdding.lib.extensions.sortedByKeys
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.getNbt
 import me.owdding.skyblockpv.utils.json.getAs
@@ -80,7 +81,7 @@ data class InventoryData(
 
             fun fromJson(json: JsonObject): Map<Int, Inventory> = json.entrySet().associate { entry ->
                 entry.key.toInt() to Inventory.fromJson(entry.value.asJsonObject)
-            }.toList().sortedBy { it.first }.toMap()
+            }.sortedByKeys()
         }
     }
 
