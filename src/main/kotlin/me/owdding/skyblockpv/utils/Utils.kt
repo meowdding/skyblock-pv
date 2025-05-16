@@ -25,6 +25,7 @@ import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.nio.file.Files
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.jvm.optionals.getOrNull
 
 object Utils {
@@ -121,7 +122,9 @@ object Utils {
 
     fun String.fixBase64Padding() = replace(Regex("=+$"), "").let { it + "=".repeat((4 - it.length % 4) % 4) }
 
-    fun <I, O> Iterable<I>.parseParallel(parser: (I) -> O): List<O> = runBlocking {
-        this@parseParallel.map { data -> async { parser.invoke(data) } }.awaitAll()
+    fun <I, O> Iterable<I>.mapInParallel(parser: (I) -> O): List<O> = runBlocking {
+        this@mapInParallel.map { data -> async { parser.invoke(data) } }.awaitAll()
     }
+
+    fun runAsync(task: () -> Unit) = CompletableFuture.runAsync { task() }
 }
