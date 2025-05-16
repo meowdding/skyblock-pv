@@ -15,7 +15,7 @@ import me.owdding.skyblockpv.data.api.skills.MiningCore
 import me.owdding.skyblockpv.data.api.skills.RockBracket
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk
 import me.owdding.skyblockpv.data.repo.ForgeTimeData
-import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.text
@@ -25,9 +25,11 @@ import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -65,7 +67,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: LayoutFactory.empty()
         val forge = getForge()
 
-        return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) > uiWidth) {
+        return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) >= uiWidth - 10) {
             LayoutFactory.vertical(5, MIDDLE) {
                 widget(info)
                 widget(powder)
@@ -217,7 +219,8 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) "§aReady"
                     else "§8${timeRemaining.toReadableTime()}"
 
-                    val canSetReminder = isProfileOfUser() && timeRemaining.inWholeMilliseconds > 0
+                    val defaultConditions = isProfileOfUser() && timeRemaining.inWholeMilliseconds > 0
+                    val canSetReminder = defaultConditions || SkyBlockPv.isSuperUser
 
                     val display = listOf(
                         Displays.text("§8§lSlot $index", shadow = false),
@@ -230,15 +233,33 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                         if (canSetReminder) {
                             add("")
                             add("§aClick to set a reminder")
+                            if (!defaultConditions) {
+                                add("§7Checks bypassed by being a super user :3")
+                            }
                         }
                     }
 
                     val widget = if (!canSetReminder) display.asWidget()
                     else display.asButton {
-                        ChatUtils.chat("Reminder set for ${slot.itemStack.hoverName?.stripped} to be ready in $timeDisplay")
+                        if (timeRemaining.inWholeMilliseconds <= 0) {
+                            Text.of("Process already finished!") { this.color = TextColor.RED }.sendWithPrefix()
+                            return@asButton
+                        }
+
+                        val name = slot.itemStack.hoverName ?: Text.of("Slot $index") { this.color = TextColor.GRAY }
+
+                        Text.of {
+                            append("Reminder set for ")
+                            append(name)
+                            append(" in ")
+                            append(timeDisplay.stripColor()) { this.color = TextColor.YELLOW }
+                            append("!")
+                            this.color = TextColor.GRAY
+                        }.sendWithPrefix()
+
                         RemindersAPI.addReminder(
                             "forge_slot_$index",
-                            Text.join("Reminder: ", slot.itemStack.hoverName, " is ready!"),
+                            Text.join("Forge Process for ", name, " is done!") { this.color = TextColor.GRAY },
                             System.currentTimeMillis() + timeRemaining.inWholeMilliseconds,
                         )
                     }
