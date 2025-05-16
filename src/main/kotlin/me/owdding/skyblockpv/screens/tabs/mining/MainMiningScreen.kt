@@ -5,7 +5,7 @@ import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.shorten
-import me.owdding.lib.extensions.sortByKey
+import me.owdding.lib.extensions.sortedByKeys
 import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.RemindersAPI
@@ -208,7 +208,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         return PvWidgets.label(
             "Forge",
             LayoutFactory.vertical(5) {
-                forgeSlots.sortByKey().forEach { (index, slot) ->
+                forgeSlots.sortedByKeys().forEach { (index, slot) ->
                     val itemDisplay = Displays.item(slot.itemStack)
 
                     val timeRemaining = ForgeTimeData.getForgeTime(
