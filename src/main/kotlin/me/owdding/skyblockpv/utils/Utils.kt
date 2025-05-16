@@ -126,5 +126,5 @@ object Utils {
         this@mapInParallel.map { data -> async { parser.invoke(data) } }.awaitAll()
     }
 
-    fun runAsync(task: () -> Unit) = CompletableFuture.runAsync { task() }
+    fun runAsync(task: () -> Unit): CompletableFuture<Void> = CompletableFuture.runAsync { task() }
 }
