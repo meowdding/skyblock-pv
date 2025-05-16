@@ -27,6 +27,9 @@ object RemindersAPI {
     private val file = SkyBlockPv.configDir.resolve("reminders.json")
     private val reminders = mutableListOf<Reminder>()
 
+    @IncludedCodec(named = "reminder§message")
+    val component: Codec<Component> = ComponentSerialization.CODEC
+
     init {
         if (!file.exists()) {
             file.parent.createDirectories()
@@ -81,8 +84,6 @@ object RemindersAPI {
         save()
     }
 
-    @IncludedCodec(named = "reminder§message")
-    val component: Codec<Component> = ComponentSerialization.CODEC
 
 }
 
