@@ -4,11 +4,16 @@ import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
+import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.builder.MIDDLE
+import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.round
+import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.SortedEntry
@@ -19,11 +24,13 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("PETS", gameProfile, profile) {
 
@@ -68,32 +75,137 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
             }
     }
 
-    private fun createInfoRow(width: Int) = LayoutFactory.vertical {
-        val petInfo = LayoutFactory.vertical {
-            string(Text.join("Name: ", selectedPet?.type?.toTitleCase() ?: "None"))
+    private fun createInfoRow(width: Int) = PvWidgets.label(
+        "Info",
+        LayoutFactory.vertical(spacing = 2) {
+            val colon = ExtraDisplays.grayText(": ")
+            val effectiveWidth = width - 20
+            fun List<Display>.doesFit() = this.sumOf { it.getWidth() } <= effectiveWidth
+
+            val nameText = ExtraDisplays.grayText("Name")
+            val petName = ExtraDisplays.grayText(selectedPet?.type?.toTitleCase() ?: "Unknown")
+            if (listOf(nameText, petName, colon).doesFit()) {
+                horizontal {
+                    display(nameText)
+                    display(colon)
+                    display(petName)
+                }
+            } else {
+                vertical {
+                    spacer(effectiveWidth)
+                    display(nameText)
+                    indentedDisplay(petName)
+                }
+            }
             val activePet = selectedPet ?: return@vertical
 
             string(Text.join("Level: ${activePet.level}"))
-            string(Text.join("Exp: ${activePet.exp.toFormattedString()}"))
+
+            val exp = ExtraDisplays.grayText("Exp: ${activePet.exp.toFormattedString()}")
+            if (listOf(exp).doesFit()) {
+                display(exp)
+            } else {
+                display(ExtraDisplays.grayText("Exp: ${activePet.exp.shorten(1)}"))
+            }
 
             if (activePet.progressToMax == 1f) {
-                string(Text.join("Progress Max: Maxed"))
+                val maxed = ExtraDisplays.grayText("Progress Max: Maxed")
+                if (listOf(maxed).doesFit()) {
+                    display(maxed)
+                } else {
+                    vertical {
+                        spacer(effectiveWidth)
+                        display(ExtraDisplays.grayText("Progress"))
+                        indentedDisplay(Displays.text(Text.of("MAXED") { this.color = TextColor.RED }, shadow = false))
+                    }
+                }
             } else {
-                string(Text.join("Progress Next: ${(activePet.progressToNextLevel * 100).round()}%"))
-                string(Text.join("Progress Max: ${(activePet.progressToMax * 100).round()}%"))
+                val progressNext = ExtraDisplays.grayText("Progress Next: ")
+                val progressMax = ExtraDisplays.grayText("Progress Max: ")
+                val progressNextPercentage = ExtraDisplays.grayText("${(activePet.progressToNextLevel * 100).round()}%")
+                val progressMaxPercentage = ExtraDisplays.grayText("${(activePet.progressToMax * 100).round()}%")
+
+                if (listOf(progressMax, progressMaxPercentage, colon).doesFit() && listOf(progressNext, progressNextPercentage, colon).doesFit()) {
+                    vertical {
+                        horizontal {
+                            display(progressNext)
+                            display(colon)
+                            display(progressNextPercentage)
+                        }
+                        horizontal {
+                            display(progressMax)
+                            display(colon)
+                            display(progressMaxPercentage)
+                        }
+                    }
+                } else {
+                    vertical {
+                        spacer(effectiveWidth)
+                        display(ExtraDisplays.grayText("Progress"))
+                        indentedHorizonal {
+                            string("Next: ")
+                            display(progressNextPercentage)
+                        }
+                        indentedHorizonal {
+                            string("Max: ")
+                            display(progressMaxPercentage)
+                        }
+                    }
+                }
             }
 
-            activePet.candyUsed.takeIf { it > 0 }?.let { string("Candy Used: $it") }
+            activePet.candyUsed.takeIf { it > 0 }?.let {
+                val number = ExtraDisplays.grayText(it.toString())
+                val candies = ExtraDisplays.grayText("Candy Used")
+                if (listOf(number, candies, colon).doesFit()) {
+                    horizontal {
+                        display(candies)
+                        display(colon)
+                        display(number)
+                    }
+                } else {
+                    vertical {
+                        spacer(effectiveWidth)
+                        display(ExtraDisplays.grayText("Candy Used"))
+                        indentedHorizonal {
+                            display(number)
+                            string("/10")
+                        }
+                    }
+                }
+            }
 
             val petItemStack = activePet.heldItem?.let { RepoItemsAPI.getItem(it) } ?: return@vertical
-            horizontal(alignment = 0.5f) {
-                string("Held Item: ")
-                display(Displays.item(petItemStack, showTooltip = true))
+            val itemText = ExtraDisplays.grayText("Held Item")
+            val itemDisplay = Displays.item(petItemStack, showTooltip = true)
+            if (listOf(itemText, itemDisplay, colon).doesFit()) {
+                horizontal(alignment = MIDDLE) {
+                    display(itemText)
+                    display(colon)
+                    display(itemDisplay)
+                }
+            } else {
+                horizontal {
+                    spacer(effectiveWidth)
+                    display(ExtraDisplays.grayText("Held Item"))
+                    indentedDisplay(itemDisplay)
+                }
             }
-        }
+        },
+        width = width,
+        icon = SkyBlockPv.id("icon/item/clipboard"),
+    )
 
-        widget(PvWidgets.getTitleWidget("Pet Info", width, SkyBlockPv.id("icon/item/clipboard")))
-        widget(PvWidgets.getMainContentWidget(petInfo, width))
-    }
+    fun LayoutBuilder.indentedDisplay(display: Display) = this.indented(display.asWidget())
+
+    fun LayoutBuilder.indentedHorizonal(spacing: Int = 0, alignment: Float = 0f, builder: LayoutBuilder.() -> Unit) =
+        this.indented(LayoutFactory.horizontal(spacing, alignment, builder))
+
+    fun LayoutBuilder.indentedVertical(spacing: Int = 0, alignment: Float = 0f, builder: LayoutBuilder.() -> Unit) =
+        this.indented(LayoutFactory.vertical(spacing, alignment, builder))
+
+    fun LayoutBuilder.indented(widget: LayoutElement) = horizontal { spacer(2); widget(widget) }
+
+
 }
 
