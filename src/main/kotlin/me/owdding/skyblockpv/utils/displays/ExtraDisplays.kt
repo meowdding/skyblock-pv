@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.utils.displays
 
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.Displays.isMouseOver
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
@@ -114,6 +115,8 @@ object ExtraDisplays {
             }
         }
     }
+
+    fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
 
     fun dropdownOverlay(original: Display, color: Int, context: DropdownContext): Display {
         return object : Display {
