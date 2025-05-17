@@ -21,7 +21,11 @@ import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
 import net.minecraft.Util
+import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
+import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvOpenedEvent
+import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
+import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.util.*
@@ -66,14 +70,20 @@ data class SkyBlockProfile(
 
     companion object {
 
+        @OptIn(SkyBlockPvRequired::class)
         fun fromJson(json: JsonObject, user: UUID): SkyBlockProfile? {
             val member = json.getPath("members.${user.toDashlessString()}")?.asJsonObject ?: return null
             val playerStats = member.getAs<JsonObject>("player_stats")
             val playerData = member.getAs<JsonObject>("player_data")
             val profile = member.getAs<JsonObject>("profile")
 
+            val selected = json.getAs<Boolean>("selected", false)
+            if (selected && user == McPlayer.uuid) {
+                SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
+            }
+
             return SkyBlockProfile(
-                selected = json.getAs<Boolean>("selected", false),
+                selected = selected,
                 id = ProfileId(
                     id = json.getAs("profile_id", Util.NIL_UUID),
                     name = json.getAs("cute_name", "Unknown"),
