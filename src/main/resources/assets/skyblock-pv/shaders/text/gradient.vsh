@@ -18,7 +18,6 @@ out vec2 texCoord0;
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
 
-    //vertexDistance = fog_distance(Position, FogShape);
     vertexDistance = 0.0;
     vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);
     texCoord0 = UV0;

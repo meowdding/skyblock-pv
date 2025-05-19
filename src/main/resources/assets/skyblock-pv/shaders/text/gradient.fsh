@@ -33,7 +33,7 @@ int colorAt(int index) {
     return int(colors[index / 4][index % 4]);
 }
 
-vec4 RAMP(float x) {
+vec4 SMOOTHY(float x) {
     x *= (states - 1);
     return mix(fromARGB(colorAt(int(x))), fromARGB(colorAt(int(x) + 1)), smoothstep(0.0, 1.0, fract(x)));
 }
@@ -49,5 +49,5 @@ void main() {
     }
     vec2 coords = gl_FragCoord.xy;
 
-    fragColor = vec4(RAMP(float(int(coords.x + ticks) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1);
+    fragColor = vec4(SMOOTHY(float(int(coords.x + ticks) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1);
 }
