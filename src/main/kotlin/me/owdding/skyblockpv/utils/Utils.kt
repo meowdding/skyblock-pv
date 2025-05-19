@@ -7,10 +7,13 @@ import earth.terrarium.olympus.client.pipelines.RoundedRectangle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import me.owdding.lib.displays.Display
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.render.TextShader
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.core.registries.BuiltInRegistries
@@ -127,4 +130,6 @@ object Utils {
     }
 
     fun runAsync(task: () -> Unit): CompletableFuture<Void> = CompletableFuture.runAsync { task() }
+
+    fun Display.withTextShader(shader: TextShader?) = ExtraDisplays.textShader(shader, this)
 }

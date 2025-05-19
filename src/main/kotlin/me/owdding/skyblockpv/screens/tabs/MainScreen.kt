@@ -25,13 +25,13 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.tabs.general.NetworthDisplay
-import me.owdding.skyblockpv.screens.tabs.general.PronounDisplay
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.widgets.PronounWidget
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LinearLayout
@@ -241,9 +241,10 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         layout.addChild(statusButtonWidget)
         layout.addChild(SpacerElement.height(3))
         if (Config.showPronouns) {
-            layout.addChild(PronounDisplay.getPronounDisplay(gameProfile.id, width)
-                .asWidget()
-                .withTooltip(Text.of("Provided by https://pronoundb.org/"))
+            layout.addChild(
+                PronounWidget.getPronounDisplay(gameProfile.id, width)
+                    .asWidget()
+                    .withTooltip(Text.of("Provided by https://pronoundb.org/")),
             )
         }
 

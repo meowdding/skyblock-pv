@@ -1,9 +1,9 @@
 package me.owdding.skyblockpv.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import me.owdding.skyblockpv.utils.CatOnShoulderLayer;
 import me.owdding.skyblockpv.utils.FakePlayer;
 import me.owdding.skyblockpv.utils.PlayerRenderStateAccessor;
+import me.owdding.skyblockpv.utils.render.CatOnShoulderLayer;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

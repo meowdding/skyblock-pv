@@ -94,6 +94,9 @@ tasks.processResources {
     filesMatching(listOf("fabric.mod.json")) {
         expand("version" to project.version)
     }
+    filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
+        filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
+    }
 }
 
 tasks.withType<JavaCompile>().configureEach {
