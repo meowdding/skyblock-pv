@@ -1,4 +1,4 @@
-package me.owdding.skyblockpv.utils
+package me.owdding.skyblockpv.utils.render
 
 import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.pipeline.RenderPipeline
@@ -20,6 +20,9 @@ import net.minecraft.client.renderer.RenderPipelines
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 
 object RenderUtils {
+
+    var TEXT_SHADER: TextShader? = null
+        private set
 
     val MONO_TEXTURE = SkyBlockPv.id("textures/gui/inventory/mono.png")
     val POLY_TEXTURE = SkyBlockPv.id("textures/gui/inventory/poly.png")
@@ -76,7 +79,7 @@ object RenderUtils {
         height: Int,
         size: Int,
         orientation: Orientation,
-        color: Int
+        color: Int,
     ) {
         val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(MONO_TEXTURE).texture
         RenderSystem.setShaderTexture(0, gpuTexture)
@@ -87,6 +90,14 @@ object RenderUtils {
         }
     }
 
+    @Suppress("UnusedReceiverParameter")
+    fun GuiGraphics.withTextShader(shader: TextShader?, action: () -> Unit) {
+        val previousShader = TEXT_SHADER
+        TEXT_SHADER = shader
+        action()
+        TEXT_SHADER = previousShader
+    }
+
     fun drawInventory(
         graphics: GuiGraphics,
         x: Int,
@@ -95,7 +106,7 @@ object RenderUtils {
         height: Int,
         columns: Int,
         rows: Int,
-        color: Int
+        color: Int,
     ) {
         val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(POLY_TEXTURE).texture
         RenderSystem.setShaderTexture(0, gpuTexture)

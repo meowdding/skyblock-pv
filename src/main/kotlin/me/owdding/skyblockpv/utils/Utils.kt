@@ -7,16 +7,20 @@ import earth.terrarium.olympus.client.pipelines.RoundedRectangle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import me.owdding.lib.displays.Display
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.render.TextShader
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.entity.SkullBlockEntity
+import org.joml.Matrix4f
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
@@ -127,4 +131,16 @@ object Utils {
     }
 
     fun runAsync(task: () -> Unit): CompletableFuture<Void> = CompletableFuture.runAsync { task() }
+
+    fun Display.withTextShader(shader: TextShader?) = ExtraDisplays.textShader(shader, this)
+
+    fun FloatArray.toMatrix4f(): Matrix4f {
+        require(this.size == 16) { "Array size must be 16!" }
+        return Matrix4f(
+            this[0], this[1], this[2], this[3],
+            this[4], this[5], this[6], this[7],
+            this[8], this[9], this[10], this[11],
+            this[12], this[13], this[14], this[15],
+        )
+    }
 }

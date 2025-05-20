@@ -7,6 +7,8 @@ import me.owdding.lib.displays.Displays.isMouseOver
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
 import me.owdding.skyblockpv.utils.accessors.withExclusiveScissor
+import me.owdding.skyblockpv.utils.render.RenderUtils.withTextShader
+import me.owdding.skyblockpv.utils.render.TextShader
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.util.ARGB
@@ -18,7 +20,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.translated
 import java.util.concurrent.CompletableFuture
 import kotlin.math.cos
 import kotlin.math.sin
-import me.owdding.skyblockpv.utils.RenderUtils as SbPvRenderUtils
+import me.owdding.skyblockpv.utils.render.RenderUtils as SbPvRenderUtils
 
 object ExtraDisplays {
 
@@ -192,6 +194,19 @@ object ExtraDisplays {
 
             override fun render(graphics: GuiGraphics) {
                 display.render(graphics)
+            }
+        }
+    }
+
+    fun textShader(shader: TextShader?, display: Display): Display {
+        return object : Display {
+            override fun getWidth() = display.getWidth()
+            override fun getHeight() = display.getHeight()
+
+            override fun render(graphics: GuiGraphics) {
+                graphics.withTextShader(shader) {
+                    display.render(graphics)
+                }
             }
         }
     }
