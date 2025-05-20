@@ -5,26 +5,30 @@
         "#F7F48B",
         "#A1DE93",
         "#70A1D7",
-        "#957DAD"
+        "#957DAD",
+        "#F47C7C"
     ],
     "pride_bi": [
         "#D872AC",
         "#D872AC",
         "#957DAD",
         "#6AA9ED",
-        "#6AA9ED"
+        "#6AA9ED",
+        "#D872AC"
     ],
     "pride_lesbian": [
         "#EB765A",
         "#FBAB74",
         "#FFFFFF",
         "#F295CC",
-        "#A36088"
+        "#A36088",
+        "#EB765A"
     ],
     "pride_pan": [
         "#FF82B1",
         "#F7F48B",
-        "#8BD1F9"
+        "#8BD1F9",
+        "#FF82B1"
     ],
     "pride_trans": [
         "#55CDFC",

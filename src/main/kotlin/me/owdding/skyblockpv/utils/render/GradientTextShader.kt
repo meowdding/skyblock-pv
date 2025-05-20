@@ -5,9 +5,9 @@ import com.mojang.blaze3d.shaders.UniformType
 import com.mojang.blaze3d.systems.RenderPass
 import me.owdding.lib.extensions.rightPad
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.utils.Utils.toMatrix4f
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.TextColor
-import org.joml.Matrix4f
 import tech.thatgravyboat.skyblockapi.api.events.time.TickEvent
 
 class GradientTextShader(gradientProvider: GradientProvider) : TextShader {
@@ -31,28 +31,7 @@ class GradientTextShader(gradientProvider: GradientProvider) : TextShader {
     )
 
     override fun pass(renderPass: RenderPass) {
-        var index = 0
-        renderPass.setUniform(
-            "colors",
-            Matrix4f(
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index++],
-                colors[index],
-            ),
-        )
+        renderPass.setUniform("colors", colors.toMatrix4f())
         renderPass.setUniform("states", states)
         renderPass.setUniform("ticks", TickEvent.ticks)
     }
