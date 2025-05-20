@@ -24,7 +24,7 @@ object PronounDbDecorations : ExtraData {
         }
     }
 
-    fun getShader(id: String): TextShader? = decorations[id]?.shader ?: decorations[id]?.shader
+    fun getShader(id: String): TextShader? = decorations[id]?.shader
 }
 
 data class DecorationDefinition(
