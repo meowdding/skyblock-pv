@@ -28,6 +28,7 @@ import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.nio.file.Files
+import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.jvm.optionals.getOrNull
@@ -143,4 +144,13 @@ object Utils {
             this[12], this[13], this[14], this[15],
         )
     }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    fun String.hash(algorithm: String = "SHA-256"): String {
+        return MessageDigest.getInstance(algorithm).let {
+            it.update(this.toByteArray())
+            it.digest()
+        }.toHexString()
+    }
+
 }

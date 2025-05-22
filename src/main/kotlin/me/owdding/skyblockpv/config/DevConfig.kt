@@ -25,6 +25,11 @@ object DevConfig : CategoryKt("Dev") {
         description = Translated("skyblockpv.dev.sacks_parser.desc")
     }
 
+    var offlineMode by boolean(false) {
+        condition = { devMode }
+        translation = "skyblockpv.dev.offline_mode"
+    }
+
     init {
         if (SkyBlockPv.isSuperUser) {
             button {

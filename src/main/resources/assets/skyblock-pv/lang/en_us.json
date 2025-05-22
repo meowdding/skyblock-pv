@@ -68,6 +68,13 @@
                 "Bypass the cache and always fetch data directly from the API.",
                 "<red>This won't work if you aren't a specified dev.</red>"
             ]
+        },
+        "offline_mode": {
+            "@value": "Offline Mode",
+            "desc": [
+                "Permanently caches requested profiles.",
+                "<yellow>This is only ever intended for local development!</yellow>"
+            ]
         }
     },
     "tab": {
