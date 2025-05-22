@@ -25,6 +25,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
+import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -93,7 +94,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
     @Subscription
     fun onRegisterCommands(event: RegisterCommandsEvent) {
-        event.register("pv") {
+        val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
             callback {
                 McClient.setScreenAsync(PvTab.MAIN.create(McClient.self.gameProfile))
             }
@@ -104,8 +105,13 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             }
         }
 
-        event.registerWithCallback("sbpv") {
-            McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(null))
+        event.register("pv") { pvCommand() }
+
+        event.register("sbpv") {
+            then("pv") { pvCommand() }
+            callback {
+                McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(null))
+            }
         }
     }
 
