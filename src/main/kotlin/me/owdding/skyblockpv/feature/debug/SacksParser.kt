@@ -12,6 +12,7 @@ import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerCloseEvent
 import tech.thatgravyboat.skyblockapi.api.events.screen.InventoryChangeEvent
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.impl.tagkey.ItemTag
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
@@ -26,7 +27,9 @@ object SacksParser {
     @Subscription
     fun onInv(event: InventoryChangeEvent) {
         if (!shouldParse()) return
-        if (event.slot.index !in 9..44) return
+        if (event.item in ItemTag.GLASS_PANES) return
+        if (event.isInBottomRow) return
+        if (event.isInPlayerInventory) return
 
         val id = event.item.getData(DataTypes.ID) ?: return
         titleRegex.match(event.title, "name") { (name) ->
@@ -46,12 +49,12 @@ object SacksParser {
                 RepoItemsAPI.getItem("$it${title.replace(" ", "_").uppercase()}").takeUnless { it.item == Items.BARRIER }?.getData(DataTypes.ID)
             } ?: title
 
-            data.computeIfAbsent(name) { Sack(sackId, mutableListOf()) }.add(parsedIds)
+            data.computeIfAbsent(name) { Sack(sackId, mutableSetOf()) }.add(parsedIds)
         }
     }
 
-    @Subscription
-    fun onInvGone(event: ContainerCloseEvent) {
+    @Subscription(event = [ContainerCloseEvent::class])
+    fun onInvGone() {
         if (!shouldParse()) return
         if (data.isEmpty()) return
         Text.of("Storing Sacks Data in config").send()
@@ -68,7 +71,7 @@ object SacksParser {
 
     private data class Sack(
         val sack: String,
-        val items: MutableList<String>,
+        val items: MutableSet<String>,
     ) {
         fun add(list: List<String>) {
             items.addAll(list)

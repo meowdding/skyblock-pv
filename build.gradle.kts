@@ -11,8 +11,8 @@ plugins {
     `museum-data` // defined in buildSrc
     alias(libs.plugins.kotlin)
     alias(libs.plugins.loom)
-    alias(libs.plugins.repo)
-    alias(libs.plugins.resources)
+    alias(libs.plugins.meowdding.repo)
+    alias(libs.plugins.meowdding.resources)
     alias(libs.plugins.ksp)
 }
 
