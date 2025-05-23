@@ -44,6 +44,13 @@
         "show_pronouns": {
             "@value": "Show Pronouns",
             "desc": "Show the pronouns of the player in the profile viewer if available."
+        },
+        "display_scaling": {
+            "@value": "Display Scaling",
+            "desc": [
+                "Scales pages to fill the screen if possible/needed.",
+                "<red>This is experimental and may break on some pages!</red>"
+            ]
         }
     },
     "dev": {
