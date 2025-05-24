@@ -36,6 +36,6 @@ object Config : ConfigKt("skyblockpv/config") {
     var currency by enum(ConfigCurrency.USD) { this.translation = "skyblockpv.config.currency" }
     var alignCategoryButtonsLeft by boolean(true) { this.translation = "skyblockpv.config.align_category_buttons_left" }
     var showPronouns by boolean(true) { this.translation = "skyblockpv.config.show_pronouns" }
-
+    var displayScaling by boolean(false) { this.translation = "skyblockpv.config.display_scaling" }
 
 }

@@ -24,6 +24,8 @@ class CarouselWidget(
 ) : BaseWidget() {
 
     private var cursor = CursorScreen.Cursor.DEFAULT
+    val leftWidth = McFont.self.width("<")
+    val rightWidth = McFont.self.width(">")
 
     init {
         this.height = displays.maxOfOrNull(Display::getHeight) ?: 0
@@ -59,7 +61,7 @@ class CarouselWidget(
                 if (graphics.containsPointInScissor(mouseX, mouseY)) {
                     translate(x + (left - x) / 2f, lastY + lastDiff / 2f - 7.5f, 0f)
                     scale(2f, 2f, 1f)
-                    graphics.drawCenteredString(McFont.self, "<", 0, 0, 0xFFFFFF)
+                    graphics.drawString(McFont.self, "<", -leftWidth / 2, 0, 0xFFFFFF)
                     cursor = CursorScreen.Cursor.POINTER
                 }
             }
@@ -80,7 +82,7 @@ class CarouselWidget(
                 if (graphics.containsPointInScissor(mouseX, mouseY)) {
                     translate(right + (x + width - right) / 2f, nextY + nextDiff / 2f - 7.5f, 0f)
                     scale(2f, 2f, 1f)
-                    graphics.drawCenteredString(McFont.self, ">", 0, 0, 0xFFFFFF)
+                    graphics.drawString(McFont.self, ">", -rightWidth / 2, 0, 0xFFFFFF)
                     cursor = CursorScreen.Cursor.POINTER
                 }
             }
@@ -134,8 +136,7 @@ class CarouselWidget(
                         ) { this.index == index },
                         WidgetRenderers.center(16, 18, DisplayWidget.displayRenderer(it)),
                     ),
-                )
-                .withCallback {
+                ).withCallback {
                     this.index = index
                 }
         }
