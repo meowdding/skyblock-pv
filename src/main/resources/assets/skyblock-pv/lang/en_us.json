@@ -44,6 +44,10 @@
         "show_pronouns": {
             "@value": "Show Pronouns",
             "desc": "Show the pronouns of the player in the profile viewer if available."
+        },
+        "party_finder_message": {
+            "@value": "Party Finder Message",
+            "desc": "Shows a message in chat to view the joined players profile."
         }
     },
     "dev": {
