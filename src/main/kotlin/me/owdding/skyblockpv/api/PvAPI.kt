@@ -2,7 +2,9 @@ package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.utils.ChatUtils
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McLevel
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockapi.utils.json.Json
 import java.util.*
@@ -14,37 +16,46 @@ private const val AUTHENTICATION_FAILED_MESSAGE = "Failed to authenticate with P
 object PvAPI {
 
     private var key: String? = null
-    private var failedReauth: Boolean = false
+    private var failedToAuth: Boolean = false
 
     fun isAuthenticated(): Boolean {
-        return key != null && !failedReauth
+        return key != null && !failedToAuth
     }
 
     suspend fun authenticate(bypassCaches: Boolean = false) {
-        val server = UUID.randomUUID().toString()
-        val user = McClient.self.user
+        try {
+            val server = UUID.randomUUID().toString()
+            val user = McClient.self.user
 
-        McClient.self.minecraftSessionService.joinServer(user.profileId, user.accessToken, server)
+            McClient.self.minecraftSessionService.joinServer(user.profileId, user.accessToken, server)
 
-        val response = Http.get<String>(
-            url = API_URL.format("/authenticate"),
-            queries = if (bypassCaches) {
-                mapOf("bypassCache" to "true")
-            } else {
-                emptyMap()
-            },
-            headers = mapOf(
-                "User-Agent" to "SkyBlockPV (${SkyBlockPv.version.friendlyString})",
-                "x-minecraft-username" to user.name,
-                "x-minecraft-server" to server,
-            ),
-        ) { if (isOk) asText() else "" }
+            val response = Http.get<String>(
+                url = API_URL.format("/authenticate"),
+                queries = if (bypassCaches) {
+                    mapOf("bypassCache" to "true")
+                } else {
+                    emptyMap()
+                },
+                headers = mapOf(
+                    "User-Agent" to "SkyBlockPV (${SkyBlockPv.version.friendlyString})",
+                    "x-minecraft-username" to user.name,
+                    "x-minecraft-server" to server,
+                ),
+            ) { if (isOk) asText() else "" }
 
-        key = response.takeIf { it.isNotEmpty() }
+            key = response.takeIf { it.isNotEmpty() }
+            failedToAuth = false
+        } catch (e: Throwable) {
+            SkyBlockPv.error("Failed to authenticate with PV API:", e)
+            if (McLevel.hasLevel) ChatUtils.chat("Failed to authenticate with PV API. Check if you are connected to Mojang servers.")
+
+            key = null
+            failedToAuth = true
+        }
     }
 
     suspend fun get(endpoint: String): JsonObject? {
-        if (this.key == null || failedReauth) {
+        if (this.key == null || failedToAuth) {
             SkyBlockPv.error(AUTHENTICATION_FAILED_MESSAGE)
             return null
         }
@@ -55,7 +66,7 @@ object PvAPI {
                 "User-Agent" to "SkyBlockPV (${SkyBlockPv.version.friendlyString})",
                 "Authorization" to this.key!!,
             ),
-            handler = { this }
+            handler = { this },
         )
 
         if (response.isOk) {
@@ -65,7 +76,7 @@ object PvAPI {
             if (this.key != null) {
                 return get(endpoint)
             } else {
-                failedReauth = true
+                failedToAuth = true
                 SkyBlockPv.error(AUTHENTICATION_FAILED_MESSAGE)
             }
         } else {
