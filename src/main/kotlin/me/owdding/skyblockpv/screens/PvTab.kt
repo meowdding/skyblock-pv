@@ -6,7 +6,6 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.tabs.ChocolateFactoryScreen
 import me.owdding.skyblockpv.screens.tabs.FishingScreen
-import me.owdding.skyblockpv.screens.tabs.MainScreen
 import me.owdding.skyblockpv.screens.tabs.PetScreen
 import me.owdding.skyblockpv.screens.tabs.base.Category
 import me.owdding.skyblockpv.screens.tabs.collection.BaseCollectionScreen
@@ -17,6 +16,8 @@ import me.owdding.skyblockpv.screens.tabs.farming.BaseFarmingScreen
 import me.owdding.skyblockpv.screens.tabs.farming.FarmingScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.BaseInventoryScreen
 import me.owdding.skyblockpv.screens.tabs.inventory.InventoryScreen
+import me.owdding.skyblockpv.screens.tabs.main.BaseMainScreen
+import me.owdding.skyblockpv.screens.tabs.main.MainScreen
 import me.owdding.skyblockpv.screens.tabs.mining.BaseMiningScreen
 import me.owdding.skyblockpv.screens.tabs.mining.MainMiningScreen
 import me.owdding.skyblockpv.screens.tabs.mining.MiningCategory
@@ -37,7 +38,7 @@ enum class PvTab(
     private val constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen,
     private val icon: (GameProfile?) -> ItemStack,
 ) {
-    MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
+    MAIN(BaseMainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
     COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
     COLLECTION(BaseCollectionScreen::class, CollectionCategories::createScreen, Items.ITEM_FRAME.defaultInstance),

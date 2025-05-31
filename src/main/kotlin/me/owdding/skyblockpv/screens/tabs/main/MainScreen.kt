@@ -1,4 +1,4 @@
-package me.owdding.skyblockpv.screens.tabs
+package me.owdding.skyblockpv.screens.tabs.main
 
 import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.platform.InputConstants
@@ -12,7 +12,6 @@ import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.SkillAPI
-import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
 import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -21,7 +20,6 @@ import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
-import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.tabs.general.NetworthDisplay
@@ -42,6 +40,7 @@ import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
@@ -54,13 +53,12 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
 
-
-class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
+class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMainScreen(gameProfile, profile) {
 
     private var cachedX = 0.0F
     private var cachedY = 0.0F
 
-    override fun create(bg: DisplayWidget) {
+    override fun getLayout(bg: DisplayWidget): Layout {
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
@@ -77,7 +75,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         if (leftStuff.height < uiHeight) {
-            return LayoutFactory.horizontal {
+            LayoutFactory.horizontal {
                 vertical {
                     spacer(height = 10)
                     widget(getGeneralInfo(profile, sideColumnWidth))
@@ -90,6 +88,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 }
                 widget(leftStuff)
             }.applyLayout()
+
+            return LayoutFactory.empty()
         }
 
         LayoutFactory.horizontal {
@@ -115,6 +115,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 }.asScrollable(width + 27, uiHeight),
             )
         }.applyLayout()
+
+        return LayoutFactory.empty()
     }
 
     private fun getGeneralInfo(profile: SkyBlockProfile, width: Int) = LayoutFactory.vertical(alignment = 0.5f) {
@@ -125,7 +127,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         val skillAvg = profile.skill
             .filterNot { it.key in irrelevantSkills }
-            .map { getSkillLevel(SkillAPI.getSkill(it.key), it.value, profile) }
+            .map { SkillAPI.getSkillLevel(SkillAPI.getSkill(it.key), it.value, profile) }
             .average()
 
         widget(PvWidgets.getTitleWidget("Info", width, SkyBlockPv.id("icon/item/clipboard")))
@@ -189,7 +191,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val height = (width * 1.1).toInt()
         val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
         val skyblockLvl = profile.skyBlockLevel.first
-        val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
+        val skyblockLvlColor = ProfileAPI.getLevelColor(skyblockLvl)
         val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
         val fakePlayer = FakePlayer(gameProfile, name, armor)
         val nakedFakePlayer = FakePlayer(gameProfile, name)
@@ -229,7 +231,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     PlayerStatus.Status.OFFLINE -> "§cOFFLINE - "
                     PlayerStatus.Status.ERROR -> "§4ERROR"
                 }
-                val locationText = SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location ?: "Unknown"
+                val locationText =
+                    SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location ?: "Unknown"
                 statusButtonWidget.withRenderer(WidgetRenderers.text(Text.of(statusText + locationText)))
                 statusButtonWidget.asDisabled()
             }
@@ -305,13 +308,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                         this.color = TextColor.GRAY
                         if (progress == 1f) {
                             append("Maxed!") { this.color = TextColor.RED }
-                        } else if (skill.hasFloatingLevelCap() && getSkillLevel(skill, num, profile) == skill.maxLevel(profile)) {
+                        } else if (skill.hasFloatingLevelCap() && SkillAPI.getSkillLevel(skill, num, profile) == skill.maxLevel(profile)) {
                             append("Reached max skill cap!") { this.color = TextColor.DARK_PURPLE }
                         } else {
                             append("${(progress * 100).round()}% to next") { this.color = TextColor.GREEN }
                         }
                     }
-                    if (skill.data.maxLevel != getSkillLevel(skill, num, profile)) {
+                    if (skill.data.maxLevel != SkillAPI.getSkillLevel(skill, num, profile)) {
                         add("Progress to max: ") {
                             this.color = TextColor.GRAY
                             val expRequired = SkillAPI.getExpRequired(skill, skill.data.maxLevel)
@@ -337,7 +340,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         width = width,
         getIcon = SkillAPI.Skill::icon,
     ) { name, num ->
-        getSkillLevel(name, num, profile)
+        SkillAPI.getSkillLevel(name, num, profile)
     }
 
     fun getEssenceSection(width: Int): LayoutElement {
@@ -367,7 +370,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         title = "Slayer",
         width = width,
         data = SlayerCodecs.data.map { (k, v) ->
-            val data = profile.slayer[v.id] ?: SlayerTypeData.EMPTY
+            val data = profile.slayer[v.id] ?: SlayerTypeData.Companion.EMPTY
             Pair(k, Pair(v, data))
         }.asSequence(),
         getIcon = ::getIconFromSlayerName,
@@ -428,7 +431,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     override fun onProfileSwitch(profile: SkyBlockProfile) {
         val disabledTabs = PvTab.entries.filter { it.getTabState(profile) != TriState.TRUE }
         if (disabledTabs.isNotEmpty()) {
-            FailedToLoadToast.add(
+            FailedToLoadToast.Companion.add(
                 profile,
                 Displays.background(
                     SkyBlockPv.id("buttons/dark/disabled"),
