@@ -48,6 +48,10 @@
         "party_finder_message": {
             "@value": "Party Finder Message",
             "desc": "Shows a message in chat to view the joined players profile."
+        },
+        "disable_outside_hypixel": {
+            "@value": "Disable outside hypixel",
+            "desc": "Disables/unregisters the <light_gray>/pv</light_gray> command outside of hypixel."
         }
     },
     "dev": {

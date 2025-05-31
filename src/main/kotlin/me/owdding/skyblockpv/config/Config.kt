@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefulconfig.api.types.info.ResourcefulConfigLin
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import me.owdding.skyblockpv.SkyBlockPv
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 
 object Config : ConfigKt("skyblockpv/config") {
 
@@ -37,5 +38,18 @@ object Config : ConfigKt("skyblockpv/config") {
     var alignCategoryButtonsLeft by boolean(true) { this.translation = "skyblockpv.config.align_category_buttons_left" }
     var showPronouns by boolean(true) { this.translation = "skyblockpv.config.show_pronouns" }
     var partyFinderMessage by boolean(true) { this.translation = "skyblockpv.config.party_finder_message" }
+    var disableOutsideHypixel by boolean(false) {
+        this.translation = "skyblockpv.config.disable_outside_hypixel"
+    }
+
+    private val regex = Regex(".*?hypixel\\.net")
+    val isDisabled: Boolean
+        get() {
+            if (disableOutsideHypixel) {
+                return McClient.self.connection?.serverData?.ip?.matches(regex) != true
+            }
+
+            return false
+        }
 
 }

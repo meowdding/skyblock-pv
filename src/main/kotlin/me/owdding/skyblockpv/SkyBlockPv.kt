@@ -94,6 +94,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
     @Subscription
     fun onRegisterCommands(event: RegisterCommandsEvent) {
+
         val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
             callback {
                 McClient.setScreenAsync(PvTab.MAIN.create(McClient.self.gameProfile))
@@ -105,7 +106,9 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             }
         }
 
-        event.register("pv") { pvCommand() }
+        if (!Config.isDisabled) {
+            event.register("pv") { pvCommand() }
+        }
 
         event.register("sbpv") {
             then("pv") { pvCommand() }
