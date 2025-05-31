@@ -17,6 +17,7 @@ abstract class BaseMainScreen(gameProfile: GameProfile, profile: SkyBlockProfile
 
 enum class MainCategory(val screen: KClass<out BaseMainScreen>, override val icon: ItemStack) : Category {
     MAIN(MainScreen::class, Items.WRITABLE_BOOK.defaultInstance),
+    NETWORTH(NetworthScreen::class, Items.SUNFLOWER.defaultInstance),
     ;
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null

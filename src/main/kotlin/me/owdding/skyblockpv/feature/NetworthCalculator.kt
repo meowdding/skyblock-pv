@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.feature
 
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.data.api.skills.Pet
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
 import tech.thatgravyboat.skyblockapi.api.remote.pricing.LowestBinAPI
 import tech.thatgravyboat.skyblockapi.api.remote.pricing.Pricing
@@ -15,12 +16,7 @@ object NetworthCalculator {
         val start = System.currentTimeMillis()
         val items = profile.inventory?.getAllItems()?.sumOf { it.getItemValue().price } ?: 0
         val sacks = profile.inventory?.sacks?.entries?.sumOf { Pricing.getPrice(it.key) * it.value } ?: 0
-        val pets = profile.pets.sumOf {
-            val pet = LowestBinAPI.getLowestPrice("pet:${it.type}:${it.rarity}") ?: 0L
-            val item = Pricing.getPrice(it.heldItem)
-            val skin = Pricing.getPrice(it.skin)
-            pet + item + skin
-        }
+        val pets = profile.pets.sumOf { it.calculateNetworth() }
         if (SkyBlockPv.isDevMode) SkyBlockPv.info("Networth calculation took ${System.currentTimeMillis() - start}ms")
 
         val total = mapOf(
@@ -37,6 +33,13 @@ object NetworthCalculator {
         return CompletableFuture.supplyAsync {
             calculateNetworth(profile)
         }
+    }
+
+    fun Pet.calculateNetworth(): Long {
+        val petPrice = LowestBinAPI.getLowestPrice("pet:${this.type}:${this.rarity}") ?: 0L
+        val itemPrice = Pricing.getPrice(this.heldItem)
+        val skinPrice = Pricing.getPrice(this.skin)
+        return petPrice + itemPrice + skinPrice
     }
 
 }
