@@ -4,7 +4,7 @@ import com.teamresourceful.resourcefulconfig.api.types.info.ResourcefulConfigLin
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import me.owdding.skyblockpv.SkyBlockPv
-import tech.thatgravyboat.skyblockapi.helpers.McClient
+import me.owdding.skyblockpv.utils.Utils
 
 object Config : ConfigKt("skyblockpv/config") {
 
@@ -42,14 +42,5 @@ object Config : ConfigKt("skyblockpv/config") {
         this.translation = "skyblockpv.config.disable_outside_hypixel"
     }
 
-    private val regex = Regex(".*?hypixel\\.net")
-    val isDisabled: Boolean
-        get() {
-            if (disableOutsideHypixel) {
-                return McClient.self.connection?.serverData?.ip?.matches(regex) != true
-            }
-
-            return false
-        }
-
+    val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
 }

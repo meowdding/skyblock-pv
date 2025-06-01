@@ -40,6 +40,8 @@ object Utils {
     var isFetchingGameProfile = false
         private set
 
+    val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
+
     fun GuiGraphics.drawRoundedRec(
         x: Int, y: Int, width: Int, height: Int,
         backgroundColor: Int, borderColor: Int = backgroundColor,
