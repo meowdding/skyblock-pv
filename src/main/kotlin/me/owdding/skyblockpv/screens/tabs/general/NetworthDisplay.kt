@@ -55,6 +55,8 @@ object NetworthDisplay {
                     this.append(it.value.toFormattedString()) { this.color = TextColor.GREEN }
                 }
             }
+            this.space()
+            this.add("View the full item breakdown in the networth tab.") { this.color = TextColor.GRAY }
         }
     }
 
