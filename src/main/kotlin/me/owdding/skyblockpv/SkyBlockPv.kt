@@ -75,7 +75,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
             McClient.tell {
                 Text.of().send()
-                "messages.new_version".asTranslated(current, new).withLink()
+                "messages.new_version".asTranslated(current, new).withLink().sendWithPrefix()
                 (+"messages.new_version.download").withLink().sendWithPrefix()
                 Text.of().send()
             }
