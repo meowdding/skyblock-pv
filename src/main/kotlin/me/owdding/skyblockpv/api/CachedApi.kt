@@ -4,8 +4,9 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.config.DevConfig
-import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils.hash
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toPrettyString
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.createDirectories
@@ -33,7 +34,7 @@ abstract class CachedApi<D, V, K> {
         }
 
         val result = PvAPI.get(path) ?: run {
-            ChatUtils.chat("Something went wrong fetching the status from Hypixel. Report this on the Discord!")
+            (+"messages.api.something_went_wrong").sendWithPrefix()
             return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong")))
         }
 

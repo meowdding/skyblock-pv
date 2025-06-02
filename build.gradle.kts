@@ -97,6 +97,9 @@ tasks.processResources {
     filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
         filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
     }
+    with(copySpec {
+        from("src/main/lang").include("*.json").into("assets/skyblock-pv/lang")
+    })
 }
 
 tasks.withType<JavaCompile>().configureEach {

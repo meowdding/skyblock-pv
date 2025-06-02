@@ -18,7 +18,9 @@ import me.owdding.skyblockpv.data.repo.ForgeTimeData
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
+import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.text
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.Utils.whiteText
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.ChatFormatting
@@ -29,7 +31,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -242,24 +243,17 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     val widget = if (!canSetReminder) display.asWidget()
                     else display.asButton {
                         if (timeRemaining.inWholeMilliseconds <= 0) {
-                            Text.of("Process already finished!") { this.color = TextColor.RED }.sendWithPrefix()
+                            (+"messages.forge.already_finished").sendWithPrefix()
                             return@asButton
                         }
 
                         val name = slot.itemStack.hoverName ?: Text.of("Slot $index") { this.color = TextColor.GRAY }
 
-                        Text.of {
-                            append("Reminder set for ")
-                            append(name)
-                            append(" in ")
-                            append(timeDisplay.stripColor()) { this.color = TextColor.YELLOW }
-                            append("!")
-                            this.color = TextColor.GRAY
-                        }.sendWithPrefix()
+                        "messages.forge.reminder_set".asTranslated(name, timeDisplay.stripColor()).sendWithPrefix()
 
                         RemindersAPI.addReminder(
                             "forge_slot_$index",
-                            Text.join("Forge Process for ", name, " is done!") { this.color = TextColor.GRAY },
+                            "messages.forge.reminder".asTranslated(name),
                             System.currentTimeMillis() + timeRemaining.inWholeMilliseconds,
                         )
                     }
