@@ -75,6 +75,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         CoroutineScope(Dispatchers.IO).launch {
             profiles = ProfileAPI.getProfiles(gameProfile)
             (profile ?: profiles.find { it.selected })?.let {
+                onProfileSwitch(it)
                 this@BasePvScreen.profile = it
             }
             if (!initedWithProfile) {
