@@ -77,6 +77,13 @@ data class SkyBlockProfile(
             val playerData = member.getAs<JsonObject>("player_data")
             val profile = member.getAs<JsonObject>("profile")
 
+            fun <T, R> allMembers(extractor: (member: JsonObject) -> T, adder: (members: List<T>) -> R): R {
+                val members =
+                    json.getAs<JsonObject>("members")?.entrySet()?.map { (_, v) -> v }?.filterIsInstance<JsonObject>()?.mapNotNull(extractor) ?: emptyList()
+                return adder(members)
+            }π
+            fun <T> allMembers(extractor: (member: JsonObject) -> T) = allMembers(extractor) { members -> members }
+
             val selected = json.getAs<Boolean>("selected", false)
             if (selected && user == McPlayer.uuid) {
                 SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
@@ -106,7 +113,12 @@ data class SkyBlockProfile(
                     experience / 100 to (experience % 100)
                 },
                 skill = playerData.getSkillData(),
-                collections = member.getCollectionData(),
+                collections = allMembers(::getCollectionData) { members ->
+                    members.filterNotNull().flatten().groupBy { it.itemId }.values.mapNotNull { items ->
+                        val item = items.firstOrNull() ?: return@mapNotNull null
+                        CollectionItem(item.category, item.itemId, items.sumOf { (_, _, count) -> count })
+                    }
+                },
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 bestiaryData = member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList(),
                 slayer = member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap(),
@@ -152,7 +164,7 @@ data class SkyBlockProfile(
             return skills.sortToSkillsOrder()
         }
 
-        private fun JsonObject.getCollectionData(): List<CollectionItem>? {
+        private fun getCollectionData(data: JsonObject): List<CollectionItem>? = with(data) {
             val collections = this["collection"] ?: return null
             val playerCollections = collections.asMap { id, amount -> id to amount.asLong(0) }
             val allCollections =
