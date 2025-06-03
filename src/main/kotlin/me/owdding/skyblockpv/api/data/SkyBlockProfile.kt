@@ -81,7 +81,7 @@ data class SkyBlockProfile(
                 val members =
                     json.getAs<JsonObject>("members")?.entrySet()?.map { (_, v) -> v }?.filterIsInstance<JsonObject>()?.mapNotNull(extractor) ?: emptyList()
                 return adder(members)
-            }π
+            }
             fun <T> allMembers(extractor: (member: JsonObject) -> T) = allMembers(extractor) { members -> members }
 
             val selected = json.getAs<Boolean>("selected", false)
