@@ -240,8 +240,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     return@runBlocking
                 }
                 val statusText = +"screens.main.status.${status.status.name.lowercase()}"
-                val locationText = (SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location)?.let { Text.of(it) }
-                    ?: +"screens.main.status.unknown"
+                val locationText = (SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location)?.let {
+                    Text.of(it).withColor(TextColor.GREEN)
+                } ?: +"screens.main.status.unknown"
                 statusButtonWidget.withRenderer(WidgetRenderers.text(statusText + locationText))
                 statusButtonWidget.asDisabled()
             }
