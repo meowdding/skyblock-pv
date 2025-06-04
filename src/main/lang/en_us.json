@@ -267,9 +267,9 @@
             "status": {
                 "load": "<white>Load Status</white>",
                 "loading": "<white>Loading...</white>",
-                "online": "<green>ONLINE</green> <dark_gray>-</dark_gray> ",
+                "online": "<green>ONLINE</green> <dark_gray>-</dark_gray> <green>",
                 "error": "<dark_red>ERROR</dark_red>",
-                "offline": "<red>OFFLINE</red> <dark_gray>-</dark_gray> ",
+                "offline": "<red>OFFLINE</red> <dark_gray>-</dark_gray> <red>",
                 "unknown": "<red>Unknown</red>"
             },
             "info": {
@@ -291,7 +291,7 @@
                     }
                 },
                 "cookie": {
-                    "@value": "Cookies Buff: <0>",
+                    "@value": "Cookie Buff: <0>",
                     "active": "<green>Active",
                     "inactive": "<red>Inactive"
                 },
