@@ -267,9 +267,9 @@
             "status": {
                 "load": "<white>Load Status</white>",
                 "loading": "<white>Loading...</white>",
-                "online": "<green>ONLINE</green> <dark_gray>-</dark_gray> <green>",
+                "online": "<green>ONLINE</green> <dark_gray>-</dark_gray> ",
                 "error": "<dark_red>ERROR</dark_red>",
-                "offline": "<red>OFFLINE</red> <dark_gray>-</dark_gray> <red>",
+                "offline": "<red>OFFLINE</red> <dark_gray>-</dark_gray> ",
                 "unknown": "<red>Unknown</red>"
             },
             "info": {
