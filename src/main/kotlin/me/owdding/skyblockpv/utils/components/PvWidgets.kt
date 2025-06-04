@@ -19,6 +19,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 object PvWidgets {
 
@@ -28,8 +29,10 @@ object PvWidgets {
     ).toRow(1).let { Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, it)) }
 
     fun iconNumberElement(icon: ItemLike, text: Component) = iconNumberElement(icon.asItem().defaultInstance, text)
-
     fun label(title: String, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: ResourceLocation? = null) =
+        label(Text.of(title), element, padding, width, icon)
+
+    fun label(title: Component, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: ResourceLocation? = null) =
         LayoutFactory.vertical {
             widget(getTitleWidget(title, width, icon))
             widget(getMainContentWidget(element, width))
@@ -166,7 +169,8 @@ object PvWidgets {
         }.toTypedArray(),
     )
 
-    fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null): LayoutElement = Widgets.frame { compoundWidget ->
+    fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = getTitleWidget(Text.of(title), width, icon)
+    fun getTitleWidget(title: Component, width: Int, icon: ResourceLocation? = null): LayoutElement = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->
             contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
             if (icon != null) contents.addChild(Displays.padding(0, width - 30, 0, 0, Displays.sprite(icon, 12, 12)).asWidget())

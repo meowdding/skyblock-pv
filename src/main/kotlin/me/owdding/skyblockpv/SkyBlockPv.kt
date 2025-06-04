@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
 import me.owdding.lib.utils.MeowddingUpdateChecker
+import me.owdding.lib.utils.isMeowddingDev
 import me.owdding.skyblockpv.api.PvAPI
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
@@ -15,6 +16,8 @@ import me.owdding.skyblockpv.generated.SkyBlockPVModules
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
@@ -38,12 +41,6 @@ import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-private val SUPER_USERS = setOf(
-    "503450fc-72c2-4e87-8243-94e264977437",
-    "e90ea9ec-080a-401b-8d10-6a53c407ac53",
-    "b75d7e0a-03d0-4c2a-ae47-809b6b808246",
-)
-
 @Module
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
     val mod: ModContainer = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
@@ -54,7 +51,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     val configurator = Configurator("sbpv")
 
     val isDevMode get() = McClient.isDev || DevConfig.devMode
-    val isSuperUser by lazy { McPlayer.uuid.toString() in SUPER_USERS }
+    val isSuperUser by lazy { McPlayer.uuid.isMeowddingDev() }
 
     val backgroundTexture = id("buttons/normal")
 
@@ -78,14 +75,8 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
             McClient.tell {
                 Text.of().send()
-                Text.join(
-                    "New version found! (",
-                    Text.of(current).withColor(TextColor.RED),
-                    Text.of(" -> ").withColor(TextColor.GRAY),
-                    Text.of(new).withColor(TextColor.GREEN),
-                    ")",
-                ).withLink().sendWithPrefix()
-                Text.of("Click to download.").withLink().sendWithPrefix()
+                "messages.new_version".asTranslated(current, new).withLink().sendWithPrefix()
+                (+"messages.new_version.download").withLink().sendWithPrefix()
                 Text.of().send()
             }
         }
