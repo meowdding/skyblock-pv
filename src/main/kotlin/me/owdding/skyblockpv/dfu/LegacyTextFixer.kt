@@ -10,13 +10,15 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 
 object LegacyTextFixer {
 
+    val EMPTY: Style = Style.EMPTY.withItalic(false)
+
     private const val CONTROL_CHAR = '§'
     val codeMap = buildMap {
         fun put(formatting: ChatFormatting, init: Style.() -> Style) {
             put(formatting.char.lowercaseChar(), init)
         }
 
-        ChatFormatting.entries.filter { it.isColor }.forEach { formatting -> put(formatting) { this.withColor(formatting) } }
+        ChatFormatting.entries.filter { it.isColor }.forEach { formatting -> put(formatting) { EMPTY.withColor(formatting) } }
 
         put(ChatFormatting.BOLD) { this.withBold(true) }
         put(ChatFormatting.ITALIC) { this.withItalic(true) }
@@ -24,7 +26,7 @@ object LegacyTextFixer {
         put(ChatFormatting.UNDERLINE) { this.withUnderlined(true) }
         put(ChatFormatting.OBFUSCATED) { this.withObfuscated(true) }
 
-        put(ChatFormatting.RESET) { Style.EMPTY }
+        put(ChatFormatting.RESET) { EMPTY }
     }
 
     fun parse(text: String): Component = Text.of {
@@ -33,7 +35,7 @@ object LegacyTextFixer {
             return@of
         }
 
-        var last: Style = Style.EMPTY
+        var last: Style = EMPTY
         with(StringReader(text)) {
             append(this.readUntil(CONTROL_CHAR))
 
@@ -50,7 +52,7 @@ object LegacyTextFixer {
                     withStyle(last)
                 }
 
-                last = Style.EMPTY
+                last = EMPTY
             }
         }
     }
