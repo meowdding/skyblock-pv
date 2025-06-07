@@ -232,5 +232,31 @@
             "name": "Blessing of Time",
             "max_level": 3
         }
+    },
+    "forest": {
+        "trapped": {
+            "name": "Trapped",
+            "max_level": 5
+        },
+        "axed": {
+            "name": "Axed",
+            "max_level": 1
+        },
+        "extreme_pressure": {
+            "name": "Extreme Pressure",
+            "max_level": 10
+        },
+        "lumberjack": {
+            "name": "Lumberjack",
+            "max_level": 10
+        },
+        "tasty": {
+            "name": "Tasty",
+            "max_level": 5
+        },
+        "forest_training": {
+            "name": "Forest Training",
+            "max_level": 3
+        }
     }
 }
