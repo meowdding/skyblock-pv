@@ -1,11 +1,11 @@
 package me.owdding.skyblockpv.dfu.fixes.display
 
 import me.owdding.skyblockpv.dfu.DataComponentFixer
+import me.owdding.skyblockpv.dfu.LegacyTextFixer
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
-import tech.thatgravyboat.skyblockapi.utils.text.Text
 import kotlin.jvm.optionals.getOrNull
 
 object NameFixer : DataComponentFixer<Component> {
@@ -19,6 +19,6 @@ object NameFixer : DataComponentFixer<Component> {
         val name = display.getAndRemoveString(TAG) ?: return null
         tag.removeIfEmpty(DISPLAY_TAG)
 
-        return Text.of(name)
+        return LegacyTextFixer.parse(name)
     }
 }
