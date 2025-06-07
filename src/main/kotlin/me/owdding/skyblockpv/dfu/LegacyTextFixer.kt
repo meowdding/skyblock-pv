@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 
 object LegacyTextFixer {
 
@@ -46,9 +46,9 @@ object LegacyTextFixer {
                 }
 
                 val readStringUntil = readUntil(CONTROL_CHAR)
-                Text.of(readStringUntil) {
+                append(readStringUntil) {
                     withStyle(last)
-                }.wrap("(", ")")
+                }
 
                 last = Style.EMPTY
             }
