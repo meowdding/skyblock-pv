@@ -1,9 +1,6 @@
 package me.owdding.skyblockpv.screens
 
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
+import com.google.gson.*
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
@@ -59,6 +56,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.lang.reflect.Type
 import java.nio.file.Files
+import java.util.concurrent.CompletableFuture
 import kotlin.time.Duration.Companion.seconds
 
 private const val ASPECT_RATIO = 16.0 / 9.0
@@ -248,17 +246,30 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                     object : JsonSerializer<ItemStack> {
                         override fun serialize(src: ItemStack?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
                             if (src == null) {
-                                return com.google.gson.JsonNull.INSTANCE
+                                return JsonNull.INSTANCE
                             }
 
                             val encodeStart = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, src)
                             if (encodeStart.isError) {
-                                return com.google.gson.JsonPrimitive(encodeStart.error().get().messageSupplier.get())
+                                return JsonPrimitive(encodeStart.error().get().messageSupplier.get())
                             }
                             return encodeStart.getOrThrow()
                         }
                     },
-                ).create().toJson(profiles),
+                )
+                .registerTypeAdapter(
+                    CompletableFuture::class.java,
+                    object : JsonSerializer<CompletableFuture<*>> {
+                        override fun serialize(src: CompletableFuture<*>?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+                            if (src == null) {
+                                return JsonNull.INSTANCE
+                            }
+
+                            return JsonPrimitive("Future: ${src.get()}")
+                        }
+                    },
+                )
+                .create().toJson(profiles),
         )
 
         ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
