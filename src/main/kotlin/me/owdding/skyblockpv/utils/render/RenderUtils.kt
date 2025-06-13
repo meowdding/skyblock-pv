@@ -98,6 +98,13 @@ object RenderUtils {
         TEXT_SHADER = previousShader
     }
 
+    fun pushPopTextShader(shader: TextShader?, action: () -> Unit) {
+        val previousShader = TEXT_SHADER
+        TEXT_SHADER = shader
+        action()
+        TEXT_SHADER = previousShader
+    }
+
     fun drawInventory(
         graphics: GuiGraphics,
         x: Int,
