@@ -2,7 +2,11 @@ package me.owdding.skyblockpv.data.api
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToEssenceOrder
-import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import me.owdding.skyblockpv.utils.json.getPathAs
+import tech.thatgravyboat.skyblockapi.utils.extentions.asList
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 
 data class Currency(
@@ -12,13 +16,16 @@ data class Currency(
     val essence: Map<String, Long>,
 ) {
     companion object {
-        fun fromJson(json: JsonObject) = Currency(
-            purse = json["coin_purse"].asLong(0),
-            motes = json["motes_purse"].asLong(0),
-            cookieBuffActive = json["cookie_buff_active"].asBoolean(false),
-            // todo: add missing essences if not unlocked
-            essence = json["essence"].asMap { id, obj -> id to obj.asJsonObject["current"].asLong(0) }.sortToEssenceOrder(),
-        )
+        fun fromJson(member: JsonObject): Currency {
+            val currency = member.getPathAs<JsonObject>("currencies") ?: JsonObject()
+            return Currency(
+                purse = currency["coin_purse"].asLong(0),
+                motes = currency["motes_purse"].asLong(0),
+                cookieBuffActive = member.getPathAs<Boolean>("profile.cookie_buff_active", false),
+                // todo: add missing essences if not unlocked
+                essence = currency["essence"].asMap { id, obj -> id to obj.asJsonObject["current"].asLong(0) }.sortToEssenceOrder(),
+            )
+        }
     }
 }
 
