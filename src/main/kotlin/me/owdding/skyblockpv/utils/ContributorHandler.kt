@@ -13,13 +13,14 @@ import net.minecraft.world.entity.animal.Parrot
 import java.util.*
 
 object ContributorHandler {
-    var contributors: Map<UUID, ContributorData> = emptyMap()
+    var contributors: MutableMap<UUID, ContributorData> = mutableMapOf()
         private set
 
     init {
         runBlocking {
             try {
-                contributors = Utils.loadRepoData("contributors", CodecUtils.map<UUID, ContributorData>())
+                contributors = Utils.loadRepoData("contributors", CodecUtils.mutableMap<UUID, ContributorData>())
+                contributors.putAll(Utils.loadRepoData("special_people", CodecUtils.map<UUID, ContributorData>()))
             } catch (e: Exception) {
                 e.printStackTrace()
             }

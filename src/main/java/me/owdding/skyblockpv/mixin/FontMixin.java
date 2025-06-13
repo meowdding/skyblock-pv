@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import me.owdding.skyblockpv.Helper;
+import me.owdding.skyblockpv.MixinHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.glyphs.BakedGlyph;
 import net.minecraft.client.renderer.RenderType;
@@ -14,9 +14,9 @@ public class FontMixin {
 
     @WrapOperation(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;renderType(Lnet/minecraft/client/gui/Font$DisplayMode;)Lnet/minecraft/client/renderer/RenderType;", ordinal = 0))
     public RenderType modify(BakedGlyph instance, Font.DisplayMode displayMode, Operation<RenderType> original) {
-        Helper.skipTextShader = true;
+        MixinHelper.skipTextShader = true;
         var returnValue = original.call(instance, displayMode);
-        Helper.skipTextShader = false;
+        MixinHelper.skipTextShader = false;
         return returnValue;
     }
 }

@@ -1,6 +1,6 @@
 package me.owdding.skyblockpv;
 
-public class Helper {
+public class MixinHelper {
 
     public static boolean skipTextShader = false;
 

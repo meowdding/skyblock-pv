@@ -27,6 +27,9 @@ object CodecUtils {
 
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
         Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
+    internal inline fun <reified K, reified V> mutableMap(): Codec<MutableMap<K, V>> =
+        Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
+            .xmap({ it.toMutableMap() }, { it })
 
     internal inline fun <reified T> list(): Codec<List<T>> {
         return SkyBlockPVCodecs.getCodec<T>().listOf()
