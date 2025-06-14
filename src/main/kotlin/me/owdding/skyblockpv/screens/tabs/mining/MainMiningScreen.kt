@@ -51,6 +51,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         "aquamarine_crystal",
         "citrine_crystal",
         "peridot_crystal",
+        "onyx_crystal",
     )
     val crystals = listOf(
         *nucleusRunCrystals.toTypedArray(),
