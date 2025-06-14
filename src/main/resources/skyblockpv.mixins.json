@@ -4,6 +4,7 @@
     "package": "me.owdding.skyblockpv.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
+        "FontMixin",
         "GlyphRenderTypesMixin",
         "GuiGraphicsMixin",
         "PlayerRendererMixin",
