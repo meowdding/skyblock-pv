@@ -15,7 +15,7 @@ class GradientTextShader(gradientProvider: GradientProvider) : TextShader {
     constructor(colors: List<Int>) : this({ colors })
     constructor(vararg colors: TextColor) : this(colors.map { it.value })
 
-    val colors = gradientProvider.getColors().take(16).rightPad(16, 0).map { it.toFloat() }.toFloatArray()
+    val colors = gradientProvider.getColors().take(16).toMutableList().rightPad(16, 0).map { it.toFloat() }.toFloatArray()
     val states = gradientProvider.getColors().take(16).size
     override val pipeline: RenderPipeline = RenderPipelines.register(
         RenderPipeline.builder(RenderPipelines.TEXT_SNIPPET, RenderPipelines.FOG_SNIPPET)

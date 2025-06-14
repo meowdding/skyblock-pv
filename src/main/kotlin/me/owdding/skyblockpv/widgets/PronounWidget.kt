@@ -24,8 +24,8 @@ object PronounWidget {
                     shadow = shader != null,
                 ).centerIn(width, McFont.height).withTextShader(shader)
             },
-            { Displays.empty(height = McFont.height, width = width) },
-            { Displays.empty(height = McFont.height, width = width) },
+            { Displays.text("Error", color = { 0xFFFF0000u }) },
+            { Displays.text("Loading") },
         )
     }
 }
