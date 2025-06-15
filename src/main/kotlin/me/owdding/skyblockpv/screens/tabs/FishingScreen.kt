@@ -442,7 +442,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         var score = 0
 
-        score += getData(DataTypes.RARITY_UPGRADES) ?: 0
+        score += 1.takeIf { getData(DataTypes.RECOMBOBULATOR) ?: false } ?: 0
 
         // take the actual level of ultimate enchants since those are worth smth
         getData(DataTypes.ENCHANTMENTS)?.let {

@@ -83,13 +83,13 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 this@BasePvScreen.profile = it
             }
             if (!initedWithProfile) {
-                McClient.tell { safelyRebuild() }
+                McClient.runNextTick { safelyRebuild() }
             }
         }
 
         Scheduling.schedule(10.seconds) {
             if (profile == null) {
-                McClient.tell { safelyRebuild() }
+                McClient.runNextTick { safelyRebuild() }
             }
         }
     }
@@ -189,7 +189,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             .withSize(20, 20)
             .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
             .withTexture(null)
-            .withCallback { McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen)) }
+            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen) } }
             .withTooltip(+"widgets.open_settings")
 
         widget(settingsButton)
@@ -285,7 +285,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             if (tab.isSelected()) {
                 button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
             } else {
-                button.withCallback { McClient.setScreenAsync(tab.create(gameProfile, profile)) }
+                button.withCallback { McClient.setScreenAsync { tab.create(gameProfile, profile) } }
                 button.withTexture(ExtraConstants.TAB_TOP)
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
@@ -308,7 +308,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             box.withEnterCallback {
                 Utils.fetchGameProfile(box.value) { profile ->
                     profile?.let {
-                        McClient.setScreenAsync(PvTab.MAIN.create(it))
+                        McClient.setScreenAsync { PvTab.MAIN.create(it) }
                     }
                 }
             }

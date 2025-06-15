@@ -24,7 +24,7 @@ object PartyFinderJoin {
                 return@match
             }
 
-            McClient.tell {
+            McClient.runNextTick {
                 "messages.party_finder_join".asTranslated(username).sendWithPrefix()
             }
         }

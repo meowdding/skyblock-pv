@@ -183,7 +183,7 @@ object ExtraDisplays {
 
             init {
                 completable.whenCompleteAsync { result, error ->
-                    McClient.tell {
+                    McClient.runNextTick {
                         display = result?.runCatching(onComplete)?.fold({ it }, onError) ?: onError(error)
                     }
                 }

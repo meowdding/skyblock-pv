@@ -61,7 +61,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
         SkyBlockPVExtraData.collected.forEach {
             CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
-                McClient.tell {
+                McClient.runNextTick {
                     throw throwable
                 }
             }
@@ -73,7 +73,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
                 this.hover = Text.of(link).withColor(TextColor.GRAY)
             }
 
-            McClient.tell {
+            McClient.runNextTick {
                 Text.of().send()
                 "messages.new_version".asTranslated(current, new).withLink().sendWithPrefix()
                 (+"messages.new_version.download").withLink().sendWithPrefix()
@@ -88,7 +88,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
         val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
             callback {
-                McClient.setScreenAsync(PvTab.MAIN.create(McClient.self.gameProfile))
+                McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
             }
             then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 callback {
@@ -104,7 +104,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
         event.register("sbpv") {
             then("pv") { pvCommand() }
             callback {
-                McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(null))
+                McClient.setScreenAsync { ResourcefulConfigScreen.getFactory("sbpv").apply(null) }
             }
         }
     }
