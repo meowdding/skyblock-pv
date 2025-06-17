@@ -44,7 +44,7 @@ object NetworthDisplay {
             this.add {
                 this.append("widgets.networth.tooltip.currency".asTranslated(currency.name))
                 val formattedNetworth = networthConverted.roundToInt().toFormattedString()
-                this.append("$$formattedNetworth ${currency.name}") { this.color = TextColor.GREEN }
+                this.append("$formattedNetworth ${currency.name}") { this.color = TextColor.GREEN }
             }
 
             this.space()
