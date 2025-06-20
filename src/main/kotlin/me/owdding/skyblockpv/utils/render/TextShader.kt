@@ -18,6 +18,8 @@ interface TextShader {
     val pipeline: RenderPipeline
     fun pass(renderPass: RenderPass)
 
+    val useWhite: Boolean get() = true
+
     companion object {
         val TEXT_RENDER_TYPE: BiFunction<TextShader, ResourceLocation, RenderType> =
             Util.memoize<TextShader, ResourceLocation, RenderType> { shader, location ->
