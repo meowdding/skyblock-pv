@@ -78,6 +78,13 @@
         "disable_outside_hypixel": {
             "@value": "Disable outside hypixel",
             "desc": "Disables/unregisters the <light_gray>/pv</light_gray> command outside of hypixel."
+        },
+        "display_scaling": {
+            "@value": "Enable Display Scaling",
+            "desc": [
+                "Scales displays to better fill the space available",
+                "<yellow>This might lead to unexpected behaviour and overflowing.</yellow>"
+            ]
         }
     },
     "dev": {
