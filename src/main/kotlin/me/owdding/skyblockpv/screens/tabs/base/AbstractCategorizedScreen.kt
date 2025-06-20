@@ -1,10 +1,14 @@
 package me.owdding.skyblockpv.screens.tabs.base
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.layouts.Layouts
 import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.extensions.floorToHalf
+import me.owdding.lib.layouts.Scalable
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
@@ -15,6 +19,7 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import kotlin.math.min
 
 abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen(name, gameProfile, profile) {
 
@@ -24,9 +29,25 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
 
     final override fun create(bg: DisplayWidget) {
         val layout = getLayout(bg)
-        layout.arrangeElements()
+        val horizontalDelta = ((uiWidth - 20) / layout.width.toDouble()).floorToHalf()
+        val verticalDelta = ((uiHeight - 20) / layout.height.toDouble()).floorToHalf()
+
+        if (Config.displayScaling && horizontalDelta > 1 && verticalDelta > 1) {
+            if (SkyBlockPv.isDevMode) {
+                addRenderableWidget(Widgets.text("$verticalDelta x $horizontalDelta").withPosition(0, 100).withSize(100))
+            }
+            val min = min(horizontalDelta, verticalDelta)
+            if (layout is Scalable) {
+                layout.scale(min)
+            } else {
+                layout.arrangeElements()
+            }
+        } else {
+            layout.arrangeElements()
+        }
         FrameLayout.centerInRectangle(layout, bg.x, bg.y, uiWidth, uiHeight)
         layout.visitWidgets(this::addRenderableWidget)
+
 
         val x = if (Config.alignCategoryButtonsLeft) bg.x - 22 else bg.x + bg.width - 9
         val y = bg.y + 20
