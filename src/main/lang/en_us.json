@@ -24,6 +24,11 @@
                 "<white>Can be upgraded at the <light_purple>Crimson Essence Shop</light_purple></white>",
                 "<white>in the <red>Crimson Isle</red></white>",
                 ""
+            ],
+            "forest_essence_shop": [
+                "<white>Can be upgraded at the <light_purple>Forest Essence Shop</light_purple></white>",
+                "<white>in the <gray>Murkwater Outpost</gray> on <dark_green>Galatea</dark_green></white>",
+                ""
             ]
         },
         "prefix": "skyblockpv"
