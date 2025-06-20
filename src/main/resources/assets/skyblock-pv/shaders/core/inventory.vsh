@@ -5,7 +5,6 @@ in vec2 UV0;
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
-uniform vec2 Size;
 
 out vec2 texCoord0;
 out vec4 vertexColor;

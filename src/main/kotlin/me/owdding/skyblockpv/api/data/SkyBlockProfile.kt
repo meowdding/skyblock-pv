@@ -16,7 +16,8 @@ import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
 import me.owdding.skyblockpv.feature.NetworthCalculator
-import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
@@ -77,6 +78,13 @@ data class SkyBlockProfile(
             val playerData = member.getAs<JsonObject>("player_data")
             val profile = member.getAs<JsonObject>("profile")
 
+            fun <T, R> allMembers(extractor: (member: JsonObject) -> T, adder: (members: List<T>) -> R): R {
+                val members =
+                    json.getAs<JsonObject>("members")?.entrySet()?.map { (_, v) -> v }?.filterIsInstance<JsonObject>()?.mapNotNull(extractor) ?: emptyList()
+                return adder(members)
+            }
+            fun <T> allMembers(extractor: (member: JsonObject) -> T) = allMembers(extractor) { members -> members }
+
             val selected = json.getAs<Boolean>("selected", false)
             if (selected && user == McPlayer.uuid) {
                 SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
@@ -96,7 +104,7 @@ data class SkyBlockProfile(
                     else -> ProfileType.NORMAL
                 },
                 inventory = member.getAs<JsonObject>("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) },
-                currency = member.getAs<JsonObject>("currencies")?.let { Currency.fromJson(it) },
+                currency = Currency.fromJson(member),
                 bank = Bank.fromJson(json, member),
                 firstJoin = profile.getAs<Long>("first_join", 0L),
                 fairySouls = member.getPathAs<Int>("fairy_soul.total_collected", 0),
@@ -106,7 +114,12 @@ data class SkyBlockProfile(
                     experience / 100 to (experience % 100)
                 },
                 skill = playerData.getSkillData(),
-                collections = member.getCollectionData(),
+                collections = allMembers(::getCollectionData) { members ->
+                    members.filterNotNull().flatten().groupBy { it.itemId }.values.mapNotNull { items ->
+                        val item = items.firstOrNull() ?: return@mapNotNull null
+                        CollectionItem(item.category, item.itemId, items.sumOf { (_, _, count) -> count })
+                    }
+                },
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 bestiaryData = member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList(),
                 slayer = member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap(),
@@ -152,7 +165,7 @@ data class SkyBlockProfile(
             return skills.sortToSkillsOrder()
         }
 
-        private fun JsonObject.getCollectionData(): List<CollectionItem>? {
+        private fun getCollectionData(data: JsonObject): List<CollectionItem>? = with(data) {
             val collections = this["collection"] ?: return null
             val playerCollections = collections.asMap { id, amount -> id to amount.asLong(0) }
             val allCollections =
@@ -200,7 +213,7 @@ data class SkyBlockProfile(
 
             if (unknownPerks.isNotEmpty()) {
                 println("Unknown essence perks: $unknownPerks")
-                ChatUtils.chat("${unknownPerks.size} Unknown essence perks. Please report this in the discord or the github")
+                "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
             }
 
             return perks

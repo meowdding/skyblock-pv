@@ -1,11 +1,11 @@
 package me.owdding.skyblockpv.dfu.fixes.display
 
 import me.owdding.skyblockpv.dfu.DataComponentFixer
+import me.owdding.skyblockpv.dfu.LegacyTextFixer
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.component.ItemLore
-import tech.thatgravyboat.skyblockapi.utils.text.Text
 import kotlin.jvm.optionals.getOrNull
 
 object LoreFixer : DataComponentFixer<ItemLore> {
@@ -19,7 +19,7 @@ object LoreFixer : DataComponentFixer<ItemLore> {
         val loreTag = display.getAndRemoveList(TAG) ?: return null
         tag.removeIfEmpty(DISPLAY_TAG)
 
-        val lore = loreTag.mapNotNull { it.asString().getOrNull() }.map { Text.of(it) }
+        val lore = loreTag.mapNotNull { it.asString().getOrNull() }.map { LegacyTextFixer.parse(it) }
         return ItemLore(lore, lore)
     }
 

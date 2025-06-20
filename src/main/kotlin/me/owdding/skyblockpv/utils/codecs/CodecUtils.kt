@@ -5,6 +5,7 @@ import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import net.minecraft.core.ClientAsset
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
@@ -26,10 +27,16 @@ object CodecUtils {
 
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
         Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
+    internal inline fun <reified K, reified V> mutableMap(): Codec<MutableMap<K, V>> =
+        Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
+            .xmap({ it.toMutableMap() }, { it })
 
     internal inline fun <reified T> list(): Codec<List<T>> {
         return SkyBlockPVCodecs.getCodec<T>().listOf()
     }
+
+    @IncludedCodec
+    val CLIENT_ASSET: Codec<ClientAsset> = ClientAsset.CODEC
 
     @IncludedCodec(named = "cum_int_list_alt")
     val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =
@@ -69,6 +76,9 @@ object CodecUtils {
         { TagParser.QUICK_TEXT_SAFE.parseText(it, ParserContext.of()) },
         { it.string },
     )
+
+    @IncludedCodec
+    val TEXT_COLOR: Codec<net.minecraft.network.chat.TextColor> = net.minecraft.network.chat.TextColor.CODEC
 
     @IncludedCodec(named = "cum_string_int_map")
     val CUMULATIVE_STRING_INT_MAP: Codec<List<Map<String, Int>>> = Codec.unboundedMap(Codec.STRING, Codec.INT).listOf().xmap(

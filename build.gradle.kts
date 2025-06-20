@@ -11,8 +11,8 @@ plugins {
     `museum-data` // defined in buildSrc
     alias(libs.plugins.kotlin)
     alias(libs.plugins.loom)
-    alias(libs.plugins.repo)
-    alias(libs.plugins.resources)
+    alias(libs.plugins.meowdding.repo)
+    alias(libs.plugins.meowdding.resources)
     alias(libs.plugins.ksp)
 }
 
@@ -97,6 +97,9 @@ tasks.processResources {
     filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
         filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
     }
+    with(copySpec {
+        from("src/main/lang").include("*.json").into("assets/skyblock-pv/lang")
+    })
 }
 
 tasks.withType<JavaCompile>().configureEach {

@@ -1,9 +1,6 @@
 package me.owdding.skyblockpv.screens
 
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
+import com.google.gson.*
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
@@ -21,9 +18,11 @@ import kotlinx.coroutines.launch
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
+import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.ProfileAPI
@@ -32,6 +31,9 @@ import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.Util
@@ -51,8 +53,10 @@ import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
+import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.lang.reflect.Type
 import java.nio.file.Files
+import java.util.concurrent.CompletableFuture
 import kotlin.time.Duration.Companion.seconds
 
 private const val ASPECT_RATIO = 16.0 / 9.0
@@ -67,7 +71,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     var initedWithProfile = false
 
-    open val tabTitle: Component get() = Text.translatable("skyblockpv.tab.${name.lowercase()}")
+    open val tabTitle: Component get() = +"tab.${name.lowercase()}"
 
     lateinit var profile: SkyBlockProfile
 
@@ -75,16 +79,17 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         CoroutineScope(Dispatchers.IO).launch {
             profiles = ProfileAPI.getProfiles(gameProfile)
             (profile ?: profiles.find { it.selected })?.let {
+                onProfileSwitch(it)
                 this@BasePvScreen.profile = it
             }
             if (!initedWithProfile) {
-                McClient.tell { safelyRebuild() }
+                McClient.runNextTick { safelyRebuild() }
             }
         }
 
         Scheduling.schedule(10.seconds) {
             if (profile == null) {
-                McClient.tell { safelyRebuild() }
+                McClient.runNextTick { safelyRebuild() }
             }
         }
     }
@@ -119,20 +124,10 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             e.printStackTrace()
 
             val errorWidget = LayoutFactory.vertical {
-                val text = mutableListOf(
-                    "Failed building screen $name",
-                    "Report this in the discord",
-                    "",
-                    "User: ${gameProfile.name} - ${gameProfile.id}",
-                    "Profile: ${profile.id.name}",
-                    "",
-                    "Exception: ${e.message}",
-                    "Stacktrace:",
-                )
+                val text = "widgets.error.stacktrace".asTranslated(name, gameProfile.name, gameProfile.id, profile.id.name, e.message, e.getStackTraceString(7))
 
-                text += e.stackTrace.take(7).map { it.toString().replace("knot//me.owdding.skyblockpv", "PV") }
 
-                text.forEach {
+                text.splitLines().forEach {
                     widget(Widgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
                 }
             }
@@ -166,16 +161,13 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             widget(loading)
             spacer(height = 20)
 
-            widget(Widgets.text("Is the API down?"))
-            widget(Widgets.text("Did data parsing fail?"))
-            widget(Widgets.text("Or is the API Key expired?"))
-            widget(Widgets.text("Report this on the discord with your /logs/latest.log"))
+            display((+"widgets.error.loading").multiLineDisplay(Alignment.CENTER))
 
             spacer(height = 20)
 
             widget(
                 Widgets.button()
-                    .withRenderer(WidgetRenderers.text(Text.of("Open Logs")))
+                    .withRenderer(WidgetRenderers.text(+"widgets.open_logs"))
                     .withSize(100, 20)
                     .withCallback {
                         Util.getPlatform().openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
@@ -197,8 +189,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             .withSize(20, 20)
             .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
             .withTexture(null)
-            .withCallback { McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen)) }
-            .withTooltip(Text.multiline("Open Settings.", "You can also use /sbpv"))
+            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen) } }
+            .withTooltip(+"widgets.open_settings")
 
         widget(settingsButton)
     }
@@ -254,17 +246,30 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                     object : JsonSerializer<ItemStack> {
                         override fun serialize(src: ItemStack?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
                             if (src == null) {
-                                return com.google.gson.JsonNull.INSTANCE
+                                return JsonNull.INSTANCE
                             }
 
                             val encodeStart = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, src)
                             if (encodeStart.isError) {
-                                return com.google.gson.JsonPrimitive(encodeStart.error().get().messageSupplier.get())
+                                return JsonPrimitive(encodeStart.error().get().messageSupplier.get())
                             }
                             return encodeStart.getOrThrow()
                         }
                     },
-                ).create().toJson(profiles),
+                )
+                .registerTypeAdapter(
+                    CompletableFuture::class.java,
+                    object : JsonSerializer<CompletableFuture<*>> {
+                        override fun serialize(src: CompletableFuture<*>?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+                            if (src == null) {
+                                return JsonNull.INSTANCE
+                            }
+
+                            return JsonPrimitive("Future: ${src.get()}")
+                        }
+                    },
+                )
+                .create().toJson(profiles),
         )
 
         ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
@@ -280,7 +285,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             if (tab.isSelected()) {
                 button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
             } else {
-                button.withCallback { McClient.setScreenAsync(tab.create(gameProfile, profile)) }
+                button.withCallback { McClient.setScreenAsync { tab.create(gameProfile, profile) } }
                 button.withTexture(ExtraConstants.TAB_TOP)
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
@@ -290,7 +295,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                     WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
                 ),
             )
-            button.withTooltip(Text.translatable("skyblockpv.tab.${tab.name.lowercase()}"))
+            button.withTooltip(+"tab.${tab.name.lowercase()}")
             widget(button)
         }
     }
@@ -303,14 +308,14 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             box.withEnterCallback {
                 Utils.fetchGameProfile(box.value) { profile ->
                     profile?.let {
-                        McClient.setScreenAsync(PvTab.MAIN.create(it))
+                        McClient.setScreenAsync { PvTab.MAIN.create(it) }
                     }
                 }
             }
         }
         username.withAlwaysShow(true)
         username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
-        username.withPlaceholder("Username...")
+        username.withPlaceholder((+"widgets.username_input").stripped)
         username.withSize(width, 20)
         username.setPosition(bg.x + bg.width - width, bg.y + bg.height)
         return username

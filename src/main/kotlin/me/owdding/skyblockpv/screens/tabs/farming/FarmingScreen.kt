@@ -255,7 +255,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         score += stack.getData(DataTypes.ENCHANTMENTS)?.map { it.value }?.sum() ?: 0
 
-        score += stack.getData(DataTypes.RARITY_UPGRADES) ?: 0
+        score += 1.takeIf { stack.getData(DataTypes.RECOMBOBULATOR) ?: false } ?: 0
 
         score += stack.getData(DataTypes.MODIFIER)?.let { 1 } ?: 0
 

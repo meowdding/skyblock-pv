@@ -31,14 +31,14 @@ object PetCodecs : ExtraData {
     @GenerateCodec
     data class PetData(
         @FieldName("rarity_offsets") val rarityOffsets: List<Int>,
-        @NamedCodec("cum_int_list_alt") @FieldName("xp_curve") val xpCurve: List<Int>,
+        @FieldName("xp_curve") val xpCurve: List<Int>,
         val overwrites: Map<String, Data>,
     )
 
     @GenerateCodec
     @NamedCodec("PetsData")
     data class Data(
-        @NamedCodec("cum_int_list_alt") @FieldName("xp_curve") val xpCurve: List<Int> = PetCodecs.xpCurve,
+        @FieldName("xp_curve") val xpCurve: List<Int> = PetCodecs.xpCurve,
         @FieldName("rarity_offsets") val rarityOffsets: List<Int> = PetCodecs.rarityOffsets,
         @FieldName("level_cap") val levelCap: Int = 100,
     ) {
