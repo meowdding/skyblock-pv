@@ -83,7 +83,7 @@
             "@value": "Enable Display Scaling",
             "desc": [
                 "Scales displays to better fill the space available",
-                "<yellow>This might lead to unexpected behaviour and overflowing.</yellow>"
+                "<red>This might lead to unexpected behaviour and overflowing.</red>"
             ]
         }
     },

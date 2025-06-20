@@ -67,7 +67,7 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
         }
 
         widget(buttonContainer)
-        spacer(height = 0)
+        spacer()
         widget(carousel!!)
 
         getExtraLine()?.let {

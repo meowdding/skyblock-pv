@@ -42,7 +42,7 @@ object Config : ConfigKt("skyblockpv/config") {
         this.translation = "skyblockpv.config.disable_outside_hypixel"
     }
 
-    val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
     var displayScaling by boolean(false) { this.translation = "skyblockpv.config.display_scaling" }
+    val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
 
 }
