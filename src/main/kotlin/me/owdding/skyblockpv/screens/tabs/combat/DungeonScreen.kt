@@ -1,9 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
-import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asTable
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.round
@@ -11,6 +9,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.Layout
@@ -35,7 +34,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val dungeonData = profile.dungeonData ?: return LayoutFactory.vertical {
+        val dungeonData = profile.dungeonData ?: return PvLayouts.vertical {
             string("No Dungeon Data")
         }
 
@@ -43,10 +42,10 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val leveling = createLevelingDisplay(dungeonData)
         val runs = createRunsDisplay(dungeonData)
 
-        return LayoutFactory.frame(bg.width, bg.height) {
+        return PvLayouts.frame(bg.width, bg.height) {
             if (info.width + leveling.width + runs.width + 10 > bg.width) {
                 widget(
-                    LayoutFactory.vertical(5) {
+                    PvLayouts.vertical(5) {
                         widget(createInfoBoxDisplay(dungeonData))
                         widget(createLevelingDisplay(dungeonData))
                         widget(createRunsDisplay(dungeonData))
@@ -70,7 +69,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         val runCounts = (countRuns(catacombsCompl) + countRuns(masterModeCompl)).coerceAtLeast(1)
 
-        val mainContent = LayoutFactory.vertical {
+        val mainContent = PvLayouts.vertical {
             string("Class Average: ${classToLevel?.map { it.value }?.toList()?.average()}")
             string("Secrets: ${dungeonData.secrets.toFormattedString()}")
             string("Secrets/Run: ${(dungeonData.secrets / runCounts).round()}")
@@ -89,14 +88,14 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             1.0f
         }
 
-        fun getClass(name: String) = LayoutFactory.vertical(5) {
+        fun getClass(name: String) = PvLayouts.vertical(5) {
             val level = classToLevel?.get(name)!!
             val progress = classToProgress?.get(name)!!
             string("${name.replaceFirstChar { it.uppercase() }}: $level")
             display(ExtraDisplays.progress(progress))
         }
 
-        val mainContent = LayoutFactory.vertical(10) {
+        val mainContent = PvLayouts.vertical(10) {
             vertical(5) {
                 string("Catacombs: $catacombsLevel")
                 display(ExtraDisplays.progress(catacombsProgressToNext))
@@ -131,7 +130,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             getRow("Sadan", "6")
             getRow("Necron", "7")
             add(listOf("Total", countRuns(catacombsComp).toString(), countRuns(masterComp).toString()))
-        }.map { it.map { Displays.text(it, color = { 0x555555u }, shadow = false) } }.asTable(10).asWidget()
+        }.map { it.map { ExtraDisplays.grayText(it) } }.asTable(10).asWidget()
 
         return PvWidgets.label("Dungeon Runs", table, 20)
     }

@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.tabs.rift
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.toRow
@@ -15,6 +14,7 @@ import me.owdding.skyblockpv.data.api.RiftData
 import me.owdding.skyblockpv.data.repo.RiftCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -30,7 +30,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.time.Instant
 
 class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseRiftScreen(gameProfile, profile) {
-    override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal(5, 0.5f) {
+    override fun getLayout(bg: DisplayWidget) = PvLayouts.horizontal(5, 0.5f) {
         val rift = profile.rift ?: run {
             string("Failed to load rift profile data") {
                 color = PvColors.RED
@@ -43,7 +43,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
         if (trophy.width + info.width + 5 > bg.width) {
             widget(
-                LayoutFactory.vertical(3, 0.5f) {
+                PvLayouts.vertical(3, 0.5f) {
                     widget(info)
                     widget(trophy)
                 }.asScrollable(bg.width, bg.height),
@@ -58,7 +58,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     private fun getInformation(profile: SkyBlockProfile, rift: RiftData, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
         "Information",
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             string("Motes: ") {
                 color = PvColors.DARK_GRAY
                 append((profile.currency?.motes ?: 0).toFormattedString()) {
@@ -90,7 +90,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 }
             }
             display(
-                Displays.text(
+                ExtraDisplays.text(
                     Text.of("Found Cats: ") {
                         color = PvColors.DARK_GRAY
                         append("${rift.deadCat.foundCats.size}/${data.montezuma.size}") {
@@ -114,7 +114,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 },
             )
             display(
-                Displays.text(
+                ExtraDisplays.text(
                     Text.of("Unlocked Eyes: ") {
                         color = PvColors.DARK_GRAY
                         append("${rift.unlockedEyes.size}/${data.eyes.size}") {
@@ -153,7 +153,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     private fun getTrophy(rift: RiftData, data: RiftCodecs.RiftRepoData) = PvWidgets.label(
         "Timecharms",
-        LayoutFactory.horizontal {
+        PvLayouts.horizontal {
             data.trophies.map { trophy ->
                 val ingameTrophy = rift.trophies.find { it.type == trophy.id }
                 val unlocked = ingameTrophy != null

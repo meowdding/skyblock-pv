@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
@@ -20,6 +19,7 @@ import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -38,7 +38,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
-        val baseLayout = LayoutFactory.frame {
+        val baseLayout = PvLayouts.frame {
             horizontal {
                 widget(getGear(profile))
                 widget(getContests(profile.farmingData))
@@ -50,7 +50,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             return baseLayout
         }
 
-        return LayoutFactory.vertical(5, alignment = 0.5f) {
+        return PvLayouts.vertical(5, alignment = 0.5f) {
             spacer()
             horizontal(5, alignment = 0.5f) {
                 widget(getGear(profile))
@@ -62,7 +62,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             val garden = data?.getOrNull()
 
             string("Copper: ") {
@@ -73,7 +73,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
 
             display(
-                Displays.text(
+                ExtraDisplays.text(
                     Text.of("Garden Level: ") {
                         this.color = PvColors.DARK_GRAY
                         append(loadingComponent { Text.of(it.getGardenLevel().toString()) { this.color = PvColors.DARK_GREEN } })
@@ -155,7 +155,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
             fun addLevelingPerk(perkLevel: Int, name: String, values: List<Map<String, Int>>) {
                 display(
-                    Displays.text(
+                    ExtraDisplays.text(
                         Text.of("$name: ") {
                             this.color = PvColors.DARK_GRAY
                             append("$perkLevel") {
@@ -223,7 +223,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getGear(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
-        LayoutFactory.horizontal {
+        PvLayouts.horizontal {
             PvWidgets.armorAndEquipment(
                 profile,
                 ::calculateEquipmentScore,

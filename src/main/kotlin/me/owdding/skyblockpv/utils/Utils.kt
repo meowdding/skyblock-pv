@@ -10,7 +10,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
-import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.toColumn
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
@@ -19,6 +18,7 @@ import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.render.TextShader
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.core.registries.BuiltInRegistries
@@ -130,7 +130,7 @@ object Utils {
 
     fun text(
         text: String = "",
-        color: UInt = 0x555555u,
+        color: UInt = PvColors.DARK_GRAY.toUInt(),
         init: MutableComponent.() -> Unit = {},
     ): MutableComponent {
         return Text.of(text) {
@@ -139,7 +139,7 @@ object Utils {
         }
     }
 
-    fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
+    fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, PvColors.WHITE.toUInt(), init)
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 
     fun UUID.toDashlessString(): String = this.toString().replace("-", "")
@@ -154,7 +154,8 @@ object Utils {
 
     fun Display.withTextShader(shader: TextShader?) = ExtraDisplays.textShader(shader, this)
 
-    fun Component.multiLineDisplay(alignment: Alignment = Alignment.START) = this.splitLines().map { Displays.component(it) }.toColumn(alignment = alignment)
+    fun Component.multiLineDisplay(alignment: Alignment = Alignment.START) =
+        this.splitLines().map { ExtraDisplays.component(it) }.toColumn(alignment = alignment)
 
     fun FloatArray.toMatrix4f(): Matrix4f {
         require(this.size == 16) { "Array size must be 16!" }

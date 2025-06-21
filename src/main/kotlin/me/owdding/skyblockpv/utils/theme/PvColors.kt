@@ -1,8 +1,20 @@
 package me.owdding.skyblockpv.utils.theme
 
+import earth.terrarium.olympus.client.constants.MinecraftColors
 import kotlin.reflect.KProperty
+import com.teamresourceful.resourcefullib.common.color.Color as RColor
 
 object PvColors {
+
+    var DARK_GRAY_COLOR: RColor = MinecraftColors.DARK_GRAY
+        get() {
+            if (field.value != DARK_GRAY) {
+                field = RColor(DARK_GRAY)
+            }
+
+            return field
+        }
+        private set
 
     val BLACK: Int by Color(PvThemeColors::black)
     val DARK_BLUE: Int by Color(PvThemeColors::darkBlue)

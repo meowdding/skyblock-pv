@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.tabs.museum
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
 import me.owdding.lib.extensions.withTooltip
@@ -10,6 +9,7 @@ import me.owdding.skyblockpv.data.museum.MuseumArmor
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.data.museum.RepoMuseumData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.DropdownContext
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.withDropdown
@@ -26,7 +26,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     BaseMuseumScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        return LayoutFactory.frame {
+        return PvLayouts.frame {
 
             val chunked = RepoMuseumData.armor.map {
                 loaded(
@@ -54,7 +54,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                 Displays.padding(2, chunked.map { it.toRow() }.toColumn()),
             )
 
-            val actualWidget = LayoutFactory.frame { display(armors) }.asScrollable(bg.width - 15, bg.height)
+            val actualWidget = PvLayouts.frame { display(armors) }.asScrollable(bg.width - 15, bg.height)
             widget(actualWidget)
 
 

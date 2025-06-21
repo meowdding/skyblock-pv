@@ -2,9 +2,9 @@ package me.owdding.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.Display
-import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.Items
 
 class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
@@ -19,7 +19,7 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         "No Armor Selected"
     } else {
         "Selected Armor: ${selected + 1}"
-    }.let { Displays.text(it, color = { 0x555555u }, shadow = false) }
+    }.let { ExtraDisplays.grayText(it) }
 
     override fun getInventories(): List<Display> = armor.mapIndexed { index, inventory ->
         if (selected != -1 && selected / 9 == index) {

@@ -1,13 +1,13 @@
 package me.owdding.skyblockpv.screens.tabs.collection
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.MinionCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.Items
@@ -77,7 +77,7 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
         }
     }
 
-    override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
+    override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical {
         val inventories = getInventories()
         val icons = MinionCodecs.categories.sortedBy { it.index }
 

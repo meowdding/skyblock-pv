@@ -62,20 +62,22 @@ object NetworthDisplay {
     }
 
     fun getNetworthDisplay(profile: SkyBlockProfile): Display = Displays.row(
-
-        Displays.component(+"widgets.networth", shadow = false),
+        ExtraDisplays.component(+"widgets.networth", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false),
         ExtraDisplays.completableDisplay(
             profile.netWorth,
-            { Displays.text(it.first.shorten(), color = { PvColors.DARK_GRAY.toUInt() }, shadow = false).addTooltip(it) },
+            { ExtraDisplays.grayText(it.first.shorten()).addTooltip(it) },
             { error ->
-                Displays.component(+"widgets.networth.failed", shadow = false).withTooltip {
-                    this.add(+"widgets.networth.error")
+                ExtraDisplays.component(+"widgets.networth.failed", color = { PvColors.RED.toUInt() }, shadow = false).withTooltip {
+                    this.add {
+                        add(+"widgets.networth.error")
+                        this.color = PvColors.RED
+                    }
                     error.getStackTraceString(10).lines().forEach { line ->
                         this.add(Text.of(line) { this.color = PvColors.RED })
                     }
                 }
             },
-            { Displays.component(+"widgets.networth.loading", shadow = false) },
+            { ExtraDisplays.component(+"widgets.networth.loading", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false) },
         ),
     )
 }

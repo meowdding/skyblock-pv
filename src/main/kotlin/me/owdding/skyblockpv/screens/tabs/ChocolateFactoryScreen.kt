@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -16,6 +15,7 @@ import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -44,10 +44,10 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val info = getInfo(cf, CfCodecs.data)
         val upgrades = getUpgrades(cf)
 
-        LayoutFactory.frame(bg.width, bg.height) {
+        PvLayouts.frame(bg.width, bg.height) {
             if (maxOf(employees.width, upgrades.width) + info.width + rarities.width + 6 > bg.width) {
                 widget(
-                    LayoutFactory.vertical(3, 0.5f) {
+                    PvLayouts.vertical(3, 0.5f) {
                         widget(employees)
                         widget(upgrades)
                         widget(info)
@@ -156,7 +156,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     private fun getInfo(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
         "Information",
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             string("Chocolate: ") {
                 color = PvColors.DARK_GRAY
                 append(cf.chocolate.shorten()) {
@@ -203,7 +203,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             }
 
             display(
-                Displays.text(
+                ExtraDisplays.text(
                     Text.of("Hitman Slots: ") {
                         color = PvColors.DARK_GRAY
                         append("${cf.hitman?.slots ?: 0} Unlocked") {

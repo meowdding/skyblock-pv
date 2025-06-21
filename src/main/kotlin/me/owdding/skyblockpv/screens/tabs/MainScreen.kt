@@ -6,7 +6,6 @@ import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -33,7 +32,10 @@ import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.plus
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.FailedToLoadToast
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays.grayText
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import me.owdding.skyblockpv.widgets.PronounWidget
@@ -69,7 +71,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val middleColumnWidth = (uiWidth * 0.2).toInt()
         val sideColumnWidth = (uiWidth - middleColumnWidth) / 2
 
-        val leftStuff = LayoutFactory.vertical(10) {
+        val leftStuff = PvLayouts.vertical(10) {
             spacer()
             widget(getSkillSection(profile, sideColumnWidth - 20))
             widget(getSlayerSection(sideColumnWidth - 20))
@@ -82,7 +84,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         if (leftStuff.height < uiHeight) {
-            return LayoutFactory.horizontal {
+            return PvLayouts.horizontal {
                 vertical {
                     spacer(height = 10)
                     widget(getGeneralInfo(profile, sideColumnWidth))
@@ -97,7 +99,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             }.applyLayout()
         }
 
-        LayoutFactory.horizontal {
+        PvLayouts.horizontal {
             val newWidth = (uiWidth * 0.35).toInt()
             vertical {
                 val playerDisplay = getPlayerDisplay(profile, newWidth)
@@ -110,7 +112,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             }
             val width = uiWidth - newWidth - 40
             widget(
-                LayoutFactory.vertical(10) {
+                PvLayouts.vertical(10) {
                     widget(getGeneralInfo(profile, width)) {
                         alignHorizontallyCenter()
                     }
@@ -122,7 +124,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }.applyLayout()
     }
 
-    private fun getGeneralInfo(profile: SkyBlockProfile, width: Int) = LayoutFactory.vertical(alignment = 0.5f) {
+    private fun getGeneralInfo(profile: SkyBlockProfile, width: Int) = PvLayouts.vertical(alignment = 0.5f) {
         val irrelevantSkills = listOf(
             "SKILL_RUNECRAFTING",
             "SKILL_SOCIAL",
@@ -135,9 +137,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         widget(PvWidgets.getTitleWidget("Info", width, SkyBlockPv.id("icon/item/clipboard")))
 
-        val infoColumn = LayoutFactory.vertical(2) {
-            fun grayText(text: Component) = Displays.component(text, color = { 0x555555u }, shadow = false)
-
+        val infoColumn = PvLayouts.vertical(2) {
             string("screens.main.info.purse".asTranslated(profile.currency?.purse?.toFormattedString()))
             display(
                 grayText(
@@ -286,14 +286,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             }
             val display = listOf(
                 icon,
-                Displays.padding(0, 0, 2, 0, Displays.text(level, color = { 0x555555u }, shadow = false)),
+                Displays.padding(0, 0, 2, 0, grayText(level)),
             ).toRow(1)
             val skillDisplay = Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/rounded_box_thin")), Displays.padding(2, display))
             (getToolTip(name, data)?.let { skillDisplay.withTooltip(it) } ?: skillDisplay).asWidget()
         }.toList()
 
         val elementsPerRow = (convertedElements.firstOrNull()?.width?.plus(10))?.let { width / it } ?: 0
-        if (elementsPerRow < 1) return LayoutFactory.empty()
+        if (elementsPerRow < 1) return PvLayouts.empty()
 
         convertedElements.chunked(elementsPerRow).forEach { chunk ->
             val element = LinearLayout.horizontal().spacing(5)
@@ -358,7 +358,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     fun getEssenceSection(width: Int): LayoutElement {
         val essence = profile.currency?.essence?.asSequence()?.map { it.toPair() } ?: emptySequence()
-        if (essence.sumOf { it.second } == 0L) return LayoutFactory.empty()
+        if (essence.sumOf { it.second } == 0L) return PvLayouts.empty()
         return createSection(
             title = +"screens.main.essence",
             data = essence,
@@ -455,7 +455,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     Displays.padding(
                         5,
                         Displays.column(
-                            Displays.component(+"messages.toast_disabled"),
+                            ExtraDisplays.component(+"messages.toast_disabled"),
                             "messages.toast_disabled.explanation".asTranslated(disabledTabs.joinToString(", ") { it.name.toTitleCase() }).multiLineDisplay(),
                         ),
                     ),

@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -10,9 +9,9 @@ import me.owdding.skyblockpv.data.api.skills.PowderType
 import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.withScrollToBottom
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
-import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.GridLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.SpacerElement
@@ -32,7 +31,7 @@ import kotlin.math.roundToInt
 class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val mining = profile.mining ?: return LayoutFactory.empty()
+        val mining = profile.mining ?: return PvLayouts.empty()
         val gridLayout = GridLayout()
 
         // nodes that are unlocked but not in the repo:
@@ -269,7 +268,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 appendGray(amountSpent.toFormattedString())
                 appendGray("/")
                 append(amountRequired.toFormattedString()) {
-                    withStyle(ChatFormatting.DARK_GRAY)
+                    this.color = PvColors.DARK_GRAY
                 }
                 if (amountSpent < amountRequired) {
                     val percentage = (amountSpent.toDouble() / amountRequired) * 100

@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
 import com.mojang.datafixers.util.Either
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
@@ -19,6 +18,7 @@ import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.fixBase64Padding
 import me.owdding.skyblockpv.utils.components.CarouselWidget
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.core.component.DataComponents
@@ -34,7 +34,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private val MOBS_PER_ROW_SIMPLE = 5
     private val MOBS_PER_ROW_COMPLEX = 8
 
-    override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
+    override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical {
         val categories = getCategories()
         val inventories = categories.values.toList()
         val icons = categories.keys.toList()
@@ -48,7 +48,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         val buttonContainer = carousel!!.getIcons { icons.map { Displays.item(it, showTooltip = true) } }
 
         widget(
-            LayoutFactory.vertical(5) {
+            PvLayouts.vertical(5) {
                 widget(buttonContainer.centerHorizontally(uiWidth))
                 widget(carousel!!.centerHorizontally(uiWidth))
             }.asScrollable(uiWidth, uiHeight),

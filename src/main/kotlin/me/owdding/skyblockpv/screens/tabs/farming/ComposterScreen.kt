@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.toReadableString
@@ -14,6 +13,7 @@ import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -32,10 +32,10 @@ import java.time.Instant
 
 class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
-        val baseLayout = LayoutFactory.horizontal {
+        val baseLayout = PvLayouts.horizontal {
             widget(getPlots())
             widget(
-                LayoutFactory.vertical {
+                PvLayouts.vertical {
                     widget(getInformation())
                     spacer(0, 10)
                     widget(getUpgrades())
@@ -45,7 +45,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
         if (baseLayout.fitsIn(bg)) return baseLayout
 
-        return LayoutFactory.vertical(spacing = 5, alignment = 0.5f) {
+        return PvLayouts.vertical(spacing = 5, alignment = 0.5f) {
             widget(getPlots())
             widget(getUpgrades())
             widget(getInformation())
@@ -54,7 +54,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     private fun getInformation() = PvWidgets.label(
         "Information",
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             string("Organic Matter Stored: ") {
                 append(
                     loadingComponent {
@@ -96,7 +96,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     private fun getUpgrades() = PvWidgets.label(
         "Upgrades",
-        LayoutFactory.frame {
+        PvLayouts.frame {
             display(
                 ExtraDisplays.inventoryBackground(
                     5, Orientation.HORIZONTAL,
@@ -199,7 +199,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     fun getPlots() = PvWidgets.label(
         "Plots",
-        LayoutFactory.frame {
+        PvLayouts.frame {
             val map = MutableList(5) { MutableList(5) { Displays.empty() } }
 
             StaticGardenData.plots.forEach {

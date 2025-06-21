@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -13,6 +12,7 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
@@ -45,7 +45,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             )
         }
 
-        return resourcesDisplay.toRow(2).let { LayoutFactory.frame { display(it) } }
+        return resourcesDisplay.toRow(2).let { PvLayouts.frame { display(it) } }
     }
 
     private fun getCropUpgrade(it: GardenResource): Display {

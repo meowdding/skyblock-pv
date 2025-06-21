@@ -1,8 +1,8 @@
 package me.owdding.skyblockpv.utils.components
 
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.string.TextWidget
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.skyblockpv.SkyBlockPv
@@ -11,6 +11,7 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
@@ -26,7 +27,7 @@ object PvWidgets {
 
     fun iconNumberElement(icon: ItemStack, text: Component) = listOf(
         Displays.item(icon, 12, 12),
-        Displays.padding(0, 0, 2, 0, Displays.text(text, shadow = false)),
+        Displays.padding(0, 0, 2, 0, ExtraDisplays.text(text, shadow = false)),
     ).toRow(1).let { Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/rounded_box_thin")), Displays.padding(2, it)) }
 
     fun iconNumberElement(icon: ItemLike, text: Component) = iconNumberElement(icon.asItem().defaultInstance, text)
@@ -34,7 +35,7 @@ object PvWidgets {
         label(Text.of(title), element, padding, width, icon)
 
     fun label(title: Component, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: ResourceLocation? = null) =
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             widget(getTitleWidget(title, width, icon))
             widget(getMainContentWidget(element, width))
     }
@@ -170,18 +171,21 @@ object PvWidgets {
         }.toTypedArray(),
     )
 
+    fun text(text: Component): TextWidget = Widgets.text(text).withColor(PvColors.DARK_GRAY_COLOR)
+    fun text(text: String): TextWidget = Widgets.text(text).withColor(PvColors.DARK_GRAY_COLOR)
+
     fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = getTitleWidget(Text.of(title), width, icon)
     fun getTitleWidget(title: Component, width: Int, icon: ResourceLocation? = null): LayoutElement = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->
             contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/title")), width - 10, 20).asWidget())
             if (icon != null) contents.addChild(Displays.padding(0, width - 30, 0, 0, Displays.sprite(ThemeSupport.texture(icon), 12, 12)).asWidget())
-            contents.addChild(Widgets.text(title).centerHorizontally(width))
+            contents.addChild(text(title).centerHorizontally(width))
         }
         compoundWidget.withStretchToContentSize()
     }
 
     fun getMainContentWidget(content: LayoutElement, width: Int): LayoutElement = Widgets.frame { compoundWidget ->
-        val contentWithSpacer = LayoutFactory.vertical {
+        val contentWithSpacer = PvLayouts.vertical {
             spacer(height = 7)
             widget(content)
             spacer(height = 7)
