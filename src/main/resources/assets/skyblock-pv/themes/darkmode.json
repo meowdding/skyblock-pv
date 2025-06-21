@@ -8,7 +8,13 @@
         "skyblock-pv:buttons/dark/normal": "skyblock-pv:darkmode/buttons/light/normal",
         "skyblock-pv:box/box": "skyblock-pv:darkmode/box/box",
         "skyblock-pv:box/rounded_box_thin": "skyblock-pv:darkmode/box/rounded_box_thin",
-        "skyblock-pv:box/title": "skyblock-pv:darkmode/box/title"
+        "skyblock-pv:box/title": "skyblock-pv:darkmode/box/title",
+        "skyblock-pv:tabs/top/hovered": "skyblock-pv:darkmode/tabs/top/hovered",
+        "skyblock-pv:tabs/top/normal": "skyblock-pv:darkmode/tabs/top/hovered",
+        "skyblock-pv:tabs/left/hovered": "skyblock-pv:darkmode/tabs/left/hovered",
+        "skyblock-pv:tabs/left/normal": "skyblock-pv:darkmode/tabs/left/hovered",
+        "skyblock-pv:tabs/right/hovered": "skyblock-pv:darkmode/tabs/right/hovered",
+        "skyblock-pv:tabs/right/normal": "skyblock-pv:darkmode/tabs/right/hovered"
     },
     "colors": {
         "dark_gray": 11908533
