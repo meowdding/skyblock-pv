@@ -3,11 +3,11 @@ package me.owdding.skyblockpv.data.api.skills.farming
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.utils.json.getAs
+import me.owdding.skyblockpv.utils.theme.PvColors
 import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 
 data class FarmingData(
     val medalInventory: Map<MedalType, Int>,
@@ -57,12 +57,12 @@ data class Contest(val id: String, val collected: Int, val claimedRewards: Boole
     }
 }
 
-enum class MedalType(val color: Int) {
-    BRONZE(TextColor.RED),
-    SILVER(TextColor.GRAY),
-    GOLD(TextColor.GOLD),
-    PLATINUM(TextColor.DARK_AQUA),
-    DIAMOND(TextColor.AQUA);
+enum class MedalType(val color: () -> Int) {
+    BRONZE({ PvColors.RED }),
+    SILVER({ PvColors.GRAY }),
+    GOLD({ PvColors.GOLD }),
+    PLATINUM({ PvColors.DARK_AQUA }),
+    DIAMOND({ PvColors.AQUA });
 
     companion object {
         val actualMedals = listOf(BRONZE, SILVER, GOLD)

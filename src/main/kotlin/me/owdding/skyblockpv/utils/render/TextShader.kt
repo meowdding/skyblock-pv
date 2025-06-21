@@ -19,6 +19,7 @@ interface TextShader {
     fun pass(renderPass: RenderPass)
 
     val useWhite: Boolean get() = true
+    val hasShadow: Boolean? get() = null
 
     companion object {
         val TEXT_RENDER_TYPE: BiFunction<TextShader, ResourceLocation, RenderType> =

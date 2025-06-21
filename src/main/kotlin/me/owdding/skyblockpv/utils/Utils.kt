@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.utils
 import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import earth.terrarium.olympus.client.pipelines.RoundedRectangle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -24,6 +25,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import org.joml.Matrix4f
 import tech.thatgravyboat.repolib.api.RepoAPI
@@ -31,6 +33,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor
@@ -43,7 +46,7 @@ import kotlin.jvm.optionals.getOrNull
 
 object Utils {
 
-    fun getMinecraftItem(id: String) = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
+    fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
 
     var isFetchingGameProfile = false
         private set
@@ -187,4 +190,7 @@ object Utils {
 
     operator fun MutableComponent.plus(other: Component): MutableComponent = this.append(other)
 
+    fun <T : Any> JsonElement?.toData(codec: MapCodec<T>) = this.toData(codec.codec())
+
+    fun <T : Any> JsonElement?.toDataOrThrow(codec: MapCodec<T>): T = this.toDataOrThrow(codec.codec())
 }

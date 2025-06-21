@@ -20,12 +20,12 @@ import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.fixBase64Padding
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 
@@ -94,28 +94,28 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             add(name)
 
             add("Level: ") {
-                color = TextColor.GRAY
-                append("$currentLevel") { color = TextColor.YELLOW }
-                append("/") { color = TextColor.GOLD }
-                append("$maxLevel") { color = TextColor.YELLOW }
+                color = PvColors.GRAY
+                append("$currentLevel") { color = PvColors.YELLOW }
+                append("/") { color = PvColors.GOLD }
+                append("$maxLevel") { color = PvColors.YELLOW }
             }
 
             add("Kills: ") {
-                color = TextColor.GRAY
-                append(kills.toFormattedString()) { color = TextColor.YELLOW }
+                color = PvColors.GRAY
+                append(kills.toFormattedString()) { color = PvColors.YELLOW }
 
                 val percentage = kills / requiredKills.toDouble() * 100
                 if (percentage >= 100) {
                     append(" Maxed!") {
-                        color = TextColor.RED
+                        color = PvColors.RED
                     }
                 } else {
-                    append("/") { color = TextColor.GOLD }
-                    append(requiredKills.toFormattedString()) { color = TextColor.YELLOW }
+                    append("/") { color = PvColors.GOLD }
+                    append(requiredKills.toFormattedString()) { color = PvColors.YELLOW }
 
                     append(" (")
                     append(percentage.round()) {
-                        color = TextColor.GREEN
+                        color = PvColors.GREEN
                         append("%")
                     }
                     append(")")
@@ -124,14 +124,14 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
             if (currentLevel != maxLevel) {
                 add("Next Level: ") {
-                    color = TextColor.GRAY
-                    append(kills.toFormattedString()) { color = TextColor.YELLOW }
-                    append("/") { color = TextColor.GOLD }
-                    append(bracket[currentLevel].toFormattedString()) { color = TextColor.YELLOW }
+                    color = PvColors.GRAY
+                    append(kills.toFormattedString()) { color = PvColors.YELLOW }
+                    append("/") { color = PvColors.GOLD }
+                    append(bracket[currentLevel].toFormattedString()) { color = PvColors.YELLOW }
 
                     append(" (")
                     append((kills / bracket[currentLevel].toDouble() * 100).round()) {
-                        color = TextColor.GREEN
+                        color = PvColors.GREEN
                         append("%")
                     }
                     append(")")
@@ -148,7 +148,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             { createSkull(it.second.split("\", \"").first().fixBase64Padding()) },
         ),
     ).apply {
-        set(DataComponents.CUSTOM_NAME, Text.join(name) { italic = false; color = TextColor.WHITE })
+        set(DataComponents.CUSTOM_NAME, Text.join(name) { italic = false; color = PvColors.WHITE })
     }
 }
 

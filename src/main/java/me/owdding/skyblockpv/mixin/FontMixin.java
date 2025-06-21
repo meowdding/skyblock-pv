@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class FontMixin {
 
     @Unique
-    int shadow = ARGB.scaleRGB(0xFFFFFFFF, 0.25f);
+    private final int skyblockpv$shadow = ARGB.scaleRGB(0xFFFFFFFF, 0.25f);
 
     @WrapOperation(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;renderType(Lnet/minecraft/client/gui/Font$DisplayMode;)Lnet/minecraft/client/renderer/RenderType;", ordinal = 0))
     public RenderType modify(BakedGlyph instance, Font.DisplayMode displayMode, Operation<RenderType> original) {
@@ -40,8 +40,13 @@ public class FontMixin {
     @Inject(method = "getShadowColor", at = @At("RETURN"), cancellable = true)
     public void getShadowColor(CallbackInfoReturnable<Integer> cir) {
         var shader = RenderUtils.INSTANCE.getTEXT_SHADER();
-        if (shader != null && shader.getUseWhite()) {
-            cir.setReturnValue(shadow);
+        if (shader == null) return;
+        var shadow = shader.getHasShadow();
+        if (shadow != null && !shadow) {
+            cir.setReturnValue(0);
+        }
+        if (shader.getUseWhite()) {
+            cir.setReturnValue(skyblockpv$shadow);
         }
     }
 }

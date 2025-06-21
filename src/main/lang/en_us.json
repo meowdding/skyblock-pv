@@ -54,6 +54,10 @@
             ]
         }
     },
+    "themes": {
+        "dark": "Dark mode",
+        "default": "Default"
+    },
     "config": {
         "spying": {
             "@value": "Spying Button",

@@ -37,6 +37,9 @@ class GradientTextShader(gradientProvider: GradientProvider) : TextShader {
         renderPass.setUniform("ticks", TickEvent.ticks)
     }
 
+    override val useWhite: Boolean get() = true
+    override val hasShadow: Boolean? get() = true
+
 }
 
 fun interface GradientProvider {

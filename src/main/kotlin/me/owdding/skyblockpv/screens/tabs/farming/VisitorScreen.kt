@@ -10,10 +10,10 @@ import me.owdding.skyblockpv.data.repo.StaticVisitorData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
@@ -43,12 +43,12 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         return when {
             commission == null -> when (rarity) {
-                SkyBlockRarity.UNCOMMON -> TextColor.DARK_GREEN
-                SkyBlockRarity.RARE -> TextColor.DARK_BLUE
-                SkyBlockRarity.LEGENDARY -> TextColor.YELLOW
-                SkyBlockRarity.MYTHIC -> TextColor.DARK_PURPLE
-                SkyBlockRarity.SPECIAL -> TextColor.DARK_RED
-                else -> TextColor.BLACK
+                SkyBlockRarity.UNCOMMON -> PvColors.DARK_GREEN
+                SkyBlockRarity.RARE -> PvColors.DARK_BLUE
+                SkyBlockRarity.LEGENDARY -> PvColors.YELLOW
+                SkyBlockRarity.MYTHIC -> PvColors.DARK_PURPLE
+                SkyBlockRarity.SPECIAL -> PvColors.DARK_RED
+                else -> PvColors.BLACK
             }
 
             else -> rarity.color
@@ -64,12 +64,12 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         return Displays.item(item).withTooltip {
             val profile = data ?: run {
-                add("Loading...") { this.color = TextColor.LIGHT_PURPLE }
+                add("Loading...") { this.color = PvColors.LIGHT_PURPLE }
                 return@withTooltip
             }
 
             if (profile.isFailure) {
-                add("Error!") { this.color = TextColor.RED }
+                add("Error!") { this.color = PvColors.RED }
                 return@withTooltip
             }
 
@@ -78,16 +78,16 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             if (commission != null) {
                 space()
                 add("Visits: ") {
-                    this.color = TextColor.GRAY
-                    append("${commission.total}") { this.color = TextColor.GREEN }
+                    this.color = PvColors.GRAY
+                    append("${commission.total}") { this.color = PvColors.GREEN }
                 }
                 add("Accepted: ") {
-                    this.color = TextColor.GRAY
-                    append("${commission.accepted}") { this.color = TextColor.GREEN }
+                    this.color = PvColors.GRAY
+                    append("${commission.accepted}") { this.color = PvColors.GREEN }
                 }
                 add("Rejected: ") {
-                    this.color = TextColor.GRAY
-                    append("${commission.total - commission.accepted}") { this.color = TextColor.GREEN }
+                    this.color = PvColors.GRAY
+                    append("${commission.total - commission.accepted}") { this.color = PvColors.GREEN }
                 }
             }
         }

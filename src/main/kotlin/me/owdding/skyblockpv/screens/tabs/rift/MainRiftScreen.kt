@@ -17,6 +17,7 @@ import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.TooltipFlag
@@ -25,7 +26,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.time.Instant
 
@@ -33,7 +33,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     override fun getLayout(bg: DisplayWidget) = LayoutFactory.horizontal(5, 0.5f) {
         val rift = profile.rift ?: run {
             string("Failed to load rift profile data") {
-                color = TextColor.RED
+                color = PvColors.RED
             }
             return@horizontal
         }
@@ -60,41 +60,41 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         "Information",
         LayoutFactory.vertical {
             string("Motes: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append((profile.currency?.motes ?: 0).toFormattedString()) {
-                    color = TextColor.LIGHT_PURPLE
+                    color = PvColors.LIGHT_PURPLE
                 }
             }
             string("Lifetime Motes: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append(rift.lifetimeMotes.toFormattedString()) {
-                    color = TextColor.LIGHT_PURPLE
+                    color = PvColors.LIGHT_PURPLE
                 }
             }
             string("Visits: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append(rift.visits.toFormattedString()) {
-                    color = TextColor.LIGHT_PURPLE
+                    color = PvColors.LIGHT_PURPLE
                 }
             }
             string("Time sitting with Ävaeìkx: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append(rift.secondsSitting.toReadableTime()) {
-                    color = TextColor.DARK_PURPLE
+                    color = PvColors.DARK_PURPLE
                 }
             }
             string("Enigma Souls: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append("${rift.foundSouls.size}") {
-                    color = TextColor.DARK_PURPLE
+                    color = PvColors.DARK_PURPLE
                 }
             }
             display(
                 Displays.text(
                     Text.of("Found Cats: ") {
-                        color = TextColor.DARK_GRAY
+                        color = PvColors.DARK_GRAY
                         append("${rift.deadCat.foundCats.size}/${data.montezuma.size}") {
-                            color = TextColor.DARK_PURPLE
+                            color = PvColors.DARK_PURPLE
                         }
                     },
                     shadow = false,
@@ -104,11 +104,11 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     }
                     if (missingCats.isEmpty()) return@withTooltip
                     add("Missing Cats (${missingCats.size}): ") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                     }
                     missingCats.forEach { cat ->
                         add(cat.toTitleCase()) {
-                            color = TextColor.DARK_PURPLE
+                            color = PvColors.DARK_PURPLE
                         }
                     }
                 },
@@ -116,9 +116,9 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             display(
                 Displays.text(
                     Text.of("Unlocked Eyes: ") {
-                        color = TextColor.DARK_GRAY
+                        color = PvColors.DARK_GRAY
                         append("${rift.unlockedEyes.size}/${data.eyes.size}") {
-                            color = TextColor.DARK_PURPLE
+                            color = PvColors.DARK_PURPLE
                         }
                     },
                     shadow = false,
@@ -128,23 +128,23 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     }
                     if (missingEyes.isEmpty()) return@withTooltip
                     add("Locked Eyes (${missingEyes.size}): ") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                     }
                     missingEyes.forEach { eye ->
                         add(eye.toTitleCase()) {
-                            color = TextColor.DARK_PURPLE
+                            color = PvColors.DARK_PURPLE
                         }
                     }
                 },
             )
             string("Grubber Stacks: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append(rift.grubberStacks.toFormattedString()) {
-                    color = TextColor.LIGHT_PURPLE
+                    color = PvColors.LIGHT_PURPLE
                 }
                 append("/")
                 append("5") {
-                    color = TextColor.DARK_PURPLE
+                    color = PvColors.DARK_PURPLE
                 }
             }
         },
@@ -162,16 +162,16 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     if (!unlocked) return@apply
                     add(CommonText.EMPTY)
                     add("Found after ") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                         append("${ingameTrophy.visits} ") {
-                            color = TextColor.GREEN
+                            color = PvColors.GREEN
                         }
                         append("visits")
                     }
                     add("Timestamp: ") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                         append(Instant.ofEpochMilli(ingameTrophy.timestamp).toReadableString()) {
-                            color = TextColor.GREEN
+                            color = PvColors.GREEN
                         }
                     }
                 }.build()

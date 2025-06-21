@@ -23,6 +23,8 @@ import me.owdding.skyblockpv.utils.Utils.text
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.Utils.whiteText
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.theme.PvColors
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
@@ -31,7 +33,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.text.SimpleDateFormat
@@ -107,14 +108,14 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             display(
                 Displays.text(
                     Text.join(
-                        Text.of("Rock Pet: ") { this.color = TextColor.DARK_GRAY },
-                        rockPet?.rarity?.displayText ?: Text.of("None") { this.color = TextColor.RED },
+                        Text.of("Rock Pet: ") { this.color = PvColors.DARK_GRAY },
+                        rockPet?.rarity?.displayText ?: Text.of("None") { this.color = PvColors.RED },
                     ),
                     shadow = false,
                 ).withTooltip(
                     Text.join(
-                        Text.of("Ores Mined: ") { this.color = TextColor.WHITE },
-                        Text.of(oresMined.toFormattedString()) { this.color = TextColor.AQUA },
+                        Text.of("Ores Mined: ") { this.color = PvColors.WHITE },
+                        Text.of(oresMined.toFormattedString()) { this.color = PvColors.AQUA },
                     ),
                     "",
                     RockBracket.entries.map {
@@ -177,7 +178,9 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
                 }
 
-                val display = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, listOf(icon, state).toRow(1))).withTooltip {
+                val display =
+                    Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/rounded_box_thin")), Displays.padding(2, listOf(icon, state).toRow(1)))
+                        .withTooltip {
                     add("§l${name.toTitleCase()}")
                     add("§7State: ${crystal.state.toTitleCase()}")
                     add("§7Found: ${crystal.totalFound.toFormattedString()}")
@@ -248,7 +251,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                             return@asButton
                         }
 
-                        val name = slot.itemStack.hoverName ?: Text.of("Slot $index") { this.color = TextColor.GRAY }
+                        val name = slot.itemStack.hoverName ?: Text.of("Slot $index") { this.color = PvColors.GRAY }
 
                         "messages.forge.reminder_set".asTranslated(name, timeDisplay.stripColor()).sendWithPrefix()
 

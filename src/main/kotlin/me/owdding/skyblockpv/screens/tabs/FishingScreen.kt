@@ -19,6 +19,7 @@ import me.owdding.skyblockpv.utils.Utils.text
 import me.owdding.skyblockpv.utils.Utils.whiteText
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -31,7 +32,6 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -166,11 +166,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         "Information",
         LayoutFactory.vertical {
             if (profile.trophyFish.lastCatch == null) {
-                string(Text.of("Never caught a trophy fish!") { this.color = TextColor.RED })
+                string(Text.of("Never caught a trophy fish!") { this.color = PvColors.RED })
             } else {
                 string(
                     Text.join(
-                        Text.of("Last Catch: ") { this.color = TextColor.DARK_GRAY },
+                        Text.of("Last Catch: ") { this.color = PvColors.DARK_GRAY },
                         profile.trophyFish.lastCatch.displayName,
                     ),
                 )
@@ -180,8 +180,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             string(
                 Text.join(
-                    Text.of("Trophy Rank: ") { this.color = TextColor.DARK_GRAY },
-                    rank?.displayName ?: Text.of("None") { this.color = TextColor.RED },
+                    Text.of("Trophy Rank: ") { this.color = PvColors.DARK_GRAY },
+                    rank?.displayName ?: Text.of("None") { this.color = PvColors.RED },
                 ),
             )
 
@@ -195,14 +195,14 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             display(
                 Displays.text(
                     Text.join(
-                        Text.of("Dolphin Pet: ") { this.color = TextColor.DARK_GRAY },
-                        dolphin?.rarity?.displayText ?: Text.of("None") { this.color = TextColor.RED },
+                        Text.of("Dolphin Pet: ") { this.color = PvColors.DARK_GRAY },
+                        dolphin?.rarity?.displayText ?: Text.of("None") { this.color = PvColors.RED },
                     ),
                     shadow = false,
                 ).withTooltip(
                     Text.join(
-                        Text.of("Sea Creatures Killed: ") { this.color = TextColor.WHITE },
-                        Text.of(seaCreatureKills.toFormattedString()) { this.color = TextColor.AQUA },
+                        Text.of("Sea Creatures Killed: ") { this.color = PvColors.WHITE },
+                        Text.of(seaCreatureKills.toFormattedString()) { this.color = PvColors.AQUA },
                     ),
                     "",
                     DolphinBracket.entries.map {
@@ -214,7 +214,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                             }
                             append(
                                 Text.of("${it.rarity.displayName} Dolphin") {
-                                    this.color = TextColor.DARK_GRAY
+                                    this.color = PvColors.DARK_GRAY
                                     if (hasObtained) {
                                         withColor((it.rarity.color))
                                     }

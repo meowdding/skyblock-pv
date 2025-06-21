@@ -20,7 +20,7 @@ object PronounWidget {
                 val shader = PronounDbDecorations.getShader(decoration ?: "")
                 Displays.component(
                     component = "widgets.pronouns".asTranslated(pronouns.toDisplay()),
-                    color = { 0xFF555555u.takeUnless { shader != null } ?: 0xFFFFFFFFu },
+                    color = { 0xFF555555u },
                     shadow = shader != null,
                 ).centerIn(width, McFont.height).withTextShader(shader)
             },

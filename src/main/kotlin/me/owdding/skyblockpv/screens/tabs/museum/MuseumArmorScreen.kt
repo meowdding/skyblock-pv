@@ -13,13 +13,13 @@ import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.displays.DropdownContext
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.withDropdown
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
@@ -30,16 +30,22 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
 
             val chunked = RepoMuseumData.armor.map {
                 loaded(
-                    Displays.item(Items.ORANGE_DYE.defaultInstance.withTooltip {
-                        add("Loading...") {
-                            this.color = TextColor.GOLD
-                        }
-                    }, showTooltip = true),
-                    Displays.item(Items.BEDROCK.defaultInstance.withTooltip {
-                        add("Error!") {
-                            this.color = TextColor.RED
-                        }
-                    }, showTooltip = true),
+                    Displays.item(
+                        Items.ORANGE_DYE.defaultInstance.withTooltip {
+                            add("Loading...") {
+                                this.color = PvColors.GOLD
+                            }
+                        },
+                        showTooltip = true,
+                    ),
+                    Displays.item(
+                        Items.BEDROCK.defaultInstance.withTooltip {
+                            add("Error!") {
+                                this.color = PvColors.RED
+                            }
+                        },
+                        showTooltip = true,
+                    ),
                 ) { data -> createArmor(it, data) }
             }.map { Displays.padding(2, it) }.chunked(((bg.width - 20) / 20).coerceAtMost(15))
 
@@ -79,7 +85,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
         } ?: Displays.item(Items.GRAY_DYE).withDropdown(
             Displays.item(
                 Items.GRAY_DYE.defaultInstance.withTooltip {
-                    add("Missing Armor") { this.color = TextColor.RED }
+                    add("Missing Armor") { this.color = PvColors.RED }
                     museumArmor.armorIds.map { RepoItemsAPI.getItem(it) }.sortedByDescending { sortAmor(it) }.forEach {
                         add(it.hoverName)
                     }

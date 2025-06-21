@@ -12,13 +12,13 @@ import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs
 import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs.getFor
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.CommonComponents
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
@@ -45,7 +45,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
             LayoutFactory.vertical {
                 textDisplay {
                     append("Faction: ")
-                    append(crimsonIsleData.selectedFaction?.displayName() ?: Text.of("None :c") { this.color = TextColor.YELLOW })
+                    append(crimsonIsleData.selectedFaction?.displayName() ?: Text.of("None :c") { this.color = PvColors.YELLOW })
                 }
                 crimsonIsleData.factionReputation.forEach { (faction, rep) ->
                     textDisplay {
@@ -81,7 +81,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                     val name = CrimsonIsleCodecs.DojoCodecs.idNameMap.getOrDefault(id, id)
                     textDisplay {
                         append("$name: ${points.takeUnless { it == -1 } ?: "None"} (")
-                        append(CrimsonIsleCodecs.DojoCodecs.grades.getFor(points.coerceAtLeast(0)) ?: Text.of("Error") { this.color = TextColor.RED })
+                        append(CrimsonIsleCodecs.DojoCodecs.grades.getFor(points.coerceAtLeast(0)) ?: Text.of("Error") { this.color = PvColors.RED })
                         append(")")
                     }
                 }
@@ -89,7 +89,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                     append("Total points: ${totalPoints.takeUnless { it == -1 } ?: "None"} (")
                     append(
                         CrimsonIsleCodecs.DojoCodecs.belts.getFor(totalPoints.coerceAtLeast(0))?.value?.hoverName ?: Text.of("Error") {
-                            this.color = TextColor.RED
+                            this.color = PvColors.RED
                         },
                     )
                     append(")")

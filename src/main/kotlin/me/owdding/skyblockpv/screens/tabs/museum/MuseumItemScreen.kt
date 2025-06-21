@@ -10,13 +10,13 @@ import me.owdding.skyblockpv.data.museum.*
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.math.ceil
@@ -44,8 +44,8 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         val map = sortedItems.map { item ->
             loaded(
-                whileLoading = listOf(Items.ORANGE_DYE.defaultInstance.withTooltip { add("Loading...") { this.color = TextColor.GOLD } }),
-                onError = listOf(Items.BEDROCK.defaultInstance.withTooltip { add("Error!") { this.color = TextColor.RED } }),
+                whileLoading = listOf(Items.ORANGE_DYE.defaultInstance.withTooltip { add("Loading...") { this.color = PvColors.GOLD } }),
+                onError = listOf(Items.BEDROCK.defaultInstance.withTooltip { add("Error!") { this.color = PvColors.RED } }),
             ) { createItem(item, it) }
         }
 
@@ -72,12 +72,12 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     add(RepoItemsAPI.getItemName(museumItem.id))
                     if (parent != null) {
                         add("Parent donated: ") {
-                            this.color = TextColor.GRAY
+                            this.color = PvColors.GRAY
                             append(RepoItemsAPI.getItemName(parent))
                         }
                     } else {
                         add("This item has not been donated!") {
-                            this.color = TextColor.GRAY
+                            this.color = PvColors.GRAY
                         }
                     }
                 }

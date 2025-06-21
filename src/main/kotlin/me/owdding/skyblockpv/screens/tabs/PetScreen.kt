@@ -22,6 +22,7 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -29,7 +30,6 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("PETS", gameProfile, profile) {
@@ -63,7 +63,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
         val itemDisplay = Displays.item(pet.itemStack, showTooltip = true, customStackText = Text.of(pet.level.toString()).withColor(pet.rarity.color))
         val display = ExtraDisplays.inventorySlot(
             Displays.padding(3, itemDisplay),
-            (-1).takeUnless { pet == selectedPet } ?: TextColor.GREEN,
+            (-1).takeUnless { pet == selectedPet } ?: PvColors.GREEN,
         )
         return Button()
             .withSize(22, 22)
@@ -116,7 +116,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
                     vertical {
                         spacer(effectiveWidth)
                         display(ExtraDisplays.grayText("Progress"))
-                        indentedDisplay(Displays.text(Text.of("MAXED") { this.color = TextColor.RED }, shadow = false))
+                        indentedDisplay(Displays.text(Text.of("MAXED") { this.color = PvColors.RED }, shadow = false))
                     }
                 }
             } else {

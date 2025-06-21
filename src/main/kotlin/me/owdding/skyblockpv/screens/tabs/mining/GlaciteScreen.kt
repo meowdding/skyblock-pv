@@ -13,6 +13,7 @@ import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
@@ -20,7 +21,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 
 class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
@@ -81,12 +81,12 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     bold = true
                 },
                 Text.join(
-                    Text.of("Donated: ").withColor(TextColor.GRAY),
-                    Text.of(if (unlocked) "Yes" else "No").withColor(if (unlocked) TextColor.GREEN else TextColor.RED),
+                    Text.of("Donated: ").withColor(PvColors.GRAY),
+                    Text.of(if (unlocked) "Yes" else "No").withColor(if (unlocked) PvColors.GREEN else PvColors.RED),
                 ),
                 Text.join(
-                    Text.of("In Pet Menu: ").withColor(TextColor.GRAY),
-                    Text.of(if (inPetMenu) "Yes" else "No").withColor(if (inPetMenu) TextColor.GREEN else TextColor.RED),
+                    Text.of("In Pet Menu: ").withColor(PvColors.GRAY),
+                    Text.of(if (inPetMenu) "Yes" else "No").withColor(if (inPetMenu) PvColors.GREEN else PvColors.RED),
                     if (!inPetMenu) Text.of("§a${it.pet.toTitleCase()}").wrap(" §7(", "§7)") else null,
                 ),
             )
@@ -107,16 +107,16 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             fun addCorpse(name: String, color: Int) {
                 string(
                     Text.join(
-                        Text.of("${name.toTitleCase()} Corpses: ").withColor(TextColor.DARK_GRAY),
+                        Text.of("${name.toTitleCase()} Corpses: ").withColor(PvColors.DARK_GRAY),
                         Text.of((glacite.corpsesLooted[name] ?: 0).toFormattedString()).withColor(color),
                     ),
                 )
             }
 
-            addCorpse("lapis", TextColor.BLUE)
-            addCorpse("tungsten", TextColor.GRAY)
-            addCorpse("umber", TextColor.GOLD)
-            addCorpse("vanguard", TextColor.AQUA)
+            addCorpse("lapis", PvColors.BLUE)
+            addCorpse("tungsten", PvColors.GRAY)
+            addCorpse("umber", PvColors.GOLD)
+            addCorpse("vanguard", PvColors.AQUA)
         },
     )
 
@@ -130,11 +130,11 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         },
         fossilDustConversions.map { (name, amount) ->
             val converted = fossilDust / amount
-            val color = if (converted > 0) TextColor.GREEN else TextColor.RED
+            val color = if (converted > 0) PvColors.GREEN else PvColors.RED
             Text.join(
-                Text.of("$name: ").withColor(TextColor.GRAY),
+                Text.of("$name: ").withColor(PvColors.GRAY),
                 Text.of(converted.toFormattedString()).withColor(color),
-                Text.of(" ($amount per)").withColor(TextColor.GRAY),
+                Text.of(" ($amount per)").withColor(PvColors.GRAY),
             )
         },
     )

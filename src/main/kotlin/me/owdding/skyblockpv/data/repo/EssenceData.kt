@@ -11,8 +11,8 @@ import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.displays.withTranslatedTooltip
+import me.owdding.skyblockpv.utils.theme.PvColors
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 @GenerateCodec
@@ -43,10 +43,10 @@ object EssenceData : ExtraData {
             Text.join(
                 perk?.name,
                 ": ",
-                Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) TextColor.GREEN else TextColor.RED },
+                Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) PvColors.GREEN else PvColors.RED },
                 "/$maxLevel",
             ),
-            { TextColor.DARK_GRAY.toUInt() },
+            { PvColors.DARK_GRAY.toUInt() },
             false,
         )
         display(display.withTranslatedTooltip("skyblockpv.essence.$category.$id"))

@@ -35,6 +35,7 @@ import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
@@ -105,9 +106,12 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
+    override fun render(graphics: GuiGraphics, mouseX: Int, mouseY: Int, f: Float) {
+        super.render(graphics, mouseX, mouseY, f)
+    }
 
     override fun init() {
-        val bg = Displays.background(SkyBlockPv.backgroundTexture, uiWidth, uiHeight).asWidget()
+        val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
 
         FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
         bg.applyLayout()
