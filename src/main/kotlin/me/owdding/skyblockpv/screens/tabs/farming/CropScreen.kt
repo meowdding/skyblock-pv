@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -13,7 +12,10 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -22,7 +24,6 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -44,7 +45,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             )
         }
 
-        return resourcesDisplay.toRow(2).let { LayoutFactory.frame { display(it) } }
+        return resourcesDisplay.toRow(2).let { PvLayouts.frame { display(it) } }
     }
 
     private fun getCropUpgrade(it: GardenResource): Display {
@@ -56,36 +57,36 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val totalCopper = cropUpgradeCost.sum()
 
         val icon = if (cropLevel == maxUpgrades) Items.NETHERRACK else Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE
-        val color = if (cropLevel == maxUpgrades) TextColor.GREEN else TextColor.RED
+        val color = if (cropLevel == maxUpgrades) PvColors.GREEN else PvColors.RED
 
         val cropLevelText = Text.of(cropLevel.toString()) { this.color = color }
         return loadingValue(
             Displays.item(icon, customStackText = cropLevelText).withTooltip {
                 add("Crop Upgrade") { this.bold = true }
                 add("Upgrades: ") {
-                    this.color = TextColor.GRAY
+                    this.color = PvColors.GRAY
 
                     append(cropLevelText)
                     append("/$maxUpgrades")
                 }
                 add("Copper paid: ") {
-                    this.color = TextColor.GRAY
+                    this.color = PvColors.GRAY
 
                     val copperUsed = cropUpgradeCost.take(cropLevel).sum()
-                    append(copperUsed.toFormattedString()) { this.color = TextColor.RED }
-                    append("/") { this.color = TextColor.GOLD }
-                    append(totalCopper.toFormattedString()) { this.color = TextColor.RED }
+                    append(copperUsed.toFormattedString()) { this.color = PvColors.RED }
+                    append("/") { this.color = PvColors.GOLD }
+                    append(totalCopper.toFormattedString()) { this.color = PvColors.RED }
                     if (totalCopper != copperUsed) {
                         append(
                             Text.of("${((copperUsed.toFloat() / totalCopper) * 100).round()}%") {
-                                this.color = TextColor.YELLOW
+                                this.color = PvColors.YELLOW
                             }.wrap(" (", ")"),
                         )
                     }
                 }
             },
-            Displays.item(Items.ORANGE_DYE).withTooltip(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE }),
-            Displays.item(Items.BEDROCK).withTooltip(Text.of("Error!") { this.color = TextColor.RED }),
+            Displays.item(Items.ORANGE_DYE).withTooltip(Text.of("Loading...") { this.color = PvColors.LIGHT_PURPLE }),
+            Displays.item(Items.BEDROCK).withTooltip(Text.of("Error!") { this.color = PvColors.RED }),
         )
     }
 
@@ -98,7 +99,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val milestone = milestoneBrackets.findLast { it <= resourcesCollected }?.let { milestoneBrackets.indexOf(it) } ?: 0
         val maxLevel = milestoneBrackets.size - 1
 
-        val milestoneText = Text.of(milestone.toString()) { color = if (maxLevel == milestone) TextColor.GREEN else TextColor.RED }
+        val milestoneText = Text.of(milestone.toString()) { color = if (maxLevel == milestone) PvColors.GREEN else PvColors.RED }
         return loadingValue(
             Displays.item(resource.getItem(), customStackText = milestoneText).withTooltip {
                 add(resource.getItem().customName?.stripped ?: "Unknown") {
@@ -106,59 +107,59 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     append(" Milestone")
                 }
                 add("Progress: ") {
-                    color = TextColor.GRAY
+                    color = PvColors.GRAY
                     append(milestoneText)
                     append("/")
                     append(maxLevel.toString())
                 }
                 if (milestone != maxLevel) {
                     add("Progress to ${milestone + 1}: ") {
-                        this.color = TextColor.GRAY
+                        this.color = PvColors.GRAY
 
                         val collected = resourcesCollected - milestoneBrackets[(milestone).coerceAtLeast(0)]
                         val needed = milestoneBrackets[milestone + 1] - milestoneBrackets[(milestone).coerceAtLeast(0)]
 
-                        append(collected.toFormattedString()) { color = TextColor.YELLOW }
-                        append("/") { color = TextColor.GOLD }
-                        append(needed.shorten()) { color = TextColor.YELLOW }
+                        append(collected.toFormattedString()) { color = PvColors.YELLOW }
+                        append("/") { color = PvColors.GOLD }
+                        append(needed.shorten()) { color = PvColors.YELLOW }
 
                         append(
                             Text.of("${((collected.toFloat() / needed) * 100).round()}%") {
-                                this.color = TextColor.DARK_AQUA
+                                this.color = PvColors.DARK_AQUA
                             }.wrap(" (", ")"),
                         )
                     }
                 }
                 add("Total") {
-                    this.color = TextColor.GRAY
+                    this.color = PvColors.GRAY
 
                     if (milestone != maxLevel) {
                         append(" Progress")
                     }
                     append(": ")
 
-                    append(resourcesCollected.toFormattedString()) { color = TextColor.YELLOW }
+                    append(resourcesCollected.toFormattedString()) { color = PvColors.YELLOW }
                     if (milestone != maxLevel) {
-                        append("/") { color = TextColor.GOLD }
+                        append("/") { color = PvColors.GOLD }
                         append("${milestoneBrackets.last().shorten()} ") {
-                            this.color = TextColor.YELLOW
+                            this.color = PvColors.YELLOW
                         }
                         append(
                             Text.of("${((resourcesCollected.toFloat() / milestoneBrackets.last()) * 100).round()}%") {
-                                this.color = TextColor.DARK_AQUA
+                                this.color = PvColors.DARK_AQUA
                             }.wrap("(", ")"),
                         )
                     }
                 }
             },
-            Displays.item(Items.ORANGE_DYE).withTooltip(Text.of("Loading...") { this.color = TextColor.LIGHT_PURPLE }),
-            Displays.item(Items.BEDROCK).withTooltip(Text.of("Error!") { this.color = TextColor.RED }),
+            Displays.item(Items.ORANGE_DYE).withTooltip(Text.of("Loading...") { this.color = PvColors.LIGHT_PURPLE }),
+            Displays.item(Items.BEDROCK).withTooltip(Text.of("Error!") { this.color = PvColors.RED }),
         )
     }
 
     private fun getTool(resource: GardenResource, profile: SkyBlockProfile): Display {
         val staticToolInfo = StaticGardenData.tools[resource]
-        val backgroundDisplay = Displays.background(SkyBlockPv.id(staticToolInfo?.type?.id ?: "icon/questionmark"), 16, 16)
+        val backgroundDisplay = Displays.background(ThemeSupport.texture(SkyBlockPv.id(staticToolInfo?.type?.id ?: "icon/questionmark")), 16, 16)
 
         if (staticToolInfo == null) return backgroundDisplay.withTooltip(resource.name)
 

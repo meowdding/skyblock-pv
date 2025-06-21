@@ -1,13 +1,13 @@
 package me.owdding.skyblockpv.screens.tabs.combat
 
 import com.mojang.authlib.GameProfile
-import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.base.ListWidget
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.combat.MobData
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
+import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -43,14 +43,14 @@ class MobScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
     }
 
 
-    private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int) = LayoutFactory.vertical(5) {
-        widget(Widgets.text(name).centerHorizontally(width))
+    private fun createList(name: String, list: List<MobData>, useKills: Boolean, width: Int, height: Int) = PvLayouts.vertical(5) {
+        widget(PvWidgets.text(name).centerHorizontally(width))
 
         val listWidget = ListWidget(width, height)
 
         list.forEach { (id, kills, death) ->
             val formattedName = id.split("_").joinToString(" ") { it.replaceFirstChar { it.titlecase() } }
-            listWidget.add(Widgets.text("$formattedName: ${(if (useKills) kills else death).toFormattedString()}"))
+            listWidget.add(PvWidgets.text("$formattedName: ${(if (useKills) kills else death).toFormattedString()}"))
         }
 
         widget(listWidget)

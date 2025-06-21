@@ -5,7 +5,6 @@ import earth.terrarium.olympus.client.components.base.BaseWidget
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.ui.UIConstants
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
@@ -141,8 +140,8 @@ class CarouselWidget(
                 }
         }
 
-        val rows = buttons.chunked(perRow).map { LayoutFactory.horizontal(1) { widget(it) } }
-        return LayoutFactory.vertical(1) {
+        val rows = buttons.chunked(perRow).map { PvLayouts.horizontal(1) { widget(it) } }
+        return PvLayouts.vertical(1) {
             rows.forEach { it ->
                 widget(it, LayoutSettings::alignHorizontallyCenter)
             }

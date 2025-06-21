@@ -1,20 +1,20 @@
 package me.owdding.skyblockpv.screens.tabs.collection
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.MinionCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCollectionScreen(gameProfile, profile) {
@@ -49,35 +49,35 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
         val stackSize = when (context.maxObtainedLevel) {
             -1 -> null
-            maxTier -> Text.of("${context.maxObtainedLevel}") { color = TextColor.GREEN }
-            else -> Text.of("${context.maxObtainedLevel}") { color = TextColor.YELLOW }
+            maxTier -> Text.of("${context.maxObtainedLevel}") { color = PvColors.GREEN }
+            else -> Text.of("${context.maxObtainedLevel}") { color = PvColors.YELLOW }
         }
 
         return Displays.item(minion.takeUnless { context.maxObtainedLevel == -1 } ?: Items.GRAY_DYE.defaultInstance, customStackText = stackSize).withTooltip {
             add(minion.cleanName.substringBeforeLast(" ")) {
-                this.color = TextColor.BLUE
+                this.color = PvColors.BLUE
             }
 
             add("Max Tier: ") {
-                this.color = TextColor.GRAY
+                this.color = PvColors.GRAY
                 append(maxTier) {
-                    this.color = TextColor.YELLOW
+                    this.color = PvColors.YELLOW
                 }
             }
             add("Highest Unlocked: ") {
-                this.color = TextColor.GRAY
+                this.color = PvColors.GRAY
                 append(context.maxObtainedLevel.takeUnless { it == -1 }?.let { "$it" } ?: "None") {
                     this.color = when (context.maxObtainedLevel) {
-                        maxTier -> TextColor.GREEN
-                        -1 -> TextColor.RED
-                        else -> TextColor.YELLOW
+                        maxTier -> PvColors.GREEN
+                        -1 -> PvColors.RED
+                        else -> PvColors.YELLOW
                     }
                 }
             }
         }
     }
 
-    override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
+    override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical {
         val inventories = getInventories()
         val icons = MinionCodecs.categories.sortedBy { it.index }
 

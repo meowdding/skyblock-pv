@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.shorten
@@ -22,16 +21,19 @@ import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.text
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.Utils.whiteText
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays.asTable
+import me.owdding.skyblockpv.utils.theme.PvColors
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.text.SimpleDateFormat
@@ -62,22 +64,22 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     )
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val mining = profile.mining ?: return LayoutFactory.empty()
+        val mining = profile.mining ?: return PvLayouts.empty()
 
         val info = getInformation(profile)
         val powder = getPowder(mining)
-        val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: LayoutFactory.empty()
+        val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: PvLayouts.empty()
         val forge = getForge()
 
         return if (maxOf(info.width, powder.width) + maxOf(crystal.width, forge?.width ?: 0) >= uiWidth - 5) {
-            LayoutFactory.vertical(5, MIDDLE) {
+            PvLayouts.vertical(5, MIDDLE) {
                 widget(info)
                 widget(powder)
                 widget(crystal)
                 forge?.let { widget(it) }
             }.asScrollable(uiWidth, uiHeight)
         } else {
-            LayoutFactory.horizontal(2, MIDDLE) {
+            PvLayouts.horizontal(2, MIDDLE) {
                 vertical(5, MIDDLE) {
                     widget(info)
                     widget(powder)
@@ -92,9 +94,9 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     private fun getInformation(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
-        LayoutFactory.vertical(3) {
+        PvLayouts.vertical(3) {
             val mining = profile.mining ?: return@vertical
-            fun grayText(text: String) = display(Displays.text(text, color = { 0x555555u }, shadow = false))
+            fun grayText(text: String) = display(ExtraDisplays.grayText(text))
             val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
             val hotmLevel = mining.getHotmLevel()
 
@@ -105,16 +107,16 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             grayText("Total Runs: ${totalRuns.toFormattedString()}")
 
             display(
-                Displays.text(
+                ExtraDisplays.text(
                     Text.join(
-                        Text.of("Rock Pet: ") { this.color = TextColor.DARK_GRAY },
-                        rockPet?.rarity?.displayText ?: Text.of("None") { this.color = TextColor.RED },
+                        Text.of("Rock Pet: ") { this.color = PvColors.DARK_GRAY },
+                        rockPet?.rarity?.displayText ?: Text.of("None") { this.color = PvColors.RED },
                     ),
                     shadow = false,
                 ).withTooltip(
                     Text.join(
-                        Text.of("Ores Mined: ") { this.color = TextColor.WHITE },
-                        Text.of(oresMined.toFormattedString()) { this.color = TextColor.AQUA },
+                        Text.of("Ores Mined: ") { this.color = PvColors.WHITE },
+                        Text.of(oresMined.toFormattedString()) { this.color = PvColors.AQUA },
                     ),
                     "",
                     RockBracket.entries.map {
@@ -152,13 +154,25 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     private fun getPowder(mining: MiningCore) = PvWidgets.label(
         "Powder",
-        LayoutFactory.vertical(3) {
+        PvLayouts.vertical(3) {
             display(
                 listOf(
                     listOf("", "Current", "Total"),
-                    listOf("§2Mithril", mining.powderMithril.shorten(), (mining.powderSpentMithril + mining.powderMithril).shorten()),
-                    listOf("§dGemstone", mining.powderGemstone.shorten(), (mining.powderSpentGemstone + mining.powderGemstone).shorten()),
-                    listOf("§bGlacite", mining.powderGlacite.shorten(), (mining.powderSpentGlacite + mining.powderGlacite).shorten()),
+                    listOf(
+                        Text.of("Mithril") { this.color = PvColors.DARK_GREEN },
+                        mining.powderMithril.shorten(),
+                        (mining.powderSpentMithril + mining.powderMithril).shorten(),
+                    ),
+                    listOf(
+                        Text.of("Gemstone") { this.color = PvColors.LIGHT_PURPLE },
+                        mining.powderGemstone.shorten(),
+                        (mining.powderSpentGemstone + mining.powderGemstone).shorten(),
+                    ),
+                    listOf(
+                        Text.of("Glacite") { this.color = PvColors.AQUA },
+                        mining.powderGlacite.shorten(),
+                        (mining.powderSpentGlacite + mining.powderGlacite).shorten(),
+                    ),
                 ).asTable(5),
             )
         },
@@ -167,7 +181,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
     private fun getCrystal(mining: MiningCore) = PvWidgets.label(
         "Crystals",
-        LayoutFactory.vertical(5) {
+        PvLayouts.vertical(5) {
             val width = uiWidth / 3
 
             val convertedElements = crystals.map { id ->
@@ -177,14 +191,16 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
                 }
 
-                val display = Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, listOf(icon, state).toRow(1))).withTooltip {
-                    add("§l${name.toTitleCase()}")
-                    add("§7State: ${crystal.state.toTitleCase()}")
-                    add("§7Found: ${crystal.totalFound.toFormattedString()}")
-                    if (crystal.totalPlaced > 0) {
-                        add("§7Placed: ${crystal.totalPlaced.toFormattedString()}")
-                    }
-                }
+                val display =
+                    Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/rounded_box_thin")), Displays.padding(2, listOf(icon, state).toRow(1)))
+                        .withTooltip {
+                            add("§l${name.toTitleCase()}")
+                            add("§7State: ${crystal.state.toTitleCase()}")
+                            add("§7Found: ${crystal.totalFound.toFormattedString()}")
+                            if (crystal.totalPlaced > 0) {
+                                add("§7Placed: ${crystal.totalPlaced.toFormattedString()}")
+                            }
+                        }
                 display.asWidget()
             }
 
@@ -209,7 +225,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         return PvWidgets.label(
             "Forge",
-            LayoutFactory.vertical(5) {
+            PvLayouts.vertical(5) {
                 forgeSlots.sortedByKeys().forEach { (index, slot) ->
                     val itemDisplay = Displays.item(slot.itemStack)
 
@@ -218,16 +234,16 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                         quickForgeLevel,
                     ) + (slot.startTime - System.currentTimeMillis()).toDuration(DurationUnit.MILLISECONDS)
 
-                    val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) "§aReady"
-                    else "§8${timeRemaining.toReadableTime()}"
+                    val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) Text.of("Ready") { this.color = PvColors.GREEN }
+                    else Text.of(timeRemaining.toReadableTime()) { this.color = PvColors.DARK_GRAY }
 
                     val defaultConditions = isProfileOfUser() && timeRemaining.inWholeMilliseconds > 0
                     val canSetReminder = defaultConditions || SkyBlockPv.isSuperUser
 
                     val display = listOf(
-                        Displays.text("§8§lSlot $index", shadow = false),
+                        ExtraDisplays.text("§lSlot $index", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false),
                         Displays.padding(0, 0, -4, 0, itemDisplay),
-                        Displays.text("§8${timeDisplay}", shadow = false),
+                        ExtraDisplays.text(timeDisplay, color = { PvColors.DARK_GRAY.toUInt() }, shadow = false),
                     ).toRow(1).withTooltip {
                         add("§l${slot.itemStack.hoverName?.stripped}")
                         add("§7Time Remaining: $timeDisplay")
@@ -248,9 +264,9 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                             return@asButton
                         }
 
-                        val name = slot.itemStack.hoverName ?: Text.of("Slot $index") { this.color = TextColor.GRAY }
+                        val name = slot.itemStack.hoverName ?: Text.of("Slot $index") { this.color = PvColors.GRAY }
 
-                        "messages.forge.reminder_set".asTranslated(name, timeDisplay.stripColor()).sendWithPrefix()
+                        "messages.forge.reminder_set".asTranslated(name, timeDisplay.stripped).sendWithPrefix()
 
                         RemindersAPI.addReminder(
                             "forge_slot_$index",

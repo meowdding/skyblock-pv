@@ -2,8 +2,8 @@ package me.owdding.skyblockpv.utils
 
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.compound.LayoutWidget
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -34,7 +34,7 @@ object LayoutUtils {
         scrollable.add(widget)
         scrollable.init()
 
-        return LayoutFactory.frame(width - 20, height) {
+        return PvLayouts.frame(width - 20, height) {
             widget(scrollable)
         }
     }

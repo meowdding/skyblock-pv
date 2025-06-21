@@ -3,10 +3,10 @@ package me.owdding.skyblockpv.data.api
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import me.owdding.skyblockpv.utils.json.getAs
+import me.owdding.skyblockpv.utils.theme.PvColors
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 
 data class CfData(
     val chocolate: Long,
@@ -55,14 +55,14 @@ data class RabbitEmployee(
     val level: Int,
 ) {
     val color = when (level) {
-        in (0..9) -> TextColor.WHITE
-        in (10..74) -> TextColor.GREEN
-        in (75..124) -> TextColor.BLUE
-        in (125..174) -> TextColor.DARK_PURPLE
-        in (175..199) -> TextColor.GOLD
-        in (200..219) -> TextColor.LIGHT_PURPLE
-        in (220..225) -> TextColor.AQUA
-        else -> TextColor.GRAY
+        in (0..9) -> PvColors.WHITE
+        in (10..74) -> PvColors.GREEN
+        in (75..124) -> PvColors.BLUE
+        in (125..174) -> PvColors.DARK_PURPLE
+        in (175..199) -> PvColors.GOLD
+        in (200..219) -> PvColors.LIGHT_PURPLE
+        in (220..225) -> PvColors.AQUA
+        else -> PvColors.GRAY
     }
 }
 

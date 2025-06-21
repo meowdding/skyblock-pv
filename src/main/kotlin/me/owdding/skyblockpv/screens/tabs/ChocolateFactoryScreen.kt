@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -16,8 +15,10 @@ import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -27,7 +28,6 @@ import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
@@ -44,10 +44,10 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val info = getInfo(cf, CfCodecs.data)
         val upgrades = getUpgrades(cf)
 
-        LayoutFactory.frame(bg.width, bg.height) {
+        PvLayouts.frame(bg.width, bg.height) {
             if (maxOf(employees.width, upgrades.width) + info.width + rarities.width + 6 > bg.width) {
                 widget(
-                    LayoutFactory.vertical(3, 0.5f) {
+                    PvLayouts.vertical(3, 0.5f) {
                         widget(employees)
                         widget(upgrades)
                         widget(info)
@@ -72,69 +72,69 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         buildList {
             createUpgradeItem(Items.COOKIE, "Click Upgrade", cf.clickUpgrades + 1) {
                 add("Increases the amount of ") {
-                    color = TextColor.GRAY
+                    color = PvColors.GRAY
                     append("Chocolate ") {
-                        color = TextColor.GOLD
+                        color = PvColors.GOLD
                     }
 
                 }
                 add("you get per click.") {
-                    color = TextColor.GRAY
+                    color = PvColors.GRAY
                 }
             }
             createUpgradeItem(Items.CLOCK, "Time Tower", cf.timeTower?.level ?: 0) {
                 add("Increases your ") {
-                    color = TextColor.GRAY
+                    color = PvColors.GRAY
                     append("Chocolate Production ") {
-                        color = TextColor.GOLD
+                        color = PvColors.GOLD
                     }
                 }
                 add("for ") {
-                    color = TextColor.GRAY
+                    color = PvColors.GRAY
                     append("1h ") {
-                        color = TextColor.GREEN
+                        color = PvColors.GREEN
                     }
                     append("per charge.")
                 }
                 space()
                 add("Charges: ") {
-                    color = TextColor.GRAY
+                    color = PvColors.GRAY
                     append("${cf.timeTower?.charges ?: 0}") {
-                        color = TextColor.LIGHT_PURPLE
+                        color = PvColors.LIGHT_PURPLE
                     }
                     append("/") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                     }
                     append("3") {
-                        color = TextColor.LIGHT_PURPLE
+                        color = PvColors.LIGHT_PURPLE
                     }
                 }
             }
             createUpgradeItem(Items.RABBIT_FOOT, "Rabbit Shrine", cf.rabbitRarityUpgrades) {
                 add("Increases the chance of getting ") {
-                    color = TextColor.GRAY
+                    color = PvColors.GRAY
                 }
                 add("higher rarity rabbits ") {
-                    color = TextColor.LIGHT_PURPLE
+                    color = PvColors.LIGHT_PURPLE
                     append("during ") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                     }
                     append("Hoppity's Hunt") {
-                        color = TextColor.LIGHT_PURPLE
+                        color = PvColors.LIGHT_PURPLE
                     }
                     append(".") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                     }
                 }
             }
             createUpgradeItem(SkullTextures.COACH_JACKRABBIT.skull.copy(), "Coach Jackrabbit", cf.chocolateMultiplierUpgrades) {
                 add("Increases the amount of ") {
-                    color = TextColor.GRAY
+                    color = PvColors.GRAY
                 }
                 add("Chocolate ") {
-                    color = TextColor.GOLD
+                    color = PvColors.GOLD
                     append("you get per second.") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                     }
                 }
             }
@@ -146,7 +146,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     private fun MutableList<ItemStack>.createUpgradeItem(item: ItemStack, name: String, level: Int, tooltipBuilder: TooltipBuilder.() -> Unit) = add(
         item.apply {
             val lore = TooltipBuilder().apply(tooltipBuilder).build().split("\n")
-            set(DataComponents.CUSTOM_NAME, Text.join(name, " $level") { italic = false; color = TextColor.LIGHT_PURPLE })
+            set(DataComponents.CUSTOM_NAME, Text.join(name, " $level") { italic = false; color = PvColors.LIGHT_PURPLE })
             set(DataComponents.LORE, ItemLore(lore, lore))
         },
     )
@@ -156,82 +156,82 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     private fun getInfo(cf: CfData, data: CfCodecs.CfRepoData) = PvWidgets.label(
         "Information",
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             string("Chocolate: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append(cf.chocolate.shorten()) {
-                    color = TextColor.GOLD
+                    color = PvColors.GOLD
                 }
             }
             string("Total Chocolate: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append(cf.totalChocolate.shorten()) {
-                    color = TextColor.GOLD
+                    color = PvColors.GOLD
                 }
             }
             string("Chocolate since Prestige: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append(cf.chocolateSincePrestige.shorten()) {
-                    color = TextColor.GOLD
+                    color = PvColors.GOLD
                 }
             }
             if (cf.prestigeLevel != data.misc.maxPrestigeLevel) {
                 val needed = (data.misc.chocolatePerPrestige[cf.prestigeLevel + 1] ?: 0) - cf.chocolateSincePrestige
                 val string = "§aReady!".takeIf { needed <= 0 } ?: needed.shorten()
                 string("Chocolate for next Prestige: ") {
-                    color = TextColor.DARK_GRAY
+                    color = PvColors.DARK_GRAY
                     append(string) {
-                        color = TextColor.GOLD
+                        color = PvColors.GOLD
                     }
                 }
             }
             string("Prestige Level: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append("${cf.prestigeLevel}") {
-                    color = TextColor.LIGHT_PURPLE
+                    color = PvColors.LIGHT_PURPLE
                 }
             }
             string("Barn Capacity: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append("${cf.barnCapacity}") {
-                    color = TextColor.GREEN
+                    color = PvColors.GREEN
                 }
             }
             string("Last Updated: ") {
-                color = TextColor.DARK_GRAY
+                color = PvColors.DARK_GRAY
                 append(Instant.ofEpochMilli(cf.lastUpdate).toReadableString())
             }
 
             display(
-                Displays.text(
+                ExtraDisplays.text(
                     Text.of("Hitman Slots: ") {
-                        color = TextColor.DARK_GRAY
+                        color = PvColors.DARK_GRAY
                         append("${cf.hitman?.slots ?: 0} Unlocked") {
-                            color = TextColor.RED
+                            color = PvColors.RED
                         }
                         append(" - ")
                         append("${cf.hitman?.uncollectedEggs ?: 0} Ready") {
-                            color = TextColor.RED
+                            color = PvColors.RED
                         }
                     },
                     shadow = false,
                 ).withTooltip {
                     add("Paid: ") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                         val paid = cf.hitman?.slots?.minus(1)?.takeIf { it >= 0 }?.let { data.hitmanCost[it] } ?: 0
                         val total = data.hitmanCost.last()
                         val percentage = paid.toDouble() / total * 100
 
                         append(paid.toFormattedString()) {
-                            color = TextColor.GOLD
+                            color = PvColors.GOLD
                         }
                         append("/")
                         append(total.shorten(2)) {
-                            color = TextColor.GOLD
+                            color = PvColors.GOLD
                         }
                         append(" (")
                         append("${percentage.round()}%") {
-                            color = TextColor.GOLD
+                            color = PvColors.GOLD
                         }
                         append(")")
                     }
@@ -261,15 +261,15 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                         )
                     }
                     add("Uniques: ") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                         append("${entries.size}") {
                             color = repo.key.color
                         }
                     }
                     add("Total: ") {
-                        color = TextColor.GRAY
+                        color = PvColors.GRAY
                         append("${entries.sumOf { it.value }}") {
-                            color = TextColor.GOLD
+                            color = PvColors.GOLD
                         }
                     }
                 }
@@ -295,9 +295,9 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             }
             space()
             add("Produces ") {
-                color = TextColor.GRAY
-                append("+${repoEmployee.getReward(employee.level).toFormattedString()} Chocolate") { color = TextColor.GOLD }
-                append(" per second.") { color = TextColor.GRAY }
+                color = PvColors.GRAY
+                append("+${repoEmployee.getReward(employee.level).toFormattedString()} Chocolate") { color = PvColors.GOLD }
+                append(" per second.") { color = PvColors.GRAY }
             }
         }
     }.chunked(4).map { it.toRow(1) }.toColumn(1, Alignment.CENTER).let { PvWidgets.label("Employees", it.asWidget()) }

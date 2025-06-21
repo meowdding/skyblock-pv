@@ -17,6 +17,7 @@ import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.util.StringRepresentable
@@ -28,7 +29,6 @@ import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 enum class GardenResource(internalName: String? = null, itemId: String? = null) : StringRepresentable {
@@ -136,7 +136,7 @@ data class StaticBarnSkin(
     fun getItem() = RepoItemsAPI.getItem(item)
 
     companion object {
-        val UNKNOWN = StaticBarnSkin(Text.of("Unknown") { this.color = TextColor.RED }, "barrier")
+        val UNKNOWN = StaticBarnSkin(Text.of("Unknown") { this.color = PvColors.RED }, "barrier")
     }
 }
 
@@ -216,9 +216,9 @@ data class StaticPlotData(
 ) {
     val type: String = id.substringBefore("_")
     fun getName(): MutableComponent = Text.of("Plot") {
-        this.color = TextColor.YELLOW
-        append(Text.of(" - ") { this.color = TextColor.GRAY })
-        append(Text.of("$number") { this.color = TextColor.AQUA })
+        this.color = PvColors.YELLOW
+        append(Text.of(" - ") { this.color = PvColors.GRAY })
+        append(Text.of("$number") { this.color = PvColors.AQUA })
     }
 }
 

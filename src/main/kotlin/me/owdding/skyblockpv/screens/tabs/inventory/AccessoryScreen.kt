@@ -7,10 +7,10 @@ import me.owdding.lib.displays.Display
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor
 
@@ -25,11 +25,11 @@ class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         val maxwell = profile.maxwell ?: return@vertical
 
         string("Magical Power: ${maxwell.highestMp.toFormattedString()}") {
-            color = TextColor.DARK_GRAY
+            color = PvColors.DARK_GRAY
             shadowColor = null
         }
         string("Selected Power: ${maxwell.selectedPower.toTitleCase()}") {
-            color = TextColor.DARK_GRAY
+            color = PvColors.DARK_GRAY
             shadowColor = null
         }
     }

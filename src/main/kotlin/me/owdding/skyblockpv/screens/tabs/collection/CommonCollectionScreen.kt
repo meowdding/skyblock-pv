@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.tabs.collection
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -11,6 +10,7 @@ import me.owdding.skyblockpv.api.CollectionAPI.getProgressToNextLevel
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.CollectionItem
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -22,8 +22,8 @@ class CommonCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val width = uiWidth - 20
 
         val profile = profile
-        val filteredCollections = profile.collections?.filter { it.category == category } ?: return LayoutFactory.empty()
-        return LayoutFactory.frame {
+        val filteredCollections = profile.collections?.filter { it.category == category } ?: return PvLayouts.empty()
+        return PvLayouts.frame {
             display(
                 buildList {
                     if (bg.width < 375) {
@@ -43,15 +43,15 @@ class CommonCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     }
 
     private fun getElement(col: CollectionItem): Display {
-        val collectionEntry = CollectionAPI.getCollectionEntry(col.itemId) ?: return Displays.text("Unknown Item")
+        val collectionEntry = CollectionAPI.getCollectionEntry(col.itemId) ?: return ExtraDisplays.text("Unknown Item")
         val progNext = collectionEntry.getProgressToNextLevel(col.amount)
         val progMaxed = collectionEntry.getProgressToMax(col.amount)
         val isMaxed = progNext.first == collectionEntry.maxTiers && progNext.second == 1.0f
 
         val progressText = if (isMaxed) {
-            Displays.text("§2Maxed")
+            ExtraDisplays.text("§2Maxed")
         } else {
-            Displays.text("${(progNext.second * 100).round()}% to ${progNext.first}")
+            ExtraDisplays.text("${(progNext.second * 100).round()}% to ${progNext.first}")
         }
 
         val hover = Text.multiline(
@@ -64,7 +64,7 @@ class CommonCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         return Displays.row(
             Displays.item(col.itemStack),
             listOf(
-                Displays.text(Text.join(col.itemStack.hoverName?.stripped ?: col.itemId, ": ${col.amount.shorten()}")),
+                ExtraDisplays.text(Text.join(col.itemStack.hoverName?.stripped ?: col.itemId, ": ${col.amount.shorten()}")),
                 listOf(ExtraDisplays.progress(progNext.second), progressText).toRow(3),
             ).toColumn(1),
             spacing = 5,

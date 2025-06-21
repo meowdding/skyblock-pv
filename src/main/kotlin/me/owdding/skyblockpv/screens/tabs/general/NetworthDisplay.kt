@@ -12,10 +12,10 @@ import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import tech.thatgravyboat.skyblockapi.api.remote.pricing.BazaarAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.math.roundToInt
 
@@ -33,18 +33,18 @@ object NetworthDisplay {
         return this.withTooltip {
             this.add {
                 this.append(+"widgets.networth.tooltip")
-                this.append(networth.first.toFormattedString()) { this.color = TextColor.GREEN }
+                this.append(networth.first.toFormattedString()) { this.color = PvColors.GREEN }
             }
 
             this.add {
                 this.append(+"widgets.networth.tooltip.cookies")
-                this.append(networthCookies.toFormattedString()) { this.color = TextColor.GOLD }
+                this.append(networthCookies.toFormattedString()) { this.color = PvColors.GOLD }
             }
 
             this.add {
                 this.append("widgets.networth.tooltip.currency".asTranslated(currency.name))
                 val formattedNetworth = networthConverted.roundToInt().toFormattedString()
-                this.append("$formattedNetworth ${currency.name}") { this.color = TextColor.GREEN }
+                this.append("$formattedNetworth ${currency.name}") { this.color = PvColors.GREEN }
             }
 
             this.space()
@@ -53,29 +53,31 @@ object NetworthDisplay {
             this.add(+"widgets.networth.tooltip.sources")
             networth.second.forEach {
                 this.add {
-                    this.append(it.key) { this.color = TextColor.YELLOW }
-                    this.append(": ") { this.color = TextColor.YELLOW }
-                    this.append(it.value.toFormattedString()) { this.color = TextColor.GREEN }
+                    this.append(it.key) { this.color = PvColors.YELLOW }
+                    this.append(": ") { this.color = PvColors.YELLOW }
+                    this.append(it.value.toFormattedString()) { this.color = PvColors.GREEN }
                 }
             }
         }
     }
 
     fun getNetworthDisplay(profile: SkyBlockProfile): Display = Displays.row(
-
-        Displays.component(+"widgets.networth", shadow = false),
+        ExtraDisplays.component(+"widgets.networth", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false),
         ExtraDisplays.completableDisplay(
             profile.netWorth,
-            { Displays.text(it.first.shorten(), color = { TextColor.DARK_GRAY.toUInt() }, shadow = false).addTooltip(it) },
+            { ExtraDisplays.grayText(it.first.shorten()).addTooltip(it) },
             { error ->
-                Displays.component(+"widgets.networth.failed", shadow = false).withTooltip {
-                    this.add(+"widgets.networth.error")
+                ExtraDisplays.component(+"widgets.networth.failed", color = { PvColors.RED.toUInt() }, shadow = false).withTooltip {
+                    this.add {
+                        add(+"widgets.networth.error")
+                        this.color = PvColors.RED
+                    }
                     error.getStackTraceString(10).lines().forEach { line ->
-                        this.add(Text.of(line) { this.color = TextColor.RED })
+                        this.add(Text.of(line) { this.color = PvColors.RED })
                     }
                 }
             },
-            { Displays.component(+"widgets.networth.loading", shadow = false) },
+            { ExtraDisplays.component(+"widgets.networth.loading", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false) },
         ),
     )
 }
