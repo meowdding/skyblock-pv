@@ -126,6 +126,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                     ExtraDisplays.text(
                         "Highest Wave: ${stats.maxOf { it.highestWave }.toFormattedString()}",
                         color = { PvColors.DARK_GRAY.toUInt() },
+                        shadow = false,
                     ).withTooltip {
                         stats.map { "${CrimsonIsleCodecs.KuudraCodecs.idNameMap[it.id] ?: it.id}: ${it.highestWave.toFormattedString()}" }
                             .forEach { add(it) }

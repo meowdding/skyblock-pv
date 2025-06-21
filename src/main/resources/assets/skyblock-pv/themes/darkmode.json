@@ -5,7 +5,6 @@
         "skyblock-pv:textures/gui/inventory/mono.png": "skyblock-pv:textures/darkmode/inventory/mono.png",
         "skyblock-pv:buttons/normal": "skyblock-pv:darkmode/buttons/normal",
         "skyblock-pv:buttons/disabled": "skyblock-pv:darkmode/buttons/disabled",
-        "skyblock-pv:buttons/dark/normal": "skyblock-pv:darkmode/buttons/light/normal",
         "skyblock-pv:box/box": "skyblock-pv:darkmode/box/box",
         "skyblock-pv:box/rounded_box_thin": "skyblock-pv:darkmode/box/rounded_box_thin",
         "skyblock-pv:box/title": "skyblock-pv:darkmode/box/title",
