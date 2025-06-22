@@ -54,10 +54,6 @@
             ]
         }
     },
-    "themes": {
-        "dark": "Dark mode",
-        "default": "Default"
-    },
     "config": {
         "spying": {
             "@value": "Spying Button",
@@ -89,6 +85,10 @@
                 "Scales displays to better fill the space available",
                 "<red>This might lead to unexpected behaviour and overflowing.</red>"
             ]
+        },
+        "theme": {
+            "@value": "Theme",
+            "desc": "The theme to use for the profile viewer."
         }
     },
     "dev": {
