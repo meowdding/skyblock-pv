@@ -451,12 +451,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             FailedToLoadToast.add(
                 profile,
                 Displays.background(
-                    ThemeSupport.texture(SkyBlockPv.id("buttons/dark/disabled")),
+                    ThemeSupport.texture(SkyBlockPv.id("buttons/normal")),
                     Displays.padding(
                         5,
                         Displays.column(
-                            ExtraDisplays.component(+"messages.toast_disabled"),
-                            "messages.toast_disabled.explanation".asTranslated(disabledTabs.joinToString(", ") { it.name.toTitleCase() }).multiLineDisplay(),
+                            ExtraDisplays.component(+"messages.toast_disabled", shadow = false),
+                            "messages.toast_disabled.explanation".asTranslated(disabledTabs.joinToString(", ") { it.name.toTitleCase() })
+                                .multiLineDisplay(shadow = false),
                         ),
                     ),
                 ),

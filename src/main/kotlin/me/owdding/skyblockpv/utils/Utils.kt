@@ -154,8 +154,8 @@ object Utils {
 
     fun Display.withTextShader(shader: TextShader?) = ExtraDisplays.textShader(shader, this)
 
-    fun Component.multiLineDisplay(alignment: Alignment = Alignment.START) =
-        this.splitLines().map { ExtraDisplays.component(it) }.toColumn(alignment = alignment)
+    fun Component.multiLineDisplay(alignment: Alignment = Alignment.START, shadow: Boolean = false) =
+        this.splitLines().map { ExtraDisplays.component(it, shadow = shadow) }.toColumn(alignment = alignment)
 
     fun FloatArray.toMatrix4f(): Matrix4f {
         require(this.size == 16) { "Array size must be 16!" }

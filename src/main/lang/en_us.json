@@ -316,6 +316,10 @@
             }
         }
     },
+    "themes": {
+        "dark": "Dark mode",
+        "default": "Default"
+    },
     "misc": {
         "maxed": "<red>Maxed!</red>"
     }

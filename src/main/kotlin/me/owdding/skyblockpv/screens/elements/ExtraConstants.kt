@@ -6,7 +6,7 @@ import me.owdding.skyblockpv.utils.theme.ThemeSupport.ThemedWidgetSprites
 import me.owdding.skyblockpv.utils.theme.ThemeSupport.withThemeSupport
 
 object ExtraConstants {
-    val BUTTON_DARK = ThemedWidgetSprites(olympusId("buttons/dark/normal"), id("buttons/dark/disabled"), olympusId("buttons/dark/hovered")).withThemeSupport()
+    val BUTTON_DARK = ThemedWidgetSprites(olympusId("buttons/dark/normal"), id("buttons/disabled"), olympusId("buttons/dark/hovered")).withThemeSupport()
 
     var TAB_TOP = ThemedWidgetSprites(id("tabs/top/normal"), id("tabs/top/normal"), id("tabs/top/hovered"))
     var TAB_TOP_SELECTED = ThemedWidgetSprites(id("tabs/top/selected"), id("tabs/top/selected"), id("tabs/top/selected_hovered"))
