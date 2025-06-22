@@ -16,12 +16,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.owdding.lib.builder.LayoutBuilder
-import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.getStackTraceString
+import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.ProfileAPI
@@ -109,10 +109,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
-
-    override fun render(graphics: GuiGraphics, mouseX: Int, mouseY: Int, f: Float) {
-        super.render(graphics, mouseX, mouseY, f)
-    }
 
     override fun init() {
         val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
