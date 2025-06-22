@@ -36,6 +36,7 @@ import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.Util
@@ -54,6 +55,7 @@ import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.lang.reflect.Type
@@ -107,6 +109,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
+
     override fun render(graphics: GuiGraphics, mouseX: Int, mouseY: Int, f: Float) {
         super.render(graphics, mouseX, mouseY, f)
     }
@@ -335,6 +338,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             profiles,
             { profile ->
                 Text.of {
+                    color = PvColors.WHITE
                     if (profile.selected) {
                         underlined = true
                         append("◆ ")
@@ -362,8 +366,10 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
             },
-        )
-        dropdown.setPosition(bg.x, bg.y + bg.height)
+        ).apply {
+            withTexture(ExtraConstants.BUTTON_DARK)
+            setPosition(bg.x, bg.y + bg.height)
+        }
 
         return dropdown
     }
