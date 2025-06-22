@@ -1,18 +1,19 @@
 package me.owdding.skyblockpv.screens.elements
 
-import earth.terrarium.olympus.client.ui.UIConstants
 import me.owdding.skyblockpv.SkyBlockPv.id
-import net.minecraft.client.gui.components.WidgetSprites
+import me.owdding.skyblockpv.SkyBlockPv.olympusId
+import me.owdding.skyblockpv.utils.theme.ThemeSupport.ThemedWidgetSprites
+import me.owdding.skyblockpv.utils.theme.ThemeSupport.withThemeSupport
 
 object ExtraConstants {
-    val BUTTON_DARK = WidgetSprites(UIConstants.id("buttons/dark/normal"), id("buttons/dark/disabled"), UIConstants.id("buttons/dark/hovered"))
+    val BUTTON_DARK = ThemedWidgetSprites(olympusId("buttons/dark/normal"), id("buttons/disabled"), olympusId("buttons/dark/hovered")).withThemeSupport()
 
-    var TAB_TOP = WidgetSprites(id("tabs/top/normal"), id("tabs/top/normal"), id("tabs/top/hovered"))
-    var TAB_TOP_SELECTED = WidgetSprites(id("tabs/top/selected"), id("tabs/top/selected"), id("tabs/top/selected_hovered"))
+    var TAB_TOP = ThemedWidgetSprites(id("tabs/top/normal"), id("tabs/top/normal"), id("tabs/top/hovered"))
+    var TAB_TOP_SELECTED = ThemedWidgetSprites(id("tabs/top/selected"), id("tabs/top/selected"), id("tabs/top/selected_hovered"))
 
-    var TAB_RIGHT = WidgetSprites(id("tabs/right/normal"), id("tabs/right/normal"), id("tabs/right/hovered"))
-    var TAB_RIGHT_SELECTED = WidgetSprites(id("tabs/right/selected"), id("tabs/right/selected"), id("tabs/right/selected_hovered"))
+    var TAB_RIGHT = ThemedWidgetSprites(id("tabs/right/normal"), id("tabs/right/normal"), id("tabs/right/hovered"))
+    var TAB_RIGHT_SELECTED = ThemedWidgetSprites(id("tabs/right/selected"), id("tabs/right/selected"), id("tabs/right/selected_hovered"))
 
-    var TAB_LEFT = WidgetSprites(id("tabs/left/normal"), id("tabs/left/normal"), id("tabs/left/hovered"))
-    var TAB_LEFT_SELECTED = WidgetSprites(id("tabs/left/selected"), id("tabs/left/selected"), id("tabs/left/selected_hovered"))
+    var TAB_LEFT = ThemedWidgetSprites(id("tabs/left/normal"), id("tabs/left/normal"), id("tabs/left/hovered"))
+    var TAB_LEFT_SELECTED = ThemedWidgetSprites(id("tabs/left/selected"), id("tabs/left/selected"), id("tabs/left/selected_hovered"))
 }

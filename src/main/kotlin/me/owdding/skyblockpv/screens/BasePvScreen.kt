@@ -16,13 +16,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.owdding.lib.builder.LayoutBuilder
-import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.getStackTraceString
+import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.ProfileAPI
@@ -34,7 +33,11 @@ import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
+import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
@@ -52,6 +55,7 @@ import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.lang.reflect.Type
@@ -107,7 +111,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
 
     override fun init() {
-        val bg = Displays.background(SkyBlockPv.backgroundTexture, uiWidth, uiHeight).asWidget()
+        val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
 
         FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
         bg.applyLayout()
@@ -123,12 +127,12 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         } catch (e: Exception) {
             e.printStackTrace()
 
-            val errorWidget = LayoutFactory.vertical {
+            val errorWidget = PvLayouts.vertical {
                 val text = "widgets.error.stacktrace".asTranslated(name, gameProfile.name, gameProfile.id, profile.id.name, e.message, e.getStackTraceString(7))
 
 
                 text.splitLines().forEach {
-                    widget(Widgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
+                    widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
                 }
             }
             FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
@@ -140,7 +144,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         createProfileDropdown(bg).applyLayout()
 
         addRenderableOnly(
-            Widgets.text(this.tabTitle)
+            PvWidgets.text(this.tabTitle)
                 .withCenterAlignment()
                 .withSize(this.uiWidth, 20)
                 .withPosition(bg.x, bg.bottom + 2),
@@ -157,7 +161,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
         if (starttime + 8000 > System.currentTimeMillis()) return loading.visitWidgets(this::addRenderableOnly)
 
-        val errorWidget = LayoutFactory.vertical(alignment = 0.5f) {
+        val errorWidget = PvLayouts.vertical(alignment = 0.5f) {
             widget(loading)
             spacer(height = 20)
 
@@ -179,7 +183,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         errorWidget.applyLayout()
     }
 
-    private fun createTopRow(bg: DisplayWidget) = LayoutFactory.horizontal(5) {
+    private fun createTopRow(bg: DisplayWidget) = PvLayouts.horizontal(5) {
         createUserRow()
         if (SkyBlockPv.isDevMode) createDevRow(bg)
     }
@@ -275,7 +279,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
     }
 
-    private fun createTabs() = LayoutFactory.horizontal(2) {
+    private fun createTabs() = PvLayouts.horizontal(2) {
         // as you can see, maya has no idea what she is doing
         PvTab.entries.forEach { tab ->
             if (tab.getTabState(profile) == TriState.FALSE) return@forEach
@@ -330,6 +334,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             profiles,
             { profile ->
                 Text.of {
+                    color = PvColors.WHITE
                     if (profile.selected) {
                         underlined = true
                         append("◆ ")
@@ -357,8 +362,10 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
             },
-        )
-        dropdown.setPosition(bg.x, bg.y + bg.height)
+        ).apply {
+            withTexture(ExtraConstants.BUTTON_DARK)
+            setPosition(bg.x, bg.y + bg.height)
+        }
 
         return dropdown
     }

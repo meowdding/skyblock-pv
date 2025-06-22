@@ -6,7 +6,6 @@ import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
@@ -20,8 +19,10 @@ import me.owdding.skyblockpv.data.SortedEntry
 import me.owdding.skyblockpv.data.api.skills.Pet
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -29,7 +30,6 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("PETS", gameProfile, profile) {
@@ -42,7 +42,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
         val leftColumnWidth = ((bg.width - 10) * 0.65).toInt()
         val rightColumnWidth = (bg.width - 10 - leftColumnWidth)
 
-        LayoutFactory.horizontal(5) {
+        PvLayouts.horizontal(5) {
             widget(createPetRow(sortedPets, leftColumnWidth).asScrollable(leftColumnWidth, uiHeight - 10))
             widget(createInfoRow(rightColumnWidth))
         }.setPos(bg.x + 5, bg.y + 5).visitWidgets(this::addRenderableWidget)
@@ -63,7 +63,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
         val itemDisplay = Displays.item(pet.itemStack, showTooltip = true, customStackText = Text.of(pet.level.toString()).withColor(pet.rarity.color))
         val display = ExtraDisplays.inventorySlot(
             Displays.padding(3, itemDisplay),
-            (-1).takeUnless { pet == selectedPet } ?: TextColor.GREEN,
+            (-1).takeUnless { pet == selectedPet } ?: PvColors.GREEN,
         )
         return Button()
             .withSize(22, 22)
@@ -77,7 +77,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     private fun createInfoRow(width: Int) = PvWidgets.label(
         "Info",
-        LayoutFactory.vertical(spacing = 2) {
+        PvLayouts.vertical(spacing = 2) {
             val colon = ExtraDisplays.grayText(": ")
             val effectiveWidth = width - 20
             fun List<Display>.doesFit() = this.sumOf { it.getWidth() } <= effectiveWidth
@@ -116,7 +116,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
                     vertical {
                         spacer(effectiveWidth)
                         display(ExtraDisplays.grayText("Progress"))
-                        indentedDisplay(Displays.text(Text.of("MAXED") { this.color = TextColor.RED }, shadow = false))
+                        indentedDisplay(ExtraDisplays.text(Text.of("MAXED") { this.color = PvColors.RED }, shadow = false))
                     }
                 }
             } else {
@@ -199,10 +199,10 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
     fun LayoutBuilder.indentedDisplay(display: Display) = this.indented(display.asWidget())
 
     fun LayoutBuilder.indentedHorizonal(spacing: Int = 0, alignment: Float = 0f, builder: LayoutBuilder.() -> Unit) =
-        this.indented(LayoutFactory.horizontal(spacing, alignment, builder))
+        this.indented(PvLayouts.horizontal(spacing, alignment, builder))
 
     fun LayoutBuilder.indentedVertical(spacing: Int = 0, alignment: Float = 0f, builder: LayoutBuilder.() -> Unit) =
-        this.indented(LayoutFactory.vertical(spacing, alignment, builder))
+        this.indented(PvLayouts.vertical(spacing, alignment, builder))
 
     fun LayoutBuilder.indented(widget: LayoutElement) = horizontal { spacer(2); widget(widget) }
 

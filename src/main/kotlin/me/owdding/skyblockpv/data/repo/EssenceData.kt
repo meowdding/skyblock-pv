@@ -4,15 +4,15 @@ import com.mojang.serialization.Codec
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.lib.builder.LayoutBuilder
-import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.withTranslatedTooltip
+import me.owdding.skyblockpv.utils.theme.PvColors
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 @GenerateCodec
@@ -39,14 +39,14 @@ object EssenceData : ExtraData {
         val perk = allPerks.entries.find { it.key == id }?.value
         val maxLevel = perk?.maxLevel ?: 0
 
-        val display = Displays.text(
+        val display = ExtraDisplays.text(
             Text.join(
                 perk?.name,
                 ": ",
-                Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) TextColor.GREEN else TextColor.RED },
+                Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) PvColors.GREEN else PvColors.RED },
                 "/$maxLevel",
             ),
-            { TextColor.DARK_GRAY.toUInt() },
+            { PvColors.DARK_GRAY.toUInt() },
             false,
         )
         display(display.withTranslatedTooltip("skyblockpv.essence.$category.$id"))

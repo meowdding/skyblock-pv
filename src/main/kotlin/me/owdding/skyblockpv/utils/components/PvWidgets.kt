@@ -1,8 +1,8 @@
 package me.owdding.skyblockpv.utils.components
 
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.string.TextWidget
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.skyblockpv.SkyBlockPv
@@ -11,6 +11,8 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -25,15 +27,15 @@ object PvWidgets {
 
     fun iconNumberElement(icon: ItemStack, text: Component) = listOf(
         Displays.item(icon, 12, 12),
-        Displays.padding(0, 0, 2, 0, Displays.text(text, shadow = false)),
-    ).toRow(1).let { Displays.background(SkyBlockPv.id("box/rounded_box_thin"), Displays.padding(2, it)) }
+        Displays.padding(0, 0, 2, 0, ExtraDisplays.text(text, shadow = false)),
+    ).toRow(1).let { Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/rounded_box_thin")), Displays.padding(2, it)) }
 
     fun iconNumberElement(icon: ItemLike, text: Component) = iconNumberElement(icon.asItem().defaultInstance, text)
     fun label(title: String, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: ResourceLocation? = null) =
         label(Text.of(title), element, padding, width, icon)
 
     fun label(title: Component, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: ResourceLocation? = null) =
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             widget(getTitleWidget(title, width, icon))
             widget(getMainContentWidget(element, width))
     }
@@ -57,7 +59,7 @@ object PvWidgets {
         val column = toolsToDisplay.map { tool ->
             Displays.item(tool, showTooltip = true).let { display ->
                 // TODO: hover over empty slot
-                display.takeUnless { tool.isEmpty } ?: Displays.background(SkyBlockPv.id(emptyIcon), display)
+                display.takeUnless { tool.isEmpty } ?: Displays.background(ThemeSupport.texture(SkyBlockPv.id(emptyIcon)), display)
             }.let { Displays.padding(2, it) }
         }.toColumn()
 
@@ -85,7 +87,7 @@ object PvWidgets {
             fun addEquipment(list: List<String>, name: String) {
                 val item = armorAndEquipment.firstOrNull { it.getData(DataTypes.ID)?.let { id -> list.contains(id) } == true } ?: ItemStack.EMPTY
                 val display = if (item.isEmpty) {
-                    Displays.background(SkyBlockPv.id("icon/slot/${name.lowercase()}"), Displays.empty(16, 16))
+                    Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/${name.lowercase()}")), Displays.empty(16, 16))
                 } else {
                     Displays.item(item, showTooltip = true)
                 }
@@ -121,14 +123,14 @@ object PvWidgets {
 
         return armor.mapIndexed { index, item ->
             if (item.isEmpty) {
-                Displays.background(ARMOR_BACKGROUND_IDS[index], 16, 16)
+                Displays.background(ThemeSupport.texture(ARMOR_BACKGROUND_IDS[index]), 16, 16)
             } else {
                 Displays.item(item, showTooltip = true)
             }
         }.map { Displays.padding(2, it) }.toColumn()
     }
 
-    private val EQUIPMENT_BACKGROUND_IDS = listOf<ResourceLocation>(
+    private val EQUIPMENT_BACKGROUND_IDS = listOf(
         SkyBlockPv.id("icon/slot/necklace"),
         SkyBlockPv.id("icon/slot/cloak"),
         SkyBlockPv.id("icon/slot/belt"),
@@ -140,7 +142,7 @@ object PvWidgets {
 
         return armor.mapIndexed { index, item ->
             if (item.isEmpty) {
-                Displays.background(EQUIPMENT_BACKGROUND_IDS[index], 16, 16)
+                Displays.background(ThemeSupport.texture(EQUIPMENT_BACKGROUND_IDS[index]), 16, 16)
             } else {
                 Displays.item(item, showTooltip = true)
             }
@@ -155,7 +157,7 @@ object PvWidgets {
                     2,
                     Displays.item(itemStack, showTooltip = true).let {
                         it.takeUnless { itemStack.isEmpty } ?: Displays.background(
-                            ResourceLocation.parse("container/slot/${type.lowercase()}"),
+                            ThemeSupport.texture(ResourceLocation.parse("container/slot/${type.lowercase()}")),
                             it,
                         )
                     },
@@ -169,24 +171,27 @@ object PvWidgets {
         }.toTypedArray(),
     )
 
+    fun text(text: Component): TextWidget = Widgets.text(text).withColor(PvColors.DARK_GRAY_COLOR)
+    fun text(text: String): TextWidget = Widgets.text(text).withColor(PvColors.DARK_GRAY_COLOR)
+
     fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = getTitleWidget(Text.of(title), width, icon)
     fun getTitleWidget(title: Component, width: Int, icon: ResourceLocation? = null): LayoutElement = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->
-            contents.addChild(Displays.background(SkyBlockPv.id("box/title"), width - 10, 20).asWidget())
-            if (icon != null) contents.addChild(Displays.padding(0, width - 30, 0, 0, Displays.sprite(icon, 12, 12)).asWidget())
-            contents.addChild(Widgets.text(title).centerHorizontally(width))
+            contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/title")), width - 10, 20).asWidget())
+            if (icon != null) contents.addChild(Displays.padding(0, width - 30, 0, 0, Displays.sprite(ThemeSupport.texture(icon), 12, 12)).asWidget())
+            contents.addChild(text(title).centerHorizontally(width))
         }
         compoundWidget.withStretchToContentSize()
     }
 
     fun getMainContentWidget(content: LayoutElement, width: Int): LayoutElement = Widgets.frame { compoundWidget ->
-        val contentWithSpacer = LayoutFactory.vertical {
+        val contentWithSpacer = PvLayouts.vertical {
             spacer(height = 7)
             widget(content)
             spacer(height = 7)
         }
         compoundWidget.withContents { contents ->
-            contents.addChild(Displays.background(SkyBlockPv.id("box/box"), width - 10, contentWithSpacer.height).asWidget())
+            contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/box")), width - 10, contentWithSpacer.height).asWidget())
             contents.addChild(contentWithSpacer.centerHorizontally(width))
         }
         compoundWidget.withStretchToContentSize()

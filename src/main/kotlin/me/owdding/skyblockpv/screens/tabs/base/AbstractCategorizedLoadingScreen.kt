@@ -7,11 +7,11 @@ import kotlinx.coroutines.launch
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApi
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.time.Duration.Companion.seconds
 
@@ -96,8 +96,8 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
             else -> successValue
         }
     }
-    protected val loadingMessage by lazy {  Text.of("Loading...") { this.color = TextColor.RED } }
-    protected val errorMessage by lazy {  Text.of("Error...") { this.color = TextColor.RED } }
+    protected val loadingMessage by lazy { Text.of("Loading...") { this.color = PvColors.RED } }
+    protected val errorMessage by lazy { Text.of("Error...") { this.color = PvColors.RED } }
 
 
     protected fun loadingComponent(
