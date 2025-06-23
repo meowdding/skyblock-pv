@@ -22,7 +22,7 @@
         }
     },
     "a1732122-e22e-4edf-883c-09673eb55de8": {
-        "title": "<gr #55CDFC #F7A8B8 #FFFFFF #F7A8B8 #55CDFC>Cool person<gr>",
+        "title": "Cool person",
         "parrot": {
             "variant": "blue",
             "left_shoulder": true
@@ -30,13 +30,27 @@
         "cat": {
             "asset_id": "skyblock-pv:cat/trans",
             "left_shoulder": false
-        }
+        },
+        "title_colors": [
+            "#55CDFC",
+            "#F7A8B8",
+            "#FFFFFF",
+            "#F7A8B8",
+            "#55CDFC"
+        ]
     },
     "503450fc-72c2-4e87-8243-94e264977437": {
-        "title": "<gr #55CDFC #F7A8B8 #FFFFFF #F7A8B8 #55CDFC>Super cool person<gr>",
+        "title": "Super cool person",
         "cat": {
             "asset_id": "skyblock-pv:cat/trans",
             "left_shoulder": false
-        }
+        },
+        "title_colors": [
+            "#55CDFC",
+            "#F7A8B8",
+            "#FFFFFF",
+            "#F7A8B8",
+            "#55CDFC"
+        ]
     }
 }

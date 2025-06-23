@@ -2,6 +2,7 @@ package me.owdding.skyblockpv
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
+import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
@@ -11,6 +12,8 @@ import me.owdding.skyblockpv.api.PvAPI
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.DevConfig
+import me.owdding.skyblockpv.config.THEME_RENDERER
+import me.owdding.skyblockpv.config.ThemeRenderer
 import me.owdding.skyblockpv.generated.SkyBlockPVExtraData
 import me.owdding.skyblockpv.generated.SkyBlockPVModules
 import me.owdding.skyblockpv.screens.PvTab
@@ -43,9 +46,11 @@ import java.util.concurrent.CompletableFuture
 
 @Module
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
-    val mod: ModContainer = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
+    const val MOD_ID: String = "skyblockpv"
+    const val RESOURCE_PATH: String = "skyblock-pv"
+    val mod: ModContainer = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow()
+    val configDir: Path = FabricLoader.getInstance().configDir.resolve(MOD_ID)
     val version: Version = mod.metadata.version
-    val configDir: Path = FabricLoader.getInstance().configDir.resolve("skyblockpv")
     val useragent: String = "SkyBlockPV ${version.friendlyString} (${String(Base64.getDecoder().decode("Y29udGFjdEB0aGF0Z3Jhdnlib2F0LnRlY2g="))}})"
 
     val configurator = Configurator("sbpv")
@@ -56,12 +61,14 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     val backgroundTexture = id("buttons/normal")
 
     override fun onInitialize() {
+        ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
+
         Config.register(configurator)
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
         SkyBlockPVExtraData.collected.forEach {
             CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
-                McClient.tell {
+                McClient.runNextTick {
                     throw throwable
                 }
             }
@@ -73,7 +80,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
                 this.hover = Text.of(link).withColor(TextColor.GRAY)
             }
 
-            McClient.tell {
+            McClient.runNextTick {
                 Text.of().send()
                 "messages.new_version".asTranslated(current, new).withLink().sendWithPrefix()
                 (+"messages.new_version.download").withLink().sendWithPrefix()
@@ -88,7 +95,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
         val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
             callback {
-                McClient.setScreenAsync(PvTab.MAIN.create(McClient.self.gameProfile))
+                McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
             }
             then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 callback {
@@ -104,11 +111,11 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
         event.register("sbpv") {
             then("pv") { pvCommand() }
             callback {
-                McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(null))
+                McClient.setScreenAsync { ResourcefulConfigScreen.getFactory("sbpv").apply(null) }
             }
         }
     }
 
-    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("skyblock-pv", path)
+    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(RESOURCE_PATH, path)
     fun olympusId(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("olympus", path)
 }

@@ -104,7 +104,7 @@ data class SkyBlockProfile(
                     else -> ProfileType.NORMAL
                 },
                 inventory = member.getAs<JsonObject>("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) },
-                currency = member.getAs<JsonObject>("currencies")?.let { Currency.fromJson(it) },
+                currency = Currency.fromJson(member),
                 bank = Bank.fromJson(json, member),
                 firstJoin = profile.getAs<Long>("first_join", 0L),
                 fairySouls = member.getPathAs<Int>("fairy_soul.total_collected", 0),

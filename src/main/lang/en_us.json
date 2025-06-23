@@ -83,6 +83,17 @@
         "disable_outside_hypixel": {
             "@value": "Disable outside hypixel",
             "desc": "Disables/unregisters the <light_gray>/pv</light_gray> command outside of hypixel."
+        },
+        "display_scaling": {
+            "@value": "Enable Display Scaling",
+            "desc": [
+                "Scales displays to better fill the space available",
+                "<red>This might lead to unexpected behaviour and overflowing.</red>"
+            ]
+        },
+        "theme": {
+            "@value": "Theme",
+            "desc": "The theme to use for the profile viewer."
         }
     },
     "dev": {
@@ -237,10 +248,10 @@
         "open_logs": "Open Logs",
         "username_input": "Username...",
         "networth": {
-            "@value": "<dark_gray>Net Worth: ",
-            "failed": "<red>Failed to load",
-            "error": "<red>An error occurred: ",
-            "loading": "<dark_gray>Loading...",
+            "@value": "Net Worth: ",
+            "failed": "Failed to load",
+            "error": "An error occurred: ",
+            "loading": "Loading...",
             "tooltip": {
                 "@value": "<yellow>Networth: ",
                 "cookies": "<yellow>Net worth in Cookies: ",
@@ -309,6 +320,10 @@
                 "fairy_souls": "Fairy Souls: <0>"
             }
         }
+    },
+    "themes": {
+        "dark": "Dark mode",
+        "default": "Default"
     },
     "misc": {
         "maxed": "<red>Maxed!</red>"

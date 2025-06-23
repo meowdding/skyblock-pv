@@ -8,18 +8,19 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.toMatrix4f
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.TextColor
+import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.api.events.time.TickEvent
 
 class GradientTextShader(gradientProvider: GradientProvider) : TextShader {
     constructor(colors: List<Int>) : this({ colors })
     constructor(vararg colors: TextColor) : this(colors.map { it.value })
 
-    val colors = gradientProvider.getColors().take(16).rightPad(16, 0).map { it.toFloat() }.toFloatArray()
+    val colors = gradientProvider.getColors().take(16).toMutableList().rightPad(16, 0).map { it.toFloat() }.toFloatArray()
     val states = gradientProvider.getColors().take(16).size
     override val pipeline: RenderPipeline = RenderPipelines.register(
         RenderPipeline.builder(RenderPipelines.TEXT_SNIPPET, RenderPipelines.FOG_SNIPPET)
             .withLocation(SkyBlockPv.id("gradient_text"))
-            .withVertexShader(SkyBlockPv.id("text/gradient"))
+            .withVertexShader(ResourceLocation.withDefaultNamespace("core/rendertype_text"))
             .withFragmentShader(SkyBlockPv.id("text/gradient"))
             .withSampler("Sampler0")
             .withSampler("Sampler2")
@@ -35,6 +36,9 @@ class GradientTextShader(gradientProvider: GradientProvider) : TextShader {
         renderPass.setUniform("states", states)
         renderPass.setUniform("ticks", TickEvent.ticks)
     }
+
+    override val useWhite: Boolean get() = true
+    override val hasShadow: Boolean? get() = true
 
 }
 

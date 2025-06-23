@@ -8,6 +8,7 @@ import me.owdding.skyblockpv.api.pronouns.PronounsDbAPI
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.withTextShader
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import java.util.*
 
@@ -18,14 +19,14 @@ object PronounWidget {
             { (decoration, pronouns) ->
                 val pronouns = pronouns.firstOrNull() ?: return@completableDisplay Displays.empty()
                 val shader = PronounDbDecorations.getShader(decoration ?: "")
-                Displays.component(
+                ExtraDisplays.component(
                     component = "widgets.pronouns".asTranslated(pronouns.toDisplay()),
-                    color = { 0xFF555555u.takeUnless { shader != null } ?: 0xFFFFFFFFu },
+                    color = { 0xFF555555u },
                     shadow = shader != null,
                 ).centerIn(width, McFont.height).withTextShader(shader)
             },
-            { Displays.empty(height = McFont.height, width = width) },
-            { Displays.empty(height = McFont.height, width = width) },
+            { ExtraDisplays.text("Error", color = { PvColors.RED.toUInt() }) },
+            { ExtraDisplays.text("Loading") },
         )
     }
 }

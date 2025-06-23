@@ -5,6 +5,8 @@ import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.utils.theme.PvColors
+import net.minecraft.core.ClientAsset
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
@@ -18,7 +20,6 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
@@ -26,10 +27,16 @@ object CodecUtils {
 
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
         Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
+    internal inline fun <reified K, reified V> mutableMap(): Codec<MutableMap<K, V>> =
+        Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
+            .xmap({ it.toMutableMap() }, { it })
 
     internal inline fun <reified T> list(): Codec<List<T>> {
         return SkyBlockPVCodecs.getCodec<T>().listOf()
     }
+
+    @IncludedCodec
+    val CLIENT_ASSET: Codec<ClientAsset> = ClientAsset.CODEC
 
     @IncludedCodec(named = "cum_int_list_alt")
     val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =
@@ -70,6 +77,9 @@ object CodecUtils {
         { it.string },
     )
 
+    @IncludedCodec
+    val TEXT_COLOR: Codec<net.minecraft.network.chat.TextColor> = net.minecraft.network.chat.TextColor.CODEC
+
     @IncludedCodec(named = "cum_string_int_map")
     val CUMULATIVE_STRING_INT_MAP: Codec<List<Map<String, Int>>> = Codec.unboundedMap(Codec.STRING, Codec.INT).listOf().xmap(
         {
@@ -98,7 +108,7 @@ object CodecUtils {
                     BuiltInRegistries.ITEM.get(it).map { it.value().defaultInstance }
                         .orElseGet {
                             val defaultInstance = Items.BARRIER.defaultInstance
-                            defaultInstance.set(DataComponents.ITEM_NAME, Text.of(it.toString()) { this.color = TextColor.RED })
+                            defaultInstance.set(DataComponents.ITEM_NAME, Text.of(it.toString()) { this.color = PvColors.RED })
                             defaultInstance
                         }
                 }
@@ -124,4 +134,7 @@ object CodecUtils {
 
     @IncludedCodec(named = "compact_string_list")
     val COMPACT_STRING_LIST: Codec<List<String>> = ExtraCodecs.compactListCodec(Codec.STRING)
+
+    @IncludedCodec(named = "resource_map")
+    val RESOURCE_MAP: Codec<Map<ResourceLocation, ResourceLocation>> = Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC)
 }

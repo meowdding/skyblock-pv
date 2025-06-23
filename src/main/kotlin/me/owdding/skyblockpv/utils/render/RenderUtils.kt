@@ -15,6 +15,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import earth.terrarium.olympus.client.pipelines.PipelineRenderer
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -81,7 +82,7 @@ object RenderUtils {
         orientation: Orientation,
         color: Int,
     ) {
-        val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(MONO_TEXTURE).texture
+        val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(ThemeSupport.texture(MONO_TEXTURE)).texture
         RenderSystem.setShaderTexture(0, gpuTexture)
         PipelineRenderer.draw(MONO_INVENTORY_BACKGROUND, drawBuffer(graphics, x, y, width, height, color).buildOrThrow()) { pass: RenderPass ->
             pass.bindSampler("Sampler0", gpuTexture)
@@ -98,6 +99,13 @@ object RenderUtils {
         TEXT_SHADER = previousShader
     }
 
+    fun pushPopTextShader(shader: TextShader?, action: () -> Unit) {
+        val previousShader = TEXT_SHADER
+        TEXT_SHADER = shader
+        action()
+        TEXT_SHADER = previousShader
+    }
+
     fun drawInventory(
         graphics: GuiGraphics,
         x: Int,
@@ -108,7 +116,7 @@ object RenderUtils {
         rows: Int,
         color: Int,
     ) {
-        val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(POLY_TEXTURE).texture
+        val gpuTexture: GpuTexture = McClient.self.textureManager.getTexture(ThemeSupport.texture(POLY_TEXTURE)).texture
         RenderSystem.setShaderTexture(0, gpuTexture)
         PipelineRenderer.draw(INVENTORY_BACKGROUND, drawBuffer(graphics, x, y, width, height, color).buildOrThrow()) { pass: RenderPass ->
             pass.bindSampler("Sampler0", gpuTexture)

@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.utils
 
 import com.mojang.authlib.GameProfile
+import me.owdding.skyblockpv.utils.render.TextShader
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.RemotePlayer
 import net.minecraft.client.renderer.entity.state.PlayerRenderState
@@ -30,6 +31,8 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
     fun setupRenderState(renderState: PlayerRenderState, partialTick: Float) {
         ContributorHandler.contributors[gameProfile.id]?.let {
             renderState.scoreText = it.title
+            (renderState as PlayerRenderStateAccessor).`skyblockpv$scoreShader` = it.titleShader
+
             it.parrot?.let { parrot ->
                 if (parrot.leftSide) {
                     renderState.parrotOnLeftShoulder = parrot.variant
@@ -41,7 +44,6 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
                 (renderState as PlayerRenderStateAccessor).`skyblockpv$catOnShoulder` = cat
             }
             renderState.isFullyFrozen = it.shaking
-
             renderState.ageInTicks = (Minecraft.getInstance().player?.tickCount?.toFloat() ?: 0.0f).plus(partialTick)
         }
     }
@@ -63,4 +65,6 @@ class FakePlayer(gameProfile: GameProfile, val customDisplayName: Component, val
 
 internal interface PlayerRenderStateAccessor {
     var `skyblockpv$catOnShoulder`: CatOnShoulder?
+    var `skyblockpv$nameShader`: TextShader?
+    var `skyblockpv$scoreShader`: TextShader?
 }

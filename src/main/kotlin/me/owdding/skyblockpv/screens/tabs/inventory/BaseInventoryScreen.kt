@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs.inventory
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
@@ -11,8 +11,8 @@ import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.tabs.base.Category
-import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
@@ -48,7 +48,7 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
 
     open val itemStackSize = true
 
-    override fun getLayout(bg: DisplayWidget) = LayoutFactory.vertical {
+    override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical(5, MIDDLE) {
         val inventories = getInventories()
         val icons = getIcons()
 
@@ -66,13 +66,13 @@ abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBl
             }
         }
 
-        widget(buttonContainer.centerHorizontally(uiWidth))
-        spacer(height = 10)
-        widget(carousel!!.centerHorizontally(uiWidth))
+        widget(buttonContainer)
+        spacer()
+        widget(carousel!!)
 
         getExtraLine()?.let {
             spacer(height = 5)
-            widget(it.asWidget().centerHorizontally(uiWidth))
+            widget(it.asWidget())
         }
     }
 }

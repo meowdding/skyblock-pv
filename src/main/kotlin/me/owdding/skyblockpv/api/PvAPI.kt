@@ -30,7 +30,7 @@ object PvAPI {
 
             McClient.self.minecraftSessionService.joinServer(user.profileId, user.accessToken, server)
 
-            val response = Http.get<String>(
+            val response = Http.get(
                 url = API_URL.format("/authenticate"),
                 queries = if (bypassCaches) {
                     mapOf("bypassCache" to "true")

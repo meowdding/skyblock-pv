@@ -20,14 +20,14 @@ inline fun <reified T> JsonElement.to(): T? {
     val clazz = T::class.java
     when {
         clazz == JsonObject::class.java || clazz == JsonArray::class.java || clazz == JsonElement::class.java -> return this as? T
-        clazz == String || clazz == JavaString::class.java -> return this.asJsonPrimitive?.asString() as? T
-        clazz == Int::class.java || clazz == JavaInteger::class.java -> return this.asJsonPrimitive?.asInt(0) as? T
-        clazz == Double::class.java || clazz == JavaDouble::class.java -> return this.asJsonPrimitive?.asDouble(0.0) as? T
-        clazz == Long::class.java || clazz == JavaLong::class.java -> return this.asJsonPrimitive?.asLong(0) as? T
-        clazz == Boolean::class.java || clazz == JavaBoolean::class.java -> return this.asJsonPrimitive?.asBoolean(false) as? T
-        clazz == Short::class.java || clazz == JavaShort::class.java -> return this.asJsonPrimitive?.asShort(0) as? T
-        clazz == Float::class.java || clazz == JavaFloat::class.java -> return this.asJsonPrimitive?.asDouble(0.0)?.toFloat() as? T
-        clazz == UUID::class.java -> return this.asJsonPrimitive?.asUUID() as? T
+        clazz == String || clazz == JavaString::class.java -> return this.asString() as? T
+        clazz == Int::class.java || clazz == JavaInteger::class.java -> return this.asInt(0) as? T
+        clazz == Double::class.java || clazz == JavaDouble::class.java -> return this.asDouble(0.0) as? T
+        clazz == Long::class.java || clazz == JavaLong::class.java -> return this.asLong(0) as? T
+        clazz == Boolean::class.java || clazz == JavaBoolean::class.java -> return this.asBoolean(false) as? T
+        clazz == Short::class.java || clazz == JavaShort::class.java -> return this.asShort(0) as? T
+        clazz == Float::class.java || clazz == JavaFloat::class.java -> return this.asDouble(0.0).toFloat() as? T
+        clazz == UUID::class.java -> return this.asUUID() as? T
         clazz.isEnum -> {
             return clazz.enumConstants.find { (it as Enum<*>).name.equals(this.asString(), true) }
         }

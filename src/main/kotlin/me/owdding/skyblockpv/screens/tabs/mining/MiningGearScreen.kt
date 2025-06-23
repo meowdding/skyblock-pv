@@ -1,11 +1,11 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.MiningGear
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.Layout
@@ -18,7 +18,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        return LayoutFactory.horizontal(5, 0.5f) {
+        return PvLayouts.horizontal(5, 0.5f) {
             widget(
                 PvWidgets.armorAndEquipment(
                     profile,
@@ -76,7 +76,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         var score = 0
 
-        score += getData(DataTypes.RARITY_UPGRADES) ?: 0
+        score += 1.takeIf { getData(DataTypes.RECOMBOBULATOR) ?: false } ?: 0
 
         // take the actual level of ultimate enchants since those are worth smth
         getData(DataTypes.ENCHANTMENTS)?.let {

@@ -3,11 +3,11 @@ package me.owdding.skyblockpv.data.api.skills.combat
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.repo.CrimsonIsleCodecs
 import me.owdding.skyblockpv.utils.json.getAs
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.utils.extentions.asEnum
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 // todo mini daily, kuudra daily
@@ -59,7 +59,7 @@ enum class Faction(val id: String) {
     BARBARIAN("barbarians");
 
     fun displayName(): Component {
-        return CrimsonIsleCodecs.factionNameMap[id] ?: Text.of("Unknown") { this.color = TextColor.RED }
+        return CrimsonIsleCodecs.factionNameMap[id] ?: Text.of("Unknown") { this.color = PvColors.RED }
     }
 }
 
