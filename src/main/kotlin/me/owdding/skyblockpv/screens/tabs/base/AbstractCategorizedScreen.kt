@@ -56,7 +56,7 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
         this.categories.fold(Layouts.column().withGap(2)) { layout, category ->
             val button = Button().apply {
                 withSize(31, 20)
-                withCallback { McClient.setScreenAsync(category.create(gameProfile, profile)) }
+                withCallback { McClient.setScreenAsync { category.create(gameProfile, profile) } }
                 withTooltip(category.hover.asComponent())
             }
 
