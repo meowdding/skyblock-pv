@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
+import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -21,12 +22,14 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
 
 }
 
-enum class FarmingCategory(val screen: KClass<out BaseFarmingScreen>, override val icon: ItemStack) : Category {
+enum class FarmingCategory(val screen: KClass<out BaseFarmingScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
     MAIN(FarmingScreen::class, Items.WHEAT.defaultInstance),
     VISITORS(VisitorScreen::class, Items.VILLAGER_SPAWN_EGG.defaultInstance),
     CROP(CropScreen::class, Items.CARROT.defaultInstance),
     COMPOSTER(ComposterScreen::class, RepoItemsAPI.getItem("COMPOST")),
     ;
+
+    override val hover: String = hoverName ?: name.toTitleCase()
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): Screen = screen.constructors.first().call(gameProfile, profile)

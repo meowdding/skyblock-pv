@@ -16,10 +16,11 @@ import me.owdding.skyblockpv.utils.components.PvLayouts
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
+import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val icon: ItemStack) : Category {
+enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
     ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
     BACKPACK(BackpackScreen::class, SkullTextures.BACKPACK.skull),
@@ -28,6 +29,8 @@ enum class InventoryCategory(val screen: KClass<out BasePvScreen>, override val 
     SACKS(SacksScreen::class, SkullTextures.SACKS.skull),
     MISC_BAGS(MiscBagScreen::class, Items.BUNDLE.defaultInstance),
     ;
+
+    override val hover: String = hoverName ?: name.toTitleCase()
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?) = screen.constructors.first().call(gameProfile, profile)
