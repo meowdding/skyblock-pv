@@ -55,7 +55,7 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
         this.categories.fold(Layouts.column().withGap(2)) { layout, category ->
             val button = Button()
                 .withSize(31, 20)
-                .withCallback { McClient.setScreenAsync(category.create(gameProfile, profile)) }
+                .withCallback { McClient.setScreenAsync { category.create(gameProfile, profile) } }
 
             if (Config.alignCategoryButtonsLeft) {
                 button.withTexture(if (category.isSelected) ExtraConstants.TAB_LEFT_SELECTED else ExtraConstants.TAB_LEFT)
