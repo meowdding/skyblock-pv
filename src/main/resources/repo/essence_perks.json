@@ -242,6 +242,18 @@
             "name": "Fig Fortune",
             "max_level": 50
         },
+        "agatha_mangrove_fortune": {
+            "name": "Mangrove Fortune",
+            "max_level": 50
+        },
+        "agatha_fig_personal_best": {
+            "name": "Fig Personal Best",
+            "max_level": 1
+        },
+        "agatha_mangrove_personal_best": {
+            "name": "Mangrove Personal Best",
+            "max_level": 1
+        },
         "trapped": {
             "name": "Trapped",
             "max_level": 5
