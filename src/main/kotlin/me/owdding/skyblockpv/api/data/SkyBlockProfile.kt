@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.api.data
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CollectionAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
@@ -16,6 +17,8 @@ import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
 import me.owdding.skyblockpv.feature.NetworthCalculator
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
@@ -211,6 +214,7 @@ data class SkyBlockProfile(
 
             if (unknownPerks.isNotEmpty()) {
                 println("Unknown essence perks: $unknownPerks")
+                if (SkyBlockPv.isDevMode) "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
             }
 
             return perks
