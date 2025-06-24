@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.api.data
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CollectionAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
@@ -212,7 +213,7 @@ data class SkyBlockProfile(
             val unknownPerks = perks.keys - EssenceData.allPerks.keys
 
             if (unknownPerks.isNotEmpty()) {
-                println("Unknown essence perks: $unknownPerks")
+                SkyBlockPv.warn("Unknown essence perks: $unknownPerks")
                 "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
             }
 

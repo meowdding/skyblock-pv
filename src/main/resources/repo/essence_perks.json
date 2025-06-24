@@ -234,6 +234,14 @@
         }
     },
     "forest": {
+        "agatha_power": {
+            "name": "Agatha's Power",
+            "max_level": 5
+        },
+        "agatha_fig_fortune": {
+            "name": "Fig Fortune",
+            "max_level": 50
+        },
         "trapped": {
             "name": "Trapped",
             "max_level": 5
