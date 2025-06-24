@@ -213,7 +213,7 @@ data class SkyBlockProfile(
             val unknownPerks = perks.keys - EssenceData.allPerks.keys
 
             if (unknownPerks.isNotEmpty()) {
-                println("Unknown essence perks: $unknownPerks")
+                SkyBlockPv.warn("Unknown essence perks: $unknownPerks")
                 if (SkyBlockPv.isDevMode) "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
             }
 
