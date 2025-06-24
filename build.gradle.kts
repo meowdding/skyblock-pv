@@ -92,11 +92,25 @@ tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
     filesMatching(listOf("fabric.mod.json")) {
-        expand("version" to project.version)
+        expand(
+            "version" to project.version,
+            "minecraft" to libs.versions.minecraft.get(),
+            "fabricLoader" to libs.versions.loader.get(),
+            "fabricLanguageKotlin" to libs.versions.fabrickotlin.get(),
+            "meowddingLib" to libs.versions.meowdding.lib.get(),
+            "resourcefullib" to libs.versions.rlib.get(),
+            "skyblockApi" to libs.versions.skyblockapi.get(),
+            "olympus" to libs.versions.olympus.get(),
+            "placeholderApi" to libs.versions.placeholders.get(),
+            "resourcefulconfigkt" to libs.versions.rconfigkt.get(),
+            "resourcefulconfig" to libs.versions.rconfig.get(),
+        )
     }
+
     filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
         filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
     }
+
     with(copySpec {
         from("src/main/lang").include("*.json").into("assets/skyblock-pv/lang")
     })

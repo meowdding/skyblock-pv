@@ -22,6 +22,15 @@
     ],
     "depends": {
         "fabric": "*",
-        "minecraft": "1.21.5"
+        "minecraft": "${minecraft}",
+        "fabricloader": ">=${fabricLoader}",
+        "fabric-language-kotlin": ">=${fabricLanguageKotlin}",
+        "resourcefulconfigkt": ">=${resourcefulconfigkt}",
+        "resourcefulconfig": ">=${resourcefulconfig}",
+        "meowdding-lib": ">=${meowddingLib}",
+        "skyblock-api": ">=${skyblockApi}",
+        "resourcefullib": ">=${resourcefullib}",
+        "olympus": ">=${olympus}",
+        "placeholder-api": ">=${placeholderApi}"
     }
 }
