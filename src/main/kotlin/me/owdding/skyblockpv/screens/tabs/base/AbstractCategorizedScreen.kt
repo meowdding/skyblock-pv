@@ -19,6 +19,7 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.utils.text.Text.asComponent
 import kotlin.math.min
 
 abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen(name, gameProfile, profile) {
@@ -53,9 +54,11 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
         val y = bg.y + 20
 
         this.categories.fold(Layouts.column().withGap(2)) { layout, category ->
-            val button = Button()
-                .withSize(31, 20)
-                .withCallback { McClient.setScreenAsync { category.create(gameProfile, profile) } }
+            val button = Button().apply {
+                withSize(31, 20)
+                withCallback { McClient.setScreenAsync { category.create(gameProfile, profile) } }
+                withTooltip(category.hover.asComponent())
+            }
 
             if (Config.alignCategoryButtonsLeft) {
                 button.withTexture(if (category.isSelected) ExtraConstants.TAB_LEFT_SELECTED else ExtraConstants.TAB_LEFT)
@@ -75,7 +78,6 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
                 )
             }
 
-            button.active = !category.isSelected
             layout.withChild(button)
         }.withPosition(x, y).build(this::addRenderableWidget)
     }
@@ -86,6 +88,7 @@ interface Category {
 
     val icon: ItemStack get() = ItemStack.EMPTY
     val isSelected: Boolean get() = false
+    val hover: String get() = ""
 
     fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): Screen
 
