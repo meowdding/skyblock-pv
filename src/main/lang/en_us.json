@@ -322,7 +322,8 @@
                 },
                 "first_join": "First Join: <0>",
                 "skill_avg": "Skill Avg: <0>",
-                "fairy_souls": "Fairy Souls: <0>"
+                "fairy_souls": "Fairy Souls: <0>",
+                "kd": "K/D: <0>/<1> (<2>)"
             }
         }
     },

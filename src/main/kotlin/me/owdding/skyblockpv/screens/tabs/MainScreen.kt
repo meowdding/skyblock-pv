@@ -195,6 +195,11 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             display(grayText("screens.main.info.skill_avg".asTranslated(skillAvg.round())))
             display(grayText("screens.main.info.fairy_souls".asTranslated(profile.fairySouls)))
 
+            val totalKills = profile.mobData.maxOf { it.kills }
+            val totalDeaths = profile.mobData.maxOf { it.deaths }
+            val kd = if (totalDeaths == 0L) "∞" else (totalKills.toDouble() / totalDeaths).round()
+            display(grayText("screens.main.info.kd".asTranslated(totalKills.shorten(), totalDeaths.shorten(), kd)))
+
             display(NetworthDisplay.getNetworthDisplay(profile))
         }
 
