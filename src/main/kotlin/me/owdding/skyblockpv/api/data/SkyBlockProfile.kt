@@ -214,7 +214,7 @@ data class SkyBlockProfile(
 
             if (unknownPerks.isNotEmpty()) {
                 SkyBlockPv.warn("Unknown essence perks: $unknownPerks")
-                "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
+                if (SkyBlockPv.isDevMode) "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
             }
 
             return perks

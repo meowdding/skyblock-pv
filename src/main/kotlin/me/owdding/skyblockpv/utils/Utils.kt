@@ -99,7 +99,7 @@ object Utils {
             §cPlease try again later or check your network connection. If the problem persists, please report it on our Discord server with your full log.
             """.trimIndent())
         } else {
-            McClient.setScreenAsync(PvTab.MAIN.create(profile))
+            McClient.setScreenAsync { PvTab.MAIN.create(profile) }
         }
     }
 

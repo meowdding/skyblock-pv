@@ -48,7 +48,7 @@
             "something_went_wrong": "Something went wrong fetching the status from Hypixel. Please report this on the Discord or the GitHub!",
             "failed_to_authenticate": "Failed to authenticate with PV API. Check if you are connected to Mojang servers."
         },
-        "unknown_essence_perks": "<0> unknown essence perks. Please report this on the Discord or the GitHub!",
+        "unknown_essence_perks": "<0> unknown essence perks.",
         "player_not_found": "<red>Player could not be found</red>",
         "toast_disabled": {
             "@value": "<pink>SbPv</pink><red>: Disabled Tabs on Profile</red>",
@@ -224,8 +224,13 @@
     "widgets": {
         "pronouns": "Pronouns: <0>",
         "open_settings": [
-            "Open Settings",
+            "<underline>Open Settings</underline>",
             "You can also use <gray>/sbpv</gray>!"
+        ],
+        "theme_switcher": [
+            "<underline>Cycle Theme</underline>",
+            "Cycles to the next theme in the List",
+            "You can also select a theme in the config!"
         ],
         "error": {
             "loading": [

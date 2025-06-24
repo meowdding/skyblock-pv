@@ -3,9 +3,9 @@ package me.owdding.skyblockpv.screens.tabs
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.builder.LayoutBuilder
-import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
+import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
@@ -82,7 +82,6 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }
 
         if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + 165 /* Height of trophy table */ < bg.height) {
-            trophyWidth = bg.width
             PvLayouts.frame {
                 spacer(bg.width, bg.height)
                 PvLayouts.vertical {

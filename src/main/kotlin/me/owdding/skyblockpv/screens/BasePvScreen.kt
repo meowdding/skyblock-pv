@@ -11,6 +11,7 @@ import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
+import earth.terrarium.olympus.client.ui.UIIcons
 import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -196,7 +197,18 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen) } }
             .withTooltip(+"widgets.open_settings")
 
+        val themeSwitcher = Widgets.button()
+            .withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.EYE_DROPPER).withColor(MinecraftColors.WHITE))
+            .withSize(20, 20)
+            .withTexture(null)
+            .withCallback {
+                ThemeSupport.nextTheme()
+                safelyRebuild()
+            }
+            .withTooltip(+"widgets.theme_switcher")
+
         widget(settingsButton)
+        widget(themeSwitcher)
     }
 
     private fun LayoutBuilder.createDevRow(bg: DisplayWidget) = horizontal(5) {

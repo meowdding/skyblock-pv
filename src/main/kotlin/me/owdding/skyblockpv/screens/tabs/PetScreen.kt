@@ -5,7 +5,6 @@ import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.layouts.Layouts
 import earth.terrarium.olympus.client.layouts.LinearViewLayout
 import me.owdding.lib.builder.LayoutBuilder
-import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
@@ -13,6 +12,7 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
+import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.SortedEntry

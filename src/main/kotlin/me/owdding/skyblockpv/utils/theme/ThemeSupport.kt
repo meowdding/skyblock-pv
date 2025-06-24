@@ -13,6 +13,11 @@ object ThemeSupport {
     val pvColors get() = currentTheme.colors
     val pvTextures get() = currentTheme.textures
 
+    fun nextTheme() {
+        val themes = ThemeLoader.themes.keys.toList()
+        Config.theme = themes[(themes.indexOf(Config.theme) + 1) % themes.size]
+    }
+
     fun texture(path: String) = texture(id(path))
     fun texture(path: ResourceLocation) = pvTextures.getOrDefault(path, path)
 
