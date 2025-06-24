@@ -32,6 +32,7 @@ object LegacyDataFixer {
         BannerItemFixer,
         ExtraAttributesFixer,
         FireworkExplosionFixer,
+        ItemModelFix,
         RemoveFixer("overrideMeta"),
         RemoveFixer("AttributeModifiers"),
     )

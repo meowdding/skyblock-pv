@@ -11,6 +11,7 @@ enum class SortedEntry(vararg entries: String) {
         "SKILL_FORAGING",
         "SKILL_ENCHANTING",
         "SKILL_ALCHEMY",
+        "SKILL_HUNTING",
         "SKILL_CARPENTRY",
         "SKILL_RUNECRAFTING",
         "SKILL_TAMING",

@@ -17,7 +17,6 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
-import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
@@ -50,6 +49,7 @@ import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
@@ -363,19 +363,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             title = +"screens.main.essence",
             data = essence,
             width = width,
-            getIcon = {
-                when (it) {
-                    "WITHER" -> SkullTextures.WITHER_ESSENCE
-                    "SPIDER" -> SkullTextures.SPIDER_ESSENCE
-                    "UNDEAD" -> SkullTextures.UNDEAD_ESSENCE
-                    "DRAGON" -> SkullTextures.DRAGON_ESSENCE
-                    "GOLD" -> SkullTextures.GOLD_ESSENCE
-                    "DIAMOND" -> SkullTextures.DIAMOND_ESSENCE
-                    "ICE" -> SkullTextures.ICE_ESSENCE
-                    "CRIMSON" -> SkullTextures.CRIMSON_ESSENCE
-                    else -> null
-                }?.skull ?: ItemStack.EMPTY
-            },
+            getIcon = { RepoItemsAPI.getItem("ESSENCE_${it.uppercase()}") },
         ) { _, amount -> amount.shorten() }
     }
 

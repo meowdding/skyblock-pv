@@ -232,5 +232,51 @@
             "name": "Blessing of Time",
             "max_level": 3
         }
+    },
+    "forest": {
+        "agatha_power": {
+            "name": "Agatha's Power",
+            "max_level": 5
+        },
+        "agatha_fig_fortune": {
+            "name": "Fig Fortune",
+            "max_level": 50
+        },
+        "agatha_mangrove_fortune": {
+            "name": "Mangrove Fortune",
+            "max_level": 50
+        },
+        "agatha_fig_personal_best": {
+            "name": "Fig Personal Best",
+            "max_level": 1
+        },
+        "agatha_mangrove_personal_best": {
+            "name": "Mangrove Personal Best",
+            "max_level": 1
+        },
+        "trapped": {
+            "name": "Trapped",
+            "max_level": 5
+        },
+        "axed": {
+            "name": "Axed",
+            "max_level": 1
+        },
+        "extreme_pressure": {
+            "name": "Extreme Pressure",
+            "max_level": 10
+        },
+        "lumberjack": {
+            "name": "Lumberjack",
+            "max_level": 10
+        },
+        "tasty": {
+            "name": "Tasty",
+            "max_level": 5
+        },
+        "forest_training": {
+            "name": "Forest Training",
+            "max_level": 3
+        }
     }
 }

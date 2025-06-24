@@ -82,6 +82,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }
 
         if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + 165 /* Height of trophy table */ < bg.height) {
+            trophyWidth = bg.width
             PvLayouts.frame {
                 spacer(bg.width, bg.height)
                 PvLayouts.vertical {
