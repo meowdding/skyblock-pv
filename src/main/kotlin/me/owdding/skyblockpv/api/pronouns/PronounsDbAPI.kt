@@ -55,21 +55,19 @@ data class PronounDbData(
     val pronouns: List<ProunounSet> = emptyList(),
 )
 
-enum class ProunounSet(val id: String) {
-    UNKNOWN("unknown"),
+enum class ProunounSet(val id: String, val first: String, val second: String) {
+    UNKNOWN("unknown", "?", "?"),
 
-    HE_HIM("he"),
-    IT_ITS("it"),
-    SHE_HER("she"),
-    THEY_THEM("they"),
+    HE_HIM("he", "he", "him"),
+    IT_ITS("it", "it", "its"),
+    SHE_HER("she", "she", "her"),
+    THEY_THEM("they", "they", "them"),
 
-    ANY("any"),
-    ASK("ask"),
-    AVOID("avoid"),
-    OTHER("other"),
+    ANY("any", "any", "any"),
+    ASK("ask", "ask", "ask"),
+    AVOID("avoid", "avoid", "avoid"),
+    OTHER("other", "other", "other")
     ;
-
-    fun toDisplay() = this.name.lowercase().replace("_", "/")
 
     companion object {
         fun fromId(id: String) = entries.firstOrNull { it.id == id }
