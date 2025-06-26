@@ -205,7 +205,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 ThemeSupport.nextTheme()
                 safelyRebuild()
             }
-            .withTooltip(+"widgets.theme_switcher")
+            .withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
 
         widget(settingsButton)
         widget(themeSwitcher)

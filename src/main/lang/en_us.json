@@ -224,13 +224,15 @@
     "widgets": {
         "pronouns": "Pronouns: <0>",
         "open_settings": [
-            "<underline>Open Settings</underline>",
+            "<underline><gray>Open Settings</gray></underline>",
             "You can also use <gray>/sbpv</gray>!"
         ],
         "theme_switcher": [
-            "<underline>Cycle Theme</underline>",
+            "<underline><gray>Cycle Theme</gray></underline>",
             "Cycles to the next theme in the List",
-            "You can also select a theme in the config!"
+            "You can also select a theme in the config!",
+            "",
+            "<gray>Current Theme: </gray><0>"
         ],
         "error": {
             "loading": [

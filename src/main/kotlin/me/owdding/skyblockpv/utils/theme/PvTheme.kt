@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.utils.theme
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 
 object ThemeHelper {
@@ -16,7 +17,9 @@ data class PvTheme(
     val colors: PvThemeColors = ThemeHelper.defaultColors,
     @NamedCodec("resource_map") val textures: Map<ResourceLocation, ResourceLocation> = mapOf(),
     val name: String,
-)
+) {
+    val translation: Component = Component.translatable(name)
+}
 
 @GenerateCodec
 data class PvThemeColors(
