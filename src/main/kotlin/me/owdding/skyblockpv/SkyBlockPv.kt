@@ -110,6 +110,11 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
         event.register("sbpv") {
             then("pv") { pvCommand() }
+
+            thenCallback("version") {
+                Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
+            }
+
             callback {
                 McClient.setScreenAsync { ResourcefulConfigScreen.getFactory("sbpv").apply(null) }
             }
