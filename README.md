@@ -69,13 +69,13 @@ E.g., this replaces the normal button texture with a custom one:
 
 Some colors might look weird, as they look too similar to the background.
 By default, it uses the minecraft colors.
-The colors are the decimal format of the RGB values.
+The colors can either be in hex format or in decimal format.
 
 ```json
 {
     ...
     "colors": {
-        "dark_gray": 11908533
+        "dark_gray": "#B5B5B5"
     }
 }
 ```
