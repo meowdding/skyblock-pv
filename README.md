@@ -89,12 +89,6 @@ as of 2025-04-16
 
 ### Mod Compatibility
 
-#### SkyBlockMod
-
-- **Issue**: [SkyBlockMod](https://github.com/kevinthegreat1/SkyblockMod-Fabric) abbreviates `/party leave` to `pv`, which conflicts with our command.
-- **Resolution**: We remove the `/pv` shortcut so that our command is used.
-- **Note**: We do not provide an option to disable this behaviour, as using our mod implies you want the pv shortcut for profile viewer.
-
 #### SkyBlocker
 
 - **Issue**: [SkyBlocker](https://github.com/SkyblockerMod/Skyblocker) includes its own Profile Viewer.
