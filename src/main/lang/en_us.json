@@ -58,7 +58,7 @@
                 "<red><0></red>"
             ]
         },
-        "social_options_hover": "<yellow>Click to open <0>'s profile.</yellow>"
+        "social_options_hover": "<yellow>Click to open <0>'s profile in skyblock profile viewer.</yellow>"
     },
     "config": {
         "spying": {
