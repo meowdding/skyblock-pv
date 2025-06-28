@@ -24,17 +24,18 @@ object ClickableChatMessages {
 
         for (component in event.component.siblings) {
             val command = (component.style.clickEvent as? ClickEvent.RunCommand)?.command
-            if (command?.startsWith("/socialoptions ") == true) {
-                val username = command.removePrefix("/socialoptions ")
-                val nameComponent = component.copy()
-                nameComponent.command = "/sbpv pv $username"
-                nameComponent.hover = "messages.social_options_hover".asTranslated(username)
-
-                output = output.append(nameComponent)
-                hasReplaced = true
-            } else {
+            if (command?.startsWith("/socialoptions ") != true) {
                 output.append(component)
+                continue
             }
+
+            val username = command.removePrefix("/socialoptions ")
+            val nameComponent = component.copy()
+            nameComponent.command = "/sbpv pv $username"
+            nameComponent.hover = "messages.social_options_hover".asTranslated(username)
+
+            output = output.append(nameComponent)
+            hasReplaced = true
         }
 
         if (!hasReplaced) return
