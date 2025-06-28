@@ -58,7 +58,7 @@
                 "<red><0></red>"
             ]
         },
-        "social_options_hover": "<yellow>Click to open <0>'s profile.</yellow>"
+        "social_options_hover": "<yellow>Click to open <0>'s profile in skyblock profile viewer.</yellow>"
     },
     "config": {
         "spying": {
@@ -67,7 +67,7 @@
         },
         "chat": {
             "@value": "Clickable Player Messages",
-            "desc": "Makes player messages clickable to open the profile viewer for that player."
+            "desc": "Change the click action of player messages to open their pv page rather then their social menu"
         },
         "currency": {
             "@value": "Networth Currency",
