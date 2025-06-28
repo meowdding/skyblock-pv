@@ -16,6 +16,6 @@
         "skyblock-pv:tabs/right/normal": "skyblock-pv:darkmode/tabs/right/hovered"
     },
     "colors": {
-        "dark_gray": 11908533
+        "dark_gray": "#B5B5B5"
     }
 }
