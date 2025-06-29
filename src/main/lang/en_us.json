@@ -57,12 +57,17 @@
                 "<red>the following tabs are disabled or altered:</red>",
                 "<red><0></red>"
             ]
-        }
+        },
+        "social_options_hover": "<yellow>Click to open <0>'s profile in skyblock profile viewer.</yellow>"
     },
     "config": {
         "spying": {
             "@value": "Spying Button",
             "desc": "Add a button to the Hypixel Profile Viewer that allows you to open our Profile Viewer directly."
+        },
+        "chat": {
+            "@value": "Clickable Player Messages",
+            "desc": "Change the click action of player messages to open their pv page rather then their social menu"
         },
         "currency": {
             "@value": "Networth Currency",
