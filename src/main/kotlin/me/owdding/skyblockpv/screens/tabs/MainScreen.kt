@@ -5,6 +5,8 @@ import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import kotlinx.coroutines.runBlocking
+import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -279,8 +281,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         getIcon: (D) -> Any,
         getLevel: (D, T) -> Any,
     ): LayoutElement {
-        val mainContent = LinearLayout.vertical().spacing(5)
-
         val convertedElements = data.map { (name, data) ->
             val level = getLevel(name, data).toString()
             val iconValue = getIcon(name)
@@ -297,18 +297,21 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             (getToolTip(name, data)?.let { skillDisplay.withTooltip(it) } ?: skillDisplay).asWidget()
         }.toList()
 
-        val elementsPerRow = (convertedElements.firstOrNull()?.width?.plus(10))?.let { width / it } ?: 0
+        if (convertedElements.isEmpty()) return PvLayouts.empty()
+        val elementsPerRow = width / (convertedElements.maxOf { it.width } + 10)
         if (elementsPerRow < 1) return PvLayouts.empty()
 
-        convertedElements.chunked(elementsPerRow).forEach { chunk ->
-            val element = LinearLayout.horizontal().spacing(5)
-            chunk.forEach { element.addChild(it) }
-            mainContent.addChild(element.centerHorizontally(width))
-        }
-
-        mainContent.arrangeElements()
-
-        return PvWidgets.label(title, mainContent, icon = titleIcon)
+        return PvWidgets.label(
+            title,
+            LayoutFactory.vertical(5, MIDDLE) {
+                convertedElements.chunked(elementsPerRow).forEach { chunk ->
+                    val element = LinearLayout.horizontal().spacing(5)
+                    chunk.forEach { element.addChild(it) }
+                    widget(element.centerHorizontally(width))
+                }
+            },
+            icon = titleIcon,
+        )
     }
 
     fun getSkillSection(profile: SkyBlockProfile, width: Int) = createSection(
