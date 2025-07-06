@@ -204,6 +204,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             .withCallback {
                 ThemeSupport.nextTheme()
                 safelyRebuild()
+                SkyBlockPv.config.save()
             }
             .withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
 

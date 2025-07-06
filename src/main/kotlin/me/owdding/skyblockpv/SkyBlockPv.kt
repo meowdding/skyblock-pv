@@ -53,7 +53,8 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     val version: Version = mod.metadata.version
     val useragent: String = "SkyBlockPV ${version.friendlyString} (${String(Base64.getDecoder().decode("Y29udGFjdEB0aGF0Z3Jhdnlib2F0LnRlY2g="))}})"
 
-    val configurator = Configurator("sbpv")
+    private val configurator = Configurator("sbpv")
+    val config = Config.register(configurator)
 
     val isDevMode get() = McClient.isDev || DevConfig.devMode
     val isSuperUser by lazy { McPlayer.uuid.isMeowddingDev() }
@@ -63,7 +64,6 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     override fun onInitialize() {
         ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
 
-        Config.register(configurator)
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
         SkyBlockPVExtraData.collected.forEach {
