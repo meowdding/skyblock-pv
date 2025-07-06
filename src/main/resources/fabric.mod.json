@@ -6,7 +6,6 @@
     "description": "",
     "authors": [ ],
     "contact": { },
-    "license": "All-Rights-Reserved",
     "environment": "client",
     "icon": "assets/skyblock-pv/skyblock-pv.png",
     "entrypoints": {
