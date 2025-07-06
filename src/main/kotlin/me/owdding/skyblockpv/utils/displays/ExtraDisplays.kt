@@ -90,14 +90,19 @@ object ExtraDisplays {
         return object : Display {
             private val background = SkyBlockPv.id("progressbar/background")
             private val foreground = SkyBlockPv.id("progressbar/foreground")
+            private val foregroundMaxed = SkyBlockPv.id("progressbar/foreground_maxed")
             override fun getWidth() = width
             override fun getHeight() = height
 
             override fun render(graphics: GuiGraphics) {
                 val progressWidth = (width * progress).toInt()
                 graphics.blitSprite(RenderType::guiTextured, background, 0, 0, width, height)
-                graphics.scissor(0, 0, progressWidth, height) {
-                    graphics.blitSprite(RenderType::guiTextured, foreground, 0, 0, width, height)
+                if (progressWidth >= width) {
+                    graphics.blitSprite(RenderType::guiTextured, foregroundMaxed, 0, 0, width, height)
+                } else {
+                    graphics.scissor(0, 0, progressWidth, height) {
+                        graphics.blitSprite(RenderType::guiTextured, foreground, 0, 0, width, height)
+                    }
                 }
             }
         }
