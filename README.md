@@ -25,7 +25,7 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 - **PronounDB**: Integrates with [PronounDB](https://pronoundb.org/) to display pronouns of the player.
 - **Party Finder**: Sends a message to open the Profile Viewer for the player that just joined a party finder party.
 - **Scaling** (_Experimental_): Automatically scales up some elements based on the player's screen size, to make it more readable on larger screens.
-- and themes...
+- **and themes...**
 
 ### Themes
 
