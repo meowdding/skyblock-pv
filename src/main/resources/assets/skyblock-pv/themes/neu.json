@@ -33,5 +33,5 @@
     "colors": {
         "dark_gray": "#B5B5B5"
     },
-    "background_blur": false
+    "background_blur": true
 }

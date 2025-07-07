@@ -388,10 +388,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     open fun onProfileSwitch(profile: SkyBlockProfile) {}
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        this.renderTransparentBackground(guiGraphics)
         if (ThemeSupport.currentTheme.backgroundBlur) {
             this.renderBlurredBackground()
-        } else {
-            this.renderTransparentBackground(guiGraphics)
         }
     }
 }
