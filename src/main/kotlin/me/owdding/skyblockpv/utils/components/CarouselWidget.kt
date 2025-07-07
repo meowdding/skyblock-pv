@@ -4,10 +4,10 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen
 import earth.terrarium.olympus.client.components.base.BaseWidget
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import earth.terrarium.olympus.client.ui.UIConstants
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
+import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout
@@ -127,11 +127,12 @@ class CarouselWidget(
         val buttons = displays.invoke().mapIndexed { index, it ->
             Button()
                 .withSize(20, 20)
+                .withTexture(null)
                 .withRenderer(
                     WidgetRenderers.layered(
                         ExtraWidgetRenderers.conditional(
-                            WidgetRenderers.sprite(UIConstants.PRIMARY_BUTTON),
-                            WidgetRenderers.sprite(UIConstants.DARK_BUTTON),
+                            WidgetRenderers.sprite(ExtraConstants.BUTTON_PRIMARY_OPAQUE),
+                            WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK_OPAQUE),
                         ) { this.index == index },
                         WidgetRenderers.center(16, 18, DisplayWidget.displayRenderer(it)),
                     ),

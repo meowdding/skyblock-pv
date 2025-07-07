@@ -61,19 +61,25 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
             }
 
             if (Config.alignCategoryButtonsLeft) {
-                button.withTexture(if (category.isSelected) ExtraConstants.TAB_LEFT_SELECTED else ExtraConstants.TAB_LEFT)
+                button.withTexture(null)
                 button.withRenderer(
-                    WidgetRenderers.padded(
-                        0, 9, 0, 4,
-                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
+                    WidgetRenderers.layered(
+                        WidgetRenderers.sprite(if (category.isSelected) ExtraConstants.TAB_LEFT_SELECTED else ExtraConstants.TAB_LEFT),
+                        WidgetRenderers.padded(
+                            0, 9, 0, 4,
+                            WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
+                        ),
                     ),
                 )
             } else {
-                button.withTexture(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT)
+                button.withTexture(null)
                 button.withRenderer(
-                    WidgetRenderers.padded(
-                        0, 4, 0, 9,
-                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
+                    WidgetRenderers.layered(
+                        WidgetRenderers.sprite(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT),
+                        WidgetRenderers.padded(
+                            0, 4, 0, 9,
+                            WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
+                        ),
                     ),
                 )
             }

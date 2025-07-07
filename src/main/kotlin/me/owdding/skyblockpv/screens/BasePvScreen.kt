@@ -299,17 +299,18 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
             val button = Button()
             button.setSize(20, 31)
-            if (tab.isSelected()) {
-                button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
-            } else {
+            button.withTexture(null)
+            if (!tab.isSelected()) {
                 button.withCallback { McClient.setScreenAsync { tab.create(gameProfile, profile) } }
-                button.withTexture(ExtraConstants.TAB_TOP)
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
             button.withRenderer(
-                WidgetRenderers.padded(
-                    4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
-                    WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
+                WidgetRenderers.layered(
+                    WidgetRenderers.sprite(if (tab.isSelected()) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP),
+                    WidgetRenderers.padded(
+                        4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
+                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
+                    ),
                 ),
             )
             button.withTooltip(+"tab.${tab.name.lowercase()}")
@@ -329,6 +330,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                     }
                 }
             }
+            box.withTexture(ExtraConstants.TEXTBOX)
         }
         username.withAlwaysShow(true)
         username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
@@ -386,7 +388,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     open fun onProfileSwitch(profile: SkyBlockProfile) {}
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        this.renderBlurredBackground()
         this.renderTransparentBackground(guiGraphics)
+        if (ThemeSupport.currentTheme.backgroundBlur) {
+            this.renderBlurredBackground()
+        }
     }
 }
