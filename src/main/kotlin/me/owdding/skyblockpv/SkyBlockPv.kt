@@ -53,7 +53,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     val version: Version = mod.metadata.version
     val useragent: String = "SkyBlockPV ${version.friendlyString} (${String(Base64.getDecoder().decode("Y29udGFjdEB0aGF0Z3Jhdnlib2F0LnRlY2g="))}})"
 
-    private val configurator = Configurator("sbpv")
+    private val configurator = Configurator(MOD_ID)
     val config by lazy { Config.register(configurator) }
 
     val isDevMode get() = McClient.isDev || DevConfig.devMode
@@ -117,7 +117,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
             }
 
             callback {
-                McClient.setScreenAsync { ResourcefulConfigScreen.getFactory("sbpv").apply(null) }
+                McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(MOD_ID).apply(null) }
             }
         }
     }

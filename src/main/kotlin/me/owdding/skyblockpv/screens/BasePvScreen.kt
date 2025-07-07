@@ -194,7 +194,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             .withSize(20, 20)
             .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
             .withTexture(null)
-            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen) } }
+            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BasePvScreen) } }
             .withTooltip(+"widgets.open_settings")
 
         val themeSwitcher = Widgets.button()
