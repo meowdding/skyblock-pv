@@ -27,6 +27,7 @@ data class PvTheme(
     val colors: PvThemeColors = ThemeHelper.defaultColors,
     @NamedCodec("resource_map") val textures: Map<ResourceLocation, ResourceLocation> = mapOf(),
     val name: String,
+    @FieldName("background_blur") val backgroundBlur: Boolean = true,
 ) {
     val translation: Component = Component.translatable(name)
 }

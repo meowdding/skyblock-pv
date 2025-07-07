@@ -336,7 +336,8 @@
     },
     "themes": {
         "dark": "Dark mode",
-        "default": "Default"
+        "default": "Default",
+        "neu": "NEU"
     },
     "misc": {
         "maxed": "<red>Maxed!</red>"
