@@ -1,6 +1,8 @@
 package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -72,6 +74,20 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 9 - node.location.y,
                 node.location.x + 2,
             )
+        }
+
+        // TODO: remove whenever hypixel fixes their shit
+        if (mining.nodes.isEmpty()) {
+            return LayoutFactory.vertical(alignment = MIDDLE) {
+                string("§cHypixel currently does not send any unlocked Hotm Perks aswell as the Hotm Experience,")
+                string("§cso both of the features cannot be displayed.")
+                widget(
+                    gridLayout.asScrollable(uiWidth, uiHeight - 30) {
+                        withScrollToBottom()
+                    },
+                )
+            }
+
         }
 
         return gridLayout.asScrollable(uiWidth, uiHeight) {
