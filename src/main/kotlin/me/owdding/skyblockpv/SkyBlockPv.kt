@@ -54,7 +54,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     val useragent: String = "SkyBlockPV ${version.friendlyString} (${String(Base64.getDecoder().decode("Y29udGFjdEB0aGF0Z3Jhdnlib2F0LnRlY2g="))}})"
 
     private val configurator = Configurator("sbpv")
-    val config = Config.register(configurator)
+    val config by lazy { Config.register(configurator) }
 
     val isDevMode get() = McClient.isDev || DevConfig.devMode
     val isSuperUser by lazy { McPlayer.uuid.isMeowddingDev() }
@@ -62,6 +62,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
     val backgroundTexture = id("buttons/normal")
 
     override fun onInitialize() {
+        config // used to instantiate the lazy :3
         ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
 
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
