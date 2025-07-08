@@ -53,9 +53,12 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
                 val suspiciousScrapId = MiningGear.suspicious_scrap.first()
                 val scrapItem = RepoItemsAPI.getItem(suspiciousScrapId)
-                val scrapsCount = profile.inventory?.getAllItems()?.filter {
+                var scrapsCount = profile.inventory?.getAllItems()?.filter {
                     it.getData(DataTypes.ID) == suspiciousScrapId
                 }?.sumOf { it.count } ?: 0
+                profile.inventory?.sacks[suspiciousScrapId]?.let { amount ->
+                    scrapsCount += amount.toInt()
+                }
                 val display = ExtraDisplays.inventorySlot(
                     Displays.padding(
                         4,

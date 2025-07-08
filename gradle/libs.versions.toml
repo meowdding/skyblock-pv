@@ -23,7 +23,7 @@ repolib = "1.2.0"
 meowdding-lib = "1.0.53"
 meowdding-ktmodules = "1.0.3"
 meowdding-ktcodecs = "1.0.11"
-meowdding-repo = "1.0.11"
+meowdding-repo = "1.0.14"
 meowdding-resources = "1.0.6"
 
 # Keep kt version in sync with first segment of ksp version
