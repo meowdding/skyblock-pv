@@ -13,7 +13,7 @@ import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 @Module
 object PartyFinderJoin {
 
-    private val joinMessageRegex = "Party Finder > (?<username>.*) joined the dungeon group!.*".toRegex()
+    private val joinMessageRegex = "Party Finder > (?<username>.*) joined the(?: dungeon)? group!.*".toRegex()
 
     @Subscription
     fun onChat(event: ChatReceivedEvent.Pre) {
