@@ -30,7 +30,7 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 
 ### Themes
 
-Comes built-in with two themes: Default (Light), Dark and NEU (transparent).
+Comes built-in with three themes: Default (Light), Dark and NEU (transparent).
 Quickly switch between them using the button in the top left corner of the UI.
 
 <details>
