@@ -24,6 +24,7 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 - **Profile Spying**: Adds a button into the Hypixel Profile Viewer to open this Profile Viewer.
 - **PronounDB**: Integrates with [PronounDB](https://pronoundb.org/) to display pronouns of the player.
 - **Party Finder**: Sends a message to open the Profile Viewer for the player that just joined a party finder party.
+- **Replace Social Options**: Replaces Hypixel's "Click to open social options" with "Click to open Profile Viewer" on chat messages.
 - **Scaling** (_Experimental_): Automatically scales up some elements based on the player's screen size, to make it more readable on larger screens.
 - **and themes...**
 
@@ -31,6 +32,22 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 
 Comes built-in with two themes: Default (Light), Dark and NEU (transparent).
 Quickly switch between them using the button in the top left corner of the UI.
+
+<details>
+<summary>Theme Showcase</summary>
+
+#### Dark Theme
+
+<img src="./.github/images/dark.png" width="720" alt="" title="Dark Theme">
+A dark mode theme for the profile viewer.
+
+#### NEU Theme
+
+<img src="./.github/images/neu.png" width="720" alt="" title="NEU Theme">
+A transparent theme for the profile viewer, inspired by NEU's Profile Viewer.
+
+</details>
+
 You can also create your own theme, here's a guide:
 
 <details>
