@@ -20,7 +20,7 @@ object PronounWidget {
                 val display = when (pronouns.size) {
                     0 -> return@completableDisplay Displays.empty()
                     1 -> "${pronouns.first().first}/${pronouns.first().second}"
-                    else -> pronouns.fold("") { acc, set -> if (acc.isEmpty()) set.first else "$acc/${set.second}" }
+                    else -> pronouns.fold("") { acc, set -> if (acc.isEmpty()) set.first else "$acc/${set.first}" }
                 }
                 val shader = PronounDbDecorations.getShader(decoration ?: "")
                 ExtraDisplays.component(
