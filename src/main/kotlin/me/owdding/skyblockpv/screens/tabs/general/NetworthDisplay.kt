@@ -59,7 +59,7 @@ object NetworthDisplay {
                 }
             }
             this.space()
-            this.add("View the full item breakdown in the networth tab.") { this.color = TextColor.GRAY }
+            this.add("View the full item breakdown in the networth tab.") { this.color = PvColors.GRAY }
         }
     }
 

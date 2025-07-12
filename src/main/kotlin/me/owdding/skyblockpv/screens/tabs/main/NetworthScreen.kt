@@ -8,26 +8,26 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.feature.NetworthCalculator.calculateNetworth
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.api.remote.pricing.Pricing
+import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.Pricing
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class NetworthScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMainScreen(gameProfile, profile) {
-    private val purseComponent = Text.of("Purse") { color = TextColor.GOLD }
-    private val profileBankComponent = Text.of("Profile Bank") { color = TextColor.GOLD }
-    private val soloBankComponent = Text.of("Solo Bank") { color = TextColor.GOLD }
+    private val purseComponent = Text.of("Purse") { color = PvColors.GOLD }
+    private val profileBankComponent = Text.of("Profile Bank") { color = PvColors.GOLD }
+    private val soloBankComponent = Text.of("Solo Bank") { color = PvColors.GOLD }
 
     override fun getLayout(bg: DisplayWidget): Layout {
         return LayoutFactory.vertical {
             textDisplay("Networth: ") {
                 append(profile.netWorth.get().first.toFormattedString()) {
-                    color = TextColor.GOLD
+                    color = PvColors.GOLD
                 }
             }
             spacer(height = 3)
@@ -42,7 +42,7 @@ class NetworthScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     }
 
     private fun getNetworthSources(profile: SkyBlockProfile) = buildMap<Component, Long> {
-        fun name(name: Component, amount: Long) = if (amount > 1) Text.join("§7${amount.toFormattedString()}x ", name) else name
+        fun name(name: Component, amount: Long) = if (amount > 1) Text.join(PvColors.GRAY, "${amount.toFormattedString()}x ", name) else name
         profile.inventory?.getAllItems()?.forEach { item ->
             put(name(item.hoverName, item.count.toLong()), item.getItemValue().price)
         }
