@@ -3,10 +3,9 @@ package me.owdding.skyblockpv.screens.tabs
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.builder.LayoutBuilder
-import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
+import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
@@ -17,9 +16,10 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.text
 import me.owdding.skyblockpv.utils.Utils.whiteText
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
-import net.minecraft.ChatFormatting
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LayoutSettings
@@ -31,8 +31,8 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -49,7 +49,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val gearWidget = getGearWidget(profile)
         var trophyWidth = 0
         val trophyWidget by lazy {
-            LayoutFactory.vertical {
+            PvLayouts.vertical {
                 val useSmallTable = (trophyWidth < 480)
                 widget(PvWidgets.getTitleWidget("Trophy Fish", trophyWidth))
                 if (useSmallTable) {
@@ -62,7 +62,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }
 
         fun LayoutBuilder.addBottomRow(first: LayoutElement, second: LayoutElement) {
-            LayoutFactory.vertical {
+            PvLayouts.vertical {
                 spacer(height = 5)
                 horizontal {
                     widget(first)
@@ -83,9 +83,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + 165 /* Height of trophy table */ < bg.height) {
             trophyWidth = bg.width
-            LayoutFactory.frame {
+            PvLayouts.frame {
                 spacer(bg.width, bg.height)
-                LayoutFactory.vertical {
+                PvLayouts.vertical {
                     spacer(height = 5)
                     horizontal {
                         widget(infoWidget)
@@ -105,9 +105,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }.applyLayout()
         } else if (infoWidget.width + statWidget.width < bg.width && gearWidget.height + 10 + infoWidget.height < bg.height) {
             trophyWidth = bg.width - gearWidget.width
-            LayoutFactory.frame {
+            PvLayouts.frame {
                 spacer(bg.width, bg.height)
-                LayoutFactory.vertical {
+                PvLayouts.vertical {
                     spacer(height = 5)
                     horizontal {
                         widget(infoWidget)
@@ -123,9 +123,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }.applyLayout()
         } else if (gearWidget.width + statWidget.width < bg.width && gearWidget.height + 10 + infoWidget.height < bg.height) {
             trophyWidth = bg.width - infoWidget.width
-            LayoutFactory.frame {
+            PvLayouts.frame {
                 spacer(bg.width, bg.height)
-                LayoutFactory.vertical {
+                PvLayouts.vertical {
                     spacer(height = 5)
                     horizontal {
                         widget(infoWidget)
@@ -144,7 +144,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         } else {
             trophyWidth = bg.width - 60
 
-            LayoutFactory.vertical {
+            PvLayouts.vertical {
                 fun add(element: LayoutElement) {
                     spacer(height = 5, width = element.width + 20)
                     widget(element) {
@@ -164,13 +164,13 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             if (profile.trophyFish.lastCatch == null) {
-                string(Text.of("Never caught a trophy fish!") { this.color = TextColor.RED })
+                string(Text.of("Never caught a trophy fish!") { this.color = PvColors.RED })
             } else {
                 string(
                     Text.join(
-                        Text.of("Last Catch: ") { this.color = TextColor.DARK_GRAY },
+                        Text.of("Last Catch: ") { this.color = PvColors.DARK_GRAY },
                         profile.trophyFish.lastCatch.displayName,
                     ),
                 )
@@ -180,8 +180,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             string(
                 Text.join(
-                    Text.of("Trophy Rank: ") { this.color = TextColor.DARK_GRAY },
-                    rank?.displayName ?: Text.of("None") { this.color = TextColor.RED },
+                    Text.of("Trophy Rank: ") { this.color = PvColors.DARK_GRAY },
+                    rank?.displayName ?: Text.of("None") { this.color = PvColors.RED },
                 ),
             )
 
@@ -193,28 +193,28 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             val dolphin = DolphinBracket.getByKills(seaCreatureKills)
 
             display(
-                Displays.text(
+                ExtraDisplays.text(
                     Text.join(
-                        Text.of("Dolphin Pet: ") { this.color = TextColor.DARK_GRAY },
-                        dolphin?.rarity?.displayText ?: Text.of("None") { this.color = TextColor.RED },
+                        Text.of("Dolphin Pet: ") { this.color = PvColors.DARK_GRAY },
+                        dolphin?.rarity?.displayText ?: Text.of("None") { this.color = PvColors.RED },
                     ),
                     shadow = false,
                 ).withTooltip(
                     Text.join(
-                        Text.of("Sea Creatures Killed: ") { this.color = TextColor.WHITE },
-                        Text.of(seaCreatureKills.toFormattedString()) { this.color = TextColor.AQUA },
+                        Text.of("Sea Creatures Killed: ") { this.color = PvColors.WHITE },
+                        Text.of(seaCreatureKills.toFormattedString()) { this.color = PvColors.AQUA },
                     ),
                     "",
                     DolphinBracket.entries.map {
                         whiteText {
                             val hasObtained = it.killsRequired <= seaCreatureKills
                             if (!hasObtained) {
-                                withStyle(ChatFormatting.STRIKETHROUGH)
-                                withStyle(ChatFormatting.DARK_GRAY)
+                                this.strikethrough = true
+                                this.color = PvColors.DARK_GRAY
                             }
                             append(
                                 Text.of("${it.rarity.displayName} Dolphin") {
-                                    this.color = TextColor.DARK_GRAY
+                                    this.color = PvColors.DARK_GRAY
                                     if (hasObtained) {
                                         withColor((it.rarity.color))
                                     }
@@ -232,20 +232,20 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getStatWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Stats",
-        LayoutFactory.vertical {
+        PvLayouts.vertical {
             val sharksKilled = profile.miscFishData.festivalSharksKilled
             display(
-                Displays.text(
+                ExtraDisplays.text(
                     text("Festival sharks killed: ") {
 
                         append(
                             text(sharksKilled.coerceAtMost(5000).toFormattedString()) {
                                 when (sharksKilled) {
-                                    in 5000..Int.MAX_VALUE -> ChatFormatting.GREEN
-                                    in 2500..<5000 -> ChatFormatting.YELLOW
-                                    in 1..<2500 -> ChatFormatting.RED
-                                    else -> ChatFormatting.DARK_RED
-                                }.let { withStyle(it) }
+                                    in 5000..Int.MAX_VALUE -> PvColors.GREEN
+                                    in 2500..<5000 -> PvColors.YELLOW
+                                    in 1..<2500 -> PvColors.RED
+                                    else -> PvColors.DARK_RED
+                                }.let { this.color = it }
                             },
                         )
                         append("/")
@@ -256,7 +256,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     whiteText {
                         append(
                             text("+1 Sbxp ") {
-                                withStyle(ChatFormatting.AQUA)
+                                this.color = PvColors.AQUA
                             },
                         )
                         append("per 50 sharks killed!")
@@ -273,7 +273,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                             val progress = (sharksKilled / 5000.toFloat())
                             append(
                                 text("${(progress * 100).toFormattedString()}%") {
-                                    withStyle(ChatFormatting.DARK_AQUA)
+                                    this.color = PvColors.DARK_AQUA
                                 },
                             )
                         }.also { if (sharksKilled < 5000) add(it) }
@@ -289,7 +289,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
             fun addStat(statName: String, amount: Int, config: Display.() -> Display = { this }) {
                 display(
-                    Displays.text(
+                    ExtraDisplays.text(
                         text {
                             append("$statName: ")
                             append(amount.toFormattedString())
@@ -324,7 +324,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getGearWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
-        LayoutFactory.horizontal {
+        PvLayouts.horizontal {
             widget(getTrophyArmor(profile))
             spacer(width = 5)
             widget(
@@ -442,7 +442,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         var score = 0
 
-        score += getData(DataTypes.RARITY_UPGRADES) ?: 0
+        score += 1.takeIf { getData(DataTypes.RECOMBOBULATOR) ?: false } ?: 0
 
         // take the actual level of ultimate enchants since those are worth smth
         getData(DataTypes.ENCHANTMENTS)?.let {

@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.tabs.museum
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
 import me.owdding.lib.extensions.withTooltip
@@ -10,36 +9,43 @@ import me.owdding.skyblockpv.data.museum.MuseumArmor
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.data.museum.RepoMuseumData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.DropdownContext
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.withDropdown
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     BaseMuseumScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        return LayoutFactory.frame {
+        return PvLayouts.frame {
 
             val chunked = RepoMuseumData.armor.map {
                 loaded(
-                    Displays.item(Items.ORANGE_DYE.defaultInstance.withTooltip {
-                        add("Loading...") {
-                            this.color = TextColor.GOLD
-                        }
-                    }, showTooltip = true),
-                    Displays.item(Items.BEDROCK.defaultInstance.withTooltip {
-                        add("Error!") {
-                            this.color = TextColor.RED
-                        }
-                    }, showTooltip = true),
+                    Displays.item(
+                        Items.ORANGE_DYE.defaultInstance.withTooltip {
+                            add("Loading...") {
+                                this.color = PvColors.GOLD
+                            }
+                        },
+                        showTooltip = true,
+                    ),
+                    Displays.item(
+                        Items.BEDROCK.defaultInstance.withTooltip {
+                            add("Error!") {
+                                this.color = PvColors.RED
+                            }
+                        },
+                        showTooltip = true,
+                    ),
                 ) { data -> createArmor(it, data) }
             }.map { Displays.padding(2, it) }.chunked(((bg.width - 20) / 20).coerceAtMost(15))
 
@@ -48,7 +54,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                 Displays.padding(2, chunked.map { it.toRow() }.toColumn()),
             )
 
-            val actualWidget = LayoutFactory.frame { display(armors) }.asScrollable(bg.width - 15, bg.height)
+            val actualWidget = PvLayouts.frame { display(armors) }.asScrollable(bg.width - 15, bg.height)
             widget(actualWidget)
 
 
@@ -79,7 +85,7 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
         } ?: Displays.item(Items.GRAY_DYE).withDropdown(
             Displays.item(
                 Items.GRAY_DYE.defaultInstance.withTooltip {
-                    add("Missing Armor") { this.color = TextColor.RED }
+                    add("Missing Armor") { this.color = PvColors.RED }
                     museumArmor.armorIds.map { RepoItemsAPI.getItem(it) }.sortedByDescending { sortAmor(it) }.forEach {
                         add(it.hoverName)
                     }

@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.screens.tabs.mining
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
@@ -10,8 +11,9 @@ import me.owdding.skyblockpv.data.api.skills.PowderType
 import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.withScrollToBottom
+import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
-import net.minecraft.ChatFormatting
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.GridLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.SpacerElement
@@ -21,7 +23,6 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
@@ -32,7 +33,7 @@ import kotlin.math.roundToInt
 class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val mining = profile.mining ?: return LayoutFactory.empty()
+        val mining = profile.mining ?: return PvLayouts.empty()
         val gridLayout = GridLayout()
 
         // nodes that are unlocked but not in the repo:
@@ -73,6 +74,20 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 9 - node.location.y,
                 node.location.x + 2,
             )
+        }
+
+        // TODO: remove whenever hypixel fixes their shit
+        if (mining.nodes.isEmpty()) {
+            return LayoutFactory.vertical(alignment = MIDDLE) {
+                string("§cHypixel currently does not send any unlocked Hotm Perks aswell as the Hotm Experience,")
+                string("§cso both of the features cannot be displayed.")
+                widget(
+                    gridLayout.asScrollable(uiWidth, uiHeight - 30) {
+                        withScrollToBottom()
+                    },
+                )
+            }
+
         }
 
         return gridLayout.asScrollable(uiWidth, uiHeight) {
@@ -120,11 +135,11 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         add(node.name) {
             if (hasUnlocked) {
-                this.color = TextColor.GREEN
+                this.color = PvColors.GREEN
             } else if (isCurrentlyUnlocking) {
-                this.color = TextColor.YELLOW
+                this.color = PvColors.YELLOW
             } else {
-                this.color = TextColor.RED
+                this.color = PvColors.RED
             }
         }
 
@@ -137,7 +152,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             addGray("Progress: ") {
                 append((progress * 100).round()) {
                     this.append("%")
-                    this.color = TextColor.YELLOW
+                    this.color = PvColors.YELLOW
                 }
             }
 
@@ -146,18 +161,18 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
             add {
                 append(" ".repeat(amountGreen)) {
-                    this.color = TextColor.DARK_GREEN
+                    this.color = PvColors.DARK_GREEN
                     this.strikethrough = true
                 }
                 append(" ".repeat(amountWhite)) {
-                    this.color = TextColor.WHITE
+                    this.color = PvColors.WHITE
                     this.strikethrough = true
                 }
                 append(" ")
-                append(xpToNextLevel.toFormattedString()) { this.color = TextColor.YELLOW }
+                append(xpToNextLevel.toFormattedString()) { this.color = PvColors.YELLOW }
 
-                append("/") { this.color = TextColor.GOLD }
-                append(DecimalFormat.getCompactNumberInstance().format(xpRequiredForNextLevel)) { this.color = TextColor.YELLOW }
+                append("/") { this.color = PvColors.GOLD }
+                append(DecimalFormat.getCompactNumberInstance().format(xpRequiredForNextLevel)) { this.color = PvColors.YELLOW }
             }
         }
 
@@ -168,16 +183,16 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         addEmpty()
         if (hasUnlocked) {
             add("UNLOCKED") {
-                this.color = TextColor.GREEN
+                this.color = PvColors.GREEN
                 this.bold = true
             }
         } else if (isCurrentlyUnlocking) {
             add("LOCKED") {
-                this.color = TextColor.RED
+                this.color = PvColors.RED
                 this.bold = true
             }
         } else {
-            add("Requires Tier ${node.location.y}") { this.color = TextColor.RED }
+            add("Requires Tier ${node.location.y}") { this.color = PvColors.RED }
         }
     }
 
@@ -189,9 +204,9 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         add(miningNode.name) {
             if (disabled || level == -1) {
-                this.color = TextColor.RED
+                this.color = PvColors.RED
             } else {
-                this.color = TextColor.GREEN
+                this.color = PvColors.GREEN
             }
         }
 
@@ -201,7 +216,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             } else {
                 addGray("Level ${level.absoluteValue}/") {
                     append("${miningNode.maxLevel}") {
-                        this.color = TextColor.DARK_GRAY
+                        this.color = PvColors.DARK_GRAY
                     }
                 }
             }
@@ -214,7 +229,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 if (!disabled) {
                     addEmpty()
                     addGray("SELECTED") {
-                        this.color = TextColor.GREEN
+                        this.color = PvColors.GREEN
                         this.bold = true
                     }
                 }
@@ -232,12 +247,12 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
                 if (disabled) {
                     add("DISABLED") {
-                        this.color = TextColor.RED
+                        this.color = PvColors.RED
                         this.bold = true
                     }
                 } else {
                     add("ENABLED") {
-                        this.color = TextColor.GREEN
+                        this.color = PvColors.GREEN
                         this.bold = true
                     }
                 }
@@ -269,13 +284,13 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 appendGray(amountSpent.toFormattedString())
                 appendGray("/")
                 append(amountRequired.toFormattedString()) {
-                    withStyle(ChatFormatting.DARK_GRAY)
+                    this.color = PvColors.DARK_GRAY
                 }
                 if (amountSpent < amountRequired) {
                     val percentage = (amountSpent.toDouble() / amountRequired) * 100
                     append(" ")
                     appendGray("(${(percentage).round()}%)") {
-                        this.color = TextColor.YELLOW
+                        this.color = PvColors.YELLOW
                     }
                 }
             }
@@ -293,10 +308,10 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     private fun MutableComponent.append(text: String = "", init: MutableComponent.() -> Unit = {}) = this.append(Text.of(text, init))
     private fun MutableComponent.appendGray(text: String = "", init: MutableComponent.() -> Unit = {}) =
-        this.append(Text.of(text, init.withColor(TextColor.GRAY)))
+        this.append(Text.of(text, init.withColor(PvColors.GRAY)))
 
     private fun MutableList<Component>.add(text: String = "", init: MutableComponent.() -> Unit = {}) = add(Text.of(text, init))
-    private fun MutableList<Component>.addGray(text: String = "", init: MutableComponent.() -> Unit = {}) = add(text, init.withColor(TextColor.GRAY))
+    private fun MutableList<Component>.addGray(text: String = "", init: MutableComponent.() -> Unit = {}) = add(text, init.withColor(PvColors.GRAY))
 
     private fun MutableList<Component>.addEmpty() {
         this.add(CommonText.EMPTY)

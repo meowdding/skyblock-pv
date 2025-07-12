@@ -24,7 +24,7 @@ data class Pet(
 ) {
     val rarity = SkyBlockRarity.entries.find { it.name == tier } ?: SkyBlockRarity.COMMON
     val data = PetCodecs.getData(type)
-    val cumulativeLevels = data.getCurveForRarity(rarity).toMutableList().also { it.addFirst(0) }
+    val cumulativeLevels = data.getCurveForRarity(rarity).toMutableList().also { it.addFirst(0) }.runningFold(0, Int::plus).drop(1)
 
     val itemStack by lazy { RepoPetsAPI.getPetAsItem(PetQuery(type, rarity, level, skin, heldItem)) }
 

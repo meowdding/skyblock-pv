@@ -2,19 +2,25 @@ package me.owdding.skyblockpv
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
+import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
 import me.owdding.lib.utils.MeowddingUpdateChecker
+import me.owdding.lib.utils.isMeowddingDev
 import me.owdding.skyblockpv.api.PvAPI
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.DevConfig
+import me.owdding.skyblockpv.config.THEME_RENDERER
+import me.owdding.skyblockpv.config.ThemeRenderer
 import me.owdding.skyblockpv.generated.SkyBlockPVExtraData
 import me.owdding.skyblockpv.generated.SkyBlockPVModules
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
@@ -38,33 +44,32 @@ import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-private val SUPER_USERS = setOf(
-    "503450fc-72c2-4e87-8243-94e264977437",
-    "e90ea9ec-080a-401b-8d10-6a53c407ac53",
-    "b75d7e0a-03d0-4c2a-ae47-809b6b808246",
-)
-
 @Module
 object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
-    val mod: ModContainer = FabricLoader.getInstance().getModContainer("skyblockpv").orElseThrow()
+    const val MOD_ID: String = "skyblockpv"
+    const val RESOURCE_PATH: String = "skyblock-pv"
+    val mod: ModContainer = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow()
+    val configDir: Path = FabricLoader.getInstance().configDir.resolve(MOD_ID)
     val version: Version = mod.metadata.version
-    val configDir: Path = FabricLoader.getInstance().configDir.resolve("skyblockpv")
     val useragent: String = "SkyBlockPV ${version.friendlyString} (${String(Base64.getDecoder().decode("Y29udGFjdEB0aGF0Z3Jhdnlib2F0LnRlY2g="))}})"
 
-    val configurator = Configurator("sbpv")
+    private val configurator = Configurator(MOD_ID)
+    val config by lazy { Config.register(configurator) }
 
     val isDevMode get() = McClient.isDev || DevConfig.devMode
-    val isSuperUser by lazy { McPlayer.uuid.toString() in SUPER_USERS }
+    val isSuperUser by lazy { McPlayer.uuid.isMeowddingDev() }
 
     val backgroundTexture = id("buttons/normal")
 
     override fun onInitialize() {
-        Config.register(configurator)
+        config // used to instantiate the lazy :3
+        ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
+
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
         SkyBlockPVExtraData.collected.forEach {
             CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
-                McClient.tell {
+                McClient.runNextTick {
                     throw throwable
                 }
             }
@@ -76,16 +81,10 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
                 this.hover = Text.of(link).withColor(TextColor.GRAY)
             }
 
-            McClient.tell {
+            McClient.runNextTick {
                 Text.of().send()
-                Text.join(
-                    "New version found! (",
-                    Text.of(current).withColor(TextColor.RED),
-                    Text.of(" -> ").withColor(TextColor.GRAY),
-                    Text.of(new).withColor(TextColor.GREEN),
-                    ")",
-                ).withLink().sendWithPrefix()
-                Text.of("Click to download.").withLink().sendWithPrefix()
+                "messages.new_version".asTranslated(current, new).withLink().sendWithPrefix()
+                (+"messages.new_version.download").withLink().sendWithPrefix()
                 Text.of().send()
             }
         }
@@ -97,7 +96,7 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
         val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
             callback {
-                McClient.setScreenAsync(PvTab.MAIN.create(McClient.self.gameProfile))
+                McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
             }
             then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 callback {
@@ -112,12 +111,17 @@ object SkyBlockPv : ModInitializer, Logger by LoggerFactory.getLogger("SkyBlockP
 
         event.register("sbpv") {
             then("pv") { pvCommand() }
+
+            thenCallback("version") {
+                Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
+            }
+
             callback {
-                McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(null))
+                McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(MOD_ID).apply(null) }
             }
         }
     }
 
-    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("skyblock-pv", path)
+    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(RESOURCE_PATH, path)
     fun olympusId(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("olympus", path)
 }

@@ -1,0 +1,37 @@
+{
+    "name": "skyblockpv.themes.neu",
+    "textures": {
+        "skyblock-pv:textures/gui/inventory/poly.png": "skyblock-pv:textures/neu/inventory/poly.png",
+        "skyblock-pv:textures/gui/inventory/mono.png": "skyblock-pv:textures/neu/inventory/mono.png",
+        "skyblock-pv:buttons/normal": "skyblock-pv:neu/buttons/normal",
+        "skyblock-pv:buttons/disabled": "skyblock-pv:neu/buttons/disabled",
+        "skyblock-pv:box/box": "skyblock-pv:neu/box/box",
+        "skyblock-pv:box/rounded_box_thin": "skyblock-pv:neu/box/rounded_box_thin",
+        "skyblock-pv:box/title": "skyblock-pv:neu/box/title",
+        "skyblock-pv:tabs/top/hovered": "skyblock-pv:neu/tabs/top/hovered",
+        "skyblock-pv:tabs/top/normal": "skyblock-pv:neu/tabs/top/normal",
+        "skyblock-pv:tabs/top/selected_hovered": "skyblock-pv:neu/tabs/top/selected_hovered",
+        "skyblock-pv:tabs/top/selected": "skyblock-pv:neu/tabs/top/selected",
+        "skyblock-pv:tabs/left/hovered": "skyblock-pv:neu/tabs/left/hovered",
+        "skyblock-pv:tabs/left/normal": "skyblock-pv:neu/tabs/left/normal",
+        "skyblock-pv:tabs/left/selected_hovered": "skyblock-pv:neu/tabs/left/selected_hovered",
+        "skyblock-pv:tabs/left/selected": "skyblock-pv:neu/tabs/left/selected",
+        "skyblock-pv:tabs/right/hovered": "skyblock-pv:neu/tabs/right/hovered",
+        "skyblock-pv:tabs/right/normal": "skyblock-pv:neu/tabs/right/normal",
+        "skyblock-pv:tabs/right/selected_hovered": "skyblock-pv:neu/tabs/right/selected_hovered",
+        "skyblock-pv:tabs/right/selected": "skyblock-pv:neu/tabs/right/selected",
+        "olympus:buttons/dark/normal": "skyblock-pv:neu/buttons/normal",
+        "olympus:buttons/dark/hovered": "skyblock-pv:neu/buttons/disabled",
+        "olympus:textbox/normal": "skyblock-pv:neu/textbox/normal",
+        "olympus:textbox/hovered": "skyblock-pv:neu/textbox/hovered",
+        "skyblock-pv:opaque/buttons/dark/normal": "skyblock-pv:neu/opaque/buttons/dark/normal",
+        "skyblock-pv:opaque/buttons/dark/hovered": "skyblock-pv:neu/opaque/buttons/dark/hovered",
+        "skyblock-pv:opaque/buttons/primary/normal": "skyblock-pv:neu/opaque/buttons/primary/normal",
+        "skyblock-pv:opaque/buttons/primary/hovered": "skyblock-pv:neu/opaque/buttons/primary/hovered",
+        "skyblock-pv:opaque/buttons/disabled": "skyblock-pv:neu/opaque/buttons/dark/normal"
+    },
+    "colors": {
+        "dark_gray": "#B5B5B5"
+    },
+    "background_blur": true
+}

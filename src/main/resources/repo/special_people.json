@@ -1,0 +1,17 @@
+{
+    "bd082a55-373e-4305-bee3-48b9060e16c9": {
+        "title": "Rift",
+        "title_colors": [
+            "#2A0134",
+            "#CBC3E3",
+            "#FF0084",
+            "#2A0134"
+        ]
+    },
+    "ec7d1353-ebf0-4efa-a050-2af8c9d72a35": {
+        "parrot": {
+            "variant": "red_blue",
+            "left_shoulder": false
+        }
+    }
+}

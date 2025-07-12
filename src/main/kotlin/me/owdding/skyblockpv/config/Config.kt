@@ -4,7 +4,9 @@ import com.teamresourceful.resourcefulconfig.api.types.info.ResourcefulConfigLin
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import me.owdding.skyblockpv.SkyBlockPv
-import tech.thatgravyboat.skyblockapi.helpers.McClient
+import me.owdding.skyblockpv.SkyBlockPv.id
+import me.owdding.skyblockpv.utils.Utils
+import net.minecraft.resources.ResourceLocation
 
 object Config : ConfigKt("skyblockpv/config") {
 
@@ -34,22 +36,20 @@ object Config : ConfigKt("skyblockpv/config") {
     }
 
     var profileSpying by boolean(true) { this.translation = "skyblockpv.config.spying" }
+    var profileChatClick by boolean(true) { this.translation = "skyblockpv.config.chat" }
     var currency by enum(ConfigCurrency.USD) { this.translation = "skyblockpv.config.currency" }
     var alignCategoryButtonsLeft by boolean(true) { this.translation = "skyblockpv.config.align_category_buttons_left" }
     var showPronouns by boolean(true) { this.translation = "skyblockpv.config.show_pronouns" }
     var partyFinderMessage by boolean(true) { this.translation = "skyblockpv.config.party_finder_message" }
-    var disableOutsideHypixel by boolean(false) {
-        this.translation = "skyblockpv.config.disable_outside_hypixel"
-    }
+    var disableOutsideHypixel by boolean(false) { this.translation = "skyblockpv.config.disable_outside_hypixel" }
+    var displayScaling by boolean(false) { this.translation = "skyblockpv.config.display_scaling" }
+    var theme by transform(
+        string("skyblock-pv:default") {
+            renderer = THEME_RENDERER
+        },
+        { it.toString() },
+        { ResourceLocation.tryParse(it) ?: id("normal") },
+    )
 
-    private val regex = Regex(".*?hypixel\\.net")
-    val isDisabled: Boolean
-        get() {
-            if (disableOutsideHypixel) {
-                return McClient.self.connection?.serverData?.ip?.matches(regex) != true
-            }
-
-            return false
-        }
-
+    val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
 }

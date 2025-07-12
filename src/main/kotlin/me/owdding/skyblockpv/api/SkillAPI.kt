@@ -56,6 +56,7 @@ object SkillAPI {
         FORAGING,
         ENCHANTING,
         ALCHEMY,
+        HUNTING,
         SOCIAL,
         RUNECRAFTING,
         CARPENTRY,

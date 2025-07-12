@@ -6,14 +6,6 @@ import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 
 enum class SkullTextures(var texture: String = "") {
-    WITHER_ESSENCE,
-    SPIDER_ESSENCE,
-    UNDEAD_ESSENCE,
-    DRAGON_ESSENCE,
-    GOLD_ESSENCE,
-    DIAMOND_ESSENCE,
-    ICE_ESSENCE,
-    CRIMSON_ESSENCE,
     BACKPACK,
     ACCESSORY_BAG,
     SACKS,

@@ -51,7 +51,7 @@ object RepoMuseumData {
         museumCategoryMap.putAll(
             ids.groupBy { museumItem ->
                 val item = RepoItemsAPI.getItem(museumItem.id)
-                val data = convertToId(item.getData(DataTypes.CATEGORY))
+                val data = convertToId(item.getData(DataTypes.CATEGORY)) ?: return@groupBy null
 
                 sortedBy.find { it.categories.contains(data) || it.items.contains(museumItem.id) || it.categories.contains("*") }
             }.mapKeys {

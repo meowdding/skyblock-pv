@@ -3,16 +3,19 @@ package me.owdding.skyblockpv.screens.tabs.general
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.withTooltip
+import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
-import tech.thatgravyboat.skyblockapi.api.remote.pricing.BazaarAPI
+import me.owdding.skyblockpv.utils.theme.PvColors
+import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.BazaarAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.math.roundToInt
 
@@ -29,49 +32,52 @@ object NetworthDisplay {
 
         return this.withTooltip {
             this.add {
-                this.append("Networth: ") { this.color = TextColor.YELLOW }
-                this.append(networth.first.toFormattedString()) { this.color = TextColor.GREEN }
+                this.append(+"widgets.networth.tooltip")
+                this.append(networth.first.toFormattedString()) { this.color = PvColors.GREEN }
             }
 
             this.add {
-                this.append("Net worth in Cookies: ") { this.color = TextColor.YELLOW }
-                this.append(networthCookies.toFormattedString()) { this.color = TextColor.GOLD }
+                this.append(+"widgets.networth.tooltip.cookies")
+                this.append(networthCookies.toFormattedString()) { this.color = PvColors.GOLD }
             }
 
             this.add {
-                this.append("Net worth in ${currency.name}: ") { this.color = TextColor.YELLOW }
+                this.append("widgets.networth.tooltip.currency".asTranslated(currency.name))
                 val formattedNetworth = networthConverted.roundToInt().toFormattedString()
-                this.append("$$formattedNetworth ${currency.name}") { this.color = TextColor.GREEN }
+                this.append("$formattedNetworth ${currency.name}") { this.color = PvColors.GREEN }
             }
 
             this.space()
-            this.add("Note: You can change the currency in the settings using /sbpv.") { this.color = TextColor.GRAY }
+            this.add(+"widgets.networth.tooltip.note")
             this.space()
-            this.add("Source: ") { this.color = TextColor.GRAY }
+            this.add(+"widgets.networth.tooltip.sources")
             networth.second.forEach {
                 this.add {
-                    this.append(it.key) { this.color = TextColor.YELLOW }
-                    this.append(": ") { this.color = TextColor.YELLOW }
-                    this.append(it.value.toFormattedString()) { this.color = TextColor.GREEN }
+                    this.append(it.key) { this.color = PvColors.YELLOW }
+                    this.append(": ") { this.color = PvColors.YELLOW }
+                    this.append(it.value.toFormattedString()) { this.color = PvColors.GREEN }
                 }
             }
         }
     }
 
     fun getNetworthDisplay(profile: SkyBlockProfile): Display = Displays.row(
-        Displays.text("Net Worth: ", color = { TextColor.DARK_GRAY.toUInt() }, shadow = false),
+        ExtraDisplays.component(+"widgets.networth", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false),
         ExtraDisplays.completableDisplay(
             profile.netWorth,
-            { Displays.text(it.first.shorten(), color = { TextColor.DARK_GRAY.toUInt() }, shadow = false).addTooltip(it) },
+            { ExtraDisplays.grayText(it.first.shorten()).addTooltip(it) },
             { error ->
-                Displays.text("Failed To Load", color = { TextColor.RED.toUInt() }, shadow = false).withTooltip {
-                    this.add(Text.of("An error occurred: ") { this.color = TextColor.RED })
-                    error.stackTraceToString().lines().forEach { line ->
-                        this.add(Text.of(line) { this.color = TextColor.RED })
+                ExtraDisplays.component(+"widgets.networth.failed", color = { PvColors.RED.toUInt() }, shadow = false).withTooltip {
+                    this.add {
+                        add(+"widgets.networth.error")
+                        this.color = PvColors.RED
+                    }
+                    error.getStackTraceString(10).lines().forEach { line ->
+                        this.add(Text.of(line) { this.color = PvColors.RED })
                     }
                 }
             },
-            { Displays.text("Loading...", color = { TextColor.DARK_GRAY.toUInt() }, shadow = false) },
+            { ExtraDisplays.component(+"widgets.networth.loading", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false) },
         ),
     )
 }

@@ -49,5 +49,5 @@ void main() {
     }
     vec2 coords = gl_FragCoord.xy;
 
-    fragColor = vec4(SMOOTHY(float(int(coords.x + ticks * 2) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1);
+    fragColor = vec4(SMOOTHY(float(int(coords.x + ticks * 2) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1.0);
 }

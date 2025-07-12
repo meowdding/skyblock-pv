@@ -3,30 +3,41 @@ package me.owdding.skyblockpv.utils
 import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import earth.terrarium.olympus.client.pipelines.RoundedRectangle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.toColumn
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.render.TextShader
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.entity.SkullBlockEntity
 import org.joml.Matrix4f
+import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.nio.file.Files
 import java.security.MessageDigest
 import java.util.*
@@ -35,10 +46,12 @@ import kotlin.jvm.optionals.getOrNull
 
 object Utils {
 
-    fun getMinecraftItem(id: String) = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
+    fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
 
     var isFetchingGameProfile = false
         private set
+
+    val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
 
     fun GuiGraphics.drawRoundedRec(
         x: Int, y: Int, width: Int, height: Int,
@@ -78,9 +91,15 @@ object Utils {
 
     fun openMainScreen(name: String) = fetchGameProfile(name) { profile ->
         if (profile == null) {
-            ChatUtils.chat("§cPlayer could not be found")
+            (+"messages.player_not_found").sendWithPrefix()
+        } else if (!RepoAPI.isInitialized()) {
+            ChatUtils.chat("""
+            §cThe external repo is not initialized.
+            §cThis can mean your network is blocking our domain or your internet is not working.
+            §cPlease try again later or check your network connection. If the problem persists, please report it on our Discord server with your full log.
+            """.trimIndent())
         } else {
-            McClient.setScreenAsync(PvTab.MAIN.create(profile))
+            McClient.setScreenAsync { PvTab.MAIN.create(profile) }
         }
     }
 
@@ -111,7 +130,7 @@ object Utils {
 
     fun text(
         text: String = "",
-        color: UInt = 0x555555u,
+        color: UInt = PvColors.DARK_GRAY.toUInt(),
         init: MutableComponent.() -> Unit = {},
     ): MutableComponent {
         return Text.of(text) {
@@ -120,7 +139,7 @@ object Utils {
         }
     }
 
-    fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, 0xFFFFFFu, init)
+    fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, PvColors.WHITE.toUInt(), init)
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
 
     fun UUID.toDashlessString(): String = this.toString().replace("-", "")
@@ -134,6 +153,9 @@ object Utils {
     fun runAsync(task: () -> Unit): CompletableFuture<Void> = CompletableFuture.runAsync { task() }
 
     fun Display.withTextShader(shader: TextShader?) = ExtraDisplays.textShader(shader, this)
+
+    fun Component.multiLineDisplay(alignment: Alignment = Alignment.START, shadow: Boolean = false) =
+        this.splitLines().map { ExtraDisplays.component(it, shadow = shadow) }.toColumn(alignment = alignment)
 
     fun FloatArray.toMatrix4f(): Matrix4f {
         require(this.size == 16) { "Array size must be 16!" }
@@ -153,4 +175,23 @@ object Utils {
         }.toHexString()
     }
 
+    fun MutableComponent.withoutShadow(): MutableComponent = this.apply {
+        this.shadowColor = null
+        this.siblings.filterIsInstance<MutableComponent>().forEach { it.withoutShadow() }
+    }
+
+    /** Translatable Component **with** shadow */
+    operator fun String.unaryPlus(): MutableComponent = Component.translatable("skyblockpv.$this")
+
+    /** Translatable Component **without** shadow */
+    operator fun String.unaryMinus(): MutableComponent = Component.translatable("skyblockpv.$this").withoutShadow()
+
+    fun String.asTranslated(vararg args: Any?, shadow: Boolean = true): MutableComponent =
+        Component.translatable("skyblockpv.$this", *args).let { if (!shadow) it.withoutShadow() else it }
+
+    operator fun MutableComponent.plus(other: Component): MutableComponent = this.append(other)
+
+    fun <T : Any> JsonElement?.toData(codec: MapCodec<T>) = this.toData(codec.codec())
+
+    fun <T : Any> JsonElement?.toDataOrThrow(codec: MapCodec<T>): T = this.toDataOrThrow(codec.codec())
 }

@@ -1,9 +1,6 @@
 package me.owdding.skyblockpv.screens
 
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
+import com.google.gson.*
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
@@ -14,16 +11,18 @@ import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
+import earth.terrarium.olympus.client.ui.UIIcons
 import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.owdding.lib.builder.LayoutBuilder
-import me.owdding.lib.builder.LayoutBuilder.Companion.setPos
-import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
+import me.owdding.lib.extensions.getStackTraceString
+import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.ProfileAPI
@@ -32,7 +31,14 @@ import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
+import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
@@ -50,9 +56,12 @@ import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
+import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.lang.reflect.Type
 import java.nio.file.Files
+import java.util.concurrent.CompletableFuture
 import kotlin.time.Duration.Companion.seconds
 
 private const val ASPECT_RATIO = 16.0 / 9.0
@@ -67,7 +76,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     var initedWithProfile = false
 
-    open val tabTitle: Component get() = Text.translatable("skyblockpv.tab.${name.lowercase()}")
+    open val tabTitle: Component get() = +"tab.${name.lowercase()}"
 
     lateinit var profile: SkyBlockProfile
 
@@ -75,16 +84,17 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         CoroutineScope(Dispatchers.IO).launch {
             profiles = ProfileAPI.getProfiles(gameProfile)
             (profile ?: profiles.find { it.selected })?.let {
+                onProfileSwitch(it)
                 this@BasePvScreen.profile = it
             }
             if (!initedWithProfile) {
-                McClient.tell { safelyRebuild() }
+                McClient.runNextTick { safelyRebuild() }
             }
         }
 
         Scheduling.schedule(10.seconds) {
             if (profile == null) {
-                McClient.tell { safelyRebuild() }
+                McClient.runNextTick { safelyRebuild() }
             }
         }
     }
@@ -102,7 +112,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
 
     override fun init() {
-        val bg = Displays.background(SkyBlockPv.backgroundTexture, uiWidth, uiHeight).asWidget()
+        val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
 
         FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
         bg.applyLayout()
@@ -118,22 +128,12 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         } catch (e: Exception) {
             e.printStackTrace()
 
-            val errorWidget = LayoutFactory.vertical {
-                val text = mutableListOf(
-                    "Failed building screen $name",
-                    "Report this in the discord",
-                    "",
-                    "User: ${gameProfile.name} - ${gameProfile.id}",
-                    "Profile: ${profile.id.name}",
-                    "",
-                    "Exception: ${e.message}",
-                    "Stacktrace:",
-                )
+            val errorWidget = PvLayouts.vertical {
+                val text = "widgets.error.stacktrace".asTranslated(name, gameProfile.name, gameProfile.id, profile.id.name, e.message, e.getStackTraceString(7))
 
-                text += e.stackTrace.take(7).map { it.toString().replace("knot//me.owdding.skyblockpv", "PV") }
 
-                text.forEach {
-                    widget(Widgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
+                text.splitLines().forEach {
+                    widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
                 }
             }
             FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
@@ -145,7 +145,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         createProfileDropdown(bg).applyLayout()
 
         addRenderableOnly(
-            Widgets.text(this.tabTitle)
+            PvWidgets.text(this.tabTitle)
                 .withCenterAlignment()
                 .withSize(this.uiWidth, 20)
                 .withPosition(bg.x, bg.bottom + 2),
@@ -162,20 +162,17 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
         if (starttime + 8000 > System.currentTimeMillis()) return loading.visitWidgets(this::addRenderableOnly)
 
-        val errorWidget = LayoutFactory.vertical(alignment = 0.5f) {
+        val errorWidget = PvLayouts.vertical(alignment = 0.5f) {
             widget(loading)
             spacer(height = 20)
 
-            widget(Widgets.text("Is the API down?"))
-            widget(Widgets.text("Did data parsing fail?"))
-            widget(Widgets.text("Or is the API Key expired?"))
-            widget(Widgets.text("Report this on the discord with your /logs/latest.log"))
+            display((+"widgets.error.loading").multiLineDisplay(Alignment.CENTER))
 
             spacer(height = 20)
 
             widget(
                 Widgets.button()
-                    .withRenderer(WidgetRenderers.text(Text.of("Open Logs")))
+                    .withRenderer(WidgetRenderers.text(+"widgets.open_logs"))
                     .withSize(100, 20)
                     .withCallback {
                         Util.getPlatform().openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
@@ -187,7 +184,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         errorWidget.applyLayout()
     }
 
-    private fun createTopRow(bg: DisplayWidget) = LayoutFactory.horizontal(5) {
+    private fun createTopRow(bg: DisplayWidget) = PvLayouts.horizontal(5) {
         createUserRow()
         if (SkyBlockPv.isDevMode) createDevRow(bg)
     }
@@ -197,10 +194,22 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             .withSize(20, 20)
             .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
             .withTexture(null)
-            .withCallback { McClient.setScreenAsync(ResourcefulConfigScreen.getFactory("sbpv").apply(this@BasePvScreen)) }
-            .withTooltip(Text.multiline("Open Settings.", "You can also use /sbpv"))
+            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BasePvScreen) } }
+            .withTooltip(+"widgets.open_settings")
+
+        val themeSwitcher = Widgets.button()
+            .withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.EYE_DROPPER).withColor(MinecraftColors.WHITE))
+            .withSize(20, 20)
+            .withTexture(null)
+            .withCallback {
+                ThemeSupport.nextTheme()
+                safelyRebuild()
+                SkyBlockPv.config.save()
+            }
+            .withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
 
         widget(settingsButton)
+        widget(themeSwitcher)
     }
 
     private fun LayoutBuilder.createDevRow(bg: DisplayWidget) = horizontal(5) {
@@ -254,43 +263,57 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                     object : JsonSerializer<ItemStack> {
                         override fun serialize(src: ItemStack?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
                             if (src == null) {
-                                return com.google.gson.JsonNull.INSTANCE
+                                return JsonNull.INSTANCE
                             }
 
                             val encodeStart = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, src)
                             if (encodeStart.isError) {
-                                return com.google.gson.JsonPrimitive(encodeStart.error().get().messageSupplier.get())
+                                return JsonPrimitive(encodeStart.error().get().messageSupplier.get())
                             }
                             return encodeStart.getOrThrow()
                         }
                     },
-                ).create().toJson(profiles),
+                )
+                .registerTypeAdapter(
+                    CompletableFuture::class.java,
+                    object : JsonSerializer<CompletableFuture<*>> {
+                        override fun serialize(src: CompletableFuture<*>?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+                            if (src == null) {
+                                return JsonNull.INSTANCE
+                            }
+
+                            return JsonPrimitive("Future: ${src.get()}")
+                        }
+                    },
+                )
+                .create().toJson(profiles),
         )
 
         ChatUtils.chat("Profiles saved to .minecraft/config/skyblockpv/")
     }
 
-    private fun createTabs() = LayoutFactory.horizontal(2) {
+    private fun createTabs() = PvLayouts.horizontal(2) {
         // as you can see, maya has no idea what she is doing
         PvTab.entries.forEach { tab ->
             if (tab.getTabState(profile) == TriState.FALSE) return@forEach
 
             val button = Button()
             button.setSize(20, 31)
-            if (tab.isSelected()) {
-                button.withTexture(ExtraConstants.TAB_TOP_SELECTED)
-            } else {
-                button.withCallback { McClient.setScreenAsync(tab.create(gameProfile, profile)) }
-                button.withTexture(ExtraConstants.TAB_TOP)
+            button.withTexture(null)
+            if (!tab.isSelected()) {
+                button.withCallback { McClient.setScreenAsync { tab.create(gameProfile, profile) } }
             }
             // Don't bother actually aligning the icon yet, design will change anyway :3
             button.withRenderer(
-                WidgetRenderers.padded(
-                    4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
-                    WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
+                WidgetRenderers.layered(
+                    WidgetRenderers.sprite(if (tab.isSelected()) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP),
+                    WidgetRenderers.padded(
+                        4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
+                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
+                    ),
                 ),
             )
-            button.withTooltip(Text.translatable("skyblockpv.tab.${tab.name.lowercase()}"))
+            button.withTooltip(+"tab.${tab.name.lowercase()}")
             widget(button)
         }
     }
@@ -303,14 +326,15 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             box.withEnterCallback {
                 Utils.fetchGameProfile(box.value) { profile ->
                     profile?.let {
-                        McClient.setScreenAsync(PvTab.MAIN.create(it))
+                        McClient.setScreenAsync { PvTab.MAIN.create(it) }
                     }
                 }
             }
+            box.withTexture(ExtraConstants.TEXTBOX)
         }
         username.withAlwaysShow(true)
         username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
-        username.withPlaceholder("Username...")
+        username.withPlaceholder((+"widgets.username_input").stripped)
         username.withSize(width, 20)
         username.setPosition(bg.x + bg.width - width, bg.y + bg.height)
         return username
@@ -325,6 +349,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             profiles,
             { profile ->
                 Text.of {
+                    color = PvColors.WHITE
                     if (profile.selected) {
                         underlined = true
                         append("◆ ")
@@ -352,8 +377,10 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
             },
-        )
-        dropdown.setPosition(bg.x, bg.y + bg.height)
+        ).apply {
+            withTexture(ExtraConstants.BUTTON_DARK)
+            setPosition(bg.x, bg.y + bg.height)
+        }
 
         return dropdown
     }
@@ -361,7 +388,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     open fun onProfileSwitch(profile: SkyBlockProfile) {}
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        this.renderBlurredBackground()
         this.renderTransparentBackground(guiGraphics)
+        if (ThemeSupport.currentTheme.backgroundBlur) {
+            this.renderBlurredBackground()
+        }
     }
 }

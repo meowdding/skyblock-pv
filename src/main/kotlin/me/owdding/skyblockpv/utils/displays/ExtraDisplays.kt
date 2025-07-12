@@ -9,9 +9,14 @@ import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
 import me.owdding.skyblockpv.utils.accessors.withExclusiveScissor
 import me.owdding.skyblockpv.utils.render.RenderUtils.withTextShader
 import me.owdding.skyblockpv.utils.render.TextShader
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderType
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.ARGB
+import net.minecraft.util.FormattedCharSequence
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
@@ -61,6 +66,22 @@ object ExtraDisplays {
         }
     }
 
+    fun text(text: String, color: () -> UInt = { PvColors.WHITE.toUInt() }, shadow: Boolean = true) = Displays.text(text, color, shadow)
+    fun text(text: () -> String, color: () -> UInt = { PvColors.WHITE.toUInt() }, shadow: Boolean = true) = Displays.text(text, color, shadow)
+    fun text(text: FormattedText, color: () -> UInt = { PvColors.WHITE.toUInt() }, shadow: Boolean = true) = Displays.text(text, color, shadow)
+
+    fun text(sequence: FormattedCharSequence, color: () -> UInt = { PvColors.WHITE.toUInt() }, shadow: Boolean = true) =
+        Displays.text(sequence, color, shadow)
+
+    fun component(component: () -> Component, color: () -> UInt = { PvColors.WHITE.toUInt() }, shadow: Boolean = true) =
+        Displays.component(component, color, shadow)
+
+    fun component(component: Component, maxWidth: Int = -1, color: () -> UInt = { PvColors.WHITE.toUInt() }, shadow: Boolean = true) =
+        Displays.component(component, maxWidth, color, shadow)
+
+    fun wrappedText(text: FormattedText, maxWidth: Int, color: () -> UInt = { PvColors.DARK_GRAY.toUInt() }, shadow: Boolean = true) =
+        Displays.wrappedText(text, maxWidth, color, shadow)
+
     fun progress(
         progress: Float,
         width: Int = 91,
@@ -69,14 +90,19 @@ object ExtraDisplays {
         return object : Display {
             private val background = SkyBlockPv.id("progressbar/background")
             private val foreground = SkyBlockPv.id("progressbar/foreground")
+            private val foregroundMaxed = SkyBlockPv.id("progressbar/foreground_maxed")
             override fun getWidth() = width
             override fun getHeight() = height
 
             override fun render(graphics: GuiGraphics) {
                 val progressWidth = (width * progress).toInt()
                 graphics.blitSprite(RenderType::guiTextured, background, 0, 0, width, height)
-                graphics.scissor(0, 0, progressWidth, height) {
-                    graphics.blitSprite(RenderType::guiTextured, foreground, 0, 0, width, height)
+                if (progressWidth >= width) {
+                    graphics.blitSprite(RenderType::guiTextured, foregroundMaxed, 0, 0, width, height)
+                } else {
+                    graphics.scissor(0, 0, progressWidth, height) {
+                        graphics.blitSprite(RenderType::guiTextured, foreground, 0, 0, width, height)
+                    }
                 }
             }
         }
@@ -118,7 +144,8 @@ object ExtraDisplays {
         }
     }
 
-    fun grayText(text: String) = Displays.text(text, color = { 0x555555u }, shadow = false)
+    fun grayText(text: String) = Displays.text(text, color = { PvColors.DARK_GRAY.toUInt() }, shadow = false)
+    fun grayText(text: Component) = Displays.text(text, color = { PvColors.DARK_GRAY.toUInt() }, shadow = false)
 
     fun dropdownOverlay(original: Display, color: Int, context: DropdownContext): Display {
         return object : Display {
@@ -183,7 +210,7 @@ object ExtraDisplays {
 
             init {
                 completable.whenCompleteAsync { result, error ->
-                    McClient.tell {
+                    McClient.runNextTick {
                         display = result?.runCatching(onComplete)?.fold({ it }, onError) ?: onError(error)
                     }
                 }
@@ -210,4 +237,20 @@ object ExtraDisplays {
             }
         }
     }
+
+    fun List<List<Any>>.asTable(spacing: Int = 0): Display =
+        Displays.table(
+            this.map {
+                it.map { element ->
+                    when (element) {
+                        is Display -> element
+                        is ResourceLocation -> Displays.sprite(element, 12, 12)
+                        is Component -> Displays.text(element, { PvColors.DARK_GRAY.toUInt() }, false)
+                        else -> Displays.text(element.toString(), color = { PvColors.DARK_GRAY.toUInt() }, shadow = false)
+                    }
+                }
+            },
+            spacing,
+        )
+
 }

@@ -1,0 +1,345 @@
+{
+    "@meowdding:metadata": {
+        "allowMultiline": true,
+        "allowReferences": true,
+        "allowTags": true,
+        "objectAsKeys": true,
+        "@references": {
+            "ice_essence_shop": [
+                "<white>Can be upgraded at the <light_purple>Ice Essence Shop</light_purple></white>",
+                "<white>on <red>Jerry's Workshop</red></white>",
+                ""
+            ],
+            "gold_essence_shop": [
+                "<white>Can be upgraded at the <light_purple>Gold Essence Shop</light_purple></white>",
+                "<white>in the <gold>Royal Mines</gold> in the <dark_green>Dwarven Mines</dark_green></white>",
+                ""
+            ],
+            "diamond_essence_shop": [
+                "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
+                "<white>in the <dark_purple>Crystal Nucleus</dark_purple> in the <dark_purple>Crystal Hollows</dark_purple></white>",
+                ""
+            ],
+            "crimson_essence_shop": [
+                "<white>Can be upgraded at the <light_purple>Crimson Essence Shop</light_purple></white>",
+                "<white>in the <red>Crimson Isle</red></white>",
+                ""
+            ],
+            "forest_essence_shop": [
+                "<white>Can be upgraded at the <light_purple>Forest Essence Shop</light_purple></white>",
+                "<white>in the <gray>Murkwater Outpost</gray> on <dark_green>Galatea</dark_green></white>",
+                ""
+            ]
+        },
+        "prefix": "skyblockpv"
+    },
+    "messages": {
+        "new_version": {
+            "@value": "New version found! (<red><0></red><gray> -> </gray><green><1></green>)",
+            "download": "Click to download."
+        },
+        "party_finder_join": "<run_cmd '/sbpv pv <!0>'>Click here to open <0>'s profile.</run_cmd>",
+        "forge": {
+            "already_finished": "<red>Process already finished!</red>",
+            "reminder_set": "<gray>Reminder set for asd <0> in <yellow><1></yellow>!</gray>",
+            "reminder": "<gray>Forge Process for <0> is done!</gray>"
+        },
+        "api": {
+            "something_went_wrong": "Something went wrong fetching the status from Hypixel. Please report this on the Discord or the GitHub!",
+            "failed_to_authenticate": "Failed to authenticate with PV API. Check if you are connected to Mojang servers."
+        },
+        "unknown_essence_perks": "<0> unknown essence perks.",
+        "player_not_found": "<red>Player could not be found</red>",
+        "toast_disabled": {
+            "@value": "<pink>SbPv</pink><red>: Disabled Tabs on Profile</red>",
+            "explanation": [
+                "<red>Due to missing data or disabled apis,</red>",
+                "<red>the following tabs are disabled or altered:</red>",
+                "<red><0></red>"
+            ]
+        },
+        "social_options_hover": "<yellow>Click to open <0>'s profile in skyblock profile viewer.</yellow>"
+    },
+    "config": {
+        "spying": {
+            "@value": "Spying Button",
+            "desc": "Add a button to the Hypixel Profile Viewer that allows you to open our Profile Viewer directly."
+        },
+        "chat": {
+            "@value": "Clickable Player Messages",
+            "desc": "Change the click action of player messages to open their pv page rather then their social menu"
+        },
+        "currency": {
+            "@value": "Networth Currency",
+            "desc": "The currency to use for the networth to IRL currency conversion."
+        },
+        "align_category_buttons_left": {
+            "@value": "Align Category Buttons Left",
+            "desc": "Align the category buttons to the left side of the screen instead of the right."
+        },
+        "show_pronouns": {
+            "@value": "Show Pronouns",
+            "desc": "Show the pronouns of the player in the profile viewer if available."
+        },
+        "party_finder_message": {
+            "@value": "Party Finder Message",
+            "desc": "Shows a message in chat to view the joined players profile."
+        },
+        "disable_outside_hypixel": {
+            "@value": "Disable outside hypixel",
+            "desc": "Disables/unregisters the <light_gray>/pv</light_gray> command outside of hypixel."
+        },
+        "display_scaling": {
+            "@value": "Enable Display Scaling",
+            "desc": [
+                "Scales displays to better fill the space available",
+                "<red>This might lead to unexpected behaviour and overflowing.</red>"
+            ]
+        },
+        "theme": {
+            "@value": "Theme",
+            "desc": "The theme to use for the profile viewer."
+        }
+    },
+    "dev": {
+        "dev_mode": {
+            "@value": "Dev Mode",
+            "desc": [
+                "Enable Debug Dev Features.",
+                "<red>Might bring unwanted consequences like crashes."
+            ]
+        },
+        "hoppity_parser": {
+            "@value": "Parse Hoppity Rabbits",
+            "desc": "Parse all Hoppity Rabbits from Hypixels Rabbits UI in an rarity to api name format"
+        },
+        "sacks_parser": {
+            "@value": "Parse Sacks Contents",
+            "desc": "Parse all Sack Items"
+        },
+        "bypass_cache": {
+            "@value": "Bypass Cache",
+            "desc": [
+                "Bypass the cache and always fetch data directly from the API.",
+                "<red>This won't work if you aren't a specified dev.</red>"
+            ]
+        },
+        "offline_mode": {
+            "@value": "Offline Mode",
+            "desc": [
+                "Permanently caches requested profiles.",
+                "<yellow>This is only ever intended for local development!</yellow>"
+            ]
+        }
+    },
+    "tab": {
+        "main": "General",
+        "combat": "Combat",
+        "collection": "Collections",
+        "mining": "Mining",
+        "inventory": "Inventory",
+        "fishing": "Fishing",
+        "pets": "Pets",
+        "farming": "Farming",
+        "chocolate_factory": "Chocolate Factory",
+        "rift": "Rift",
+        "museum": "Museum"
+    },
+    "essence": {
+        "fishing": {
+            "drake_piper": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Increase the chance to spawn a <gold>Reindrake</gold></white>",
+                "<white>by <green>10%</green> while on <red>Jerry's Workshop</red>.</white>"
+            ],
+            "midas_lure": [
+                {
+                    "@id": "gold_essence_shop"
+                },
+                "<white>Increases your chances of fishing up a </white>",
+                "<white><gold>Gold Trophy Fish</gold> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+            ],
+            "radiant_fisher": [
+                {
+                    "@id": "diamond_essence_shop"
+                },
+                "<white>Increases your chances of fishing up a</white>",
+                "<white><aqua>Diamond Trophy Fish</aqua> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+            ]
+        },
+        "mining": {
+            "fungus_fortuna": [
+                {
+                    "@id": "crimson_essence_shop"
+                },
+                "<white>Gain <gold>☘ Mining Fortune</gold> <white>when mining Mycelium</white>"
+            ],
+            "harena_fortuna": [
+                {
+                    "@id": "crimson_essence_shop"
+                },
+                "<white>Gain <gold>☘ Mining Fortune</gold> <white>when mining Red Sand</white>"
+            ],
+            "frozen_skin": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Increases your </white><aqua>❄ Cold Resistance</aqua>"
+            ],
+            "treasures_of_the_earth": [
+                {
+                    "@id": "gold_essence_shop"
+                },
+                "<white>Increases your chances of spawning a Worm or Scatha when mining Hard Stone</white>"
+            ],
+            "dwarven_training": [
+                {
+                    "@id": "gold_essence_shop"
+                },
+                "<white>Increases your <dark_aqua>☯ Mining Wisdom</dark_aqua> while on Mining Islands</white>"
+            ],
+            "eager_miner": [
+                {
+                    "@id": "gold_essence_shop"
+                },
+                "<white>Increases your <gold>⸕ Mining Speed</gold> while on Mining Islands</white>"
+            ],
+            "rhinestone_infusion": [
+                {
+                    "@id": "diamond_essence_shop"
+                },
+                "<white>Increases <light_purple>Gemstone</light_purple> <gold>☘ Mining Fortune</gold> while on Mining Islands</white>"
+            ],
+            "high_roller": [
+                {
+                    "@id": "diamond_essence_shop"
+                },
+                "<white>Gain <green>1</green> extra random drop when obtaining a</white> <light_purple>Crystal Nucleus Bundle</light_purple>"
+            ],
+            "return_to_sender": [
+                {
+                    "@id": "diamond_essence_shop"
+                },
+                "<white>Increases the chances of a <aqua>Diamond Goblin</aqua> spawning</white>"
+            ]
+        }
+    },
+    "widgets": {
+        "pronouns": "Pronouns: <0>",
+        "open_settings": [
+            "<underline><gray>Open Settings</gray></underline>",
+            "You can also use <gray>/sbpv</gray>!"
+        ],
+        "theme_switcher": [
+            "<underline><gray>Cycle Theme</gray></underline>",
+            "Cycles to the next theme in the List",
+            "You can also select a theme in the config!",
+            "",
+            "<gray>Current Theme: </gray><0>"
+        ],
+        "error": {
+            "loading": [
+                "Is the API down?",
+                "Did data parsing fail?",
+                "Or is the API Key expired?",
+                "Report this on the discord with your /logs/latest.log"
+            ],
+            "stacktrace": [
+                "Failed building screen <0>",
+                "Report this in the discord!",
+                "",
+                "User: <1> - <2>",
+                "Profile: <3>",
+                "",
+                "Exception: <4>",
+                "Stacktrace: <5>"
+            ]
+        },
+        "open_logs": "Open Logs",
+        "username_input": "Username...",
+        "networth": {
+            "@value": "Net Worth: ",
+            "failed": "Failed to load",
+            "error": "An error occurred: ",
+            "loading": "Loading...",
+            "tooltip": {
+                "@value": "<yellow>Networth: ",
+                "cookies": "<yellow>Net worth in Cookies: ",
+                "currency": "<yellow>Net worth in <0>: ",
+                "note": "<gray>Note: You can change the currency in the settings using <dark_gray>/sbpv</dark_gray>.",
+                "sources": "<gray>Source: "
+            }
+        }
+    },
+    "screens": {
+        "main": {
+            "slayer": {
+                "@value": "Slayer",
+                "kills": "Kills: ",
+                "exp": "Exp: ",
+                "next_level": "Next Level: "
+            },
+            "essence": "Essence",
+            "skills": {
+                "@value": "Skills",
+                "exp": "Exp: ",
+                "progress": "Progress: ",
+                "max_cap": "<purple>Reached max skill cap!</purple>",
+                "to_next": "<green><0>% to next</green>",
+                "progress_to_max": "Progress to max: ",
+                "unknown": "<red>Unknown</red>"
+            },
+            "pronouns_hint": "Provided by https://pronoundb.org/",
+            "status": {
+                "load": "<white>Load Status</white>",
+                "loading": "<white>Loading...</white>",
+                "online": "<green>ONLINE</green> <dark_gray>-</dark_gray> ",
+                "error": "<dark_red>ERROR</dark_red>",
+                "offline": "<red>OFFLINE</red> <dark_gray>-</dark_gray> ",
+                "unknown": "<red>Unknown</red>"
+            },
+            "info": {
+                "purse": "Purse: <0>",
+                "bank": {
+                    "@value": "Bank: <0>",
+                    "solo": "<gray>Solo Bank:</gray> <gold><0></gold>",
+                    "coop": "<gray>Profile Bank:</gray> <gold><0></gold>",
+                    "history": {
+                        "@value": "<gray>Bank History:</gray>",
+                        "entry": [
+                            "<gold><0></gold><gray> <1> by <2></gray>",
+                            "<gray>Date: </gray><yellow><3></yellow>"
+                        ]
+                    },
+                    "actions": {
+                        "withdraw": "withdrawn",
+                        "deposit": "deposited"
+                    }
+                },
+                "cookie": {
+                    "@value": "Cookie Buff: <0>",
+                    "active": "<green>Active",
+                    "inactive": "<red>Inactive"
+                },
+                "sb_lvl": {
+                    "@value": "SkyBlock Level: <0>",
+                    "progress": "<gray>Progress: <0>/100"
+                },
+                "first_join": "First Join: <0>",
+                "skill_avg": "Skill Avg: <0>",
+                "fairy_souls": "Fairy Souls: <0>",
+                "kd": "K/D: <0>/<1> (<2>)"
+            }
+        }
+    },
+    "themes": {
+        "dark": "Dark mode",
+        "default": "Default",
+        "neu": "NEU"
+    },
+    "misc": {
+        "maxed": "<red>Maxed!</red>"
+    }
+}

@@ -2,7 +2,8 @@ package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McLevel
 import tech.thatgravyboat.skyblockapi.utils.http.Http
@@ -29,7 +30,7 @@ object PvAPI {
 
             McClient.self.minecraftSessionService.joinServer(user.profileId, user.accessToken, server)
 
-            val response = Http.get<String>(
+            val response = Http.get(
                 url = API_URL.format("/authenticate"),
                 queries = if (bypassCaches) {
                     mapOf("bypassCache" to "true")
@@ -47,7 +48,7 @@ object PvAPI {
             failedToAuth = false
         } catch (e: Throwable) {
             SkyBlockPv.error("Failed to authenticate with PV API:", e)
-            if (McLevel.hasLevel) ChatUtils.chat("Failed to authenticate with PV API. Check if you are connected to Mojang servers.")
+            if (McLevel.hasLevel) (+"messages.api.failed_to_authenticate").sendWithPrefix()
 
             key = null
             failedToAuth = true
