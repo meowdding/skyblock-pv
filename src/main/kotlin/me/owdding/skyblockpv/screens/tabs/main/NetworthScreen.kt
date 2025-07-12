@@ -3,9 +3,11 @@ package me.owdding.skyblockpv.screens.tabs.main
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.feature.NetworthCalculator.calculateNetworth
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.Utils.append
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
@@ -23,26 +25,29 @@ class NetworthScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     override fun getLayout(bg: DisplayWidget): Layout {
         return LayoutFactory.vertical {
+            textDisplay("Networth: ") {
+                append(profile.netWorth.get().first.toFormattedString()) {
+                    color = TextColor.GOLD
+                }
+            }
+            spacer(height = 3)
             getNetworthSources(profile).forEach { (string, amount) ->
                 textDisplay {
                     append(string)
                     append(" - ")
-                    append(amount.toFormattedString())
+                    append(amount.shorten())
                 }
             }
         }.asScrollable(uiWidth, uiHeight)
     }
 
-
     private fun getNetworthSources(profile: SkyBlockProfile) = buildMap<Component, Long> {
+        fun name(name: Component, amount: Long) = if (amount > 1) Text.join("§7${amount.toFormattedString()}x ", name) else name
         profile.inventory?.getAllItems()?.forEach { item ->
-            val name = if (item.count > 1) Text.join("§7${item.count}x ", item.hoverName) else item.hoverName
-            put(name, item.getItemValue().price)
+            put(name(item.hoverName, item.count.toLong()), item.getItemValue().price)
         }
         profile.inventory?.sacks?.forEach { sack ->
-            val name = if (sack.value > 1) Text.join("§7${sack.value.toFormattedString()}x ", RepoItemsAPI.getItemName(sack.key))
-            else RepoItemsAPI.getItemName(sack.key)
-            put(name, Pricing.getPrice(sack.key) * sack.value)
+            put(name(RepoItemsAPI.getItemName(sack.key), sack.value), Pricing.getPrice(sack.key) * sack.value)
         }
         profile.pets.forEach { pet ->
             put(pet.itemStack.hoverName, pet.calculateNetworth())
