@@ -1,7 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.google.devtools.ksp.gradle.KspTask
+import net.msrandom.stubs.GenerateStubApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -24,9 +26,25 @@ java {
     withSourcesJar()
 }
 
+dependencies {
+    ksp(libs.meowdding.ktcodecs)
+    ksp(libs.meowdding.ktmodules)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        languageVersion = KotlinVersion.KOTLIN_2_0
+        freeCompilerArgs.addAll(
+            "-Xmulti-platform",
+            "-Xno-check-actual",
+            "-Xexpect-actual-classes",
+        )
+    }
+}
+
 cloche {
     metadata {
-        modId = "SkyBlockPv"
+        modId = "skyblockpv"
         name = "SkyBlockPv"
         license = ""
         clientOnly = true
@@ -39,9 +57,13 @@ cloche {
         dependencies {
             compileOnly(libs.meowdding.ktcodecs)
             compileOnly(libs.meowdding.ktmodules)
+            implementation(libs.keval)
+            implementation(libs.repolib)
 
             modImplementation(libs.hypixelapi)
+            modImplementation(libs.mixinconstraints)
             modImplementation(libs.skyblockapi)
+            modImplementation(libs.meowdding.lib)
             modImplementation(libs.placeholders) { isTransitive = false }
 
             modImplementation(libs.fabric.language.kotlin)
@@ -58,6 +80,7 @@ cloche {
         val dependencies = mutableMapOf<String, Provider<MinimalExternalModuleDependency>>().apply(dependencies)
         val rlib = dependencies["resourcefullib"]!!
         val rconfig = dependencies["resourcefulconfig"]!!
+        val rconfigkt = dependencies["resourcefulconfigkt"]!!
         val olympus = dependencies["olympus"]!!
 
         fabric(name) {
@@ -68,8 +91,12 @@ cloche {
             include(libs.hypixelapi)
             include(libs.skyblockapi)
             include(rlib)
+            include(rconfigkt)
             include(olympus)
             include(libs.placeholders)
+            include(libs.keval)
+            include(libs.mixinconstraints)
+            include(libs.repolib)
 
             metadata {
                 entrypoint("client") {
@@ -92,12 +119,15 @@ cloche {
                 dependency("skyblock-api", libs.versions.skyblockapi)
                 dependency("olympus", olympus.map { it.version!! })
                 dependency("placeholder-api", libs.versions.placeholders)
+                dependency("resourcefulconfigkt", rconfigkt.map { it.version!! })
+                dependency("resourcefulconfig", rconfig.map { it.version!! })
             }
 
             dependencies {
                 fabricApi(fabricApiVersion, minecraftVersion)
                 modImplementation(olympus)
                 modImplementation(rconfig)
+                modImplementation(rconfigkt)
             }
 
             runs {
@@ -109,15 +139,22 @@ cloche {
     createVersion("1.21.5", fabricApiVersion = provider { "0.127.1" }) {
         this["resourcefullib"] = libs.resourceful.lib1215
         this["resourcefulconfig"] = libs.resourceful.config1215
+        this["resourcefulconfigkt"] = libs.resourceful.configkt1215
         this["olympus"] = libs.olympus.lib1215
     }
     createVersion("1.21.7") {
         this["resourcefullib"] = libs.resourceful.lib1217
         this["resourcefulconfig"] = libs.resourceful.config1217
+        this["resourcefulconfigkt"] = libs.resourceful.configkt1217
         this["olympus"] = libs.olympus.lib1217
     }
 
     mappings { official() }
+}
+
+tasks.named("createCommonApiStub", GenerateStubApi::class) {
+    excludes.add(libs.skyblockapi.get().module.toString())
+    excludes.add(libs.meowdding.lib.get().module.toString())
 }
 
 repositories {
@@ -180,7 +217,7 @@ compactingResources {
     compactToObject("chocolate_factory")
     compactToObject("rift")
     compactToArray("museum_categories")
-    substituteFromDifferentFile("slayer", "slayers")
+    //substituteFromDifferentFile("slayer", "slayers")
     compactToObject("pets/overwrites")
     compactToObject("pets")
     compactToObject("crimson_isle/dojo")
@@ -191,11 +228,21 @@ compactingResources {
     downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/bestiary.json", "bestiary.json")
 }
 
-tasks.withType<KspTask> {
-    outputs.upToDateWhen { false }
+afterEvaluate {
+    tasks.withType<KspTask>().configureEach {
+        outputs.upToDateWhen { false }
+    }
+}
+
+sourceSets {
+    getByName("main") {
+        resources.srcDir(project.layout.projectDirectory.dir("src/resources"))
+    }
 }
 
 ksp {
+    this@ksp.excludedSources.from(sourceSets.getByName("1215").kotlin.srcDirs)
+    this@ksp.excludedSources.from(sourceSets.getByName("1217").kotlin.srcDirs)
     arg("meowdding.modules.project_name", project.name)
     arg("meowdding.modules.package", "me.owdding.skyblockpv.generated")
     arg("meowdding.codecs.project_name", project.name)
