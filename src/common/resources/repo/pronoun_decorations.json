@@ -1,0 +1,83 @@
+{
+    "cogs": [
+        "#C3591D"
+    ],
+    "cookie": [
+        "#DA9F83"
+    ],
+    "daytime": [
+        "#FFAC33"
+    ],
+    "nighttime": [
+        "#66757F"
+    ],
+    "pride": [
+        "#F47C7C",
+        "#FFC268",
+        "#F7F48B",
+        "#A1DE93",
+        "#70A1D7",
+        "#957DAD",
+        "#F47C7C"
+    ],
+    "pride_bi": [
+        "#D872AC",
+        "#D872AC",
+        "#957DAD",
+        "#6AA9ED",
+        "#6AA9ED",
+        "#D872AC"
+    ],
+    "pride_lesbian": [
+        "#EB765A",
+        "#FBAB74",
+        "#FFFFFF",
+        "#F295CC",
+        "#A36088",
+        "#EB765A"
+    ],
+    "pride_pan": [
+        "#FF82B1",
+        "#F7F48B",
+        "#8BD1F9",
+        "#FF82B1"
+    ],
+    "pride_trans": [
+        "#55CDFC",
+        "#F7A8B8",
+        "#FFFFFF",
+        "#F7A8B8",
+        "#55CDFC"
+    ],
+    "catgirl_chief": [
+        "#F49898"
+    ],
+    "df_kanin": [
+        "#E08C73"
+    ],
+    "df_plume": [
+        "#BAD9B5"
+    ],
+    "donator_aurora": [
+        "#18F89A",
+        "#C243EE",
+        "#18F89A"
+    ],
+    "donator_blossom": [
+        "#F4ABBA"
+    ],
+    "donator_ribbon": [
+        "#DD2E44"
+    ],
+    "donator_star": [
+        "#FDD264"
+    ],
+    "donator_strawberry": [
+        "#BE1931"
+    ],
+    "donator_warmth": [
+        "#FDD264",
+        "#EB5353",
+        "#FDD264"
+    ]
+}

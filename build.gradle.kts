@@ -1,7 +1,6 @@
+@file:Suppress("UnstableApiUsage")
+
 import com.google.devtools.ksp.gradle.KspTask
-import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
-import org.gradle.api.internal.artifacts.dependencies.DefaultMinimalDependency
-import org.gradle.api.internal.artifacts.dependencies.DefaultMutableVersionConstraint
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -10,10 +9,10 @@ plugins {
     `maven-publish`
     `museum-data` // defined in buildSrc
     alias(libs.plugins.kotlin)
-    alias(libs.plugins.loom)
+    alias(libs.plugins.terrarium.cloche)
     alias(libs.plugins.meowdding.repo)
     alias(libs.plugins.meowdding.resources)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.symbol.processor)
 }
 
 base {
@@ -25,31 +24,107 @@ java {
     withSourcesJar()
 }
 
-loom {
-    accessWidenerPath.set(project.layout.projectDirectory.file("src/main/resources/skyblockpv.accesswidener"))
-    runs {
-        getByName("client") {
-            programArg("--quickPlayMultiplayer=hypixel.net")
-            vmArg("-Ddevauth.enabled=true")
-            vmArg("-Dskyblockapi.debug=true")
+cloche {
+    metadata {
+        modId = "meowdding-lib"
+        name = "Meowdding-Lib"
+        license = ""
+        clientOnly = true
+
+        custom("modmenu" to mapOf("badges" to listOf("library")))
+    }
+
+    common {
+        mixins.from("src/mixins/meowdding-lib.mixins.json")
+
+        dependencies {
+            compileOnly(libs.meowdding.ktcodecs)
+            compileOnly(libs.meowdding.ktmodules)
+
+            modImplementation(libs.hypixelapi)
+            modImplementation(libs.skyblockapi)
+            modImplementation(libs.placeholders) { isTransitive = false }
+
+            modImplementation(libs.fabric.language.kotlin)
         }
     }
 
-    // Mixin Hotswap might break more than it fixes
-    /*afterEvaluate {
-        val mixinPath = configurations.compileClasspath.get()
-            .files { it.group == "net.fabricmc" && it.name == "sponge-mixin" }
-            .first()
-        runConfigs {
-            "client" {
-                vmArgs.add("-javaagent:$mixinPath")
+    fun createVersion(
+        name: String,
+        version: String = name,
+        loaderVersion: Provider<String> = libs.versions.fabric.loader,
+        fabricApiVersion: Provider<String> = libs.versions.fabric.api,
+        dependencies: MutableMap<String, Provider<MinimalExternalModuleDependency>>.() -> Unit = { },
+    ) {
+        val dependencies = mutableMapOf<String, Provider<MinimalExternalModuleDependency>>().apply(dependencies)
+        val rlib = dependencies["resourcefullib"]!!
+        val rconfig = dependencies["resourcefulconfig"]!!
+        val olympus = dependencies["olympus"]!!
+
+        fabric(name) {
+            includedClient()
+            minecraftVersion = version
+            this.loaderVersion = loaderVersion.get()
+
+            include(libs.hypixelapi)
+            include(libs.skyblockapi)
+            include(rlib)
+            include(olympus)
+            include(libs.placeholders)
+
+            metadata {
+                entrypoint("client") {
+                    adapter = "kotlin"
+                    value = "me.owdding.lib.MeowddingLib"
+                }
+
+                fun dependency(modId: String, version: Provider<String>) {
+                    dependency {
+                        this.modId = modId
+                        this.required = true
+                        version {
+                            this.start = version
+                        }
+                    }
+                }
+
+                dependency("fabric-language-kotlin", libs.versions.fabric.language.kotlin)
+                dependency("resourcefullib", rlib.map { it.version!! })
+                dependency("skyblock-api", libs.versions.skyblockapi)
+                dependency("olympus", olympus.map { it.version!! })
+                dependency("placeholder-api", libs.versions.placeholders)
+            }
+
+            dependencies {
+                fabricApi(fabricApiVersion, minecraftVersion)
+                modImplementation(olympus)
+                modImplementation(rconfig)
+            }
+
+            runs {
+                client()
             }
         }
-    }*/
+    }
+
+    createVersion("1.21.5", fabricApiVersion = provider { "0.127.1" }) {
+        this["resourcefullib"] = libs.resourceful.lib1215
+        this["resourcefulconfig"] = libs.resourceful.config1215
+        this["olympus"] = libs.olympus.lib1215
+    }
+    createVersion("1.21.7") {
+        this["resourcefullib"] = libs.resourceful.lib1217
+        this["resourcefulconfig"] = libs.resourceful.config1217
+        this["olympus"] = libs.olympus.lib1217
+    }
+
+    mappings { official() }
 }
 
 repositories {
     maven(url = "https://maven.teamresourceful.com/repository/maven-public/")
+    maven(url = "https://maven.msrandom.net/repository/cloche")
+    maven(url = "https://maven.msrandom.net/repository/root")
     maven(url = "https://repo.hypixel.net/repository/Hypixel/")
     maven(url = "https://api.modrinth.com/maven")
     maven(url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
@@ -58,54 +133,9 @@ repositories {
     mavenLocal()
 }
 
-dependencies {
-    compileOnly(libs.meowdding.ktmodules)
-    ksp(libs.meowdding.ktmodules)
-    compileOnly(libs.meowdding.ktcodecs)
-    ksp(libs.meowdding.ktcodecs)
-
-    minecraft(libs.minecraft)
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment(libs.parchmentmc.get().withMcVersion().toString())
-    })
-
-    modImplementation(libs.bundles.fabric)
-
-    implementation(libs.repo) // included in sbapi, exposed through implementation
-
-    includeModImplementationBundle(libs.bundles.sbapi)
-    includeModImplementationBundle(libs.bundles.rconfig)
-    includeModImplementationBundle(libs.bundles.libs)
-    includeModImplementationBundle(libs.bundles.meowdding)
-
-    includeModImplementation(libs.mixinconstraints)
-
-    includeImplementation(libs.keval)
-
-    modRuntimeOnly(libs.devauth)
-    modRuntimeOnly(libs.modmenu)
-}
-
 tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-    filesMatching(listOf("fabric.mod.json")) {
-        expand(
-            "version" to project.version,
-            "minecraft" to libs.versions.minecraft.get(),
-            "fabricLoader" to libs.versions.loader.get(),
-            "fabricLanguageKotlin" to libs.versions.fabrickotlin.get(),
-            "meowddingLib" to libs.versions.meowdding.lib.get(),
-            "resourcefullib" to libs.versions.rlib.get(),
-            "skyblockApi" to libs.versions.skyblockapi.get(),
-            "olympus" to libs.versions.olympus.get(),
-            "placeholderApi" to libs.versions.placeholders.get(),
-            "resourcefulconfigkt" to libs.versions.rconfigkt.get(),
-            "resourcefulconfig" to libs.versions.rconfig.get(),
-        )
-    }
 
     filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
         filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
@@ -172,35 +202,3 @@ ksp {
     arg("meowdding.codecs.project_name", project.name)
     arg("meowdding.codecs.package", "me.owdding.skyblockpv.generated")
 }
-
-tasks.remapJar {
-    archiveBaseName = "SkyBlockPv"
-}
-
-fun ExternalModuleDependency.withMcVersion(): ExternalModuleDependency {
-    return DefaultMinimalDependency(
-        DefaultModuleIdentifier.newId(this.group, this.name.replace("<mc_version>", libs.versions.minecraft.get())),
-        DefaultMutableVersionConstraint(this.versionConstraint)
-    )
-}
-
-@Suppress("unused")
-fun DependencyHandlerScope.includeImplementationBundle(bundle: Provider<ExternalModuleDependencyBundle>) = bundle.get().forEach {
-    includeImplementation(provider { it })
-}
-
-fun DependencyHandlerScope.includeModImplementationBundle(bundle: Provider<ExternalModuleDependencyBundle>) = bundle.get().forEach {
-    includeModImplementation(provider { it })
-}
-
-fun <T : ExternalModuleDependency> DependencyHandlerScope.includeImplementation(dependencyNotation: Provider<T>) =
-    with(dependencyNotation.get().withMcVersion()) {
-        include(this)
-        modImplementation(this)
-    }
-
-fun <T : ExternalModuleDependency> DependencyHandlerScope.includeModImplementation(dependencyNotation: Provider<T>) =
-    with(dependencyNotation.get().withMcVersion()) {
-        include(this)
-        modImplementation(this)
-    }
