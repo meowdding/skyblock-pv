@@ -26,12 +26,11 @@ java {
 
 cloche {
     metadata {
-        modId = "meowdding-lib"
-        name = "Meowdding-Lib"
+        modId = "SkyBlockPv"
+        name = "SkyBlockPv"
         license = ""
         clientOnly = true
 
-        custom("modmenu" to mapOf("badges" to listOf("library")))
     }
 
     common {

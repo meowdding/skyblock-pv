@@ -1,9 +1,11 @@
 package me.owdding.skyblockpv.config
 
+import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue.translation
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PvAPI
+import net.minecraft.client.data.models.BlockModelGenerators.condition
 import net.minecraft.client.gui.components.toasts.SystemToast
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.Text

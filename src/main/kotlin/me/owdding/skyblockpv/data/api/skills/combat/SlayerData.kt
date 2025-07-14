@@ -4,7 +4,6 @@ import com.google.gson.JsonObject
 import me.owdding.skyblockpv.SkyBlockPv
 import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
-import kotlin.text.isDigit
 
 fun getIconFromSlayerName(name: String): ResourceLocation = SkyBlockPv.id("icon/slayer/$name")
 
