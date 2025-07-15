@@ -11,6 +11,7 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays.asTable
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -24,6 +25,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 object PvWidgets {
+
 
     fun iconNumberElement(icon: ItemStack, text: Component) = listOf(
         Displays.item(icon, 12, 12),
@@ -191,8 +193,8 @@ object PvWidgets {
             spacer(height = 7)
         }
         compoundWidget.withContents { contents ->
-            //contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/box")), width - 10, contentWithSpacer.height).asWidget())
-            contents.addChild(content)
+            contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/box")), width - 10, contentWithSpacer.height).asWidget())
+            contents.addChild(contentWithSpacer.centerHorizontally(width))
         }
         compoundWidget.withStretchToContentSize()
     }

@@ -87,8 +87,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         val requiredKills = bracket.lastOrNull() ?: 0
         val currentLevel = bracket.indexOfLast { kills >= it } + 1
 
-        val item = if (kills == 0L) Items.GRAY_DYE.defaultInstance
-        else icon.getItem()
+        val item = if (kills == 0L) Items.GRAY_DYE.defaultInstance else icon.getItem()
 
         item.withTooltip {
             add(name)
