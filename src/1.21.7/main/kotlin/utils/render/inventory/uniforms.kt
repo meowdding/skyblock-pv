@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
 import java.util.function.Supplier
 
 
-const val MONO_UNIFORM_NAME = "SkyblockPv Mono Inventory UBO"
+const val MONO_UNIFORM_NAME = "MonoInventoryUniform"
 
 data class MonoInventoryUnfirom(
     val size: Int,
@@ -18,7 +18,7 @@ data class MonoInventoryUnfirom(
 ) : RenderPipelineUniforms {
     companion object {
         val STORAGE: Supplier<DynamicUniformStorage<MonoInventoryUnfirom>> =
-            RenderPipelineUniformsStorage.register<MonoInventoryUnfirom>(MONO_UNIFORM_NAME, 5, Std140SizeCalculator().putInt().putInt())
+            RenderPipelineUniformsStorage.register<MonoInventoryUnfirom>("SkyblockPv Mono Inventory UBO", 5, Std140SizeCalculator().putInt().putInt())
     }
 
     override fun name() = MONO_UNIFORM_NAME

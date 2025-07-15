@@ -38,6 +38,8 @@ actual object InventoryTextureRender {
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
             .withSampler("Sampler0")
             .withUniform(MONO_UNIFORM_NAME, UniformType.UNIFORM_BUFFER)
+            .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+            .withUniform("Projection", UniformType.UNIFORM_BUFFER)
             .build(),
     )
 
@@ -52,7 +54,6 @@ actual object InventoryTextureRender {
         orientation: Orientation,
         color: Int,
     ) {
-        graphics.fill(x, y, width, height, color)
         graphics.guiRenderState.submitPicturesInPictureState(
             MonoInventoryPipState(
                 x,

@@ -1,9 +1,14 @@
 #version 150
 
+//!moj_import <minecraft:dynamictransforms.glsl>
+//!moj_import <minecraft:projection.glsl>
+
 uniform sampler2D Sampler0;
 
-uniform int Size;
-uniform int Vertical;
+layout (std140) uniform MonoInventoryUniform {
+    int Size;
+    int Vertical;
+};
 
 in vec2 texCoord0;
 in vec4 vertexColor;
@@ -36,8 +41,5 @@ void main() {
     }
 
     vec4 color = texture(Sampler0, outUv);
-    if (color.a < 0.1) {
-        discard;
-    }
-    fragColor = color * vec4(vertexColor.xyz, 1);
+    fragColor = color;
 }
