@@ -52,7 +52,7 @@ cloche {
     }
 
     common {
-        mixins.from("src/mixins/meowdding-lib.mixins.json")
+        //mixins.from("src/mixins/meowdding-lib.mixins.json")
 
         dependencies {
             compileOnly(libs.meowdding.ktcodecs)
@@ -101,7 +101,7 @@ cloche {
             metadata {
                 entrypoint("client") {
                     adapter = "kotlin"
-                    value = "me.owdding.lib.MeowddingLib"
+                    value = "me.owdding.skyblockpv.SkyBlockPv"
                 }
 
                 fun dependency(modId: String, version: Provider<String>) {
@@ -169,7 +169,7 @@ repositories {
     mavenLocal()
 }
 
-tasks.processResources {
+tasks.withType<ProcessResources>().configureEach {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
 
@@ -178,7 +178,7 @@ tasks.processResources {
     }
 
     with(copySpec {
-        from("src/main/lang").include("*.json").into("assets/skyblock-pv/lang")
+        from("src/lang").include("*.json").into("assets/skyblock-pv/lang")
     })
 }
 
@@ -212,12 +212,16 @@ repo {
 }
 
 compactingResources {
-    this.basePath = "repo"
+    basePath = "repo"
+    configureTask(tasks.getByName<ProcessResources>("process1217Resources"))
+    configureTask(tasks.getByName<ProcessResources>("process1215Resources"))
+    configureTask(tasks.getByName<ProcessResources>("processResources"))
+
     compactToObject("garden_data")
     compactToObject("chocolate_factory")
     compactToObject("rift")
     compactToArray("museum_categories")
-    //substituteFromDifferentFile("slayer", "slayers")
+    substituteFromDifferentFile("slayer", "slayers")
     compactToObject("pets/overwrites")
     compactToObject("pets")
     compactToObject("crimson_isle/dojo")

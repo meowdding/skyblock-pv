@@ -20,11 +20,9 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.drawSprite
 import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
-import tech.thatgravyboat.skyblockapi.utils.extentions.translated
 import java.util.concurrent.CompletableFuture
 import kotlin.math.cos
 import kotlin.math.sin
-import me.owdding.skyblockpv.utils.render.RenderUtils as SbPvRenderUtils
 
 object ExtraDisplays {
 
@@ -36,10 +34,8 @@ object ExtraDisplays {
             override fun getHeight() = display.getHeight()
 
             override fun render(graphics: GuiGraphics) {
-                SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
-                graphics.translated(0, 0) {
-                    display.render(graphics)
-                }
+                //SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
+                display.render(graphics)
             }
         }
     }
@@ -57,10 +53,8 @@ object ExtraDisplays {
             override fun getHeight() = display.getHeight()
 
             override fun render(graphics: GuiGraphics) {
-                SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
-                graphics.translated(0, 0) {
-                    display.render(graphics)
-                }
+                //SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
+                display.render(graphics)
             }
         }
     }
