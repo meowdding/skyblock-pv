@@ -191,8 +191,8 @@ object PvWidgets {
             spacer(height = 7)
         }
         compoundWidget.withContents { contents ->
-            contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/box")), width - 10, contentWithSpacer.height).asWidget())
-            contents.addChild(contentWithSpacer.centerHorizontally(width))
+            //contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/box")), width - 10, contentWithSpacer.height).asWidget())
+            contents.addChild(content)
         }
         compoundWidget.withStretchToContentSize()
     }

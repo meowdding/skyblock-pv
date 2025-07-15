@@ -20,11 +20,11 @@ object RenderUtils {
 
     @Suppress("UnusedReceiverParameter")
     fun GuiGraphics.withTextShader(shader: TextShader?, action: () -> Unit) {
-
+        action()
     }
 
     fun pushPopTextShader(shader: TextShader?, action: () -> Unit) {
-
+        action()
     }
 
     fun drawInventory(

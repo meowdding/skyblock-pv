@@ -216,10 +216,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 onSuccess = { data ->
                     val staticPlots = StaticGardenData.plots.toMutableList().apply { removeAll(data.unlockedPlots) }
                     data.unlockedPlots.forEach {
-                        map[it.location] = Displays.tooltip(
-                            Displays.item(Items.GREEN_STAINED_GLASS_PANE),
-                            it.getName().also { it.color = PvColors.GREEN },
-                        )
+                        map[it.location] = Displays.item(Items.GREEN_STAINED_GLASS_PANE).withTooltip(it.getName().also { it.color = PvColors.GREEN })
                     }
                     val unlockedAmount = data.unlockedPlots.groupBy { it.type }.mapValues { it.value.size }
                     staticPlots.forEach {
@@ -265,12 +262,9 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 loadingComponent { it.selectedBarnSkin.displayName },
             )
 
-            val plots = map.map { it.reversed().map { Displays.padding(2, it) }.toColumn() }.toRow()
+            val plots = map.map { it.reversed().map { Displays.padding(2, it) } }.asTable()
             display(
-                ExtraDisplays.inventoryBackground(
-                    5, 5,
-                    Displays.padding(2, plots),
-                ),
+                plots,
             )
         },
     )

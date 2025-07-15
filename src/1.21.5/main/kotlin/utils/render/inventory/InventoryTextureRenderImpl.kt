@@ -21,7 +21,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 
-actual object InventoryTextureRenderImpl {
+actual object InventoryTextureRender {
 
     var TEXT_SHADER: TextShader? = null
         private set
@@ -73,7 +73,7 @@ actual object InventoryTextureRenderImpl {
         return buffer
     }
 
-    fun drawInventory(
+    actual fun drawInventory(
         graphics: GuiGraphics,
         x: Int,
         y: Int,
@@ -92,7 +92,7 @@ actual object InventoryTextureRenderImpl {
         }
     }
 
-    fun drawInventory(
+    actual fun drawInventory(
         graphics: GuiGraphics,
         x: Int,
         y: Int,

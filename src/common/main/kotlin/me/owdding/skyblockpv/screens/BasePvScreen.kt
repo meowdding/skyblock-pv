@@ -115,7 +115,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
 
         FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
-        bg.applyLayout()
+        //bg.applyLayout()
 
         addLoader()
         createTopRow(bg).applyLayout(5, 5)
@@ -388,7 +388,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     open fun onProfileSwitch(profile: SkyBlockProfile) {}
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        this.renderTransparentBackground(guiGraphics)
+        //this.renderTransparentBackground(guiGraphics)
         if (ThemeSupport.currentTheme.backgroundBlur) {
             //TODO
         }

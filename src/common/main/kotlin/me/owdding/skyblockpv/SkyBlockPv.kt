@@ -16,6 +16,7 @@ import me.owdding.skyblockpv.config.THEME_RENDERER
 import me.owdding.skyblockpv.config.ThemeRenderer
 import me.owdding.skyblockpv.generated.SkyBlockPVExtraData
 import me.owdding.skyblockpv.generated.SkyBlockPVModules
+import me.owdding.skyblockpv.screens.DisplayTest
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
@@ -111,6 +112,10 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
 
         event.register("sbpv") {
             then("pv") { pvCommand() }
+
+            thenCallback("displaytest") {
+                McClient.setScreenAsync { DisplayTest }
+            }
 
             thenCallback("version") {
                 Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
