@@ -9,6 +9,7 @@ import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
 import me.owdding.skyblockpv.utils.accessors.withExclusiveScissor
 import me.owdding.skyblockpv.utils.render.RenderUtils.withTextShader
 import me.owdding.skyblockpv.utils.render.TextShader
+import me.owdding.skyblockpv.utils.render.RenderUtils as SbPvRenderUtils
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
@@ -34,7 +35,7 @@ object ExtraDisplays {
             override fun getHeight() = display.getHeight()
 
             override fun render(graphics: GuiGraphics) {
-                //SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
+                SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
                 display.render(graphics)
             }
         }
@@ -53,7 +54,7 @@ object ExtraDisplays {
             override fun getHeight() = display.getHeight()
 
             override fun render(graphics: GuiGraphics) {
-                //SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
+                SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
                 display.render(graphics)
             }
         }
