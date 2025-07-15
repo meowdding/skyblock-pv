@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.utils.Orientation
 import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
@@ -49,6 +50,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
@@ -98,6 +100,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     widget(player)
                 }
                 widget(leftStuff)
+
+                display(ExtraDisplays.inventoryBackground(1, Orientation.VERTICAL, Displays.item(Items.REDSTONE)))
             }.applyLayout()
         }
 
@@ -123,6 +127,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     widget(getEssenceSection(width))
                 }.asScrollable(width + 27, uiHeight),
             )
+
+            display(ExtraDisplays.inventoryBackground(1, Orientation.VERTICAL, Displays.item(Items.REDSTONE)))
         }.applyLayout()
     }
 
