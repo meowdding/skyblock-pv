@@ -70,7 +70,6 @@ actual object InventoryTextureRender {
                 orientation == Orientation.VERTICAL,
             ),
         )
-        graphics.nextStratum()
     }
 
     actual fun drawInventory(
@@ -95,6 +94,5 @@ actual object InventoryTextureRender {
                 color,
             ),
         )
-        graphics.nextStratum()
     }
 }
