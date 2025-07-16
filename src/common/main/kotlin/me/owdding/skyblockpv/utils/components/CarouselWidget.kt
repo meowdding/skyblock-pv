@@ -137,7 +137,7 @@ class CarouselWidget(
                             WidgetRenderers.sprite(ExtraConstants.BUTTON_PRIMARY_OPAQUE),
                             WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK_OPAQUE),
                         ) { this.index == index },
-                        WidgetRenderers.center(16, 16, DisplayWidget.displayRenderer(it)),
+                        WidgetRenderers.center(20, 20, WidgetRenderers.padded(1, 2, 3, 2, DisplayWidget.displayRenderer(it))),
                     ),
                 ).withCallback {
                     this.index = index

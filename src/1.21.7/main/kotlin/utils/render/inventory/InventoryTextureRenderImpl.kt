@@ -15,7 +15,7 @@ import org.joml.Vector2i
 
 actual object InventoryTextureRender {
 
-    val INVENTORY_BACKGROUND = RenderPipelines.register(
+    val INVENTORY_BACKGROUND: RenderPipeline = RenderPipelines.register(
         RenderPipeline.builder()
             .withLocation(SkyBlockPv.id("inventory"))
             .withVertexShader(SkyBlockPv.id("core/inventory"))

@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import earth.terrarium.olympus.client.pipelines.pips.OlympusPictureInPictureRenderState
 import earth.terrarium.olympus.client.pipelines.renderer.PipelineRenderer
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer
 import net.minecraft.client.renderer.MultiBufferSource
@@ -30,8 +31,10 @@ abstract class SkyBlockPvPipState<T : OlympusPictureInPictureRenderState<T>>() :
     abstract val scissorArea: ScreenRectangle?
     abstract val pose: Matrix3x2f
 
+    open val shrinkToScissor: Boolean = true
+
     val bounds: ScreenRectangle? by lazy {
-        if (scissorArea != null) {
+        if (scissorArea != null && shrinkToScissor) {
             scissorArea!!.intersection(ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformMaxBounds(pose))
         } else {
             ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformMaxBounds(pose)
@@ -58,6 +61,8 @@ data class MonoInventoryPipState(
 ) : SkyBlockPvPipState<MonoInventoryPipState>() {
     override fun getFactory(): Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<MonoInventoryPipState>> =
         Function { buffer -> MonoInventoryPipRenderer(buffer) }
+
+    override val shrinkToScissor: Boolean = false
 }
 
 data class PolyInventoryPipState(
@@ -69,6 +74,8 @@ data class PolyInventoryPipState(
 ) : SkyBlockPvPipState<PolyInventoryPipState>() {
     override fun getFactory(): Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<PolyInventoryPipState>> =
         Function { buffer -> PolyInventoryPipRenderer(buffer) }
+
+    override val shrinkToScissor: Boolean = false
 }
 
 class MonoInventoryPipRenderer(source: MultiBufferSource.BufferSource) : PictureInPictureRenderer<MonoInventoryPipState>(source) {
@@ -93,7 +100,7 @@ class MonoInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
         buffer.addVertex(scaledWidth, scaledHeight, 0f).setUv(1f, 1f).setColor(state.color)
         buffer.addVertex(scaledWidth, 0f, 0f).setUv(1f, 0f).setColor(state.color)
 
-        RenderSystem.setShaderTexture(0, McClient.self.textureManager.getTexture(MONO_TEXTURE).textureView)
+        RenderSystem.setShaderTexture(0, McClient.self.textureManager.getTexture(ThemeSupport.texture(MONO_TEXTURE)).textureView)
 
         PipelineRenderer.builder(InventoryTextureRender.MONO_INVENTORY_BACKGROUND, buffer.buildOrThrow())
             .uniform(MonoInventoryUnfirom.STORAGE, MonoInventoryUnfirom(state.size, if (state.vertical) 1 else 0))
@@ -129,7 +136,7 @@ class PolyInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
         buffer.addVertex(scaledWidth, scaledHeight, 0f).setUv(1f, 1f).setColor(state.color)
         buffer.addVertex(scaledWidth, 0f, 0f).setUv(1f, 0f).setColor(state.color)
 
-        RenderSystem.setShaderTexture(0, McClient.self.textureManager.getTexture(POLY_TEXTURE).textureView)
+        RenderSystem.setShaderTexture(0, McClient.self.textureManager.getTexture(ThemeSupport.texture(POLY_TEXTURE)).textureView)
 
         PipelineRenderer.builder(InventoryTextureRender.INVENTORY_BACKGROUND, buffer.buildOrThrow())
             .uniform(PolyInventoryUnfirom.STORAGE, PolyInventoryUnfirom(state.size))

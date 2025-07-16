@@ -5,6 +5,7 @@ import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.toReadableString
+import me.owdding.lib.extensions.transpose
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
@@ -262,9 +263,15 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 loadingComponent { it.selectedBarnSkin.displayName },
             )
 
-            val plots = map.map { it.reversed().map { Displays.padding(2, it) } }.asTable()
+            val plots = map.map { it.reversed().map { Displays.padding(2, it) } }.transpose().asTable()
+
+
+
             display(
-                plots,
+                ExtraDisplays.inventoryBackground(
+                    5, 5,
+                    Displays.padding(2, plots),
+                ),
             )
         },
     )
