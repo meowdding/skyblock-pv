@@ -12,8 +12,8 @@
 A Profile Viewer for Hypixel SkyBlock, developed with love and passion.
 
 The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <username>`` for someone else.
-<br/>You can switch between the tabs using the buttons on the right side of the UI.
-<br/>If a tab has multiple categories, you can switch between them using the buttons on the top of the UI.
+<br/>You can switch between the tabs using the buttons on the top of the UI.
+<br/>If a tab has multiple categories, you can switch between them using the buttons on the left side of the UI.
 
 > [!WARNING]
 > The mod is still in development, design is subject to change.
