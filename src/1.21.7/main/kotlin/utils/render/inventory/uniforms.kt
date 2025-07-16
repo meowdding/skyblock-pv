@@ -31,14 +31,14 @@ data class MonoInventoryUnfirom(
     }
 }
 
-const val POLY_UNIFORM_NAME = "SkyblockPv Poly Inventory UBO"
+const val POLY_UNIFORM_NAME = "PolyInventoryUniform"
 
 data class PolyInventoryUnfirom(
     val size: Vector2i,
 ) : RenderPipelineUniforms {
     companion object {
         val STORAGE: Supplier<DynamicUniformStorage<PolyInventoryUnfirom>> =
-            RenderPipelineUniformsStorage.register<PolyInventoryUnfirom>(POLY_UNIFORM_NAME, 5, Std140SizeCalculator().putIVec2())
+            RenderPipelineUniformsStorage.register<PolyInventoryUnfirom>("SkyblockPv Poly Inventory UBO", 5, Std140SizeCalculator().putIVec2())
     }
 
     override fun name() = POLY_UNIFORM_NAME

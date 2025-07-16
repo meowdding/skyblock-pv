@@ -11,6 +11,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
 import org.joml.Matrix3x2f
+import org.joml.Vector2i
 
 actual object InventoryTextureRender {
 
@@ -25,6 +26,8 @@ actual object InventoryTextureRender {
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
             .withSampler("Sampler0")
             .withUniform(POLY_UNIFORM_NAME, UniformType.UNIFORM_BUFFER)
+            .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+            .withUniform("Projection", UniformType.UNIFORM_BUFFER)
             .build(),
     )
     val MONO_INVENTORY_BACKGROUND: RenderPipeline = RenderPipelines.register(
@@ -59,14 +62,15 @@ actual object InventoryTextureRender {
                 x,
                 y,
                 x + width,
-                y + width,
+                y + height,
                 graphics.scissorStack.peek(),
                 Matrix3x2f(graphics.pose()),
-                1,
+                size,
                 color,
                 orientation == Orientation.VERTICAL,
             ),
         )
+        graphics.nextStratum()
     }
 
     actual fun drawInventory(
@@ -79,6 +83,18 @@ actual object InventoryTextureRender {
         rows: Int,
         color: Int,
     ) {
-        graphics.fill(x, y, width, height, color)
+        graphics.guiRenderState.submitPicturesInPictureState(
+            PolyInventoryPipState(
+                x,
+                y,
+                x + width,
+                y + height,
+                graphics.scissorStack.peek(),
+                Matrix3x2f(graphics.pose()),
+                Vector2i(columns, rows),
+                color,
+            ),
+        )
+        graphics.nextStratum()
     }
 }

@@ -2,7 +2,9 @@
 
 uniform sampler2D Sampler0;
 
-uniform vec2 Size;
+layout (std140) uniform PolyInventoryUniform {
+    vec2 Size;
+};
 
 in vec2 texCoord0;
 in vec4 vertexColor;
