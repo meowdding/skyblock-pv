@@ -52,7 +52,8 @@ cloche {
     }
 
     common {
-        //mixins.from("src/mixins/meowdding-lib.mixins.json")
+        mixins.from("src/mixins/skyblock-pv.common.mixins.json")
+        accessWideners.from("src/skyblock-pv.accesswidener")
 
         dependencies {
             compileOnly(libs.meowdding.ktcodecs)
@@ -97,6 +98,7 @@ cloche {
             include(libs.keval)
             include(libs.mixinconstraints)
             include(libs.repolib)
+            mixins.from("src/mixins/skyblock-pv.${name.replace(".", "")}.mixins.json")
 
             metadata {
                 entrypoint("client") {
@@ -131,7 +133,9 @@ cloche {
             }
 
             runs {
-                client()
+                client {
+                    arguments("--quickPlaySingleplayer=\"${name.replace(".", "")}\"")
+                }
             }
         }
     }

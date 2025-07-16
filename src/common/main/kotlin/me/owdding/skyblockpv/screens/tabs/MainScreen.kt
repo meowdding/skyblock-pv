@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
+import me.owdding.lib.extensions.floor
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.layouts.setPos
@@ -233,8 +234,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     } else {
                         fakePlayer
                     },
-                    width, height,
-                    (width / 2.5).toInt(),
+                    width,
+                    height,
+                    (width / 3f).floor(),
                     eyesX, eyesY,
                 ).render(gr, ctx.x, ctx.y + height / 10)
             }

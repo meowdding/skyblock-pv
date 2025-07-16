@@ -6,12 +6,9 @@
     "client": [
         "FontMixin",
         "GlyphRenderTypesMixin",
-        "GuiGraphicsMixin",
         "PlayerRendererMixin",
         "PlayerRenderStateMixin",
-        "WidgetSpritesMixin",
-        "accessors.ScissorStackAccessor",
-        "compat.ProfileViewerScreenMixin"
+        "WidgetSpritesMixin"
     ],
     "injectors": {
         "defaultRequire": 1
