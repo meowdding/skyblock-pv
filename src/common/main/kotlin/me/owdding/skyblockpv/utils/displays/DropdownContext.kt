@@ -17,6 +17,7 @@ class DropdownContext(val fadeTime: Int = 200) {
             }
             field = value
         }
+    var dorpdownDisplay: (() -> Unit)? = null
 
     fun isCurrentDropdown(that: Display): Boolean {
         return currentDropdown == null || currentDropdown === that

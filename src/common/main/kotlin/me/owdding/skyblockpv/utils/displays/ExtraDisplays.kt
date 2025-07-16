@@ -3,13 +3,12 @@ package me.owdding.skyblockpv.utils.displays
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.Displays
-import me.owdding.lib.displays.Displays.isMouseOver
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.drawRoundedRec
-import me.owdding.skyblockpv.utils.accessors.withExclusiveScissor
 import me.owdding.skyblockpv.utils.render.RenderUtils.withTextShader
 import me.owdding.skyblockpv.utils.render.TextShader
-import me.owdding.skyblockpv.utils.render.RenderUtils as SbPvRenderUtils
+import me.owdding.skyblockpv.utils.render.dropdown.createDropdownDisplay
+import me.owdding.skyblockpv.utils.render.dropdown.createDropdownOverlay
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
@@ -24,6 +23,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
 import java.util.concurrent.CompletableFuture
 import kotlin.math.cos
 import kotlin.math.sin
+import me.owdding.skyblockpv.utils.render.RenderUtils as SbPvRenderUtils
 
 object ExtraDisplays {
 
@@ -141,53 +141,8 @@ object ExtraDisplays {
     fun grayText(text: String) = Displays.text(text, color = { PvColors.DARK_GRAY.toUInt() }, shadow = false)
     fun grayText(text: Component) = Displays.text(text, color = { PvColors.DARK_GRAY.toUInt() }, shadow = false)
 
-    fun dropdownOverlay(original: Display, color: Int, context: DropdownContext): Display {
-        return object : Display {
-            override fun getWidth() = original.getWidth()
-            override fun getHeight() = original.getHeight()
-            override fun render(graphics: GuiGraphics) {
-                original.render(graphics)
-                graphics.pushPop {
-                    val difference = System.currentTimeMillis() - context.lastUpdated
-                    if (context.currentDropdown != null) {
-                        if (difference < context.fadeTime) {
-                            val value = ((difference / context.fadeTime.toDouble()) * 255).toInt()
-                            graphics.fill(0, 0, getWidth(), getHeight(), ARGB.multiply(color, ARGB.color(value, value, value, value)))
-                        } else {
-                            graphics.fill(0, 0, getWidth(), getHeight(), color)
-                        }
-                    } else if (difference < context.fadeTime) {
-                        val value = ((1 - (difference / context.fadeTime.toDouble())) * 255).toInt()
-                        graphics.fill(0, 0, getWidth(), getHeight(), ARGB.multiply(color, ARGB.color(value, value, value, value)))
-                    }
-                }
-            }
-        }
-    }
-
-    fun dropdown(original: Display, dropdown: Display, context: DropdownContext): Display {
-        return object : Display {
-            override fun getWidth() = original.getWidth()
-            override fun getHeight() = original.getHeight()
-            var isOpen = false
-            override fun render(graphics: GuiGraphics) {
-                original.render(graphics)
-
-                graphics.withExclusiveScissor(-10, -10, dropdown.getWidth() + 10, dropdown.getHeight() + 10) {
-                    if (context.isCurrentDropdown(this) && (isMouseOver(original, graphics) || (isOpen && isMouseOver(dropdown, graphics)))) {
-                        isOpen = true
-                        context.currentDropdown = this
-                        dropdown.render(graphics)
-                    } else {
-                        if (context.currentDropdown === this) {
-                            context.currentDropdown = null
-                        }
-                        isOpen = false
-                    }
-                }
-            }
-        }
-    }
+    fun dropdownOverlay(original: Display, color: Int, context: DropdownContext): Display = createDropdownOverlay(original, color, context)
+    fun dropdown(original: Display, dropdown: Display, context: DropdownContext): Display = createDropdownDisplay(original, dropdown, context)
 
     fun <T> completableDisplay(
         completable: CompletableFuture<T>,

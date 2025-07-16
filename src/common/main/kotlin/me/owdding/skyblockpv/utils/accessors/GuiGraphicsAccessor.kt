@@ -9,7 +9,7 @@ import kotlin.contracts.contract
 interface GuiGraphicsAccessor {
 
     fun `skyblockpv$popScissor`(): ScreenRectangle?
-    fun `skyblockpv$pushScissor`(rectangle: ScreenRectangle?)
+    fun `skyblockpv$pushScissor`(rectangle: ScreenRectangle)
 
 }
 

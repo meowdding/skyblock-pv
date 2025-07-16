@@ -103,7 +103,7 @@ class MonoInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
         RenderSystem.setShaderTexture(0, McClient.self.textureManager.getTexture(ThemeSupport.texture(MONO_TEXTURE)).textureView)
 
         PipelineRenderer.builder(InventoryTextureRender.MONO_INVENTORY_BACKGROUND, buffer.buildOrThrow())
-            .uniform(MonoInventoryUnfirom.STORAGE, MonoInventoryUnfirom(state.size, if (state.vertical) 1 else 0))
+            .uniform(MonoInventoryUniform.STORAGE, MonoInventoryUniform(state.size, if (state.vertical) 1 else 0))
             .color(state.color)
             .draw()
 
@@ -139,7 +139,7 @@ class PolyInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
         RenderSystem.setShaderTexture(0, McClient.self.textureManager.getTexture(ThemeSupport.texture(POLY_TEXTURE)).textureView)
 
         PipelineRenderer.builder(InventoryTextureRender.INVENTORY_BACKGROUND, buffer.buildOrThrow())
-            .uniform(PolyInventoryUnfirom.STORAGE, PolyInventoryUnfirom(state.size))
+            .uniform(PolyInventoryUniform.STORAGE, PolyInventoryUniform(state.size))
             .color(state.color)
             .draw()
 
