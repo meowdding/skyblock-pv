@@ -52,6 +52,7 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
+import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -388,9 +389,11 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     open fun onProfileSwitch(profile: SkyBlockProfile) {}
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        //this.renderTransparentBackground(guiGraphics)
         if (ThemeSupport.currentTheme.backgroundBlur) {
-            //TODO
+            guiGraphics.applyBackgroundBlur()
+            this.renderTransparentBackground(guiGraphics)
+        } else {
+            this.renderTransparentBackground(guiGraphics)
         }
     }
 }
