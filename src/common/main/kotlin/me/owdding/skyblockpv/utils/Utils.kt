@@ -4,7 +4,6 @@ import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
-import earth.terrarium.olympus.client.pipelines.RoundedRectangle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -33,7 +32,6 @@ import org.joml.Matrix4f
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
@@ -46,6 +44,12 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.jvm.optionals.getOrNull
 
+expect fun GuiGraphics.drawRoundedRec(
+    x: Int, y: Int, width: Int, height: Int,
+    backgroundColor: Int, borderColor: Int = backgroundColor,
+    borderSize: Int = 0, radius: Int = 0,
+)
+
 object Utils {
 
     fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
@@ -54,19 +58,6 @@ object Utils {
         private set
 
     val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
-
-    fun GuiGraphics.drawRoundedRec(
-        x: Int, y: Int, width: Int, height: Int,
-        backgroundColor: Int, borderColor: Int = backgroundColor,
-        borderSize: Int = 0, radius: Int = 0,
-    ) {
-        pushPop {
-            RoundedRectangle.draw(
-                this@drawRoundedRec, x, y, width, height,
-                backgroundColor, borderColor, width.coerceAtMost(height) * (radius / 100f), borderSize,
-            )
-        }
-    }
 
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
         if (isFetchingGameProfile) return
