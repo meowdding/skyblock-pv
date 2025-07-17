@@ -7,11 +7,13 @@ import com.mojang.blaze3d.shaders.UniformType
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import earth.terrarium.olympus.client.utils.Orientation
+import me.owdding.lib.layouts.ScalableWidget
 import me.owdding.skyblockpv.SkyBlockPv
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
 import org.joml.Matrix3x2f
 import org.joml.Vector2i
+import tech.thatgravyboat.skyblockapi.utils.extentions.scaled
 
 actual object InventoryTextureRender {
 
@@ -57,19 +59,21 @@ actual object InventoryTextureRender {
         orientation: Orientation,
         color: Int,
     ) {
-        graphics.guiRenderState.submitPicturesInPictureState(
-            MonoInventoryPipState(
-                x,
-                y,
-                x + width,
-                y + height,
-                graphics.scissorStack.peek(),
-                Matrix3x2f(graphics.pose()),
-                size,
-                color,
-                orientation == Orientation.VERTICAL,
-            ),
-        )
+        graphics.scaled(1 / ScalableWidget.getCurrentScale(), 1 / ScalableWidget.getCurrentScale()) {
+            graphics.guiRenderState.submitPicturesInPictureState(
+                MonoInventoryPipState(
+                    x,
+                    y,
+                    ((x + width) * ScalableWidget.getCurrentScale()).toInt(),
+                    ((y + height) * ScalableWidget.getCurrentScale()).toInt(),
+                    graphics.scissorStack.peek(),
+                    Matrix3x2f(graphics.pose()),
+                    size,
+                    color,
+                    orientation == Orientation.VERTICAL,
+                ),
+            )
+        }
     }
 
     actual fun drawInventory(
@@ -82,17 +86,19 @@ actual object InventoryTextureRender {
         rows: Int,
         color: Int,
     ) {
-        graphics.guiRenderState.submitPicturesInPictureState(
-            PolyInventoryPipState(
-                x,
-                y,
-                x + width,
-                y + height,
-                graphics.scissorStack.peek(),
-                Matrix3x2f(graphics.pose()),
-                Vector2i(columns, rows),
-                color,
-            ),
-        )
+        graphics.scaled(1 / ScalableWidget.getCurrentScale(), 1 / ScalableWidget.getCurrentScale()) {
+            graphics.guiRenderState.submitPicturesInPictureState(
+                PolyInventoryPipState(
+                    x,
+                    y,
+                    ((x + width) * ScalableWidget.getCurrentScale()).toInt(),
+                    ((y + height) * ScalableWidget.getCurrentScale()).toInt(),
+                    graphics.scissorStack.peek(),
+                    Matrix3x2f(graphics.pose()),
+                    Vector2i(columns, rows),
+                    color,
+                ),
+            )
+        }
     }
 }

@@ -130,3 +130,11 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
     fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(RESOURCE_PATH, path)
     fun olympusId(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("olympus", path)
 }
+
+enum class McVersion(val version: String) {
+    MC_1_21_5("1.21.5"),
+    MC_1_21_8("1.21.8"),
+    ;
+
+    fun isActive() = McClient.version == version
+}

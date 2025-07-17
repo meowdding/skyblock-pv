@@ -150,11 +150,11 @@ cloche {
         this["resourcefulconfigkt"] = libs.resourceful.configkt1215
         this["olympus"] = libs.olympus.lib1215
     }
-    createVersion("1.21.7") {
-        this["resourcefullib"] = libs.resourceful.lib1217
-        this["resourcefulconfig"] = libs.resourceful.config1217
-        this["resourcefulconfigkt"] = libs.resourceful.configkt1217
-        this["olympus"] = libs.olympus.lib1217
+    createVersion("1.21.8") {
+        this["resourcefullib"] = libs.resourceful.lib1218
+        this["resourcefulconfig"] = libs.resourceful.config1218
+        this["resourcefulconfigkt"] = libs.resourceful.configkt1218
+        this["olympus"] = libs.olympus.lib1218
     }
 
     mappings { official() }
@@ -178,7 +178,6 @@ repositories {
 
 tasks.withType<ProcessResources>().configureEach {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
 
     filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
         filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
@@ -220,7 +219,7 @@ repo {
 
 compactingResources {
     basePath = "repo"
-    configureTask(tasks.getByName<ProcessResources>("process1217Resources"))
+    configureTask(tasks.getByName<ProcessResources>("process1218Resources"))
     configureTask(tasks.getByName<ProcessResources>("process1215Resources"))
     configureTask(tasks.getByName<ProcessResources>("processResources"))
 
@@ -253,7 +252,7 @@ sourceSets {
 
 ksp {
     this@ksp.excludedSources.from(sourceSets.getByName("1215").kotlin.srcDirs)
-    this@ksp.excludedSources.from(sourceSets.getByName("1217").kotlin.srcDirs)
+    this@ksp.excludedSources.from(sourceSets.getByName("1218").kotlin.srcDirs)
     arg("meowdding.modules.project_name", project.name)
     arg("meowdding.modules.package", "me.owdding.skyblockpv.generated")
     arg("meowdding.codecs.project_name", project.name)

@@ -91,7 +91,7 @@ class MonoInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
         val bounds = state.bounds ?: return
 
         val scale = McClient.window.guiScale.toFloat()
-        val scaledWidth = bounds.width * scale
+        val scaledWidth = (bounds.width) * scale
         val scaledHeight = bounds.height * scale
 
         val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
