@@ -2,10 +2,10 @@
 
 | Feature                      | SkyBlockPv | NEU | SkyBlocker |
 |------------------------------|------------|-----|------------|
-| Button in Hypixel Pv         | ✅          | ✅   | 🚧          |
+| Button in Hypixel Pv         | ✅          | ✅   | 🚧         |
 | Party Finder Message         | ✅          | ✅   | ❌          |
 | SkyBlock Menu                | ✅          | ✅   | ❌          |
-| Replace Socialoption with pv | 🚧          | ✅   | ❌          |
+| Replace Socialoption with pv | 🚧         | ✅   | ❌          |
 
 ### Pages Features
 
