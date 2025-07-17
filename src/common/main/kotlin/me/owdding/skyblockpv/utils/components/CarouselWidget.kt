@@ -17,7 +17,7 @@ import tech.thatgravyboat.skyblockapi.platform.drawString
 import tech.thatgravyboat.skyblockapi.platform.scale
 import tech.thatgravyboat.skyblockapi.platform.translate
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
-import tech.thatgravyboat.skyblockapi.utils.extentions.translated
+import utils.extensions.translated
 
 class CarouselWidget(
     private val displays: List<Display>,
@@ -57,7 +57,7 @@ class CarouselWidget(
                 last?.render(graphics, x, lastY)
             }
 
-            graphics.translated(0f, 0f) {
+            graphics.translated(0f, 0f, 201f) {
                 graphics.fill(x, lastY, left, lastBottom, 0x7F000000)
 
                 if (mouseX in x..left && mouseY in lastY..lastBottom) {
@@ -78,7 +78,7 @@ class CarouselWidget(
                 next?.render(graphics, x + width, nextY, alignmentX = 1f)
             }
 
-            graphics.translated(0f, 0f) {
+            graphics.translated(0f, 0f, 201f) {
                 graphics.fill(right, nextY, x + width, nextBottom, 0x7F000000)
 
                 if (mouseX in right..(x + width) && mouseY in nextY..nextBottom) {
@@ -90,7 +90,7 @@ class CarouselWidget(
             }
         }
 
-        graphics.translated(0f, 0f) {
+        graphics.translated(0f, 0f, 0f) {
             curr.render(graphics, x + width / 2, y, alignmentX = 0.5f, alignmentY = 0f)
         }
     }
