@@ -16,6 +16,7 @@ plugins {
     `museum-data` // defined in buildSrc
     alias(libs.plugins.kotlin)
     alias(libs.plugins.terrarium.cloche)
+    alias(libs.plugins.terrarium.multiplatform)
     alias(libs.plugins.meowdding.repo)
     alias(libs.plugins.meowdding.resources)
     alias(libs.plugins.kotlin.symbol.processor)

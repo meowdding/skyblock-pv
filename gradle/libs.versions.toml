@@ -31,6 +31,7 @@ meowdding-repo = "1.0.15"
 meowdding-resources = "1.0.12"
 
 terrarium-cloche = "0.11.6"
+terrarium-multiplatform = "1.0.11"
 
 # Build src dependencies
 gson = "2.12.1"
@@ -72,6 +73,7 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 [plugins]
 terrarium-cloche = { id = "earth.terrarium.cloche", version.ref = "terrarium-cloche" }
+terrarium-multiplatform = { id = "net.msrandom.classextensions", version.ref = "terrarium-multiplatform" }
 
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-symbol-processor = { id = "com.google.devtools.ksp", version.ref = "kotlin-symbol-processor" }
