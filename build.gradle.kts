@@ -34,6 +34,7 @@ java {
 dependencies {
     ksp(libs.meowdding.ktcodecs)
     ksp(libs.meowdding.ktmodules)
+    compileOnly(libs.keval)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

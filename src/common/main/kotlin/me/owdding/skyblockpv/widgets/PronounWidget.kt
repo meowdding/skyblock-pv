@@ -29,8 +29,8 @@ object PronounWidget {
                     shadow = shader != null,
                 ).centerIn(width, McFont.height).withTextShader(shader)
             },
-            { ExtraDisplays.text("Error", color = { PvColors.RED.toUInt() }) },
-            { ExtraDisplays.text("Loading") },
+            { ExtraDisplays.text("Error", color = { PvColors.RED.toUInt() }).centerIn(width, McFont.height) },
+            { ExtraDisplays.text("Loading").centerIn(width, McFont.height) },
         )
     }
 }
