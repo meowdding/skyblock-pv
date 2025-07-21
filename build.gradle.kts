@@ -137,8 +137,6 @@ cloche {
                     version(minecraftVersionRange)
                 }
                 dependency("fabric")
-                dependency("com_notkamui_libs_keval-jvm", libs.versions.keval)
-                dependency("com_moulberry_mixinconstraints", libs.versions.mixinconstraints)
                 dependency("fabricloader", loaderVersion)
                 dependency("fabric-language-kotlin", libs.versions.fabric.language.kotlin)
                 dependency("resourcefullib", rlib.map { it.version!! })
