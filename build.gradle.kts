@@ -1,6 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.google.devtools.ksp.gradle.KspTask
+import earth.terrarium.cloche.api.metadata.ModMetadata
 import net.msrandom.minecraftcodev.core.utils.toPath
 import net.msrandom.minecraftcodev.runs.task.WriteClasspathFile
 import net.msrandom.stubs.GenerateStubApi
@@ -54,7 +55,7 @@ cloche {
         name = "SkyBlockPv"
         license = ""
         clientOnly = true
-
+        icon = "assets/skyblock-pv/skyblock-pv.png"
     }
 
     common {
@@ -82,6 +83,11 @@ cloche {
         version: String = name,
         loaderVersion: Provider<String> = libs.versions.fabric.loader,
         fabricApiVersion: Provider<String> = libs.versions.fabric.api,
+        minecraftVersionRange: ModMetadata.VersionRange.() -> Unit = {
+            start = version
+            end = version
+            endExclusive = false
+        },
         dependencies: MutableMap<String, Provider<MinimalExternalModuleDependency>>.() -> Unit = { },
     ) {
         val dependencies = mutableMapOf<String, Provider<MinimalExternalModuleDependency>>().apply(dependencies)
@@ -104,7 +110,7 @@ cloche {
             include(libs.keval)
             include(libs.mixinconstraints)
             include(libs.repolib)
-            mixins.from("src/mixins/skyblock-pv.${name.replace(".", "")}.mixins.json")
+            mixins.from("src/mixins/skyblock-pv.${sourceSet.name}.mixins.json")
 
             metadata {
                 entrypoint("client") {
@@ -122,6 +128,17 @@ cloche {
                     }
                 }
 
+                dependency {
+                    modId = "fabric"
+                    required = true
+                    version("*")
+                }
+                dependency {
+                    modId = "minecraft"
+                    required = true
+                    version(minecraftVersionRange)
+                }
+                dependency("fabricloader", loaderVersion)
                 dependency("fabric-language-kotlin", libs.versions.fabric.language.kotlin)
                 dependency("resourcefullib", rlib.map { it.version!! })
                 dependency("skyblock-api", libs.versions.skyblockapi)
@@ -129,6 +146,7 @@ cloche {
                 dependency("placeholder-api", libs.versions.placeholders)
                 dependency("resourcefulconfigkt", rconfigkt.map { it.version!! })
                 dependency("resourcefulconfig", rconfig.map { it.version!! })
+                dependency("meowdding-lib", libs.versions.meowdding.lib)
             }
 
             dependencies {
@@ -152,7 +170,11 @@ cloche {
         this["resourcefulconfigkt"] = libs.resourceful.configkt1215
         this["olympus"] = libs.olympus.lib1215
     }
-    createVersion("1.21.8") {
+    createVersion("1.21.8", minecraftVersionRange = {
+        start = "1.21.6"
+        end = "1.21.8"
+        endExclusive = false
+    }) {
         this["resourcefullib"] = libs.resourceful.lib1218
         this["resourcefulconfig"] = libs.resourceful.config1218
         this["resourcefulconfigkt"] = libs.resourceful.configkt1218
