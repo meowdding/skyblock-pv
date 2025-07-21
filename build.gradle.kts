@@ -3,6 +3,7 @@
 import com.google.devtools.ksp.gradle.KspTask
 import earth.terrarium.cloche.api.metadata.ModMetadata
 import net.msrandom.minecraftcodev.core.utils.toPath
+import net.msrandom.minecraftcodev.fabric.task.JarInJar
 import net.msrandom.minecraftcodev.runs.task.WriteClasspathFile
 import net.msrandom.stubs.GenerateStubApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -102,9 +103,11 @@ cloche {
             this.loaderVersion = loaderVersion.get()
 
             include(libs.hypixelapi)
-            include(libs.skyblockapi)
+            //include(libs.skyblockapi) included in mlib
+            include(libs.meowdding.lib)
             include(rlib)
             include(rconfigkt)
+            include(rconfig)
             include(olympus)
             include(libs.placeholders)
             include(libs.keval)
@@ -118,26 +121,22 @@ cloche {
                     value = "me.owdding.skyblockpv.SkyBlockPv"
                 }
 
-                fun dependency(modId: String, version: Provider<String>) {
+                fun dependency(modId: String, version: Provider<String>? = null) {
                     dependency {
                         this.modId = modId
                         this.required = true
-                        version {
+                        if (version != null) version {
                             this.start = version
                         }
                     }
                 }
 
                 dependency {
-                    modId = "fabric"
-                    required = true
-                    version("*")
-                }
-                dependency {
                     modId = "minecraft"
                     required = true
                     version(minecraftVersionRange)
                 }
+                dependency("fabric")
                 dependency("com_notkamui_libs_keval-jvm", libs.versions.keval)
                 dependency("com_moulberry_mixinconstraints", libs.versions.mixinconstraints)
                 dependency("fabricloader", loaderVersion)
@@ -312,4 +311,8 @@ tasks.register("cleanRelease") {
             mustRunAfter(task)
         }
     }
+}
+
+tasks.withType<JarInJar>().configureEach {
+    include { !it.name.endsWith("-dev.jar") }
 }
