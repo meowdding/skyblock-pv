@@ -138,6 +138,8 @@ cloche {
                     required = true
                     version(minecraftVersionRange)
                 }
+                dependency("com_notkamui_libs_keval-jvm", libs.versions.keval)
+                dependency("com_moulberry_mixinconstraints", libs.versions.mixinconstraints)
                 dependency("fabricloader", loaderVersion)
                 dependency("fabric-language-kotlin", libs.versions.fabric.language.kotlin)
                 dependency("resourcefullib", rlib.map { it.version!! })
@@ -172,8 +174,6 @@ cloche {
     }
     createVersion("1.21.8", minecraftVersionRange = {
         start = "1.21.6"
-        end = "1.21.8"
-        endExclusive = false
     }) {
         this["resourcefullib"] = libs.resourceful.lib1218
         this["resourcefulconfig"] = libs.resourceful.config1218
