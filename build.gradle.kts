@@ -270,3 +270,24 @@ tasks.withType<WriteClasspathFile>().configureEach {
         file.writeText(file.readText().lines().joinToString(File.pathSeparator))
     }
 }
+
+tasks.register("release") {
+    group = "meowdding"
+    sourceSets.filterNot { it.name == SourceSet.MAIN_SOURCE_SET_NAME || it.name == SourceSet.TEST_SOURCE_SET_NAME }
+        .forEach {
+            tasks.getByName("${it.name}JarInJar").let { task ->
+                dependsOn(task)
+                mustRunAfter(task)
+            }
+        }
+}
+
+tasks.register("cleanRelease") {
+    group = "meowdding"
+    listOf("clean", "release").forEach {
+        tasks.getByName(it).let { task ->
+            dependsOn(task)
+            mustRunAfter(task)
+        }
+    }
+}

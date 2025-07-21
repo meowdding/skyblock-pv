@@ -26,6 +26,7 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.entity.SkullBlockEntity
+import net.msrandom.stub.Stub
 import org.joml.Matrix3x2f
 import org.joml.Matrix3x2fStack
 import org.joml.Matrix4f
