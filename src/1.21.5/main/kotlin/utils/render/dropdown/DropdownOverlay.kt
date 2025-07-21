@@ -5,7 +5,7 @@ import me.owdding.skyblockpv.utils.displays.DropdownContext
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.util.ARGB
 import tech.thatgravyboat.skyblockapi.platform.pushPop
-import utils.extensions.translate
+import tech.thatgravyboat.skyblockapi.utils.extensions.translate
 
 actual fun createDropdownOverlay(original: Display, color: Int, context: DropdownContext): Display = DropdownOverlay(original, color, context)
 

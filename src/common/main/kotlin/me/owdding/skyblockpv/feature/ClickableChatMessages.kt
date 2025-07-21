@@ -23,7 +23,7 @@ object ClickableChatMessages {
         var hasReplaced = false
 
         for (component in event.component.siblings) {
-            val command = (component.style.clickEvent as? ClickEvent.RunCommand)?.command
+            val command = (component.style.clickEvent as? ClickEvent.RunCommand)?.command()
             if (command?.startsWith("/socialoptions ") != true) {
                 output.append(component)
                 continue

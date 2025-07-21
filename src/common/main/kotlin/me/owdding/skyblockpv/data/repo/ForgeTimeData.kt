@@ -35,7 +35,7 @@ object ForgeTimeData {
     private fun coleActive() = Perk.MOLTEN_FORGE.active
 
     fun getForgeTime(id: String, quickForgeLevel: Int = 0): Duration {
-        val rawTime = RepoRecipeAPI.getForgeRecipe(id)?.time?.times(1000) ?: 0
+        val rawTime = RepoRecipeAPI.getForgeRecipe(id)?.time()?.times(1000) ?: 0
         val quickForgeMultiplier = quickForgeMultiplier[quickForgeLevel] ?: 1.0
         return (rawTime * quickForgeMultiplier * if (coleActive()) 0.75 else 1.0).toDuration(DurationUnit.MILLISECONDS)
     }

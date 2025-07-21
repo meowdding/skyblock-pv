@@ -6,8 +6,8 @@ import me.owdding.skyblockpv.utils.accessors.withExclusiveScissor
 import me.owdding.skyblockpv.utils.displays.DropdownContext
 import net.minecraft.client.gui.GuiGraphics
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import utils.extensions.pushPop
-import utils.extensions.translate
+import tech.thatgravyboat.skyblockapi.platform.pushPop
+import tech.thatgravyboat.skyblockapi.utils.extensions.translate
 
 actual fun createDropdownDisplay(original: Display, dropdown: Display, context: DropdownContext): Display = DropdownDisplay(original, dropdown, context)
 
