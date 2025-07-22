@@ -234,8 +234,8 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                         quickForgeLevel,
                     ) + (slot.startTime - System.currentTimeMillis()).toDuration(DurationUnit.MILLISECONDS)
 
-                    val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) Text.of("Ready") { this.color = PvColors.GREEN }
-                    else Text.of(timeRemaining.toReadableTime()) { this.color = PvColors.DARK_GRAY }
+                    val timeDisplay = if (timeRemaining.inWholeMilliseconds <= 0) "§aReady"
+                    else "§7${timeRemaining.toReadableTime()}"
 
                     val defaultConditions = isProfileOfUser() && timeRemaining.inWholeMilliseconds > 0
                     val canSetReminder = defaultConditions || SkyBlockPv.isSuperUser
@@ -245,7 +245,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                         Displays.padding(0, 0, -4, 0, itemDisplay),
                         ExtraDisplays.text(timeDisplay, color = { PvColors.DARK_GRAY.toUInt() }, shadow = false),
                     ).toRow(1).withTooltip {
-                        add("§l${slot.itemStack.hoverName?.stripped}")
+                        add("§l${slot.itemStack.hoverName.stripped}")
                         add("§7Time Remaining: $timeDisplay")
                         add("§7Started: ${SimpleDateFormat("dd.MM HH:mm:ss").format(slot.startTime)}")
                         if (canSetReminder) {
@@ -258,15 +258,15 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                     }
 
                     val widget = if (!canSetReminder) display.asWidget()
-                    else display.asButton {
+                    else display.asButtonLeft {
                         if (timeRemaining.inWholeMilliseconds <= 0) {
                             (+"messages.forge.already_finished").sendWithPrefix()
-                            return@asButton
+                            return@asButtonLeft
                         }
 
                         val name = slot.itemStack.hoverName ?: Text.of("Slot $index") { this.color = PvColors.GRAY }
 
-                        "messages.forge.reminder_set".asTranslated(name, timeDisplay.stripped).sendWithPrefix()
+                        "messages.forge.reminder_set".asTranslated(name, timeDisplay).sendWithPrefix()
 
                         RemindersAPI.addReminder(
                             "forge_slot_$index",
