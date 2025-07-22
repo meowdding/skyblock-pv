@@ -9,7 +9,8 @@
         "PlayerRendererMixin",
         "PlayerRenderStateMixin",
         "WidgetSpritesMixin",
-        "accessors.ScissorStackAccessor"
+        "accessors.ScissorStackAccessor",
+        "compat.ProfileViewerScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1
