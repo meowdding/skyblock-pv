@@ -81,7 +81,11 @@ data class SkyBlockProfile(
 
             fun <T, R> allMembers(extractor: (member: JsonObject) -> T, adder: (members: List<T>) -> R): R {
                 val members =
-                    json.getAs<JsonObject>("members")?.entrySet()?.map { (_, v) -> v }?.filterIsInstance<JsonObject>()?.mapNotNull(extractor) ?: emptyList()
+                    json.getAs<JsonObject>("members")
+                        ?.entrySet()
+                        ?.map { (_, v) -> v }
+                        ?.filterIsInstance<JsonObject>()
+                        ?.mapNotNull(extractor) ?: emptyList()
                 return adder(members)
             }
 
@@ -121,7 +125,7 @@ data class SkyBlockProfile(
                         val item = items.firstOrNull() ?: return@mapNotNull null
                         CollectionItem(item.category, item.itemId, items.sumOf { (_, _, count) -> count })
                     }
-                },
+                }.takeUnless { it.isEmpty() },
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 bestiaryData = member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList(),
                 slayer = member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap(),
