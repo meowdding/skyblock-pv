@@ -7,7 +7,7 @@
         },
         "xp": {
             "@from": "slayer_xp",
-            "key": "revenant_slayer_boss_xp"
+            "key": "normal_slayers_with_t5"
         }
     },
     "tarantula": {
@@ -17,7 +17,8 @@
             "@from": "slayer_levels"
         },
         "xp": {
-            "@from": "slayer_xp"
+            "@from": "slayer_xp",
+            "key": "normal_slayers_with_t5"
         }
     },
     "sven": {
