@@ -4,7 +4,12 @@
     "package": "me.owdding.skyblockpv.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
-        "GuiGraphicsMixin"
+        "FontPipelineHolderMixin",
+        "GlyphEffectRenderStateMixin",
+        "GlyphRenderStateMixin",
+        "GuiGraphicsMixin",
+        "GuiRenderStateMixin",
+        "GuiTextRenderStateMixin"
     ],
     "injectors": {
         "defaultRequire": 1

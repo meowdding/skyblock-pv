@@ -3,14 +3,13 @@ precision highp int;
 
 uniform sampler2D Sampler0;
 
+const int colors[] = COLORS;
+
 uniform vec4 ColorModulator;
 uniform float FogStart;
 uniform float FogEnd;
 uniform vec4 FogColor;
-
-uniform mat4x4 colors;
-uniform int states;
-uniform int ticks;
+uniform float GameTime;
 
 in float vertexDistance;
 in vec4 vertexColor;
@@ -29,13 +28,9 @@ vec4 fromARGB(int color) {
     return vec4(r, g, b, 1);
 }
 
-int colorAt(int index) {
-    return int(colors[index / 4][index % 4]);
-}
-
 vec4 SMOOTHY(float x) {
-    x *= (states - 1);
-    return mix(fromARGB(colorAt(int(x))), fromARGB(colorAt(int(x) + 1)), smoothstep(0.0, 1.0, fract(x)));
+    x *= (colors.length() - 1);
+    return mix(fromARGB(colors[int(x)]), fromARGB(colors[int(x) + 1]), smoothstep(0.0, 1.0, fract(x)));
 }
 
 float clampZeroOne(float value) {
@@ -49,5 +44,5 @@ void main() {
     }
     vec2 coords = gl_FragCoord.xy;
 
-    fragColor = vec4(SMOOTHY(float(int(coords.x + ticks * 2) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1.0);
+    fragColor = vec4(SMOOTHY(float(int(coords.x + (GameTime * 24000) * 2) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1.0);
 }

@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.owdding.skyblockpv.MixinHelper;
+import me.owdding.skyblockpv.utils.render.RenderUtils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.glyphs.BakedGlyph;
 import net.minecraft.client.renderer.RenderType;
@@ -30,11 +31,22 @@ public class FontMixin {
 
     @Inject(method = "getTextColor", at = @At("HEAD"), cancellable = true)
     public void getTextColor(TextColor textColor, CallbackInfoReturnable<Integer> cir) {
-
+        var shader = RenderUtils.INSTANCE.getTEXT_SHADER();
+        if (shader != null && shader.getUseWhite()) {
+            cir.setReturnValue(0xFFFFFFFF);
+        }
     }
 
     @Inject(method = "getShadowColor", at = @At("RETURN"), cancellable = true)
     public void getShadowColor(CallbackInfoReturnable<Integer> cir) {
-
+        var shader = RenderUtils.INSTANCE.getTEXT_SHADER();
+        if (shader == null) return;
+        var shadow = shader.getHasShadow();
+        if (shadow != null && !shadow) {
+            cir.setReturnValue(0);
+        }
+        if (shader.getUseWhite()) {
+            cir.setReturnValue(skyblockpv$shadow);
+        }
     }
 }

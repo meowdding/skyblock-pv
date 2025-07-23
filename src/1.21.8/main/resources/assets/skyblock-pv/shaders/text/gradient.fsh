@@ -1,18 +1,17 @@
 #version 150
 precision highp int;
 
+//!moj_import <minecraft:dynamictransforms.glsl>
+//!moj_import <minecraft:projection.glsl>
+//!moj_import <minecraft:globals.glsl>
+//!moj_import <minecraft:fog.glsl>
+
 uniform sampler2D Sampler0;
 
-uniform vec4 ColorModulator;
-uniform float FogStart;
-uniform float FogEnd;
-uniform vec4 FogColor;
+const int colors[] = COLORS;
 
-uniform mat4x4 colors;
-uniform int states;
-uniform int ticks;
-
-in float vertexDistance;
+in float sphericalVertexDistance;
+in float cylindricalVertexDistance;
 in vec4 vertexColor;
 in vec2 texCoord0;
 
@@ -29,13 +28,9 @@ vec4 fromARGB(int color) {
     return vec4(r, g, b, 1);
 }
 
-int colorAt(int index) {
-    return int(colors[index / 4][index % 4]);
-}
-
 vec4 SMOOTHY(float x) {
-    x *= (states - 1);
-    return mix(fromARGB(colorAt(int(x))), fromARGB(colorAt(int(x) + 1)), smoothstep(0.0, 1.0, fract(x)));
+    x *= (colors.length() - 1);
+    return mix(fromARGB(colors[int(x)]), fromARGB(colors[int(x) + 1]), smoothstep(0.0, 1.0, fract(x)));
 }
 
 float clampZeroOne(float value) {
@@ -47,7 +42,18 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
-    vec2 coords = gl_FragCoord.xy;
+    vec4 finalColor = vertexColor;
 
-    fragColor = vec4(SMOOTHY(float(int(coords.x + ticks * 2) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1.0);
+    if (finalColor.r != 0.0 || finalColor.g != 0.0 || finalColor.b != 0.0) {
+        vec2 coords = gl_FragCoord.xy;
+        finalColor = vec4(SMOOTHY(float(int(coords.x + (GameTime * 24000) * 2) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1.0);
+    }
+
+    fragColor = apply_fog(
+        finalColor,
+        sphericalVertexDistance, cylindricalVertexDistance,
+        FogEnvironmentalStart, FogEnvironmentalEnd,
+        FogRenderDistanceStart, FogRenderDistanceEnd,
+        FogColor
+    );
 }
