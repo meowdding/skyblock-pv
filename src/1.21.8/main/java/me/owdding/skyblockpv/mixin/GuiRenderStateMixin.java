@@ -17,8 +17,8 @@ public class GuiRenderStateMixin {
     private void prepareTextHead(@NotNull GuiTextRenderState state, CallbackInfo ci) {
         var shader = RenderUtils.INSTANCE.getTEXT_SHADER();
         if (shader == null) return;
-
-        var stateHolder = (FontPipelineHolder) (Object) state;
-        stateHolder.sbpv$setPipeline(shader.getPipeline());
+        var holder = FontPipelineHolder.getHolder(state);
+        if (holder == null) return;
+        holder.skyblockpv$setPipeline(shader.getPipeline());
     }
 }

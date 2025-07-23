@@ -15,7 +15,7 @@ public class RenderPipelineBuilderMixin implements RenderPipelineBuilderAccessor
     private Optional<ShaderDefines.Builder> definesBuilder;
 
     @Override
-    public void sbpv$define(String name, String value) {
+    public void skyblockpv$define(String name, String value) {
         if (this.definesBuilder.isEmpty()) {
             this.definesBuilder = Optional.of(ShaderDefines.builder());
         }

@@ -21,8 +21,8 @@ public class GlyphRenderStateMixin {
 
     @WrapMethod(method = "pipeline")
     private RenderPipeline sbpv$usePipeline(Operation<RenderPipeline> original) {
-        var accessor = (FontPipelineHolder) (Object) this.instance;
-        var pipeline = accessor.sbpv$getPipeline();
+        var holder = FontPipelineHolder.getHolder(this.instance);
+        var pipeline = holder != null ? holder.skyblockpv$getPipeline() : null;
         return pipeline != null ? pipeline : original.call();
     }
 }

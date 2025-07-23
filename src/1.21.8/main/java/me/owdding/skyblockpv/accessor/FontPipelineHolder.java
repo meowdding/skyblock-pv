@@ -4,9 +4,14 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 
 public interface FontPipelineHolder {
 
-    ThreadLocal<RenderPipeline> GLOBAL_PIPELINE = ThreadLocal.withInitial(() -> null);
+    RenderPipeline skyblockpv$getPipeline();
 
-    RenderPipeline sbpv$getPipeline();
+    void skyblockpv$setPipeline(RenderPipeline pipeline);
 
-    void sbpv$setPipeline(RenderPipeline pipeline);
+    static FontPipelineHolder getHolder(Object instance) {
+        if (instance instanceof FontPipelineHolder holder) {
+            return holder;
+        }
+        return null;
+    }
 }

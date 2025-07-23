@@ -182,7 +182,7 @@ object Utils {
 
     fun RenderPipeline.Builder.withShaderDefine(name: String, array: IntArray): RenderPipeline.Builder {
         val accessor = this as RenderPipelineBuilderAccessor
-        accessor.`sbpv$define`(name, "int[](${array.joinToString(", ") { it.toString() }})")
+        accessor.`skyblockpv$define`(name, "int[](${array.joinToString(", ") { it.toString() }})")
         return this
     }
 }

@@ -44,7 +44,7 @@ void main() {
     }
     vec4 finalColor = vertexColor;
 
-    if (finalColor.r != 0.0 || finalColor.g != 0.0 || finalColor.b != 0.0) {
+    if (length(finalColor.rgb) != 0.0) {
         vec2 coords = gl_FragCoord.xy;
         finalColor = vec4(SMOOTHY(float(int(coords.x + (GameTime * 24000) * 2) % 500) / 500.0).rgb, 1) * vec4(vertexColor.rgb, 1.0);
     }

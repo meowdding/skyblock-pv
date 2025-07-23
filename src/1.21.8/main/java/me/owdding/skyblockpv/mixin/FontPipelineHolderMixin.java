@@ -17,12 +17,12 @@ public class FontPipelineHolderMixin implements FontPipelineHolder {
     private RenderPipeline sbpv$pipeline;
 
     @Override
-    public RenderPipeline sbpv$getPipeline() {
+    public RenderPipeline skyblockpv$getPipeline() {
         return this.sbpv$pipeline;
     }
 
     @Override
-    public void sbpv$setPipeline(RenderPipeline pipeline) {
+    public void skyblockpv$setPipeline(RenderPipeline pipeline) {
         this.sbpv$pipeline = pipeline;
     }
 }

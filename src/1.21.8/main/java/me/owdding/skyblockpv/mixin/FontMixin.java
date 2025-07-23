@@ -1,5 +1,6 @@
 package me.owdding.skyblockpv.mixin;
 
+import me.owdding.skyblockpv.MixinHelper;
 import me.owdding.skyblockpv.accessor.FontPipelineHolder;
 import me.owdding.skyblockpv.utils.render.RenderUtils;
 import net.minecraft.client.gui.font.glyphs.BakedGlyph;
@@ -20,14 +21,16 @@ public class FontMixin {
 
     @Inject(method = "addGlyph", at = @At("HEAD"))
     private void apply(BakedGlyph.GlyphInstance instance, CallbackInfo ci) {
-        var holder = (FontPipelineHolder) (Object) instance;
-        holder.sbpv$setPipeline(FontPipelineHolder.GLOBAL_PIPELINE.get());
+        var holder = FontPipelineHolder.getHolder(instance);
+        if (holder == null) return;
+        holder.skyblockpv$setPipeline(MixinHelper.FONT_PIPELINE.get());
     }
 
     @Inject(method = "addEffect", at = @At("HEAD"))
     private void apply(BakedGlyph.Effect effect, CallbackInfo ci) {
-        var holder = (FontPipelineHolder) (Object) effect;
-        holder.sbpv$setPipeline(FontPipelineHolder.GLOBAL_PIPELINE.get());
+        var holder = FontPipelineHolder.getHolder(effect);
+        if (holder == null) return;
+        holder.skyblockpv$setPipeline(MixinHelper.FONT_PIPELINE.get());
     }
 
     @Inject(method = "getTextColor", at = @At("HEAD"), cancellable = true)
