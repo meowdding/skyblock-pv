@@ -261,8 +261,8 @@
                 "User: <1> - <2>",
                 "Profile: <3>",
                 "",
-                "Exception: <4>",
-                "Stacktrace: <5>"
+                "Exception: <4>: <5>",
+                "Stacktrace: <6>"
             ]
         },
         "open_logs": "Open Logs",

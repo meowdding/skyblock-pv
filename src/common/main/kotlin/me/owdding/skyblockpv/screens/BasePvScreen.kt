@@ -130,7 +130,15 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             e.printStackTrace()
 
             val errorWidget = PvLayouts.vertical {
-                val text = "widgets.error.stacktrace".asTranslated(name, gameProfile.name, gameProfile.id, profile.id.name, e.message, e.getStackTraceString(7))
+                val text = "widgets.error.stacktrace".asTranslated(
+                    name,
+                    gameProfile.name,
+                    gameProfile.id,
+                    profile.id.name,
+                    e.javaClass.name,
+                    e.message,
+                    e.getStackTraceString(7),
+                )
 
 
                 text.splitLines().forEach {

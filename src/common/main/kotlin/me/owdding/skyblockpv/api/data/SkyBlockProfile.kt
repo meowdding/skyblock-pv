@@ -81,7 +81,11 @@ data class SkyBlockProfile(
 
             fun <T, R> allMembers(extractor: (member: JsonObject) -> T, adder: (members: List<T>) -> R): R {
                 val members =
-                    json.getAs<JsonObject>("members")?.entrySet()?.map { (_, v) -> v }?.filterIsInstance<JsonObject>()?.mapNotNull(extractor) ?: emptyList()
+                    json.getAs<JsonObject>("members")
+                        ?.entrySet()
+                        ?.map { (_, v) -> v }
+                        ?.filterIsInstance<JsonObject>()
+                        ?.mapNotNull(extractor) ?: emptyList()
                 return adder(members)
             }
 
@@ -121,7 +125,7 @@ data class SkyBlockProfile(
                         val item = items.firstOrNull() ?: return@mapNotNull null
                         CollectionItem(item.category, item.itemId, items.sumOf { (_, _, count) -> count })
                     }
-                },
+                }.takeUnless { it.isEmpty() },
                 mobData = playerStats?.getMobData() ?: emptyList(),
                 bestiaryData = member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList(),
                 slayer = member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap(),
@@ -148,9 +152,11 @@ data class SkyBlockProfile(
                 chocolateFactoryData = member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) },
                 rift = playerStats?.getAs<JsonObject>("rift")?.let { stats -> member.getAs<JsonObject>("rift")?.let { RiftData.fromJson(it, stats) } },
                 crimsonIsleData = CrimsonIsleData.fromJson(member.getAs("nether_island_player_data")),
-                minions = playerData?.getAs<JsonArray>("crafted_generators")?.asStringList()
-                    ?.filter { it.isNotBlank() }
-                    ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 },
+                minions = allMembers {
+                    it.getPathAs<JsonArray>("player_data.crafted_generators")?.asStringList()
+                        ?.filter { it.isNotBlank() }
+                        ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
+                }.mapNotNull { it }.flatten(),
                 maxwell = member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(it) },
             )
         }
