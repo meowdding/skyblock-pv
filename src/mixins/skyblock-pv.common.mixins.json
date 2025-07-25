@@ -5,10 +5,11 @@
     "compatibilityLevel": "JAVA_21",
     "client": [
         "FontMixin",
-        "GlyphRenderTypesMixin",
         "PlayerRendererMixin",
         "PlayerRenderStateMixin",
         "WidgetSpritesMixin",
+        "RenderPipelineBuilderMixin",
+        "GlyphRenderTypesMixin",
         "accessors.ScissorStackAccessor",
         "compat.ProfileViewerScreenMixin"
     ],

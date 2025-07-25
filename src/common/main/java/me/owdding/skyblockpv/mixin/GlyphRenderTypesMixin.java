@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.owdding.skyblockpv.MixinHelper;
+import me.owdding.skyblockpv.utils.render.RenderUtils;
 import net.minecraft.client.gui.font.GlyphRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +28,10 @@ public class GlyphRenderTypesMixin {
     @Inject(method = "select", at = @At("HEAD"), cancellable = true)
     private void select(CallbackInfoReturnable<RenderType> cir) {
         if (MixinHelper.skipTextShader) return;
-
+        var shader = RenderUtils.INSTANCE.getTEXT_SHADER();
+        if (shader != null) {
+            cir.setReturnValue(shader.getRenderType(skyblockpv$texture));
+        }
     }
 
 }

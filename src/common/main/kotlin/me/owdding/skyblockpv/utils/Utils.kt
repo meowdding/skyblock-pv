@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.utils
 
 import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
+import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import kotlinx.coroutines.async
@@ -11,6 +12,7 @@ import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.toColumn
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.accessor.RenderPipelineBuilderAccessor
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.screens.PvTab
@@ -29,7 +31,6 @@ import net.minecraft.world.level.block.entity.SkullBlockEntity
 import net.msrandom.stub.Stub
 import org.joml.Matrix3x2f
 import org.joml.Matrix3x2fStack
-import org.joml.Matrix4f
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -149,16 +150,6 @@ object Utils {
     fun Component.multiLineDisplay(alignment: Alignment = Alignment.START, shadow: Boolean = false) =
         this.splitLines().map { ExtraDisplays.component(it, shadow = shadow) }.toColumn(alignment = alignment)
 
-    fun FloatArray.toMatrix4f(): Matrix4f {
-        require(this.size == 16) { "Array size must be 16!" }
-        return Matrix4f(
-            this[0], this[1], this[2], this[3],
-            this[4], this[5], this[6], this[7],
-            this[8], this[9], this[10], this[11],
-            this[12], this[13], this[14], this[15],
-        )
-    }
-
     @OptIn(ExperimentalStdlibApi::class)
     fun String.hash(algorithm: String = "SHA-256"): String {
         return MessageDigest.getInstance(algorithm).let {
@@ -188,4 +179,10 @@ object Utils {
     fun <T : Any> JsonElement?.toDataOrThrow(codec: MapCodec<T>): T = this.toDataOrThrow(codec.codec())
 
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
+
+    fun RenderPipeline.Builder.withShaderDefine(name: String, array: IntArray): RenderPipeline.Builder {
+        val accessor = this as RenderPipelineBuilderAccessor
+        accessor.`skyblockpv$define`(name, "int[](${array.joinToString(", ") { it.toString() }})")
+        return this
+    }
 }

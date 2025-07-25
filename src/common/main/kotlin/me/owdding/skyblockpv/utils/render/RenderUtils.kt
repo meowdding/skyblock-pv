@@ -6,6 +6,8 @@ import net.minecraft.client.gui.GuiGraphics
 
 object RenderUtils {
 
+    var TEXT_SHADER: TextShader? = null
+        private set
 
     fun drawInventory(
         graphics: GuiGraphics,
@@ -20,11 +22,15 @@ object RenderUtils {
 
     @Suppress("UnusedReceiverParameter")
     fun GuiGraphics.withTextShader(shader: TextShader?, action: () -> Unit) {
+        TEXT_SHADER = shader
         action()
+        TEXT_SHADER = null
     }
 
     fun pushPopTextShader(shader: TextShader?, action: () -> Unit) {
+        TEXT_SHADER = shader
         action()
+        TEXT_SHADER = null
     }
 
     fun drawInventory(
