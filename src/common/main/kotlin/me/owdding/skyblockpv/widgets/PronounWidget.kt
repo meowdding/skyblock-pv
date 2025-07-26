@@ -3,9 +3,11 @@ package me.owdding.skyblockpv.widgets
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.centerIn
+import me.owdding.lib.displays.withTooltip
 import me.owdding.skyblockpv.api.pronouns.PronounDbDecorations
 import me.owdding.skyblockpv.api.pronouns.PronounsDbAPI
 import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.Utils.withTextShader
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -26,8 +28,8 @@ object PronounWidget {
                 ExtraDisplays.component(
                     component = "widgets.pronouns".asTranslated(display),
                     color = { PvColors.DARK_GRAY.toUInt() or 0xFF000000u },
-                    shadow = shader != null,
-                ).centerIn(width, McFont.height).withTextShader(shader)
+                    shadow = false,
+                ).centerIn(width, McFont.height).withTextShader(shader).withTooltip(+"screens.main.pronouns_hint")
             },
             { ExtraDisplays.text("Error", color = { PvColors.RED.toUInt() }).centerIn(width, McFont.height) },
             { ExtraDisplays.text("Loading").centerIn(width, McFont.height) },
