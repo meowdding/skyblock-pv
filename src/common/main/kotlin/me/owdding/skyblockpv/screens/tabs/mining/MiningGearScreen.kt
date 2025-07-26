@@ -12,6 +12,7 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
+import tech.thatgravyboat.skyblockapi.api.datatype.defaults.Gemstone
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
@@ -86,8 +87,14 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             score += it.keys.firstOrNull { key -> key.startsWith("ultimate") }?.let { key -> it[key] } ?: 0
         }
 
-        // only counting t8 and above, since t7 are just 64 t1s, maybe this still has to be tweaked
-        score += getData(DataTypes.ATTRIBUTES)?.map { it.value - 7 }?.filter { it > 0 }?.sum() ?: 0
+        score += getData(DataTypes.GEMSTONES)?.map { (gemstone, _, quality) ->
+            when {
+                gemstone == Gemstone.JASPER -> quality.ordinal - 2
+                else -> quality.ordinal - 3
+            }
+        }?.filter { it >= 1 }?.sum() ?: 0
+
+        score += getData(DataTypes.DIVAN_POWDER_COATING) ?: 0
 
         // only counting t5 and above
         score += getData(DataTypes.ENCHANTMENTS)?.map { it.value - 4 }?.filter { it > 0 }?.sum() ?: 0
