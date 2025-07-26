@@ -23,13 +23,13 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LayoutSettings
-import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
@@ -396,9 +396,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         fishies: List<TrophyFish>,
         profile: SkyBlockProfile,
         caught: Map<TrophyFishTier, Int> = getCaughtInformation(fishies, profile),
-    ): List<MutableComponent> {
-        return TrophyFishTier.entries.reversed().map { tiers ->
-            Text.of(tiers.displayName).append(": ").append("${caught[tiers] ?: 0}")
+    ) = buildList {
+        add(fishies.firstOrNull()?.type?.obtaining)
+        add(CommonText.EMPTY)
+        TrophyFishTier.entries.reversed().forEach { tiers ->
+            add(Text.of(tiers.displayName).append(": ").append("${caught[tiers] ?: 0}"))
         }
     }
 

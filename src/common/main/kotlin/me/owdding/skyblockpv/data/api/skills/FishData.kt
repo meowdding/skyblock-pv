@@ -11,6 +11,9 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 data class TrophyFishData(
     val obtainedTypes: Map<String, Int>,
@@ -153,10 +156,10 @@ enum class DolphinBracket(val killsRequired: Int, val rarity: SkyBlockRarity) {
 }
 
 enum class TrophyFishRank(val displayName: Component) {
-    NOVICE(displayName = Text.of("Novice") { withStyle(ChatFormatting.DARK_GRAY) }),
-    ADEPT(displayName = Text.of("Adept") { withStyle(ChatFormatting.GRAY) }),
-    EXPERT(displayName = Text.of("Expert") { withStyle(ChatFormatting.GOLD) }),
-    MASTER(displayName = Text.of("Master") { withStyle(ChatFormatting.AQUA) });
+    NOVICE(displayName = Text.of("Novice") { color = TextColor.DARK_GRAY }),
+    ADEPT(displayName = Text.of("Adept") { color = TextColor.GRAY }),
+    EXPERT(displayName = Text.of("Expert") { color = TextColor.GOLD }),
+    MASTER(displayName = Text.of("Master") { color = TextColor.AQUA });
 
     companion object {
         fun getById(id: Int): TrophyFishRank? {
@@ -167,101 +170,152 @@ enum class TrophyFishRank(val displayName: Component) {
 
 enum class TrophyFishType(
     val displayName: Component,
+    val obtaining: Component,
     internalName: String = "",
 ) {
     SULPHUR_SKITTER(
         displayName = Text.of("Sulphur Skitter") {
-            withStyle(ChatFormatting.WHITE)
+            color = TextColor.WHITE
         },
+        obtaining = "Caught near Sulphur blocks.",
     ),
     OBFUSCATED_ONE(
         displayName = Text.of("Obfuscated 1") {
             withStyle(ChatFormatting.WHITE, ChatFormatting.OBFUSCATED)
         },
+        obtaining = Text.of("Caught with Corrupted Bait.") {
+            color = TextColor.GRAY
+        },
         internalName = "OBFUSCATED_FISH_1",
     ),
     STEAMING_HOT_FLOUNDER(
         displayName = Text.of("Steaming-Hot Flounder") {
-            withStyle(ChatFormatting.WHITE)
+            color = TextColor.WHITE
         },
+        obtaining = "Found in Volcano Geysers.",
     ),
     GUSHER(
         displayName = Text.of("Gusher") {
-            withStyle(ChatFormatting.WHITE)
+            color = TextColor.WHITE
         },
+        obtaining = "Caught after a volcano eruption.",
     ),
     BLOBFISH(
         displayName = Text.of("Blobfish") {
-            withStyle(ChatFormatting.WHITE)
+            color = TextColor.WHITE
         },
+        obtaining = "Caught everywhere.",
     ),
     OBFUSCATED_TWO(
         displayName = Text.of("Obfuscated 2") {
             withStyle(ChatFormatting.GREEN, ChatFormatting.OBFUSCATED)
         },
+        obtaining = Text.of("Caught with ") {
+            color = TextColor.GRAY
+            append("Obfuscated 1 ") { withStyle(ChatFormatting.OBFUSCATED) }
+            append("Bait.")
+        },
         internalName = "OBFUSCATED_FISH_2",
     ),
     SLUGFISH(
         displayName = Text.of("Slugfish") {
-            withStyle(ChatFormatting.GREEN)
+            color = TextColor.GREEN
         },
+        obtaining = "Bobber must be active for 20 seconds.",
     ),
     FLYFISH(
         displayName = Text.of("Flyfish") {
-            withStyle(ChatFormatting.GREEN)
+            color = TextColor.GREEN
         },
+        obtaining = listOf("Caught from 8 blocks above.", "Found in Blazing Volcano."),
     ),
     OBFUSCATED_THREE(
         displayName = Text.of("Obfuscated 3") {
             withStyle(ChatFormatting.BLUE, ChatFormatting.OBFUSCATED)
         },
+        obtaining = Text.of("Caught with ") {
+            color = TextColor.GRAY
+            append("Obfuscated 2 ") { withStyle(ChatFormatting.OBFUSCATED) }
+            append("Bait.")
+
+        },
         internalName = "OBFUSCATED_FISH_3",
     ),
     LAVA_HORSE(
         displayName = Text.of("Lavahorse") {
-            withStyle(ChatFormatting.BLUE)
+            color = TextColor.BLUE
         },
+        obtaining = "Caught everywhere.",
     ),
     MANA_RAY(
         displayName = Text.of("Mana Ray") {
-            withStyle(ChatFormatting.BLUE)
+            color = TextColor.BLUE
         },
+        obtaining = listOf("Lured by having a high amount of mana.", " §o(at least 1,200)"),
     ),
     VOLCANIC_STONEFISH(
         displayName = Text.of("Volcanic Stonefish") {
-            withStyle(ChatFormatting.BLUE)
+            color = TextColor.BLUE
         },
+        obtaining = "Found in Blazing Volcano.",
     ),
     VANILLE(
         displayName = Text.of("Vanille") {
-            withStyle(ChatFormatting.BLUE)
+            color = TextColor.BLUE
         },
+        obtaining = Text.multiline(
+            Text.of("Only caught with ") {
+                color = TextColor.GRAY
+                append("Starter Lava") { color = TextColor.GREEN }
+            },
+            Text.of("Rod ") {
+                color = TextColor.GREEN
+                append("with no enchantments.") { color = TextColor.GRAY }
+            },
+        ),
     ),
     SKELETON_FISH(
         displayName = Text.of("Skeleton Fish") {
-            withStyle(ChatFormatting.DARK_PURPLE)
+            color = TextColor.DARK_PURPLE
         },
+        obtaining = "Found in Burning Desert.",
     ),
     MOLDFIN(
         displayName = Text.of("Moldfin") {
-            withStyle(ChatFormatting.DARK_PURPLE)
+            color = TextColor.DARK_PURPLE
         },
+        obtaining = "Found in Mystic Marsh.",
     ),
     SOUL_FISH(
         displayName = Text.of("Soul Fish") {
-            withStyle(ChatFormatting.DARK_PURPLE)
+            color = TextColor.DARK_PURPLE
         },
+        obtaining = "Found in Stronghold.",
     ),
     KARATE_FISH(
         displayName = Text.of("Karate Fish") {
-            withStyle(ChatFormatting.DARK_PURPLE)
+            color = TextColor.DARK_PURPLE
         },
+        obtaining = "Found in Dojo.",
     ),
     GOLDEN_FISH(
         displayName = Text.of("Golden Fish") {
-            withStyle(ChatFormatting.GOLD)
+            color = TextColor.GOLD
         },
+        obtaining = "Found swimming around in the lava.",
     );
+
+    constructor(displayName: Component, obtaining: String, internalName: String = "") : this(
+        displayName,
+        Text.of(obtaining) { color = TextColor.GRAY },
+        internalName,
+    )
+
+    constructor(displayName: Component, obtaining: List<String>, internalName: String = "") : this(
+        displayName,
+        Text.multiline(obtaining) { color = TextColor.GRAY },
+        internalName,
+    )
 
     val internalName: String = internalName.takeUnless { it.isEmpty() } ?: name
 
