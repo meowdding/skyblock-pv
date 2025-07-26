@@ -181,7 +181,7 @@ cloche {
     mappings { official() }
 }
 
-tasks.named("createCommonApiStub", GenerateStubApi::class) {
+tasks.named("createCommonApiStub", GenerateStubApi::class).configure {
     excludes.add(libs.skyblockapi.get().module.toString())
     excludes.add(libs.meowdding.lib.get().module.toString())
 }
@@ -290,15 +290,16 @@ tasks.withType<WriteClasspathFile>().configureEach {
     }
 }
 
+val mcVersions = sourceSets.filterNot { it.name == SourceSet.MAIN_SOURCE_SET_NAME || it.name == SourceSet.TEST_SOURCE_SET_NAME }.map { it.name }
+
 tasks.register("release") {
     group = "meowdding"
-    sourceSets.filterNot { it.name == SourceSet.MAIN_SOURCE_SET_NAME || it.name == SourceSet.TEST_SOURCE_SET_NAME }
-        .forEach {
-            tasks.getByName("${it.name}JarInJar").let { task ->
-                dependsOn(task)
-                mustRunAfter(task)
-            }
+    mcVersions.forEach {
+        tasks.findByName("${it}JarInJar")?.let { task ->
+            dependsOn(task)
+            mustRunAfter(task)
         }
+    }
 }
 
 tasks.register("cleanRelease") {
@@ -313,4 +314,13 @@ tasks.register("cleanRelease") {
 
 tasks.withType<JarInJar>().configureEach {
     include { !it.name.endsWith("-dev.jar") }
+}
+
+tasks.register("setupForWorkflows") {
+    mcVersions.flatMap {
+        listOf("remap${it}CommonMinecraftNamed", "remap${it}ClientMinecraftNamed")
+    }.mapNotNull { tasks.findByName(it) }.forEach {
+        dependsOn(it)
+        mustRunAfter(it)
+    }
 }
