@@ -97,10 +97,12 @@ cloche {
         val rconfigkt = dependencies["resourcefulconfigkt"]!!
         val olympus = dependencies["olympus"]!!
 
+
         fabric(name) {
             includedClient()
             minecraftVersion = version
             this.loaderVersion = loaderVersion.get()
+            accessWideners.from("src/$name/skyblock-pv.${sourceSet.name}.accesswidener")
 
             //include(libs.hypixelapi) included in sbapi
             include(libs.skyblockapi)

@@ -19,11 +19,11 @@ mixinconstraints = "1.0.7"
 
 meowdding-lib = "2.1.5"
 meowdding-ktmodules = "1.0.5"
-meowdding-ktcodecs = "1.0.23"
+meowdding-ktcodecs = "1.0.28"
 meowdding-repo = "1.0.15"
 meowdding-resources = "1.0.12"
 
-terrarium-cloche = "0.11.6"
+terrarium-cloche = "0.11.16"
 terrarium-multiplatform = "1.0.11"
 
 # Build src dependencies

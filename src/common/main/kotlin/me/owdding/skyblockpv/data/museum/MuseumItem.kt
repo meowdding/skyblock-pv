@@ -20,7 +20,7 @@ data class MuseumItem(
         )
 
         @IncludedCodec(named = "museum§item")
-        val MUSEUM_ITEM_CODEC = Codec.either(
+        val MUSEUM_ITEM_CODEC: Codec<List<MuseumItem>> = Codec.either(
             COMPACT_MUSEUM_ITEM_CODEC,
             SkyBlockPVCodecs.getCodec<MuseumItem>(),
         ).xmap(
