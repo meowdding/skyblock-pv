@@ -160,6 +160,7 @@ cloche {
             runs {
                 client {
                     arguments("--quickPlaySingleplayer=\"${name.replace(".", "")}\"")
+                    jvmArgs("-Ddevauth.enabled=true")
                 }
             }
         }
