@@ -12,6 +12,7 @@ import me.owdding.skyblockpv.screens.tabs.base.Category
 import me.owdding.skyblockpv.screens.tabs.collection.BaseCollectionScreen
 import me.owdding.skyblockpv.screens.tabs.collection.CollectionCategories
 import me.owdding.skyblockpv.screens.tabs.combat.BaseCombatScreen
+import me.owdding.skyblockpv.screens.tabs.combat.BestiaryScreen
 import me.owdding.skyblockpv.screens.tabs.combat.DungeonScreen
 import me.owdding.skyblockpv.screens.tabs.farming.BaseFarmingScreen
 import me.owdding.skyblockpv.screens.tabs.farming.FarmingScreen
@@ -28,6 +29,7 @@ import me.owdding.skyblockpv.screens.tabs.rift.RiftCategory
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -38,7 +40,13 @@ enum class PvTab(
     private val icon: (GameProfile?) -> ItemStack,
 ) {
     MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
-    COMBAT(BaseCombatScreen::class, ::DungeonScreen, Items.DIAMOND_SWORD.defaultInstance),
+    COMBAT(BaseCombatScreen::class, { gameProfile, profile ->
+        if (profile?.profileType == ProfileType.STRANDED) {
+            BestiaryScreen(gameProfile, profile)
+        } else {
+            DungeonScreen(gameProfile, profile)
+        }
+    }, Items.DIAMOND_SWORD.defaultInstance),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.defaultInstance),
     COLLECTION(BaseCollectionScreen::class, CollectionCategories::createScreen, Items.ITEM_FRAME.defaultInstance),
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),

@@ -28,6 +28,7 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -185,9 +186,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 ),
             )
 
-            addFishingPerk(profile, "drake_piper")
-            addFishingPerk(profile, "midas_lure")
-            addFishingPerk(profile, "radiant_fisher")
+            if (profile.profileType != ProfileType.STRANDED) {
+                addFishingPerk(profile, "drake_piper")
+                addFishingPerk(profile, "midas_lure")
+                addFishingPerk(profile, "radiant_fisher")
+            }
 
             val seaCreatureKills = profile.petMilestones["sea_creatures_killed"] ?: 0
             val dolphin = DolphinBracket.getByKills(seaCreatureKills)

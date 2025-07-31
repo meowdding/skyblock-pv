@@ -5,16 +5,23 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.tabs.base.Category
+import me.owdding.skyblockpv.screens.tabs.combat.CombatCategory
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("MINING", gameProfile, profile) {
-    override val categories: List<Category> get() = Category.getCategories<MiningCategory>(profile)
+    override val categories: List<Category> get() {
+        if (profile.profileType == ProfileType.STRANDED)
+            return MiningCategory.entries.filter { it != MiningCategory.HOTM && it != MiningCategory.GlACITE }
+
+        return Category.getCategories<MiningCategory>(profile)
+    }
 }
 
 enum class MiningCategory(val screen: KClass<out BaseMiningScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
