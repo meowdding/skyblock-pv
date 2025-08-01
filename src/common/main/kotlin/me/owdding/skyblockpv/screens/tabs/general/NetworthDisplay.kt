@@ -7,7 +7,6 @@ import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
-import me.owdding.skyblockpv.config.ConfigCurrency
 import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
@@ -21,20 +20,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.math.roundToLong
 
 object NetworthDisplay {
-
-    private fun Long.toIndianFormat(): String {
-        val s = this.toString()
-        if (s.length <= 3) return s
-
-        val lastThree = s.substring(s.length - 3)
-        val otherNumbers = s.substring(0, s.length - 3)
-        val formattedOther = otherNumbers.reversed()
-            .chunked(2)
-            .joinToString(",")
-            .reversed()
-
-        return "$formattedOther,$lastThree"
-    }
 
     private fun Display.addTooltip(networth: Pair<Long, Map<String, Long>>): Display {
         val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
@@ -60,14 +45,7 @@ object NetworthDisplay {
                 this.append("widgets.networth.tooltip.currency".asTranslated(currency.name))
                 val roundedNetworth = networthConverted.roundToLong()
 
-                // Use our custom formatting function for INR for guaranteed results.
-                val formattedNetworth = if (currency == ConfigCurrency.INR) {
-                    roundedNetworth.toIndianFormat()
-                } else {
-                    roundedNetworth.toFormattedString()
-                }
-
-                this.append("$formattedNetworth ${currency.name}") { this.color = PvColors.GREEN }
+                this.append(currency.format(roundedNetworth)) { this.color = PvColors.GREEN }
             }
 
             this.space()
