@@ -7,6 +7,7 @@ import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
+import me.owdding.skyblockpv.config.ConfigCurrency
 import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
@@ -60,7 +61,7 @@ object NetworthDisplay {
                 val roundedNetworth = networthConverted.roundToLong()
 
                 // Use our custom formatting function for INR for guaranteed results.
-                val formattedNetworth = if (currency.name.equals("INR", ignoreCase = true)) {
+                val formattedNetworth = if (currency == ConfigCurrency.INR) {
                     roundedNetworth.toIndianFormat()
                 } else {
                     roundedNetworth.toFormattedString()
