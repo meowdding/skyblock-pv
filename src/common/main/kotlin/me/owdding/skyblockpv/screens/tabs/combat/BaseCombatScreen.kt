@@ -8,13 +8,19 @@ import me.owdding.skyblockpv.screens.tabs.base.Category
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseCombatScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("COMBAT", gameProfile, profile) {
-    override val categories: List<Category> get() = CombatCategory.entries
+    override val categories: List<Category> get() {
+        if (profile.profileType == ProfileType.STRANDED)
+            return CombatCategory.entries.filter { it != CombatCategory.ISLE && it != CombatCategory.DUNGEONS }
+
+        return CombatCategory.entries
+    }
 }
 
 enum class CombatCategory(val screen: KClass<out BaseCombatScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
