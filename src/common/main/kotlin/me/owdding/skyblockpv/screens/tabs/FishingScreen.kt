@@ -28,7 +28,6 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -186,7 +185,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 ),
             )
 
-            if (profile.profileType != ProfileType.STRANDED) {
+            if (!profile.onStranded) {
                 addFishingPerk(profile, "drake_piper")
                 addFishingPerk(profile, "midas_lure")
                 addFishingPerk(profile, "radiant_fisher")

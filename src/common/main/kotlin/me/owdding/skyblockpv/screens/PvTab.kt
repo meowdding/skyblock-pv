@@ -29,7 +29,6 @@ import me.owdding.skyblockpv.screens.tabs.rift.RiftCategory
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -38,10 +37,11 @@ enum class PvTab(
     private val screen: KClass<out BasePvScreen>,
     private val constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen,
     private val icon: (GameProfile?) -> ItemStack,
+    val hideOnStranded: Boolean = false,
 ) {
     MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
     COMBAT(BaseCombatScreen::class, { gameProfile, profile ->
-        if (profile?.profileType == ProfileType.STRANDED) {
+        if (profile?.onStranded == true) {
             BestiaryScreen(gameProfile, profile)
         } else {
             DungeonScreen(gameProfile, profile)
@@ -53,21 +53,32 @@ enum class PvTab(
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
-    MUSEUM(BaseMuseumScreen::class, ::MuseumItemScreen, Items.GOLD_BLOCK.defaultInstance),
+    MUSEUM(BaseMuseumScreen::class, ::MuseumItemScreen, Items.GOLD_BLOCK.defaultInstance, true),
     CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.skull),
-    RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.skull),
+    RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.skull, true),
     ;
 
-    constructor(screen: KClass<out BasePvScreen>, icon: ItemStack) : this(
+    constructor(
+        screen: KClass<out BasePvScreen>,
+        icon: ItemStack,
+        hideOnStranded: Boolean = false
+    ) : this(
         screen,
         screen.java.getConstructor(GameProfile::class.java, SkyBlockProfile::class.java)::newInstance,
-        icon,
+        { icon },
+        hideOnStranded
     )
 
-    constructor(screen: KClass<out BasePvScreen>, constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen, icon: ItemStack) : this(
+    constructor(
+        screen: KClass<out BasePvScreen>,
+        constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen,
+        icon: ItemStack,
+        hideOnStranded: Boolean = false
+    ) : this(
         screen,
         constructor,
         { icon },
+        hideOnStranded
     )
 
     fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null

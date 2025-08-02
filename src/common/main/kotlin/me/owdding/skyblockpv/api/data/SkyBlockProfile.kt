@@ -37,6 +37,7 @@ data class SkyBlockProfile(
     val id: ProfileId,
     val userId: UUID,
     val profileType: ProfileType = ProfileType.UNKNOWN,
+    val onStranded: Boolean = profileType == ProfileType.STRANDED,
 
     val currency: Currency?,
     val bank: Bank?,

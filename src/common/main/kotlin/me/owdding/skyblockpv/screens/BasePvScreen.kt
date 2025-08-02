@@ -306,12 +306,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         PvTab.entries.forEach { tab ->
             if (tab.getTabState(profile) == TriState.FALSE) return@forEach
 
-            if (tab.name in listOf<String>(
-                "RIFT",
-                "MUSEUM"
-            ) && profile.profileType == ProfileType.STRANDED
-                ) return@forEach
-
+            if (tab.hideOnStranded && profile.onStranded) return@forEach
 
             val button = Button()
             button.setSize(20, 31)
