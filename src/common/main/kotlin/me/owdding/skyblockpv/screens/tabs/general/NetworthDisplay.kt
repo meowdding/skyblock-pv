@@ -21,20 +21,6 @@ import kotlin.math.roundToLong
 
 object NetworthDisplay {
 
-    private fun Long.toIndianFormat(): String {
-        val s = this.toString()
-        if (s.length <= 3) return s
-
-        val lastThree = s.substring(s.length - 3)
-        val otherNumbers = s.substring(0, s.length - 3)
-        val formattedOther = otherNumbers.reversed()
-            .chunked(2)
-            .joinToString(",")
-            .reversed()
-
-        return "$formattedOther,$lastThree"
-    }
-
     private fun Display.addTooltip(networth: Pair<Long, Map<String, Long>>): Display {
         val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
         val networthCookies = if (cookiePrice > 0) (networth.first / cookiePrice).roundToLong() else 0L
@@ -60,7 +46,6 @@ object NetworthDisplay {
                 val roundedNetworth = networthConverted.roundToLong()
 
                 this.append(currency.format(roundedNetworth)) { this.color = PvColors.GREEN }
-
             }
 
             this.space()
