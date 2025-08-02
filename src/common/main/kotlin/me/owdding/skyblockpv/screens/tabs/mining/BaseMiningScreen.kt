@@ -27,7 +27,7 @@ enum class MiningCategory(
     HOTM(HotmScreen::class, SkullTextures.HOTM.skull, "HotM Tree") {
         override val hideOnStranded = true
     },
-    GlACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance, "Glacite Tunnels") {
+    GLACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance, "Glacite Tunnels") {
         override val hideOnStranded = true
     },
     ;
@@ -40,7 +40,7 @@ enum class MiningCategory(
     override fun canDisplay(profile: SkyBlockProfile?): Boolean {
         if (!super.canDisplay(profile)) return false
         return when (this) {
-            GlACITE -> profile?.glacite != null
+            GLACITE -> profile?.glacite != null
             else -> true
         }
     }
