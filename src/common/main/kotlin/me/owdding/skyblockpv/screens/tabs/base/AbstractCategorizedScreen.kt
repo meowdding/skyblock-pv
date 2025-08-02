@@ -95,11 +95,12 @@ interface Category {
     val icon: ItemStack get() = ItemStack.EMPTY
     val isSelected: Boolean get() = false
     val hover: String get() = ""
+    val hideOnStranded: Boolean get() = false
 
     fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): Screen
 
     fun canDisplay(profile: SkyBlockProfile?): Boolean {
-        return true
+        return !(profile?.onStranded == true && this.hideOnStranded)
     }
 
     companion object {

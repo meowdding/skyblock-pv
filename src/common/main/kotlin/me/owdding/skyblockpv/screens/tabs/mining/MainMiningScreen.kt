@@ -95,58 +95,65 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     private fun getInformation(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
         PvLayouts.vertical(3) {
-            val mining = profile.mining ?: return@vertical
-            fun grayText(text: String) = display(ExtraDisplays.grayText(text))
-            val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
-            val hotmLevel = mining.getHotmLevel()
 
             val oresMined = profile.petMilestones["ores_mined"] ?: 0
             val rockPet = RockBracket.getByOres(oresMined)
 
-            grayText("HotM: $hotmLevel")
-            grayText("Total Runs: ${totalRuns.toFormattedString()}")
-
-            display(
-                ExtraDisplays.text(
-                    Text.join(
-                        Text.of("Rock Pet: ") { this.color = PvColors.DARK_GRAY },
-                        rockPet?.rarity?.displayText ?: Text.of("None") { this.color = PvColors.RED },
-                    ),
-                    shadow = false,
-                ).withTooltip(
-                    Text.join(
-                        Text.of("Ores Mined: ") { this.color = PvColors.WHITE },
-                        Text.of(oresMined.toFormattedString()) { this.color = PvColors.AQUA },
-                    ),
-                    "",
-                    RockBracket.entries.map {
-                        whiteText {
-                            val hasObtained = it.oresRequired <= oresMined
-                            if (!hasObtained) {
-                                withStyle(ChatFormatting.STRIKETHROUGH)
-                                withStyle(ChatFormatting.DARK_GRAY)
-                            }
-                            append(
-                                text("${it.rarity.displayName} Rock") {
-                                    if (hasObtained) {
-                                        withColor((it.rarity.color))
-                                    }
-                                },
-                            )
-                            append("!")
-                        }
-                    },
+            val rockPetDisplay = ExtraDisplays.text(
+                Text.join(
+                    Text.of("Rock Pet: ") { this.color = PvColors.DARK_GRAY },
+                    rockPet?.rarity?.displayText ?: Text.of("None") { this.color = PvColors.RED },
                 ),
+                shadow = false,
+            ).withTooltip(
+                Text.join(
+                    Text.of("Ores Mined: ") { this.color = PvColors.WHITE },
+                    Text.of(oresMined.toFormattedString()) { this.color = PvColors.AQUA },
+                ),
+                "",
+                RockBracket.entries.map {
+                    whiteText {
+                        val hasObtained = it.oresRequired <= oresMined
+                        if (!hasObtained) {
+                            withStyle(ChatFormatting.STRIKETHROUGH)
+                            withStyle(ChatFormatting.DARK_GRAY)
+                        }
+                        append(
+                            text("${it.rarity.displayName} Rock") {
+                                if (hasObtained) {
+                                    withColor((it.rarity.color))
+                                }
+                            },
+                        )
+                        append("!")
+                    }
+                },
             )
 
-            addMiningPerk(profile, "fungus_fortuna")
-            addMiningPerk(profile, "harena_fortuna")
-            addMiningPerk(profile, "treasures_of_the_earth")
-            addMiningPerk(profile, "dwarven_training")
-            addMiningPerk(profile, "eager_miner")
-            addMiningPerk(profile, "rhinestone_infusion")
-            addMiningPerk(profile, "high_roller")
-            addMiningPerk(profile, "return_to_sender")
+            if (!profile.onStranded) {
+
+                val mining = profile.mining ?: return@vertical
+                fun grayText(text: String) = display(ExtraDisplays.grayText(text))
+                val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
+                val hotmLevel = mining.getHotmLevel()
+
+                grayText("HotM: $hotmLevel")
+                grayText("Total Runs: ${totalRuns.toFormattedString()}")
+
+                display(rockPetDisplay)
+
+                addMiningPerk(profile, "fungus_fortuna")
+                addMiningPerk(profile, "harena_fortuna")
+                addMiningPerk(profile, "treasures_of_the_earth")
+                addMiningPerk(profile, "dwarven_training")
+                addMiningPerk(profile, "eager_miner")
+                addMiningPerk(profile, "rhinestone_infusion")
+                addMiningPerk(profile, "high_roller")
+                addMiningPerk(profile, "return_to_sender")
+
+            } else {
+                display(rockPetDisplay)
+            }
         },
         padding = 10,
         icon = SkyBlockPv.id("icon/item/clipboard"),

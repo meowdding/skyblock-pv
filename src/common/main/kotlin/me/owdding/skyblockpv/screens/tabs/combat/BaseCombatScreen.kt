@@ -14,13 +14,21 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseCombatScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("COMBAT", gameProfile, profile) {
-    override val categories: List<Category> get() = CombatCategory.entries
+    override val categories: List<Category> get() = Category.getCategories<CombatCategory>(profile)
 }
 
-enum class CombatCategory(val screen: KClass<out BaseCombatScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
-    DUNGEONS(DungeonScreen::class, SkullTextures.DUNGEONS.skull),
+enum class CombatCategory(
+    val screen: KClass<out BaseCombatScreen>,
+    override val icon: ItemStack,
+    hoverName: String? = null,
+) : Category {
+    DUNGEONS(DungeonScreen::class, SkullTextures.DUNGEONS.skull) {
+        override val hideOnStranded = true
+    },
     BESTIARY(BestiaryScreen::class, Items.WRITABLE_BOOK.defaultInstance),
-    ISLE(CrimsonIsleScreen::class, Items.NETHERRACK.defaultInstance, "Crimson Isle"),
+    ISLE(CrimsonIsleScreen::class, Items.NETHERRACK.defaultInstance, "Crimson Isle") {
+        override val hideOnStranded = true
+    },
     MOBS(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance, "Kills and Deaths"),
     ;
 

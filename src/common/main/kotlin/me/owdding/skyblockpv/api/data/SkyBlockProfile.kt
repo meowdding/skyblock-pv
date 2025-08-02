@@ -69,6 +69,7 @@ data class SkyBlockProfile(
     val maxwell: Maxwell?,
 ) {
     val netWorth by lazy { NetworthCalculator.calculateNetworthAsync(this) }
+    val onStranded: Boolean = profileType == ProfileType.STRANDED
 
     companion object {
 

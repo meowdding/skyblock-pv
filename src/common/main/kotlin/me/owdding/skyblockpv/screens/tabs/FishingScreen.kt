@@ -185,9 +185,11 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 ),
             )
 
-            addFishingPerk(profile, "drake_piper")
-            addFishingPerk(profile, "midas_lure")
-            addFishingPerk(profile, "radiant_fisher")
+            if (!profile.onStranded) {
+                addFishingPerk(profile, "drake_piper")
+                addFishingPerk(profile, "midas_lure")
+                addFishingPerk(profile, "radiant_fisher")
+            }
 
             val seaCreatureKills = profile.petMilestones["sea_creatures_killed"] ?: 0
             val dolphin = DolphinBracket.getByKills(seaCreatureKills)
