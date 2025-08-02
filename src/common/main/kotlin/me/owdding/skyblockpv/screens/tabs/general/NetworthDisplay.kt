@@ -59,14 +59,8 @@ object NetworthDisplay {
                 this.append("widgets.networth.tooltip.currency".asTranslated(currency.name))
                 val roundedNetworth = networthConverted.roundToLong()
 
-                // Use our custom formatting function for INR for guaranteed results.
-                val formattedNetworth = if (currency.name.equals("INR", ignoreCase = true)) {
-                    roundedNetworth.toIndianFormat()
-                } else {
-                    roundedNetworth.toFormattedString()
-                }
+                this.append(currency.format(roundedNetworth)) { this.color = PvColors.GREEN }
 
-                this.append("$formattedNetworth ${currency.name}") { this.color = PvColors.GREEN }
             }
 
             this.space()

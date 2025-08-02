@@ -1,8 +1,13 @@
 package me.owdding.skyblockpv.config
 
 import com.google.gson.JsonObject
+import com.ibm.icu.text.NumberFormat
+import com.ibm.icu.util.Currency
+import com.ibm.icu.util.ULocale
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 
 private const val URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json"
@@ -27,24 +32,52 @@ object CurrenciesAPI : ExtraData {
     }
 }
 
-enum class ConfigCurrency {
+private fun parse(language: String, country: String): ULocale {
+    return runCatching {
+        ULocale(language, country)
+    }.onFailure {
+        SkyBlockPv.warn("Unable to locate ULocale for $language-$country!")
+    }.getOrDefault(ULocale.US)
+}
+
+enum class ConfigCurrency(
+    val uLocale: ULocale,
+) {
     // Real Money
-    USD,
-    EUR,
-    JPY,
-    GBP,
-    AUD,
-    CAD,
-    CHF,
-    CNH,
-    HKD,
-    NZD,
-    CZK,
-    ZWL,
-    INR,
+    USD(ULocale.US),
+    EUR(ULocale.GERMANY),
+    JPY(ULocale.JAPAN),
+    GBP(ULocale.UK),
+    AUD(ULocale("en", "AU")),
+    CAD(ULocale.CANADA),
+    CHF("de", "CH"),
+    CNH(ULocale.CHINA),
+    HKD(ULocale.CHINA),
+    NZD("en", "NZ"),
+    CZK("cz", "CZ"),
+    ZWL("en", "ZW"),
+    INR("hi", "IN"),
 
     // Fake Money
-    BTC,
-    ETH,
-    DOGE,
+    BTC(ULocale.US),
+    ETH(ULocale.US),
+    DOGE(ULocale.US),
+    ;
+
+    constructor(language: String, country: String) : this(parse(language, country))
+
+    val currencyType = runCatching {
+        Currency.getInstance(name)
+    }.onFailure {
+        if (this.name.length == 4) return@onFailure
+        SkyBlockPv.warn("Failed to load currency for $name")
+    }.getOrNull()
+
+    fun format(number: Long): String {
+        if (currencyType == null) return "${number.toFormattedString()} $name"
+
+        val instance = NumberFormat.getCurrencyInstance(uLocale)
+        instance.currency = currencyType
+        return instance.format(number)
+    }
 }
