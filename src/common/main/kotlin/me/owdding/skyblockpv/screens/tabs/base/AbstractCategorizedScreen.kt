@@ -113,7 +113,7 @@ interface Category {
             val visibleDisplays = getCategories<T>(profile)
             return when {
                 visibleDisplays.isEmpty() -> TriState.FALSE
-                visibleDisplays.size == T::class.java.enumConstants.size -> TriState.TRUE
+                visibleDisplays.size == T::class.java.enumConstants.count { it.hideOnStranded && profile?.onStranded == true } -> TriState.TRUE
                 else -> TriState.DEFAULT
             }
         }
