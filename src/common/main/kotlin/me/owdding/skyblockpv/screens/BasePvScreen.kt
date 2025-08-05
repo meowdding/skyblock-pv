@@ -305,8 +305,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         // as you can see, maya has no idea what she is doing
         PvTab.entries.forEach { tab ->
             if (tab.getTabState(profile) == TriState.FALSE) return@forEach
-
-            if (tab.hideOnStranded && profile.onStranded) return@forEach
+            if (!tab.canDisplay(profile)) return@forEach
 
             val button = Button()
             button.setSize(20, 31)

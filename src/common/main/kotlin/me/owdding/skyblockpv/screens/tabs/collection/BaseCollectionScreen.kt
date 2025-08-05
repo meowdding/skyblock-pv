@@ -41,9 +41,12 @@ enum class CollectionCategories(val screen: KClass<out BaseCollectionScreen>, ov
         if (screen == CommonCollectionScreen::class) CommonCollectionScreen(gameProfile, profile, this.name) else screen.constructors.first()
             .call(gameProfile, profile)
 
-    override fun canDisplay(profile: SkyBlockProfile?) = when (this) {
-        MINION -> profile?.minions != null
-        else -> profile?.collections != null
+    override fun canDisplay(profile: SkyBlockProfile?): Boolean {
+        if (!super.canDisplay(profile)) return false
+        return when (this) {
+            MINION -> profile?.minions != null
+            else -> profile?.collections != null
+        }
     }
 
     companion object {

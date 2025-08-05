@@ -100,7 +100,7 @@ interface Category {
     fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): Screen
 
     fun canDisplay(profile: SkyBlockProfile?): Boolean {
-        return !(profile?.onStranded == true && this.hideOnStranded)
+        return !this.hideOnStranded || profile?.onStranded != true
     }
 
     companion object {
@@ -113,7 +113,7 @@ interface Category {
             val visibleDisplays = getCategories<T>(profile)
             return when {
                 visibleDisplays.isEmpty() -> TriState.FALSE
-                visibleDisplays.size == T::class.java.enumConstants.count { it.hideOnStranded && profile?.onStranded == true } -> TriState.TRUE
+                visibleDisplays.size == T::class.java.enumConstants.count { it.canDisplay(profile) } -> TriState.TRUE
                 else -> TriState.DEFAULT
             }
         }

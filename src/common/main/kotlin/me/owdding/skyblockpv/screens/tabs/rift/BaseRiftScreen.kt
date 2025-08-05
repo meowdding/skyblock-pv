@@ -27,8 +27,11 @@ enum class RiftCategory(val screen: KClass<out BaseRiftScreen>, override val ico
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): Screen = screen.constructors.first().call(gameProfile, profile)
 
-    override fun canDisplay(profile: SkyBlockProfile?) = when (this) {
-        ENDER_CHEST -> profile?.rift?.inventory?.enderChest?.isNotEmpty() == true
-        else -> true
+    override fun canDisplay(profile: SkyBlockProfile?): Boolean {
+        if (!super.canDisplay(profile)) return false
+        return when (this) {
+            ENDER_CHEST -> profile?.rift?.inventory?.enderChest?.isNotEmpty() == true
+            else -> true
+        }
     }
 }

@@ -37,7 +37,7 @@ enum class PvTab(
     private val screen: KClass<out BasePvScreen>,
     private val constructor: (GameProfile, SkyBlockProfile?) -> BasePvScreen,
     private val icon: (GameProfile?) -> ItemStack,
-    val hideOnStranded: Boolean = false,
+    private val hideOnStranded: Boolean = false,
 ) {
     MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.defaultInstance }),
     COMBAT(BaseCombatScreen::class, { gameProfile, profile ->
@@ -97,5 +97,9 @@ enum class PvTab(
 
     fun getIcon(gameProfile: GameProfile?): ItemStack {
         return icon(gameProfile)
+    }
+
+    fun canDisplay(profile: SkyBlockProfile?): Boolean {
+        return !this.hideOnStranded || profile?.onStranded != true
     }
 }
