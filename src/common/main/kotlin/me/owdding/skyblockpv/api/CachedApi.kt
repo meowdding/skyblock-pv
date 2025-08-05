@@ -35,7 +35,7 @@ abstract class CachedApi<D, V, K> {
 
         val result = PvAPI.get(path) ?: run {
             (+"messages.api.something_went_wrong").sendWithPrefix()
-            return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong")))
+            return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong for $path")))
         }
 
         if (DevConfig.offlineMode) {
