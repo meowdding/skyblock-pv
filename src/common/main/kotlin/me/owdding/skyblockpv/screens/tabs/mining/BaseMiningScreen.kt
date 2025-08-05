@@ -21,15 +21,12 @@ enum class MiningCategory(
     val screen: KClass<out BaseMiningScreen>,
     override val icon: ItemStack,
     hoverName: String? = null,
+    override val hideOnStranded: Boolean = false,
 ) : Category {
     MAIN(MainMiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
     GEAR(MiningGearScreen::class, Items.PRISMARINE_SHARD.defaultInstance, "Mining Gear"),
-    HOTM(HotmScreen::class, SkullTextures.HOTM.skull, "HotM Tree") {
-        override val hideOnStranded = true
-    },
-    GlACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance, "Glacite Tunnels") {
-        override val hideOnStranded = true
-    },
+    HOTM(HotmScreen::class, SkullTextures.HOTM.skull, "HotM Tree", true),
+    GlACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance, "Glacite Tunnels", true),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()
