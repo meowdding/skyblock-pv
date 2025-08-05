@@ -5,7 +5,7 @@
 | Button in Hypixel Pv         | ✅          | ✅   | 🚧         |
 | Party Finder Message         | ✅          | ✅   | ❌          |
 | SkyBlock Menu                | ✅          | ✅   | ❌          |
-| Replace Socialoption with pv | 🚧         | ✅   | ❌          |
+| Replace Socialoption with pv | ✅          | ✅   | ❌          |
 
 ### Pages Features
 
