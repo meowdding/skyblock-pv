@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.platform.InputConstants
+import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import kotlinx.coroutines.runBlocking
@@ -16,6 +17,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
 import me.owdding.skyblockpv.api.StatusAPI
+import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
@@ -237,31 +239,10 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             }
         }
 
-        val statusButtonWidget = Button()
-        statusButtonWidget.withRenderer(WidgetRenderers.text(+"screens.main.status.load"))
-        statusButtonWidget.setSize(width, 20)
-        statusButtonWidget.withTexture(ExtraConstants.BUTTON_DARK)
-        statusButtonWidget.withCallback {
-            statusButtonWidget.withRenderer(WidgetRenderers.text(+"screens.main.status.loading"))
-            runBlocking {
-                val status = StatusAPI.getData(gameProfile.id).getOrNull()
-                if (status == null) {
-                    statusButtonWidget.withRenderer(WidgetRenderers.text(+"screens.main.status.error"))
-                    return@runBlocking
-                }
-                val statusText = +"screens.main.status.${status.status.name.lowercase()}"
-                val locationText = (SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location)?.let {
-                    Text.of(it).withColor(PvColors.GREEN)
-                } ?: +"screens.main.status.unknown"
-                statusButtonWidget.withRenderer(WidgetRenderers.text(statusText + locationText))
-                statusButtonWidget.asDisabled()
-            }
-        }
-
         val layout = LinearLayout.vertical()
         layout.addChild(playerWidget)
         layout.addChild(SpacerElement.height(5))
-        layout.addChild(statusButtonWidget)
+        layout.addChild(getStatusButton().withSize(width, 20))
         layout.addChild(SpacerElement.height(3))
         if (Config.showPronouns) {
             layout.addChild(PronounWidget.getPronounDisplay(gameProfile.id, width).asWidget())
@@ -310,6 +291,39 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             },
             icon = titleIcon,
         )
+    }
+
+    fun getStatusButton(): Button {
+        val status = StatusAPI.getCached(gameProfile.id)
+
+        fun getStatusDisplay(status: PlayerStatus): WidgetRenderer<Button> {
+            val statusText = +"screens.main.status.${status.status.name.lowercase()}"
+            val location = SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location
+            val locationText = location?.let { Text.of(it).withColor(PvColors.GREEN) } ?: +"screens.main.status.unknown"
+            return WidgetRenderers.text(statusText + locationText)
+        }
+
+        return Button().also { button ->
+            button.withTexture(ExtraConstants.BUTTON_DARK)
+            button.withRenderer(WidgetRenderers.text(+"screens.main.status.load"))
+            button.withCallback {
+                button.withRenderer(WidgetRenderers.text(+"screens.main.status.loading"))
+                runBlocking {
+                    val status = StatusAPI.getData(gameProfile.id).getOrNull()
+                    if (status == null) {
+                        button.withRenderer(WidgetRenderers.text(+"screens.main.status.error"))
+                    } else {
+                        button.withRenderer(getStatusDisplay(status))
+                        button.asDisabled()
+                    }
+                }
+            }
+
+            if (status != null) {
+                button.withRenderer(getStatusDisplay(status))
+                button.asDisabled()
+            }
+        }
     }
 
     fun getSkillSection(profile: SkyBlockProfile, width: Int) = createSection(

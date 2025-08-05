@@ -21,6 +21,17 @@ abstract class CachedApi<D, V, K> {
 
     private val cache: MutableMap<K, CacheEntry<Result<V>>> = mutableMapOf()
 
+    /**
+     * Gets the cached data if it exists and is not expired.
+     */
+    fun getCached(data: D): V? = cache[getKey(data)]
+        ?.takeIf { System.currentTimeMillis() - it.timestamp < CACHE_TIME }
+        ?.data
+        ?.getOrNull()
+
+    /**
+     * Gets from the cache or fetches data from the API if not cached or expired.
+     */
     suspend fun getData(data: D): Result<V> = cache.getOrPut(getKey(data)) {
         val path = path(data)
         val hash = path.hash()
