@@ -17,11 +17,16 @@ abstract class BaseMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfi
     override val categories: List<Category> get() = Category.getCategories<MiningCategory>(profile)
 }
 
-enum class MiningCategory(val screen: KClass<out BaseMiningScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
+enum class MiningCategory(
+    val screen: KClass<out BaseMiningScreen>,
+    override val icon: ItemStack,
+    hoverName: String? = null,
+    override val hideOnStranded: Boolean = false,
+) : Category {
     MAIN(MainMiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
     GEAR(MiningGearScreen::class, Items.PRISMARINE_SHARD.defaultInstance, "Mining Gear"),
-    HOTM(HotmScreen::class, SkullTextures.HOTM.skull, "HotM Tree"),
-    GlACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance, "Glacite Tunnels"),
+    HOTM(HotmScreen::class, SkullTextures.HOTM.skull, "HotM Tree", true),
+    GLACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance, "Glacite Tunnels", true),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()
@@ -29,8 +34,11 @@ enum class MiningCategory(val screen: KClass<out BaseMiningScreen>, override val
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): Screen = screen.constructors.first().call(gameProfile, profile)
 
-    override fun canDisplay(profile: SkyBlockProfile?) = when (this) {
-        GlACITE -> profile?.glacite != null
-        else -> true
+    override fun canDisplay(profile: SkyBlockProfile?): Boolean {
+        if (!super.canDisplay(profile)) return false
+        return when (this) {
+            GLACITE -> profile?.glacite != null
+            else -> true
+        }
     }
 }
