@@ -440,7 +440,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     override fun onProfileSwitch(profile: SkyBlockProfile) {
-        val disabledTabs = PvTab.entries.filter { it.getTabState(profile) != TriState.TRUE }
+        val disabledTabs = PvTab.entries.filter { it.getTabState(profile) != TriState.TRUE }.filterNot { profile.onStranded && it.hideOnStranded }
         if (disabledTabs.isNotEmpty()) {
             FailedToLoadToast.add(
                 profile,
