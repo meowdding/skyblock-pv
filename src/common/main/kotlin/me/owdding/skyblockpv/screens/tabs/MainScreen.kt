@@ -190,10 +190,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     +"screens.main.info.cookie.${if (profile.currency?.cookieBuffActive == true) "active" else "inactive"}",
                 ),
             )
-            display(
-                grayText("screens.main.info.sb_lvl".asTranslated(profile.skyBlockLevel.first))
-                    .withTooltip("screens.main.info.sb_lvl.progress".asTranslated(profile.skyBlockLevel.second)),
-            )
+            profile.skyBlockLevel.let { (level, progress) ->
+                val skyblockLevel = if (progress == 0) "$level" else "$level.${progress.toString().padStart(2, '0')}"
+                display(
+                    grayText("screens.main.info.sb_lvl".asTranslated(skyblockLevel))
+                        .withTooltip("screens.main.info.sb_lvl.progress".asTranslated(progress)),
+                )
+            }
             display(
                 grayText("screens.main.info.first_join".asTranslated(SimpleDateFormat("yyyy.MM.dd").format(profile.firstJoin)))
                     .withTooltip(SimpleDateFormat("yyyy.MM.dd HH:mm").format(profile.firstJoin)),
