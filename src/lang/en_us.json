@@ -89,6 +89,13 @@
             "@value": "Disable outside hypixel",
             "desc": "Disables/unregisters the <light_gray>/pv</light_gray> command outside of hypixel."
         },
+        "skill_overflow": {
+            "@value": "Skill Overflow",
+            "desc": [
+                "Shows the skill overflow level instead of the skill level.",
+                "<red>Currently only works with Dungeon Skills.</red>"
+            ]
+        },
         "display_scaling": {
             "@value": "Enable Display Scaling",
             "desc": [

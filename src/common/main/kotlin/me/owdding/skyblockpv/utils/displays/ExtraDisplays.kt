@@ -78,6 +78,7 @@ object ExtraDisplays {
 
     fun progress(
         progress: Float,
+        maxed: Boolean = false,
         width: Int = 91,
         height: Int = 5,
     ): Display {
@@ -91,12 +92,10 @@ object ExtraDisplays {
             override fun render(graphics: GuiGraphics) {
                 val progressWidth = (width * progress).toInt()
                 graphics.drawSprite(background, 0, 0, width, height)
-                if (progressWidth >= width) {
-                    graphics.drawSprite(foregroundMaxed, 0, 0, width, height)
-                } else {
-                    graphics.scissor(0, 0, progressWidth, height) {
-                        graphics.drawSprite(foreground, 0, 0, width, height)
-                    }
+
+                val foregroundTexture = if (progressWidth >= width || maxed) foregroundMaxed else foreground
+                graphics.scissor(0, 0, progressWidth.coerceAtMost(width), height) {
+                    graphics.drawSprite(foregroundTexture, 0, 0, width, height)
                 }
             }
         }

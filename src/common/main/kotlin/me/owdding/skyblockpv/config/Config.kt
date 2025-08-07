@@ -43,6 +43,7 @@ object Config : ConfigKt("skyblockpv/config") {
     var showPronouns by boolean(true) { this.translation = "skyblockpv.config.show_pronouns" }
     var partyFinderMessage by boolean(true) { this.translation = "skyblockpv.config.party_finder_message" }
     var disableOutsideHypixel by boolean(false) { this.translation = "skyblockpv.config.disable_outside_hypixel" }
+    var skillOverflow by boolean(false) { this.translation = "skyblockpv.config.skill_overflow" }
     var displayScaling by boolean(false) scaling@{
         if (McVersion.MC_1_21_8.isActive()) {
             this.translation = "skyblockpv.config.display_scaling.1218"
