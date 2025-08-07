@@ -24,7 +24,7 @@ object CatacombsCodecs : ExtraData {
     fun getLevelAndProgress(xp: Long, withOverflow: Boolean = false): Pair<Int, Float> {
         for (i in data.experience.indices) {
             val currentLevelXp = data.experience[i]
-            if (xp < currentLevelXp) {
+            if (xp <= currentLevelXp) {
                 val previousXp = if (i == 0) 0L else data.experience[i - 1]
                 val progress = (xp - previousXp).toFloat() / (currentLevelXp - previousXp)
                 return i to progress.coerceIn(0f, 1f)
