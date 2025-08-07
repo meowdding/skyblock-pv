@@ -317,6 +317,7 @@ tasks.register("cleanRelease") {
 
 tasks.withType<JarInJar>().configureEach {
     include { !it.name.endsWith("-dev.jar") }
+    archiveBaseName = "SkyBlockPv"
 
     manifest {
         attributes["Fabric-Loom-Mixin-Remap-Type"] = "static"
