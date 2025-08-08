@@ -7,7 +7,9 @@ import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
+import me.owdding.skyblockpv.data.repo.CatacombsCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
@@ -16,77 +18,15 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 
-private val DUNGEON_LEVEL_XP_MAP = mapOf(
-    0 to 0,
-    1 to 50,
-    2 to 125,
-    3 to 235,
-    4 to 395,
-    5 to 625,
-    6 to 955,
-    7 to 1425,
-    8 to 2095,
-    9 to 3045,
-    10 to 4385,
-    11 to 6275,
-    12 to 8940,
-    13 to 12700,
-    14 to 17960,
-    15 to 25340,
-    16 to 35640,
-    17 to 50040,
-    18 to 70040,
-    19 to 97640,
-    20 to 135640,
-    21 to 188140,
-    22 to 259640,
-    23 to 356640,
-    24 to 488640,
-    25 to 668640,
-    26 to 911640,
-    27 to 1239640,
-    28 to 1684640,
-    29 to 2284640,
-    30 to 3084640,
-    31 to 4149640,
-    32 to 5559640,
-    33 to 7459640,
-    34 to 9959640,
-    35 to 13259640,
-    36 to 17559640,
-    37 to 23159640,
-    38 to 30359640,
-    39 to 39559640,
-    40 to 51559640,
-    41 to 66559640,
-    42 to 85559640,
-    43 to 109559640,
-    44 to 139559640,
-    45 to 177559640,
-    46 to 225559640,
-    47 to 285559640,
-    48 to 360559640,
-    49 to 453559640,
-    50 to 569809640,
-)
-
 class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
 
-    var classToLevel: Map<String, Int>? = null
-    var classToProgress: Map<String, Float>? = null
+    var classToLevel: Map<String, Pair<Int, Float>>? = null
 
     override fun onProfileSwitch(profile: SkyBlockProfile) {
         super.onProfileSwitch(profile)
 
         classToLevel = profile.dungeonData?.classExperience?.map { (name, xp) ->
-            name to (DUNGEON_LEVEL_XP_MAP.entries.findLast { it.value < xp }?.key ?: 0)
-        }?.toMap()
-        classToProgress = profile.dungeonData?.classExperience?.map { (name, xp) ->
-            val level = classToLevel?.get(name)!!
-            val currentXp = DUNGEON_LEVEL_XP_MAP[level]!!
-            val nextXp = DUNGEON_LEVEL_XP_MAP[level + 1]
-
-            name to if (nextXp == null) 1.0f else (xp - currentXp).toFloat() / (nextXp - currentXp)
+            name to CatacombsCodecs.getLevelAndProgress(xp, Config.skillOverflow)
         }?.toMap()
     }
 
@@ -127,7 +67,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val runCounts = (countRuns(catacombsCompl) + countRuns(masterModeCompl)).coerceAtLeast(1)
 
         val mainContent = PvLayouts.vertical {
-            string("Class Average: ${classToLevel?.map { it.value }?.toList()?.average()}")
+            string("Class Average: ${classToLevel?.map { it.value.first.coerceAtMost(50) }?.toList()?.average()}")
             string("Secrets: ${dungeonData.secrets.toFormattedString()}")
             string("Secrets/Run: ${(dungeonData.secrets / runCounts).round()}")
         }
@@ -138,24 +78,18 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun createLevelingDisplay(dungeonData: DungeonData): LayoutElement {
         val catacombsXp = dungeonData.dungeonTypes["catacombs"]?.experience ?: 0
 
-        val catacombsLevel = DUNGEON_LEVEL_XP_MAP.entries.findLast { it.value < catacombsXp }?.key ?: 0
-        val catacombsProgressToNext = if (DUNGEON_LEVEL_XP_MAP.containsKey(catacombsLevel + 1)) {
-            (catacombsXp - DUNGEON_LEVEL_XP_MAP[catacombsLevel]!!).toFloat() / (DUNGEON_LEVEL_XP_MAP[catacombsLevel + 1]!! - DUNGEON_LEVEL_XP_MAP[catacombsLevel]!!)
-        } else {
-            1.0f
-        }
+        val (catacombsLevel, catacombsProgressToNext) = CatacombsCodecs.getLevelAndProgress(catacombsXp, Config.skillOverflow)
 
         fun getClass(name: String) = PvLayouts.vertical(5) {
-            val level = classToLevel?.get(name)!!
-            val progress = classToProgress?.get(name)!!
+            val (level, progress) = classToLevel?.get(name)!!
             string("${name.replaceFirstChar { it.uppercase() }}: $level")
-            display(ExtraDisplays.progress(progress))
+            display(ExtraDisplays.progress(progress, maxed = level >= 50))
         }
 
         val mainContent = PvLayouts.vertical(10) {
             vertical(5) {
                 string("Catacombs: $catacombsLevel")
-                display(ExtraDisplays.progress(catacombsProgressToNext))
+                display(ExtraDisplays.progress(catacombsProgressToNext, maxed = catacombsLevel >= 50))
                 widget(getClass("healer"))
                 widget(getClass("mage"))
                 widget(getClass("berserk"))
