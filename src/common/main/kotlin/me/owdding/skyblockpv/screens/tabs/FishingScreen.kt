@@ -176,7 +176,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 )
             }
 
-            val rank = TrophyFishRank.getById((profile.trophyFish.rewards.maxByOrNull { it <= TrophyFishRank.entries.count() } ?: 0) - 1)
+            val rank = TrophyFishRank.getById((profile.trophyFish.rewards.filter { it <= TrophyFishRank.entries.count() }.maxOrNull() ?: 0) - 1)
 
             string(
                 Text.join(
