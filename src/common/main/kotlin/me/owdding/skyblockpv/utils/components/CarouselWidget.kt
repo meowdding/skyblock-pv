@@ -12,12 +12,18 @@ import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutSettings
+import net.msrandom.stub.Stub
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.platform.drawString
 import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.platform.scale
 import tech.thatgravyboat.skyblockapi.platform.translate
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
+
+@Stub
+expect fun GuiGraphics.renderCarouselOverlay(
+    renderer: GuiGraphics.() -> Unit,
+)
 
 class CarouselWidget(
     private val displays: List<Display>,
@@ -57,15 +63,17 @@ class CarouselWidget(
                 last?.render(graphics, x, lastY)
             }
 
-            graphics.fill(x, lastY, left, lastBottom, 0x7F000000)
+            graphics.renderCarouselOverlay {
+                graphics.fill(x, lastY, left, lastBottom, 0x7F000000)
 
-            if (mouseX in x..left && mouseY in lastY..lastBottom) {
-                graphics.pushPop {
-                    graphics.translate(x + (left - x) / 2f, lastY + lastDiff / 2f - 7.5f)
-                    graphics.scale(2f, 2f)
-                    graphics.drawString("<", -leftWidth / 2, 0, 0xFFFFFF)
+                if (mouseX in x..left && mouseY in lastY..lastBottom) {
+                    graphics.pushPop {
+                        graphics.translate(x + (left - x) / 2f, lastY + lastDiff / 2f - 7.5f)
+                        graphics.scale(2f, 2f)
+                        graphics.drawString("<", -leftWidth / 2, 0, 0xFFFFFF)
+                    }
+                    cursor = CursorScreen.Cursor.POINTER
                 }
-                cursor = CursorScreen.Cursor.POINTER
             }
         }
 
@@ -78,15 +86,17 @@ class CarouselWidget(
                 next?.render(graphics, x + width, nextY, alignmentX = 1f)
             }
 
-            graphics.fill(right, nextY, x + width, nextBottom, 0x7F000000)
+            graphics.renderCarouselOverlay {
+                graphics.fill(right, nextY, x + width, nextBottom, 0x7F000000)
 
-            if (mouseX in right..(x + width) && mouseY in nextY..nextBottom) {
-                graphics.pushPop {
-                    graphics.translate(right + (x + width - right) / 2f, nextY + nextDiff / 2f - 7.5f)
-                    graphics.scale(2f, 2f)
-                    graphics.drawString(">", -rightWidth / 2, 0, 0xFFFFFF)
+                if (mouseX in right..(x + width) && mouseY in nextY..nextBottom) {
+                    graphics.pushPop {
+                        graphics.translate(right + (x + width - right) / 2f, nextY + nextDiff / 2f - 7.5f)
+                        graphics.scale(2f, 2f)
+                        graphics.drawString(">", -rightWidth / 2, 0, 0xFFFFFF)
+                    }
+                    cursor = CursorScreen.Cursor.POINTER
                 }
-                cursor = CursorScreen.Cursor.POINTER
             }
         }
 
