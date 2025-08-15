@@ -102,7 +102,10 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val milestoneText = Text.of(milestone.toString()) { color = if (maxLevel == milestone) PvColors.GREEN else PvColors.RED }
         return loadingValue(
             Displays.item(resource.getItem(), customStackText = milestoneText).withTooltip {
-                add(resource.getItem().customName?.stripped ?: "Unknown") {
+                val name = (resource.getItem().customName?.stripped ?: "Unknown").let {
+                    if (it == "Red Mushroom") "Mushroom" else it
+                }
+                add(name) {
                     bold = true
                     append(" Milestone")
                 }
