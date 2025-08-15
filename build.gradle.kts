@@ -41,11 +41,12 @@ dependencies {
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        languageVersion = KotlinVersion.KOTLIN_2_0
+        languageVersion = KotlinVersion.KOTLIN_2_2
         freeCompilerArgs.addAll(
             "-Xmulti-platform",
             "-Xno-check-actual",
             "-Xexpect-actual-classes",
+            "-Xopt-in=kotlin.time.ExperimentalTime",
         )
     }
 }
@@ -191,6 +192,7 @@ tasks.named("createCommonApiStub", GenerateStubApi::class).configure {
 
 repositories {
     maven(url = "https://maven.teamresourceful.com/repository/maven-public/")
+    maven(url = "https://maven.fabricmc.net/")
     maven(url = "https://maven.teamresourceful.com/repository/msrandom/")
     maven(url = "https://repo.hypixel.net/repository/Hypixel/")
     maven(url = "https://api.modrinth.com/maven")
