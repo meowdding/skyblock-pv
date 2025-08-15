@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.feature.debug
 
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
 import me.owdding.ktmodules.Module
 import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.SkyBlockPv
@@ -14,6 +13,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.time.currentInstant
 import tech.thatgravyboat.skyblockapi.utils.time.since
 import java.util.concurrent.CompletableFuture
 
@@ -27,7 +27,7 @@ object LobbyParseTest {
         event.registerWithCallback("sbpv testlobby") {
             var successfulParses = 0
             var failedParses = 0
-            val startTime = Clock.System.now()
+            val startTime = currentInstant()
             CompletableFuture.runAsync {
                 runBlocking {
                     McClient.players.forEach {
