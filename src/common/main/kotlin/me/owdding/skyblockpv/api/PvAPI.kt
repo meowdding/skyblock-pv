@@ -6,9 +6,13 @@ import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McLevel
+import tech.thatgravyboat.skyblockapi.utils.extentions.toLongValue
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockapi.utils.json.Json
+import tech.thatgravyboat.skyblockapi.utils.time.currentInstant
 import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Instant
 
 private const val API_URL = "https://skyblock-pv.thatgravyboat.tech%s"
 
@@ -55,7 +59,7 @@ object PvAPI {
         }
     }
 
-    suspend fun get(endpoint: String): JsonObject? {
+    suspend fun get(endpoint: String): Pair<JsonObject, Instant>? {
         if (this.key == null || failedToAuth) {
             SkyBlockPv.error(AUTHENTICATION_FAILED_MESSAGE)
             return null
@@ -71,7 +75,8 @@ object PvAPI {
         )
 
         if (response.isOk) {
-            return response.asJson(Json.gson)
+            val expireTime = response.headers["X-Backend-Expire-In"]?.first()?.toLongValue() ?: CACHE_TIME
+            return response.asJson<JsonObject>(Json.gson) to currentInstant() + expireTime.milliseconds
         } else if (response.statusCode == 401) {
             authenticate()
             if (this.key != null) {

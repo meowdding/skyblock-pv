@@ -15,7 +15,7 @@ import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
 
-private const val CACHE_TIME = 10 * 60 * 1000 // 10 minutes
+const val CACHE_TIME = 5 * 60 * 1000L // 5 minutes
 
 abstract class CachedApi<D, V, K> {
 
@@ -44,9 +44,13 @@ abstract class CachedApi<D, V, K> {
             )
         }
 
-        val result = PvAPI.get(path) ?: run {
+        val (result, expire) = PvAPI.get(path) ?: run {
             (+"messages.api.something_went_wrong").sendWithPrefix()
             return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong for $path")))
+        }
+
+        if (SkyBlockPv.isDevMode) {
+            SkyBlockPv.info("Set to expire in ${(expire.toEpochMilliseconds() - System.currentTimeMillis()) / 1000}s")
         }
 
         if (DevConfig.offlineMode) {
@@ -68,8 +72,9 @@ abstract class CachedApi<D, V, K> {
 
                 output
             },
+            expire.toEpochMilliseconds() - CACHE_TIME,
         )
-    }.takeIf { System.currentTimeMillis() - it.timestamp < CACHE_TIME }?.data ?: run {
+    }.takeIf { !it.isExpired() }?.data ?: run {
         cache.remove(getKey(data))
         getData(data)
     }
@@ -85,5 +90,7 @@ abstract class CachedApi<D, V, K> {
     internal class CacheEntry<T>(
         val data: T,
         val timestamp: Long = System.currentTimeMillis(),
-    )
+    ) {
+        fun isExpired() = System.currentTimeMillis() - timestamp >= CACHE_TIME
+    }
 }
