@@ -74,7 +74,7 @@ abstract class CachedApi<D, V, K> {
             },
             expire.toEpochMilliseconds() - CACHE_TIME,
         )
-    }.takeIf { !it.isExpired() }?.data ?: run {
+    }.takeUnless { it.isExpired() }?.data ?: run {
         cache.remove(getKey(data))
         getData(data)
     }
