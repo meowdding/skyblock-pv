@@ -115,7 +115,7 @@ cloche {
             include(libs.placeholders)
             include(libs.keval)
             include(libs.mixinconstraints)
-            include(libs.repolib)
+            //include(libs.repolib) included in sbapi
             mixins.from("src/mixins/skyblock-pv.${sourceSet.name}.mixins.json")
 
             metadata {
