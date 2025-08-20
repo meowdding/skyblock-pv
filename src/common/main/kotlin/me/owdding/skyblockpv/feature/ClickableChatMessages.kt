@@ -15,7 +15,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.hover
 @Module
 object ClickableChatMessages {
 
-    private val otherChatRegex = "(?:Party|Guild|Officer) > (?:\\[.*] )?(?<username>\\w{1,16})(?: \\[.*])?: .+".toRegex()
+    private val otherChatRegex = "(?:Party|Guild|Officer|Co-op) > (?:\\[.*] )?(?<username>\\w{1,16})(?: \\[.*])?: .+".toRegex()
 
     @Subscription
     @OnlyOnSkyBlock
