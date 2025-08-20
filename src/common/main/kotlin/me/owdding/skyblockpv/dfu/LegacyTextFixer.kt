@@ -51,8 +51,6 @@ object LegacyTextFixer {
                 append(readStringUntil) {
                     withStyle(last)
                 }
-
-                last = EMPTY
             }
         }
     }
