@@ -16,6 +16,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
@@ -29,7 +30,8 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
                 val item = RepoItemsAPI.getItem(it.key).copy().apply {
                     withTooltip {
                         add(hoverName)
-                        getLore().forEach(::add)
+                        val lore = getLore()
+                        val amount = lore.takeWhile { line -> !line.stripped.isBlank() }.apply { forEach(::add) }.size
                         space()
                         add("Amount: ") {
                             color = TextColor.GRAY
@@ -37,6 +39,7 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
                                 color = TextColor.GREEN
                             }
                         }
+                        lore.drop(amount).forEach(::add)
                     }
                 }
                 Displays.item(item, customStackText = it.value.shorten(1), showTooltip = true)
