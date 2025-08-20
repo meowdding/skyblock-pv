@@ -6,21 +6,40 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asTable
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.shorten
+import me.owdding.lib.extensions.withTooltip
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SackCodecs
+import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
     private val sackItems get() = profile.inventory?.sacks ?: emptyMap()
     private val sackDisplays: Map<ItemStack, Display>
-        get() = SackCodecs.data.mapNotNull {
-            val sackItems = it.items.associateWith { sackItems[it] ?: 0 }
+        get() = SackCodecs.data.mapNotNull { sack ->
+            val sackItems = sack.items.associateWith { sackItems[it] ?: 0 }
             if (sackItems.entries.sumOf { it.value } == 0L) return@mapNotNull null
 
             val display = sackItems.map {
-                Displays.item(RepoItemsAPI.getItem(it.key), customStackText = it.value.shorten(0), showTooltip = true)
+                val item = RepoItemsAPI.getItem(it.key).copy().apply {
+                    withTooltip {
+                        add(hoverName)
+                        getLore().forEach(::add)
+                        space()
+                        add("Amount: ") {
+                            color = TextColor.GRAY
+                            append(it.value.toFormattedString()) {
+                                color = TextColor.GREEN
+                            }
+                        }
+                    }
+                }
+                Displays.item(item, customStackText = it.value.shorten(1), showTooltip = true)
             }.toMutableList().rightPad(9, Displays.item(ItemStack.EMPTY)).map { Displays.padding(2, it) }.chunked(9).let {
                 ExtraDisplays.inventoryBackground(
                     9, it.size,
@@ -28,7 +47,7 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
                 )
             }
 
-            it.item to display
+            sack.item to display
         }.toMap()
 
     override fun getInventories(): List<Display> = sackDisplays.values.toList()
