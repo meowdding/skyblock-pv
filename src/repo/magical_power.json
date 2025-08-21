@@ -1,0 +1,18 @@
+{
+    "rarity": {
+        "COMMON": 3,
+        "UNCOMMON": 5,
+        "RARE": 8,
+        "EPIC": 12,
+        "LEGENDARY": 16,
+        "MYTHIC": 22,
+        "SPECIAL": 3,
+        "VERY_SPECIAL": 5
+    },
+    "overrides": {
+        "item:hegemony_artifact": {
+            "type": "MULTIPLY",
+            "value": 2
+        }
+    }
+}

@@ -245,9 +245,8 @@ repo {
 
 compactingResources {
     basePath = "repo"
-    configureTask(tasks.getByName<ProcessResources>("process1218Resources"))
-    configureTask(tasks.getByName<ProcessResources>("process1215Resources"))
-    configureTask(tasks.getByName<ProcessResources>("processResources"))
+
+    tasks.withType<ProcessResources> { configureTask(this) }
 
     compactToObject("garden_data")
     compactToObject("chocolate_factory")
@@ -262,6 +261,7 @@ compactingResources {
     compactToArray("minions/categories")
     compactToObject("minions")
     downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/bestiary.json", "bestiary.json")
+    downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/misc.json", "neu_misc.json")
 }
 
 afterEvaluate {

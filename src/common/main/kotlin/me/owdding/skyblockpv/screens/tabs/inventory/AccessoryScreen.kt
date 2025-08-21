@@ -24,7 +24,12 @@ class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     override fun getExtraLine() = DisplayFactory.vertical(alignment = Alignment.CENTER) {
         val maxwell = profile.maxwell ?: return@vertical
 
-        string("Magical Power: ${maxwell.highestMp.toFormattedString()}") {
+        string("Magical Power: ${profile.magicalPower.toFormattedString()}") {
+            color = PvColors.DARK_GRAY
+            shadowColor = null
+        }
+
+        string("Highest Magical Power: ${maxwell.highestMp.toFormattedString()}") {
             color = PvColors.DARK_GRAY
             shadowColor = null
         }

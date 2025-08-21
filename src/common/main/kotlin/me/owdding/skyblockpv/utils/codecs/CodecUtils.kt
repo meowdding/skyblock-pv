@@ -19,6 +19,7 @@ import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -132,6 +133,9 @@ object CodecUtils {
 
     @IncludedCodec(named = "item")
     val ITEM: Codec<Item> = BuiltInRegistries.ITEM.byNameCodec()
+
+    @IncludedCodec
+    val SKYBLOCK_ID: Codec<SkyBlockId> = SkyBlockId.CODEC
 
     @IncludedCodec(named = "compact_string_list")
     val COMPACT_STRING_LIST: Codec<List<String>> = ExtraCodecs.compactListCodec(Codec.STRING)
