@@ -35,12 +35,7 @@ object MagicalPowerCodecs : ExtraData {
     fun calculateMagicalPower(profile: SkyBlockProfile): Int {
         val items = (profile.inventory?.talismans ?: emptyList()).flatMap { it.talismans.inventory }
 
-        val base = items.associateWith { next ->
-            val override = data.overrides[next.getSkyBlockId()]
-            val mp = data.rarity[next.getData(DataTypes.RARITY)] ?: 0
-
-            override?.apply(mp) ?: mp
-        }.filterDuplicates().toMutableMap()
+        val base = items.associateWith { data.getMagicalPower(it) }.filterDuplicates().toMutableMap()
 
         val riftPrism = if (profile.maxwell?.consumedRiftPrism == true) {
             base.filter { it.key[DataTypes.SKYBLOCK_ID]?.cleanId.equals("rift_prism", true) }
@@ -75,7 +70,14 @@ object MagicalPowerCodecs : ExtraData {
     data class MagicalPowerRepoData(
         val rarity: Map<SkyBlockRarity, Int>,
         val overrides: Map<SkyBlockId, Override>,
-    )
+    ) {
+        fun getMagicalPower(item: ItemStack): Int {
+            val override = overrides[item.getSkyBlockId()]
+            val mp = rarity[item.getData(DataTypes.RARITY)] ?: 0
+
+            return override?.apply(mp) ?: mp
+        }
+    }
 
     abstract class Override(val type: OverrideTypes) {
         abstract fun apply(num: Int): Int
