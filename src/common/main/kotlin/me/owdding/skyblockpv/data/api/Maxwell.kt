@@ -1,6 +1,8 @@
 package me.owdding.skyblockpv.data.api
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.utils.json.getPathAs
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
@@ -11,14 +13,18 @@ data class Maxwell(
     val selectedPower: String,
     val highestMp: Int,
     val bagUpgrades: Int,
+    val consumedRiftPrism: Boolean,
+    val abiphoneContacts: Int,
 ) {
     companion object {
-        fun fromJson(json: JsonObject): Maxwell {
+        fun fromJson(member: JsonObject, maxwell: JsonObject): Maxwell {
             return Maxwell(
-                tunings = json.getPath("tuning.slot_0").asMap { id, points -> id to points.asInt },
-                selectedPower = json["selected_power"].asString(""),
-                highestMp = json["highest_magical_power"].asInt(0),
-                bagUpgrades = json["bag_upgrades_purchased"].asInt(0),
+                tunings = maxwell.getPath("tuning.slot_0").asMap { id, points -> id to points.asInt },
+                selectedPower = maxwell["selected_power"].asString(""),
+                highestMp = maxwell["highest_magical_power"].asInt(0),
+                bagUpgrades = maxwell["bag_upgrades_purchased"].asInt(0),
+                consumedRiftPrism = member.getPathAs<Boolean>("rift.access.consumed_prism", false),
+                abiphoneContacts = member.getPathAs<JsonArray>("nether_island_player_data.abiphone.active_contacts")?.size() ?: 0,
             )
         }
     }

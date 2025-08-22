@@ -16,6 +16,7 @@ import me.owdding.skyblockpv.data.api.skills.combat.*
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
+import me.owdding.skyblockpv.data.repo.MagicalPowerCodecs
 import me.owdding.skyblockpv.feature.NetworthCalculator
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils.asTranslated
@@ -69,6 +70,7 @@ data class SkyBlockProfile(
     val maxwell: Maxwell?,
 ) {
     val netWorth by lazy { NetworthCalculator.calculateNetworthAsync(this) }
+    val magicalPower by lazy { MagicalPowerCodecs.calculateMagicalPower(this) }
     val onStranded: Boolean = profileType == ProfileType.STRANDED
 
     companion object {
@@ -158,7 +160,7 @@ data class SkyBlockProfile(
                         ?.filter { it.isNotBlank() }
                         ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
                 }.mapNotNull { it }.flatten(),
-                maxwell = member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(it) },
+                maxwell = member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(member, it) },
             )
         }
 
