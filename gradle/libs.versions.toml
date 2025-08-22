@@ -10,7 +10,7 @@ kotlin = "2.2.0"
 kotlin-symbol-processor = "2.2.0-2.0.2"
 
 # Dependencies
-skyblockapi = "2.3.0"
+skyblockapi = "2.3.3"
 repolib = "2.0.2"
 
 hypixelapi = "1.0.1+build.1+mc1.21"

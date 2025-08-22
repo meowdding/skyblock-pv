@@ -5,15 +5,20 @@ import me.owdding.ktcodecs.GenerateDispatchCodec
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.generated.DispatchHelper
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId.Companion.getSkyBlockId
-import tech.thatgravyboat.skyblockapi.utils.extentions.get
+import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.math.roundToInt
 import kotlin.reflect.KClass
 
@@ -32,38 +37,65 @@ object MagicalPowerCodecs : ExtraData {
         data = Utils.loadRepoData<MagicalPowerRepoData>("magical_power")
     }
 
-    fun calculateMagicalPower(profile: SkyBlockProfile): Int {
+    fun calculateMagicalPower(profile: SkyBlockProfile): Pair<Int, Component> {
         val items = (profile.inventory?.talismans ?: emptyList()).flatMap { it.talismans.inventory }
 
         val base = items.associateWith { data.getMagicalPower(it) }.filterDuplicates().toMutableMap()
 
         val riftPrism = if (profile.maxwell?.consumedRiftPrism == true) {
-            base.filter { it.key[DataTypes.SKYBLOCK_ID]?.cleanId.equals("rift_prism", true) }
+            base.filter { it.key.getSkyBlockId()?.cleanId.equals("rift_prism", true) }
 
             11
         } else 0
-        val hasAbicase = items.any { it[DataTypes.SKYBLOCK_ID]?.cleanId?.startsWith("abicase_", true) == true }
+        val hasAbicase = items.any { it.getSkyBlockId()?.cleanId?.startsWith("abicase_", true) == true }
         val abicase = if (hasAbicase) profile.maxwell?.abiphoneContacts?.floorDiv(2) ?: 0 else 0
 
-        return base.values.sum() + riftPrism + abicase
+        val lore = TooltipBuilder.multiline {
+            add("Magical Power Breakdown:") { color = TextColor.GRAY }
+            base.toList()
+                .sortedByDescending { it.first.getData(DataTypes.RARITY) }
+                .groupBy { it.first.getData(DataTypes.RARITY) }
+                .forEach { (rarity, items) ->
+                    val rarity = rarity ?: return@forEach
+                    val totalPower = items.sumOf { it.second }
+                    add("") {
+                        color = TextColor.ORANGE
+
+                        append(rarity.displayText)
+                        append(": +${totalPower.toFormattedString()}")
+                        append(" (${items.size})") { color = TextColor.GRAY }
+                    }
+                }
+
+            space()
+            add("Rift Prism:") {
+                color = TextColor.BLUE
+                append(" +${11.takeIf { profile.maxwell?.consumedRiftPrism == true } ?: 0}") { color = TextColor.GOLD }
+            }
+            add("Abiphone Case:") {
+                color = TextColor.BLUE
+                append(" +${abicase}") { color = TextColor.GOLD }
+            }
+
+        }
+
+        return base.values.sum() + riftPrism + abicase to lore
     }
 
     private fun Map<ItemStack, Int>.filterDuplicates(): Map<ItemStack, Int> {
-        val pairs = map { it.key to it.value }
-            .sortedByDescending { it.second }
-            .distinctBy { it.first.getSkyBlockId() }
+        val pairs = toList().sortedByDescending { it.second }.distinctBy { it.first.getSkyBlockId() }
         val ids = pairs.mapNotNull { it.first.getSkyBlockId() }
 
-        val filtered = ids.filter { NeuMiscCodecs.data.hasHigherTier(it, ids) }.toMutableSet()
+        val talismanToRemove = ids.filter { NeuMiscCodecs.data.hasHigherTier(it, ids) }.toMutableSet()
 
         val hatItems = pairs.filter { it.first.getSkyBlockId()?.cleanId?.let { id -> anniversaryIds.any { hat -> id.startsWith(hat, true) } } == true }
-
         if (hatItems.size > 1) {
             val bestHat = hatItems.maxByOrNull { it.second }
-            hatItems.filter { it != bestHat }.forEach { filtered.add(it.first.getSkyBlockId()!!) }
+            hatItems.filterNot { it == bestHat }.forEach { talismanToRemove.add(it.first.getSkyBlockId()!!) }
+            talismanToRemove.remove(bestHat?.first?.getSkyBlockId())
         }
 
-        return pairs.filter { it.first.getSkyBlockId() !in filtered }.toMap()
+        return pairs.filterNot { it.first.getSkyBlockId() in talismanToRemove }.toMap()
     }
 
     @GenerateCodec
