@@ -38,6 +38,7 @@ object Config : ConfigKt("skyblockpv/config") {
 
     var profileSpying by boolean(true) { this.translation = "skyblockpv.config.spying" }
     var profileChatClick by boolean(true) { this.translation = "skyblockpv.config.chat" }
+    var profileChatClickOther by boolean(false) { this.translation = "skyblockpv.config.chat_other" }
     var currency by enum(ConfigCurrency.USD) { this.translation = "skyblockpv.config.currency" }
     var alignCategoryButtonsLeft by boolean(true) { this.translation = "skyblockpv.config.align_category_buttons_left" }
     var showPronouns by boolean(true) { this.translation = "skyblockpv.config.show_pronouns" }
