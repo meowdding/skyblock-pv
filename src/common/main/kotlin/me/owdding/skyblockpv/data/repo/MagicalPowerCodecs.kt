@@ -6,6 +6,7 @@ import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.generated.DispatchHelper
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.Utils.removeIf
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
@@ -33,6 +34,8 @@ object MagicalPowerCodecs : ExtraData {
         "balloon_hat",
     )
 
+    private val RIFT_PRISM = SkyBlockId.item("rift_prism")
+
     override suspend fun load() {
         data = Utils.loadRepoData<MagicalPowerRepoData>("magical_power")
     }
@@ -43,8 +46,7 @@ object MagicalPowerCodecs : ExtraData {
         val base = items.associateWith { data.getMagicalPower(it) }.filterDuplicates().toMutableMap()
 
         val riftPrism = if (profile.maxwell?.consumedRiftPrism == true) {
-            base.filter { it.key.getSkyBlockId()?.cleanId.equals("rift_prism", true) }
-
+            base.removeIf { (k, _) -> k.getSkyBlockId() == RIFT_PRISM }
             11
         } else 0
         val hasAbicase = items.any { it.getSkyBlockId()?.cleanId?.startsWith("abicase_", true) == true }
