@@ -41,7 +41,7 @@
         "party_finder_join": "<run_cmd '/sbpv pv <!0>'>Click here to open <0>'s profile.</run_cmd>",
         "forge": {
             "already_finished": "<red>Process already finished!</red>",
-            "reminder_set": "<gray>Reminder set for asd <0> in <yellow><1></yellow>!</gray>",
+            "reminder_set": "<gray>Reminder set for <0> in <yellow><1></yellow>!</gray>",
             "reminder": "<gray>Forge Process for <0> is done!</gray>"
         },
         "api": {
