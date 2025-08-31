@@ -14,9 +14,11 @@ import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
 
@@ -82,7 +84,9 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         fun getClass(name: String) = PvLayouts.vertical(5) {
             val (level, progress) = classToLevel?.get(name)!!
-            string("${name.replaceFirstChar { it.uppercase() }}: $level")
+            textDisplay("${name.replaceFirstChar { it.uppercase() }}: $level") {
+                color = if (dungeonData.selectedClass == name) PvColors.DARK_GREEN else PvColors.DARK_GRAY
+            }
             display(ExtraDisplays.progress(progress, maxed = level >= 50))
         }
 

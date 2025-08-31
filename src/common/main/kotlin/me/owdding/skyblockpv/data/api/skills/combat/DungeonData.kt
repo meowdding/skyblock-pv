@@ -8,6 +8,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 data class DungeonData(
     val dungeonTypes: Map<String, DungeonTypeData?>,
     val classExperience: Map<String, Long>,
+    val selectedClass: String,
     val secrets: Long,
 ) {
     companion object {
@@ -24,6 +25,7 @@ data class DungeonData(
                     "master_catacombs" to catacombsMaster,
                 ),
                 classExperience = classExperience,
+                selectedClass = json.getAs("selected_dungeon_class", ""),
                 secrets = secrets,
             )
         }
