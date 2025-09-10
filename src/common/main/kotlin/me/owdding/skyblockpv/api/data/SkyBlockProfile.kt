@@ -73,6 +73,8 @@ data class SkyBlockProfile(
     val magicalPower by lazy { MagicalPowerCodecs.calculateMagicalPower(this) }
     val onStranded: Boolean = profileType == ProfileType.STRANDED
 
+    val isOwnProfile = userId == McPlayer.uuid && selected
+
     companion object {
 
         @OptIn(SkyBlockPvRequired::class)

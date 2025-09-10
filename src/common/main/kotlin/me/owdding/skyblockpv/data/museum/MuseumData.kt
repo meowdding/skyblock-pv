@@ -25,7 +25,7 @@ data class MuseumData(val items: List<MuseumEntry>) {
                 TempMuseumEntry(it.first, items.map { item -> lazy { item.legacyStack() } }, it.second.getPathAs<Boolean>("borrowing", false))
             }
 
-            SkyBlockPvMuseumOpenedEvent(map.complete(false)).post(SkyBlockAPI.eventBus)
+            if (profile.isOwnProfile) SkyBlockPvMuseumOpenedEvent(map.complete(false)).post(SkyBlockAPI.eventBus)
 
             return MuseumData(map.complete())
         }
