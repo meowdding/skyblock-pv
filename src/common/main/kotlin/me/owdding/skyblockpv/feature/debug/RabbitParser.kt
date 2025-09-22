@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.config.DevConfig
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
@@ -12,7 +13,6 @@ import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerCloseEvent
 import tech.thatgravyboat.skyblockapi.api.events.screen.InventoryChangeEvent
 import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import java.nio.file.Files
 
 @Module
@@ -42,7 +42,7 @@ object RabbitParser {
     fun onInvGone(event: ContainerCloseEvent) {
         if (!shouldParse()) return
         if (data.isEmpty()) return
-        Text.of("Storing Rabbit Data in config").send()
+        Text.of("Storing Rabbit Data in config").sendWithPrefix()
 
         val file = SkyBlockPv.configDir.resolve("rabbits.json")
 

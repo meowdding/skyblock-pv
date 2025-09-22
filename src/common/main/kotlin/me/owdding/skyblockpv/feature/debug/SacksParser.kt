@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.config.DevConfig
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
@@ -15,7 +16,6 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.impl.tagkey.ItemTag
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import java.nio.file.Files
 
 @Module
@@ -57,7 +57,7 @@ object SacksParser {
     fun onInvGone() {
         if (!shouldParse()) return
         if (data.isEmpty()) return
-        Text.of("Storing Sacks Data in config").send()
+        Text.of("Storing Sacks Data in config").sendWithPrefix()
 
         val file = FabricLoader.getInstance().configDir
             .resolve("skyblockpv")
