@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.utils.render
 
 import com.mojang.blaze3d.pipeline.RenderPipeline
+import me.owdding.lib.utils.MeowddingPipelines
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.withShaderDefine
 import net.minecraft.client.renderer.RenderPipelines
@@ -11,7 +12,7 @@ class GradientTextShader(gradientProvider: GradientProvider) : TextShader {
     constructor(vararg colors: TextColor) : this(colors.map { it.value })
 
     override val pipeline: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(RenderPipelines.TEXT_SNIPPET, RenderPipelines.FOG_SNIPPET)
+        RenderPipeline.builder(RenderPipelines.TEXT_SNIPPET, RenderPipelines.FOG_SNIPPET, MeowddingPipelines.GAME_TIME_SNIPPET)
             .withLocation(SkyBlockPv.id("gradient_text"))
             .withVertexShader(SkyBlockPv.id("text/gradient"))
             .withFragmentShader(SkyBlockPv.id("text/gradient"))
