@@ -25,9 +25,12 @@ import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
+import me.owdding.skyblockpv.api.PlayerAPI
 import me.owdding.skyblockpv.api.ProfileAPI
+import me.owdding.skyblockpv.api.data.HypixelPlayer
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
+import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils
@@ -84,6 +87,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     init {
         CoroutineScope(Dispatchers.IO).launch {
             profiles = ProfileAPI.getProfiles(gameProfile)
+            PlayerAPI.getPlayer(gameProfile) // Load player data in the background
             (profile ?: profiles.find { it.selected })?.let {
                 onProfileSwitch(it)
                 this@BasePvScreen.profile = it
@@ -151,7 +155,14 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
         createTabs().applyLayout(bg.x + 20, bg.y - 22)
         createSearch(bg).applyLayout()
-        createProfileDropdown(bg).applyLayout()
+        createProfileDropdown(bg).let {
+            it.applyLayout()
+
+            if (!Config.socials) return
+            val button = createSocialDropdown()
+            button.setPosition(it.x + it.width + 5, it.y)
+            button.applyLayout()
+        }
 
         addRenderableOnly(
             PvWidgets.text(this.tabTitle)
@@ -393,6 +404,39 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         }
 
         return dropdown
+    }
+
+    private fun createSocialDropdown(): LayoutElement {
+        val width = 100
+        val height = 20
+
+        val entries = listOf(
+            HypixelPlayer.Companion.SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}"),
+            *PlayerAPI.getCached(gameProfile.id)?.socials?.map { it.key.toEntry(it.value) }.orEmpty().toTypedArray(),
+        )
+
+        val button = Widgets.dropdown(
+            DropdownState<String>.empty(),
+            entries,
+            { Text.of(it.name) },
+            { button ->
+                button.withSize(width, height)
+            },
+            { builder ->
+                builder.withCallback {
+                    if (it == null) return@withCallback
+                    if (it.shouldCopy) {
+                        McClient.clipboard = it.url
+                        ChatUtils.chat("widgets.socials.copied".asTranslated(it.name, it.url))
+                    } else {
+                        Util.getPlatform().openUri(it.url)
+                    }
+                }
+                builder.withAlignment(OverlayAlignment.TOP_LEFT)
+            },
+        )
+
+        return button
     }
 
     open fun onProfileSwitch(profile: SkyBlockProfile) {}
