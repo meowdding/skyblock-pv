@@ -434,7 +434,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
             },
-        )
+        ).apply {
+            withTexture(ExtraConstants.BUTTON_DARK)
+        }
 
         return button
     }
