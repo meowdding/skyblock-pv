@@ -426,7 +426,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
                     if (it == null) return@withCallback
                     if (it.shouldCopy) {
                         McClient.clipboard = it.url
-                        "widgets.socials.copied".asTranslated(it.url).sendWithPrefix()
+                        "messages.socials_copy".asTranslated(it.url).sendWithPrefix()
                     } else {
                         Util.getPlatform().openUri(it.url)
                     }
