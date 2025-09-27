@@ -58,7 +58,8 @@
                 "<red><0></red>"
             ]
         },
-        "click_to_open_pv": "<yellow>Click to open <0>'s profile in SkyBlock Profile Viewer.</yellow>"
+        "click_to_open_pv": "<yellow>Click to open <0>'s profile in SkyBlock Profile Viewer.</yellow>",
+        "socials_copy": "<green>Click to copy <0> to clipboard!</green>"
     },
     "config": {
         "spying": {
@@ -118,6 +119,10 @@
         "theme": {
             "@value": "Theme",
             "desc": "The theme to use for the profile viewer."
+        },
+        "socials": {
+            "@value": "Linked Socials Dropdown",
+            "desc": "Show a dropdown with all linked socials of the player and SkyCrypt."
         }
     },
     "dev": {
@@ -290,7 +295,8 @@
                 "note": "<gray>Note: You can change the currency in the settings using <dark_gray>/sbpv</dark_gray>.",
                 "sources": "<gray>Source: "
             }
-        }
+        },
+        "socials": "<white>Socials</white>"
     },
     "screens": {
         "main": {

@@ -33,6 +33,7 @@ import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
@@ -407,9 +408,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     }
 
     private fun createSocialDropdown(): LayoutElement {
-        val width = 100
-        val height = 20
-
         val entries = listOf(
             HypixelPlayer.Companion.SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}"),
             *PlayerAPI.getCached(gameProfile.id)?.socials?.map { it.key.toEntry(it.value) }.orEmpty().toTypedArray(),
@@ -420,14 +418,15 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             entries,
             { Text.of(it.name) },
             { button ->
-                button.withSize(width, height)
+                button.withSize(100, 20)
+                button.withRenderer(WidgetRenderers.text(+"widgets.socials"))
             },
             { builder ->
                 builder.withCallback {
                     if (it == null) return@withCallback
                     if (it.shouldCopy) {
                         McClient.clipboard = it.url
-                        ChatUtils.chat("widgets.socials.copied".asTranslated(it.name, it.url))
+                        "widgets.socials.copied".asTranslated(it.url).sendWithPrefix()
                     } else {
                         Util.getPlatform().openUri(it.url)
                     }
