@@ -60,6 +60,7 @@ object Config : ConfigKt("skyblockpv/config") {
         { it.toString() },
         { ResourceLocation.tryParse(it) ?: id("normal") },
     )
+    var socials by boolean(true) { this.translation = "skyblockpv.config.socials" }
 
     val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
 }
