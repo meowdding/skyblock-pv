@@ -3,10 +3,10 @@ package me.owdding.skyblockpv.utils.displays
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.Displays
+import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.drawRoundedRec
 import me.owdding.skyblockpv.utils.render.RenderUtils.withTextShader
-import me.owdding.skyblockpv.utils.render.TextShader
 import me.owdding.skyblockpv.utils.render.dropdown.createDropdownDisplay
 import me.owdding.skyblockpv.utils.render.dropdown.createDropdownOverlay
 import me.owdding.skyblockpv.utils.theme.PvColors

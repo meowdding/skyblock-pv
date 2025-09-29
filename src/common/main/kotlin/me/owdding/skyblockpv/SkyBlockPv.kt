@@ -45,6 +45,8 @@ import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
+internal expect fun loadVersionSpecific()
+
 @Module
 object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
     const val MOD_ID: String = "skyblockpv"

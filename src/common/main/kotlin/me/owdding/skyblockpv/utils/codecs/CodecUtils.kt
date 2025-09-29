@@ -24,6 +24,8 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
+internal expect fun clientAssetConverter(): (ResourceLocation) -> ClientAsset
+
 object CodecUtils {
 
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
@@ -38,7 +40,7 @@ object CodecUtils {
     }
 
     @IncludedCodec
-    val CLIENT_ASSET: Codec<ClientAsset> = ClientAsset.CODEC
+    val CLIENT_ASSET: Codec<ClientAsset> = ResourceLocation.CODEC.xmap(clientAssetConverter()) { it.id() }
 
     @IncludedCodec(named = "cum_int_list_alt")
     val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =

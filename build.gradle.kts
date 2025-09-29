@@ -9,6 +9,7 @@ import net.msrandom.stubs.GenerateStubApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
@@ -103,20 +104,16 @@ cloche {
             includedClient()
             minecraftVersion = version
             this.loaderVersion = loaderVersion.get()
-            accessWideners.from("src/$name/skyblock-pv.${sourceSet.name}.accesswidener")
+            val accessWidenerFile = layout.projectDirectory.file("src/$name/skyblock-pv.${sourceSet.name}.accesswidener")
+            val mixinFile = layout.projectDirectory.file("src/mixins/skyblock-pv.${sourceSet.name}.mixins.json")
 
-            //include(libs.hypixelapi) included in sbapi
-            include(libs.skyblockapi)
-            include(libs.meowdding.lib)
-            include(rlib)
-            include(rconfigkt)
-            include(rconfig)
-            include(olympus)
-            include(libs.placeholders)
-            include(libs.keval)
-            include(libs.mixinconstraints)
-            //include(libs.repolib) included in sbapi
-            mixins.from("src/mixins/skyblock-pv.${sourceSet.name}.mixins.json")
+            if (accessWidenerFile.toPath().exists()) {
+                accessWideners.from(accessWidenerFile)
+            }
+
+            if (mixinFile.toPath().exists()) {
+                mixins.from(mixinFile)
+            }
 
             metadata {
                 entrypoint("client") {
@@ -147,7 +144,7 @@ cloche {
                 dependency("olympus", olympus.map { it.version!! })
                 dependency("placeholder-api", libs.versions.placeholders)
                 dependency("resourcefulconfigkt", rconfigkt.map { it.version!! })
-                dependency("resourcefulconfig", rconfig.map { it.version!! })
+                //dependency("resourcefulconfig", rconfig.map { it.version!! })
                 dependency("meowdding-lib", libs.versions.meowdding.lib)
             }
 
@@ -156,6 +153,17 @@ cloche {
                 modImplementation(olympus)
                 modImplementation(rconfig)
                 modImplementation(rconfigkt)
+
+
+                include(libs.skyblockapi)
+                include(libs.meowdding.lib)
+                include(rlib)
+                include(rconfigkt)
+                include(rconfig)
+                include(olympus)
+                include(libs.placeholders)
+                include(libs.keval)
+                include(libs.mixinconstraints)
             }
 
             runs {
@@ -180,6 +188,14 @@ cloche {
         this["resourcefulconfig"] = libs.resourceful.config1218
         this["resourcefulconfigkt"] = libs.resourceful.configkt1218
         this["olympus"] = libs.olympus.lib1218
+    }
+    createVersion("1.21.9", "1.21.9-rc1", fabricApiVersion = provider { "0.133.7" }, minecraftVersionRange = {
+        start = "1.21.0-rc.1"
+    }) {
+        this["resourcefullib"] = libs.resourceful.lib1219
+        this["resourcefulconfig"] = libs.resourceful.config1219
+        this["resourcefulconfigkt"] = libs.resourceful.configkt1219
+        this["olympus"] = libs.olympus.lib1219
     }
 
     mappings { official() }
@@ -279,6 +295,7 @@ sourceSets {
 ksp {
     this@ksp.excludedSources.from(sourceSets.getByName("1215").kotlin.srcDirs)
     this@ksp.excludedSources.from(sourceSets.getByName("1218").kotlin.srcDirs)
+    this@ksp.excludedSources.from(sourceSets.getByName("1219").kotlin.srcDirs)
     arg("meowdding.modules.project_name", project.name)
     arg("meowdding.modules.package", "me.owdding.skyblockpv.generated")
     arg("meowdding.codecs.project_name", project.name)

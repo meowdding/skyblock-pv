@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.utils
 
 import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
-import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import kotlinx.coroutines.async
@@ -11,14 +10,13 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.toColumn
+import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.accessor.RenderPipelineBuilderAccessor
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
-import me.owdding.skyblockpv.utils.render.TextShader
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
@@ -27,13 +25,12 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.block.entity.SkullBlockEntity
-import net.msrandom.stub.Stub
 import org.joml.Matrix3x2f
 import org.joml.Matrix3x2fStack
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
+import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
@@ -46,12 +43,13 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.jvm.optionals.getOrNull
 
-@Stub
 expect fun GuiGraphics.drawRoundedRec(
     x: Int, y: Int, width: Int, height: Int,
     backgroundColor: Int, borderColor: Int = backgroundColor,
     borderSize: Int = 0, radius: Int = 0,
 )
+
+internal expect fun fetchGameProfile(username: String): CompletableFuture<Optional<GameProfile>>
 
 object Utils {
 
@@ -75,11 +73,10 @@ object Utils {
         PlayerDbAPI.getProfile(username).takeUnless { it?.id == Util.NIL_UUID }?.let {
             callback(it)
             isFetchingGameProfile = false
+        } ?: fetchGameProfile(username).thenAccept { profile ->
+            callback(profile.getOrNull())
+            isFetchingGameProfile = false
         }
-            ?: SkullBlockEntity.fetchGameProfile(username).thenAccept { profile ->
-                callback(profile.getOrNull())
-                isFetchingGameProfile = false
-            }
     }
 
     fun openMainScreen(name: String) = fetchGameProfile(name) { profile ->
@@ -181,10 +178,4 @@ object Utils {
     fun <T : Any> JsonElement?.toDataOrThrow(codec: MapCodec<T>): T = this.toDataOrThrow(codec.codec())
 
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
-
-    fun RenderPipeline.Builder.withShaderDefine(name: String, array: IntArray): RenderPipeline.Builder {
-        val accessor = this as RenderPipelineBuilderAccessor
-        accessor.`skyblockpv$define`(name, "int[](${array.joinToString(", ") { it.toString() }})")
-        return this
-    }
 }

@@ -6,21 +6,24 @@ import com.teamresourceful.resourcefulconfig.api.types.elements.ResourcefulConfi
 import com.teamresourceful.resourcefulconfig.api.types.entries.ResourcefulConfigValueEntry
 import com.teamresourceful.resourcefulconfig.client.UIConstants
 import com.teamresourceful.resourcefulconfig.client.components.ModSprites
-import com.teamresourceful.resourcefulconfig.client.components.base.BaseWidget
 import com.teamresourceful.resourcefulconfig.client.components.base.ListWidget
 import com.teamresourceful.resourcefulconfig.client.components.base.SpriteButton
-import com.teamresourceful.resourcefulconfig.client.screens.base.OverlayScreen
-import tech.thatgravyboat.skyblockapi.platform.drawSprite
+import me.owdding.lib.platform.screens.BaseWidget
+import me.owdding.lib.platform.screens.MouseButtonEvent
+import me.owdding.lib.platform.screens.Overlay
 import me.owdding.skyblockpv.SkyBlockPv.id
+import me.owdding.skyblockpv.screens.DisplayTest.getChildAt
 import me.owdding.skyblockpv.utils.theme.ThemeHelper
-import me.owdding.skyblockpv.utils.theme.ThemeLoader
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.ChatComponent.getHeight
+import net.minecraft.client.gui.components.ChatComponent.getWidth
 import net.minecraft.client.gui.navigation.ScreenRectangle
-import net.minecraft.client.renderer.RenderType
+import net.minecraft.core.SectionPos.y
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.platform.drawSprite
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.util.function.Consumer
 import java.util.function.Supplier
@@ -67,8 +70,8 @@ class ThemeWidget(
         )
         renderScrollingString(
             graphics,
-            this.font,
-            Text.translatable(ThemeLoader.themes.entries.firstOrNull { (key) -> key.toString() == this.getter.get() }?.value?.name ?: "Unknown"),
+            McClient.self.font,
+            Text.translatable(ThemeHelper.themes.entries.firstOrNull { (key) -> key.toString() == this.getter.get() }?.value?.name ?: "Unknown"),
             x + 4,
             y + 4,
             x + getWidth() - 16,
@@ -84,14 +87,14 @@ class ThemeWidget(
         )
     }
 
-    override fun onClick(d: Double, e: Double) {
+    override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {
         Minecraft.getInstance().setScreen(DropdownOverlay(this))
     }
 
-    class DropdownOverlay(private val widget: ThemeWidget) : OverlayScreen(Minecraft.getInstance().screen) {
+    class DropdownOverlay(private val widget: ThemeWidget) : Overlay(Minecraft.getInstance().screen) {
         override fun init() {
             val list: DropdownList = addRenderableWidget(DropdownList.Companion.of(widget))
-            for ((option, theme) in ThemeLoader.themes) {
+            for ((option, theme) in ThemeHelper.themes) {
                 list.add(
                     DropdownItem(
                         option.toString(),
@@ -104,12 +107,12 @@ class ThemeWidget(
             }
         }
 
-        override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-            if (getChildAt(mouseX, mouseY).isEmpty) {
+        override fun mouseClicked(mouseEvent: MouseButtonEvent, doubleClicked: Boolean): Boolean {
+            if (getChildAt(mouseEvent.x, mouseEvent.y).isEmpty) {
                 this.onClose()
                 return true
             }
-            return super.mouseClicked(mouseX, mouseY, button)
+            return super.mouseClicked(mouseEvent, doubleClicked)
         }
     }
 
@@ -157,14 +160,14 @@ class ThemeWidget(
             )
             val color = if (this.isHovered()) UIConstants.TEXT_TITLE else UIConstants.TEXT_PARAGRAPH
             renderScrollingString(
-                graphics, this.font, Text.translatable(translationKey),
+                graphics, McClient.self.font, Text.translatable(translationKey),
                 x + 4, y + 1,
                 x + getWidth() - 4, y + getHeight() - 1,
                 color,
             )
         }
 
-        override fun onClick(mouseX: Double, e: Double) {
+        override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {
             this.setter.accept(this.option)
         }
 

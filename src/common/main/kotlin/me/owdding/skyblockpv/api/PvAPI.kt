@@ -32,7 +32,7 @@ object PvAPI {
             val server = UUID.randomUUID().toString()
             val user = McClient.self.user
 
-            McClient.self.minecraftSessionService.joinServer(user.profileId, user.accessToken, server)
+            McClient.sessionService.joinServer(user.profileId, user.accessToken, server)
 
             val response = Http.get(
                 url = API_URL.format("/authenticate"),

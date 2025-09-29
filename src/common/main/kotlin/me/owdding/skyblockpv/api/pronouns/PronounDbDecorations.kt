@@ -1,11 +1,11 @@
 package me.owdding.skyblockpv.api.pronouns
 
 import com.mojang.serialization.Codec
+import me.owdding.lib.rendering.text.TextShader
+import me.owdding.lib.rendering.text.builtin.GradientTextShader
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
-import me.owdding.skyblockpv.utils.render.GradientTextShader
-import me.owdding.skyblockpv.utils.render.TextShader
 import net.minecraft.network.chat.TextColor
 
 @LoadData

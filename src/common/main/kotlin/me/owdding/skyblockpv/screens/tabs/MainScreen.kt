@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
-import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
@@ -52,10 +51,10 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
-import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.platform.id
+import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -229,7 +228,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             gr.pushPop {
                 Displays.entity(
-                    if (GLFW.glfwGetMouseButton(McClient.window.window, InputConstants.MOUSE_BUTTON_RIGHT) == 1 && isHovered) {
+                    if (false) {
                         nakedFakePlayer
                     } else {
                         fakePlayer

@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.utils.render
 
 import earth.terrarium.olympus.client.utils.Orientation
+import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.utils.render.inventory.InventoryTextureRender
 import net.minecraft.client.gui.GuiGraphics
 
