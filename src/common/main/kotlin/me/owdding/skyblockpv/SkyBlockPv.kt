@@ -68,6 +68,7 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
         config // used to instantiate the lazy :3
         ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
 
+        loadVersionSpecific()
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
         SkyBlockPVExtraData.collected.forEach {

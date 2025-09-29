@@ -9,6 +9,8 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.platform.GameProfile
+import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.utils.extentions.asUUID
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 import java.util.concurrent.CompletableFuture
@@ -38,13 +40,10 @@ object PlayerDbAPI {
             val name = player?.get("username")?.asString
 
             if (uuid != null) {
-                val profile = GameProfile(uuid, name)
-
                 val gson = GsonBuilder().registerTypeAdapter(PropertyMap::class.java, Serializer()).create()
                 val property = gson.fromJson(player.get("properties"), PropertyMap::class.java)
-                profile.properties.putAll(property)
 
-                profile
+                GameProfile(name ?: "meow", uuid, property)
             } else {
                 null
             }

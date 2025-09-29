@@ -48,7 +48,10 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
         equipment.set(EquipmentSlot.FEET, armor[0])
     }
 
+    override fun shouldShowName() = true
+
     fun setupRenderState(renderState: AvatarRenderState, partialTick: Float) {
+        renderState.nameTag = customDisplayName
         ContributorHandler.contributors[gameProfile.id]?.let {
             renderState.scoreText = it.title
             (renderState as PlayerRenderStateAccessor).`skyblockpv$scoreShader` = it.titleShader

@@ -12,27 +12,23 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer
 import net.minecraft.client.renderer.entity.state.AvatarRenderState
 import net.minecraft.client.renderer.entity.state.CatRenderState
 import net.minecraft.client.renderer.texture.OverlayTexture
+import net.minecraft.core.ClientAsset
 import net.minecraft.resources.ResourceLocation
 
 class CatOnShoulderLayer(renderer: RenderLayerParent<AvatarRenderState, PlayerModel>, modelSet: EntityModelSet) :
     RenderLayer<AvatarRenderState, PlayerModel>(renderer) {
-    private val catRenderState: CatRenderState = CatRenderState()
     private val model = CatModel(modelSet.bakeLayer(ModelLayers.CAT))
-
-    init {
-        this.catRenderState.isSitting = true
-    }
 
     override fun submit(
         poseStack: PoseStack,
         collector: SubmitNodeCollector,
         packedLight: Int,
-        renderState: AvatarRenderState?,
+        renderState: AvatarRenderState,
         yRot: Float,
         xRot: Float,
     ) {
         (renderState as PlayerRenderStateAccessor).`skyblockpv$catOnShoulder`?.let {
-            submitOnShoulder(poseStack, collector, packedLight, renderState, it.asset.id(), yRot, xRot, it.leftSide)
+            submitOnShoulder(poseStack, collector, packedLight, renderState, (it.asset as ClientAsset.Texture).texturePath(), yRot, xRot, it.leftSide)
         }
     }
 
@@ -48,13 +44,14 @@ class CatOnShoulderLayer(renderer: RenderLayerParent<AvatarRenderState, PlayerMo
     ) {
         poseStack.pushPose()
         poseStack.translate(if (leftShoulder) 0.4f else -0.4f, if (renderState.isCrouching) -1.3f else -1.5f, 0.2f)
-        this.catRenderState.ageInTicks = renderState.ageInTicks
-        this.catRenderState.walkAnimationPos = renderState.walkAnimationPos
-        this.catRenderState.walkAnimationSpeed = renderState.walkAnimationSpeed
-        this.catRenderState.yRot = yRot
-        this.catRenderState.xRot = xRot
-        this.model.setupAnim(this.catRenderState)
-        collector.submitModel(this.model, this.catRenderState, poseStack, this.model.renderType(variant), packedLight, OverlayTexture.NO_OVERLAY, -1, null)
+        val catRenderState: CatRenderState = CatRenderState()
+        catRenderState.isSitting = true
+        catRenderState.ageInTicks = renderState.ageInTicks
+        catRenderState.walkAnimationPos = renderState.walkAnimationPos
+        catRenderState.walkAnimationSpeed = renderState.walkAnimationSpeed
+        catRenderState.yRot = yRot
+        catRenderState.xRot = xRot
+        collector.submitModel(this.model, catRenderState, poseStack, this.model.renderType(variant), packedLight, OverlayTexture.NO_OVERLAY, 0, null)
         poseStack.popPose()
     }
 }
