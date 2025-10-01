@@ -133,7 +133,7 @@ cloche {
                 dependency("olympus", olympus.map { it.version!! })
                 dependency("placeholder-api", libs.versions.placeholders)
                 dependency("resourcefulconfigkt", rconfigkt.map { it.version!! })
-                //dependency("resourcefulconfig", rconfig.map { it.version!! })
+                dependency("resourcefulconfig", rconfig.map { it.version!! })
                 dependency("meowdding-lib", libs.versions.meowdding.lib)
             }
 
@@ -142,7 +142,6 @@ cloche {
                 modImplementation(olympus)
                 modImplementation(rconfig)
                 modImplementation(rconfigkt)
-
 
                 include(libs.skyblockapi)
                 include(libs.meowdding.lib)
@@ -172,6 +171,8 @@ cloche {
     }
     createVersion("1.21.8", minecraftVersionRange = {
         start = "1.21.6"
+        end = "1.21.8"
+        endExclusive = false
     }) {
         this["resourcefullib"] = libs.resourceful.lib1218
         this["resourcefulconfig"] = libs.resourceful.config1218

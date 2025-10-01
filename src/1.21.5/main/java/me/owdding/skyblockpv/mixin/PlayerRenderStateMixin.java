@@ -1,8 +1,8 @@
 package me.owdding.skyblockpv.mixin;
 
+import me.owdding.lib.rendering.text.TextShader;
 import me.owdding.skyblockpv.utils.CatOnShoulder;
 import me.owdding.skyblockpv.utils.PlayerRenderStateAccessor;
-import me.owdding.skyblockpv.utils.render.TextShader;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
