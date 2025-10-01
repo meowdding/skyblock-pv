@@ -159,7 +159,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
         createProfileDropdown(bg).let {
             it.applyLayout()
 
-            if (!Config.socials) return
+            if (!Config.socials) return@let
             val button = createSocialDropdown()
             button.setPosition(it.x + it.width + 5, it.y)
             button.applyLayout()

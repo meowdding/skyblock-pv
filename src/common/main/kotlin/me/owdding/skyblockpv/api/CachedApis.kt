@@ -55,7 +55,7 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
     }
 }
 
-object PlayerAPI : CachedApi<UUID, HypixelPlayer, UUID>() {
+object PlayerAPI : CachedApi<UUID, HypixelPlayer, UUID>(Long.MAX_VALUE) {
     override fun path(data: UUID) = "/player/$data"
     override fun decode(data: JsonObject, originalData: UUID): HypixelPlayer = HypixelPlayer.fromJson(data)
     override fun getKey(data: UUID) = data
