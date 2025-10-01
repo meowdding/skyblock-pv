@@ -13,7 +13,6 @@ import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutSettings
-import net.minecraft.core.SectionPos.y
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.platform.drawString
 import tech.thatgravyboat.skyblockapi.platform.pushPop

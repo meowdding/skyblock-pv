@@ -12,15 +12,11 @@ import me.owdding.lib.platform.screens.BaseWidget
 import me.owdding.lib.platform.screens.MouseButtonEvent
 import me.owdding.lib.platform.screens.Overlay
 import me.owdding.skyblockpv.SkyBlockPv.id
-import me.owdding.skyblockpv.screens.DisplayTest.getChildAt
 import me.owdding.skyblockpv.utils.theme.ThemeHelper
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.client.gui.components.ChatComponent.getHeight
-import net.minecraft.client.gui.components.ChatComponent.getWidth
 import net.minecraft.client.gui.navigation.ScreenRectangle
-import net.minecraft.core.SectionPos.y
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.drawSprite
