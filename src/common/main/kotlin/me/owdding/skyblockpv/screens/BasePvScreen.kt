@@ -27,8 +27,8 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.PlayerAPI
 import me.owdding.skyblockpv.api.ProfileAPI
-import me.owdding.skyblockpv.api.data.HypixelPlayer
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.SocialEntry
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.elements.ExtraConstants
@@ -409,7 +409,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     private fun createSocialDropdown(): LayoutElement {
         val entries = listOf(
-            HypixelPlayer.Companion.SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}"),
+            SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}"),
             *PlayerAPI.getCached(gameProfile.id)?.socials?.map { it.key.toEntry(it.value) }.orEmpty().toTypedArray(),
         )
 
