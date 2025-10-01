@@ -10,11 +10,12 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.PlayerModelPart
+import net.minecraft.world.entity.player.PlayerSkin
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.component.ResolvableProfile
 import net.minecraft.world.phys.Vec3
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.pushPop
-import tech.thatgravyboat.skyblockapi.platform.toResolvableProfile
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -39,19 +40,28 @@ actual fun FakePlayer(gameProfile: GameProfile, customDisplayName: Component, ar
 
 class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val customDisplayName: Component) :
     ClientMannequin(McClient.self.level!!, McClient.self.playerSkinRenderCache()) {
-    val _profile = gameProfile.toResolvableProfile()
+    private val _profile = ResolvableProfile.createResolved(gameProfile).apply {
+        this.resolveProfile(McClient.self.services().profileResolver)
+    }
+    private var _skin: PlayerSkin = DEFAULT_SKIN
 
     init {
         equipment.set(EquipmentSlot.HEAD, armor[3])
         equipment.set(EquipmentSlot.CHEST, armor[2])
         equipment.set(EquipmentSlot.LEGS, armor[1])
         equipment.set(EquipmentSlot.FEET, armor[0])
+        McClient.self.playerSkinRenderCache().lookup(_profile).whenComplete { skin, _ ->
+            skin.ifPresent { skin ->
+                _skin = skin.playerSkin()
+            }
+        }
     }
 
     override fun shouldShowName() = true
 
     fun setupRenderState(renderState: AvatarRenderState, partialTick: Float) {
         renderState.nameTag = customDisplayName
+        renderState.scoreText = null
         ContributorHandler.contributors[gameProfile.id]?.let {
             renderState.scoreText = it.title
             (renderState as PlayerRenderStateAccessor).`skyblockpv$scoreShader` = it.titleShader
@@ -71,9 +81,9 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
         }
     }
 
-    override fun getProfile() = _profile
-
+    override fun getProfile(): ResolvableProfile = _profile
     override fun getDisplayName(): Component? = customDisplayName
+    override fun getSkin() = _skin
 
     override fun isModelPartShown(part: PlayerModelPart) = part != PlayerModelPart.CAPE
 

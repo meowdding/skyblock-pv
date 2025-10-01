@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.screens.tabs
 
 import com.mojang.authlib.GameProfile
+import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
@@ -12,6 +13,7 @@ import me.owdding.lib.extensions.floor
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.layouts.setPos
+import me.owdding.lib.utils.keys
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
@@ -67,6 +69,10 @@ import java.text.SimpleDateFormat
 
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
+
+    private val rightClick = keys {
+        withButton(InputConstants.MOUSE_BUTTON_RIGHT)
+    }
 
     private var cachedX = 0.0F
     private var cachedY = 0.0F
@@ -228,7 +234,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             gr.pushPop {
                 Displays.entity(
-                    if (false) {
+                    if (rightClick.isDown() && isHovered) {
                         nakedFakePlayer
                     } else {
                         fakePlayer
