@@ -139,9 +139,10 @@ cloche {
 
             dependencies {
                 fabricApi(fabricApiVersion, minecraftVersion)
-                modImplementation(olympus)
-                modImplementation(rconfig)
-                modImplementation(rconfigkt)
+                modImplementation(olympus) { isTransitive = false }
+                modImplementation(rlib) { isTransitive = false }
+                modImplementation(rconfig) { isTransitive = false }
+                modImplementation(rconfigkt) { isTransitive = false }
 
                 include(libs.skyblockapi)
                 include(libs.meowdding.lib)
