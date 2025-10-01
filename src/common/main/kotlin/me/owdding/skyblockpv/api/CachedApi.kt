@@ -17,7 +17,7 @@ import kotlin.io.path.writeText
 
 const val CACHE_TIME = 5 * 60 * 1000L // 5 minutes
 
-abstract class CachedApi<D, V, K> {
+abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
 
     private val cache: MutableMap<K, CacheEntry<Result<V>>> = mutableMapOf()
 
@@ -25,7 +25,7 @@ abstract class CachedApi<D, V, K> {
      * Gets the cached data if it exists and is not expired.
      */
     fun getCached(data: D): V? = cache[getKey(data)]
-        ?.takeIf { System.currentTimeMillis() - it.timestamp < CACHE_TIME }
+        ?.takeIf { System.currentTimeMillis() - it.timestamp < maxCache }
         ?.data
         ?.getOrNull()
 
@@ -72,7 +72,7 @@ abstract class CachedApi<D, V, K> {
 
                 output
             },
-            expire.toEpochMilliseconds() - CACHE_TIME,
+            expire.toEpochMilliseconds() - maxCache,
         )
     }.takeUnless { it.isExpired() }?.data ?: run {
         cache.remove(getKey(data))
@@ -87,10 +87,10 @@ abstract class CachedApi<D, V, K> {
         cache.clear()
     }
 
-    internal class CacheEntry<T>(
+    internal inner class CacheEntry<T>(
         val data: T,
         val timestamp: Long = System.currentTimeMillis(),
     ) {
-        fun isExpired() = System.currentTimeMillis() - timestamp >= CACHE_TIME
+        fun isExpired() = System.currentTimeMillis() - timestamp >= maxCache
     }
 }
