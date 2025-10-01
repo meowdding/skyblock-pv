@@ -8,13 +8,13 @@ import net.minecraft.resources.ResourceLocation
 
 object ThemeSupport {
 
-    val currentTheme: PvTheme get() = ThemeLoader.themes[Config.theme] ?: ThemeHelper.fallbackTheme
+    val currentTheme: PvTheme get() = ThemeHelper.themes[Config.theme] ?: ThemeHelper.fallbackTheme
 
     val pvColors get() = currentTheme.colors
     val pvTextures get() = currentTheme.textures
 
     fun nextTheme() {
-        val themes = ThemeLoader.themes.keys.toList()
+        val themes = ThemeHelper.themes.keys.toList()
         Config.theme = themes[(themes.indexOf(Config.theme) + 1) % themes.size]
     }
 

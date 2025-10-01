@@ -2,15 +2,14 @@
 
 import com.google.devtools.ksp.gradle.KspTask
 import earth.terrarium.cloche.api.metadata.ModMetadata
+import me.owdding.gradle.dependency
 import net.msrandom.minecraftcodev.core.utils.toPath
 import net.msrandom.minecraftcodev.fabric.task.JarInJar
-import net.msrandom.minecraftcodev.runs.task.WriteClasspathFile
 import net.msrandom.stubs.GenerateStubApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import kotlin.io.path.readText
-import kotlin.io.path.writeText
+import kotlin.io.path.exists
 
 plugins {
     idea
@@ -21,6 +20,7 @@ plugins {
     alias(libs.plugins.terrarium.multiplatform)
     alias(libs.plugins.meowdding.repo)
     alias(libs.plugins.meowdding.resources)
+    alias(libs.plugins.meowdding.gradle)
     alias(libs.plugins.kotlin.symbol.processor)
 }
 
@@ -103,35 +103,21 @@ cloche {
             includedClient()
             minecraftVersion = version
             this.loaderVersion = loaderVersion.get()
-            accessWideners.from("src/$name/skyblock-pv.${sourceSet.name}.accesswidener")
+            val accessWidenerFile = layout.projectDirectory.file("src/$name/skyblock-pv.${sourceSet.name}.accesswidener")
+            val mixinFile = layout.projectDirectory.file("src/mixins/skyblock-pv.${sourceSet.name}.mixins.json")
 
-            //include(libs.hypixelapi) included in sbapi
-            include(libs.skyblockapi)
-            include(libs.meowdding.lib)
-            include(rlib)
-            include(rconfigkt)
-            include(rconfig)
-            include(olympus)
-            include(libs.placeholders)
-            include(libs.keval)
-            include(libs.mixinconstraints)
-            //include(libs.repolib) included in sbapi
-            mixins.from("src/mixins/skyblock-pv.${sourceSet.name}.mixins.json")
+            if (accessWidenerFile.toPath().exists()) {
+                accessWideners.from(accessWidenerFile)
+            }
+
+            if (mixinFile.toPath().exists()) {
+                mixins.from(mixinFile)
+            }
 
             metadata {
                 entrypoint("client") {
                     adapter = "kotlin"
                     value = "me.owdding.skyblockpv.SkyBlockPv"
-                }
-
-                fun dependency(modId: String, version: Provider<String>? = null) {
-                    dependency {
-                        this.modId = modId
-                        this.required = true
-                        if (version != null) version {
-                            this.start = version
-                        }
-                    }
                 }
 
                 dependency {
@@ -156,6 +142,16 @@ cloche {
                 modImplementation(olympus)
                 modImplementation(rconfig)
                 modImplementation(rconfigkt)
+
+                include(libs.skyblockapi)
+                include(libs.meowdding.lib)
+                include(rlib)
+                include(rconfigkt)
+                include(rconfig)
+                include(olympus)
+                include(libs.placeholders)
+                include(libs.keval)
+                include(libs.mixinconstraints)
             }
 
             runs {
@@ -175,19 +171,44 @@ cloche {
     }
     createVersion("1.21.8", minecraftVersionRange = {
         start = "1.21.6"
+        end = "1.21.8"
+        endExclusive = false
     }) {
         this["resourcefullib"] = libs.resourceful.lib1218
         this["resourcefulconfig"] = libs.resourceful.config1218
         this["resourcefulconfigkt"] = libs.resourceful.configkt1218
         this["olympus"] = libs.olympus.lib1218
     }
+    createVersion("1.21.9", fabricApiVersion = provider { "0.133.7" }) {
+        this["resourcefullib"] = libs.resourceful.lib1219
+        this["resourcefulconfig"] = libs.resourceful.config1219
+        this["resourcefulconfigkt"] = libs.resourceful.configkt1219
+        this["olympus"] = libs.olympus.lib1219
+    }
 
     mappings { official() }
 }
 
 tasks.named("createCommonApiStub", GenerateStubApi::class).configure {
-    excludes.add(libs.skyblockapi.get().module.toString())
-    excludes.add(libs.meowdding.lib.get().module.toString())
+    excludes.addAll(
+        "org.jetbrains.kotlin",
+        "me.owdding",
+        "net.hypixel",
+        "maven.modrinth",
+        "com.fasterxml.jackson",
+        "com.google",
+        "com.ibm",
+        "io.netty",
+        "net.fabricmc:fabric-language-kotlin",
+        "com.mojang:datafixerupper",
+        "com.mojang:brigardier",
+        "io.github.llamalad7:mixinextras",
+        "net.minidev",
+        "com.nimbusds",
+        "tech.thatgravyboat",
+        "net.msrandom",
+        "eu.pb4"
+    )
 }
 
 repositories {
@@ -204,14 +225,6 @@ repositories {
 
 tasks.withType<ProcessResources>().configureEach {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-    filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
-        filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
-    }
-
-    with(copySpec {
-        from("src/lang").include("*.json").into("assets/skyblock-pv/lang")
-    })
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -270,69 +283,15 @@ afterEvaluate {
     }
 }
 
-sourceSets {
-    getByName("main") {
-        resources.srcDir(project.layout.projectDirectory.dir("src/resources"))
-    }
-}
-
-ksp {
-    this@ksp.excludedSources.from(sourceSets.getByName("1215").kotlin.srcDirs)
-    this@ksp.excludedSources.from(sourceSets.getByName("1218").kotlin.srcDirs)
-    arg("meowdding.modules.project_name", project.name)
-    arg("meowdding.modules.package", "me.owdding.skyblockpv.generated")
-    arg("meowdding.codecs.project_name", project.name)
-    arg("meowdding.codecs.package", "me.owdding.skyblockpv.generated")
-}
-
-// TODO temporary workaround for a cloche issue on certain systems, remove once fixed
-tasks.withType<WriteClasspathFile>().configureEach {
-    actions.clear()
-    actions.add {
-        generate()
-        val file = output.get().toPath()
-        file.writeText(file.readText().lines().joinToString(File.pathSeparator))
-    }
-}
-
-val mcVersions = sourceSets.filterNot { it.name == SourceSet.MAIN_SOURCE_SET_NAME || it.name == SourceSet.TEST_SOURCE_SET_NAME }.map { it.name }
-
-tasks.register("release") {
-    group = "meowdding"
-    mcVersions.forEach {
-        tasks.findByName("${it}JarInJar")?.let { task ->
-            dependsOn(task)
-            mustRunAfter(task)
-        }
-    }
-}
-
-tasks.register("cleanRelease") {
-    group = "meowdding"
-    listOf("clean", "release").forEach {
-        tasks.getByName(it).let { task ->
-            dependsOn(task)
-            mustRunAfter(task)
-        }
-    }
-}
-
 tasks.withType<JarInJar>().configureEach {
-    include { !it.name.endsWith("-dev.jar") }
     archiveBaseName = "SkyBlockPv"
-
-    manifest {
-        attributes["Fabric-Loom-Mixin-Remap-Type"] = "static"
-        attributes["Fabric-Jar-Type"] = "classes"
-        attributes["Fabric-Mapping-Namespace"] = "intermediary"
-    }
 }
 
-tasks.register("setupForWorkflows") {
-    mcVersions.flatMap {
-        listOf("remap${it}CommonMinecraftNamed", "remap${it}ClientMinecraftNamed")
-    }.mapNotNull { tasks.findByName(it) }.forEach {
-        dependsOn(it)
-        mustRunAfter(it)
-    }
+meowdding {
+    generatedPackage = "me.owdding.skyblockpv.generated"
+
+    setupClocheClasspathFix()
+    hasAccessWideners = true
+    configureCodecs = true
+    configureModules = true
 }

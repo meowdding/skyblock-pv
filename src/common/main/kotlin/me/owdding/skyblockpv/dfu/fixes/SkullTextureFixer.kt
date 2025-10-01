@@ -1,14 +1,13 @@
 package me.owdding.skyblockpv.dfu.fixes
 
 import com.mojang.authlib.properties.Property
-import com.mojang.authlib.properties.PropertyMap
 import me.owdding.skyblockpv.dfu.DataComponentFixer
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.component.ResolvableProfile
+import tech.thatgravyboat.skyblockapi.platform.ResolvableProfile
 import tech.thatgravyboat.skyblockapi.utils.extentions.getStringOrNull
-import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 object SkullTextureFixer : DataComponentFixer<ResolvableProfile> {
@@ -26,12 +25,9 @@ object SkullTextureFixer : DataComponentFixer<ResolvableProfile> {
         val texture = textures.first().asCompound().getOrNull()?.getStringOrNull("Value") ?: return null
 
         return cache.getOrPut(texture) {
-            ResolvableProfile(
-                Optional.empty(), Optional.empty(),
-                PropertyMap().apply {
-                    put("textures", Property("textures", texture))
-                },
-            )
+            ResolvableProfile {
+                put("textures", Property("textures", texture))
+            }
         }
     }
 }

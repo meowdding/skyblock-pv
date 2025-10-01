@@ -45,6 +45,8 @@ import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
+internal expect fun loadVersionSpecific()
+
 @Module
 object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
     const val MOD_ID: String = "skyblockpv"
@@ -66,6 +68,7 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
         config // used to instantiate the lazy :3
         ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
 
+        loadVersionSpecific()
         SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
 
         SkyBlockPVExtraData.collected.forEach {

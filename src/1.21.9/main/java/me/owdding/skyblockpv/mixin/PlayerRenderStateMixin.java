@@ -1,14 +1,14 @@
 package me.owdding.skyblockpv.mixin;
 
+import me.owdding.lib.rendering.text.TextShader;
 import me.owdding.skyblockpv.utils.CatOnShoulder;
 import me.owdding.skyblockpv.utils.PlayerRenderStateAccessor;
-import me.owdding.skyblockpv.utils.render.TextShader;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(PlayerRenderState.class)
+@Mixin(AvatarRenderState.class)
 public class PlayerRenderStateMixin implements PlayerRenderStateAccessor {
 
     @Unique

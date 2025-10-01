@@ -14,8 +14,8 @@ import com.mojang.blaze3d.vertex.Tesselator
 import com.mojang.blaze3d.vertex.VertexFormat
 import earth.terrarium.olympus.client.pipelines.PipelineRenderer
 import earth.terrarium.olympus.client.utils.Orientation
+import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.utils.render.TextShader
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines

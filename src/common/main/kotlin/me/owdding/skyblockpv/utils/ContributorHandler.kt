@@ -4,8 +4,8 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
+import me.owdding.lib.rendering.text.builtin.GradientTextShader
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
-import me.owdding.skyblockpv.utils.render.GradientTextShader
 import net.minecraft.core.ClientAsset
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor

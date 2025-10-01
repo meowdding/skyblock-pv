@@ -13,6 +13,7 @@ import me.owdding.lib.extensions.floor
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.layouts.setPos
+import me.owdding.lib.utils.keys
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
@@ -52,10 +53,10 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
-import org.lwjgl.glfw.GLFW
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.platform.id
+import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -68,6 +69,10 @@ import java.text.SimpleDateFormat
 
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvScreen("MAIN", gameProfile, profile) {
+
+    private val rightClick = keys {
+        withButton(InputConstants.MOUSE_BUTTON_RIGHT)
+    }
 
     private var cachedX = 0.0F
     private var cachedY = 0.0F
@@ -229,7 +234,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
             gr.pushPop {
                 Displays.entity(
-                    if (GLFW.glfwGetMouseButton(McClient.window.window, InputConstants.MOUSE_BUTTON_RIGHT) == 1 && isHovered) {
+                    if (rightClick.isDown() && isHovered) {
                         nakedFakePlayer
                     } else {
                         fakePlayer

@@ -57,6 +57,8 @@ import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
+import tech.thatgravyboat.skyblockapi.platform.id
+import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -365,7 +367,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     private fun createProfileDropdown(bg: DisplayWidget): LayoutElement {
         val width = 100
 
-        val dropdownState = DropdownState<SkyBlockProfile>.of<SkyBlockProfile>(profile)
+        val dropdownState = DropdownState<SkyBlockProfile>.of(profile)
         val dropdown = Widgets.dropdown(
             dropdownState,
             profiles,
