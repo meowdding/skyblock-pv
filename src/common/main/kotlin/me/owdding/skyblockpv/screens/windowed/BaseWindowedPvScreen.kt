@@ -52,7 +52,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
 private const val ASPECT_RATIO = 16.0 / 9.0
 
-abstract class BasePvWindowedScreen(name: String, gameProfile: GameProfile, profile: SkyBlockProfile?) : BasePvScreen(name, gameProfile, profile) {
+abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, profile: SkyBlockProfile?) : BasePvScreen(name, gameProfile, profile) {
 
     override val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
     override val uiHeight get() = (this.height * 0.65).toInt()
@@ -123,7 +123,7 @@ abstract class BasePvWindowedScreen(name: String, gameProfile: GameProfile, prof
             .withSize(20, 20)
             .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
             .withTexture(null)
-            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BasePvWindowedScreen) } }
+            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
             .withTooltip(+"widgets.open_settings")
 
         val themeSwitcher = Widgets.button()
@@ -147,10 +147,10 @@ abstract class BasePvWindowedScreen(name: String, gameProfile: GameProfile, prof
             .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
             .withSize(60, 20)
             .withTexture(ExtraConstants.BUTTON_DARK)
-            .withCallback { this@BasePvWindowedScreen.safelyRebuild() }
+            .withCallback { this@BaseWindowedPvScreen.safelyRebuild() }
 
         val hoverText = Text.multiline(
-            "Screen: ${this@BasePvWindowedScreen.width}x${this@BasePvWindowedScreen.height}",
+            "Screen: ${this@BaseWindowedPvScreen.width}x${this@BaseWindowedPvScreen.height}",
             "UI: ${uiWidth}x${uiHeight}",
             "BG: ${bg.width}x${bg.height}",
         )

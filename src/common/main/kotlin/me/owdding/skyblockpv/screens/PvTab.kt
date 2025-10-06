@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
-import me.owdding.skyblockpv.screens.windowed.BasePvWindowedScreen
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.ChocolateFactoryScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.FishingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.MainScreen
@@ -35,8 +35,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 enum class PvTab(
-    private val screen: KClass<out BasePvWindowedScreen>,
-    private val constructor: (GameProfile, SkyBlockProfile?) -> BasePvWindowedScreen,
+    private val screen: KClass<out BaseWindowedPvScreen>,
+    private val constructor: (GameProfile, SkyBlockProfile?) -> BaseWindowedPvScreen,
     private val icon: (GameProfile?) -> ItemStack,
     private val hideOnStranded: Boolean = false,
 ) {
@@ -60,7 +60,7 @@ enum class PvTab(
     ;
 
     constructor(
-        screen: KClass<out BasePvWindowedScreen>,
+        screen: KClass<out BaseWindowedPvScreen>,
         icon: ItemStack,
         hideOnStranded: Boolean = false,
     ) : this(
@@ -71,8 +71,8 @@ enum class PvTab(
     )
 
     constructor(
-        screen: KClass<out BasePvWindowedScreen>,
-        constructor: (GameProfile, SkyBlockProfile?) -> BasePvWindowedScreen,
+        screen: KClass<out BaseWindowedPvScreen>,
+        constructor: (GameProfile, SkyBlockProfile?) -> BaseWindowedPvScreen,
         icon: ItemStack,
         hideOnStranded: Boolean = false,
     ) : this(
@@ -92,7 +92,7 @@ enum class PvTab(
         else -> TriState.TRUE
     }
 
-    fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): BasePvWindowedScreen {
+    fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): BaseWindowedPvScreen {
         return constructor.invoke(gameProfile, profile)
     }
 

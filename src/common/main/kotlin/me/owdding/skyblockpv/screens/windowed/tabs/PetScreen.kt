@@ -17,7 +17,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.SortedEntry
 import me.owdding.skyblockpv.data.api.skills.Pet
-import me.owdding.skyblockpv.screens.windowed.BasePvWindowedScreen
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
@@ -32,7 +32,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
-class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvWindowedScreen("PETS", gameProfile, profile) {
+class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseWindowedPvScreen("PETS", gameProfile, profile) {
 
     private var selectedPet: Pet? = profile?.pets?.find { it.active }
 

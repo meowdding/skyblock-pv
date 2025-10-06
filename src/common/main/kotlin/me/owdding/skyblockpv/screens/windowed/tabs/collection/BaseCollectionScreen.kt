@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.collection
 
 import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
-import me.owdding.skyblockpv.screens.windowed.BasePvWindowedScreen
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import net.minecraft.world.item.ItemStack
@@ -37,7 +37,7 @@ enum class CollectionCategories(val screen: KClass<out BaseCollectionScreen>, ov
             } else return@let it::class.isSubclassOf(screen)
         } == true
 
-    override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BasePvWindowedScreen =
+    override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BaseWindowedPvScreen =
         if (screen == CommonCollectionScreen::class) CommonCollectionScreen(gameProfile, profile, this.name) else screen.constructors.first()
             .call(gameProfile, profile)
 
@@ -51,7 +51,7 @@ enum class CollectionCategories(val screen: KClass<out BaseCollectionScreen>, ov
 
     companion object {
 
-        fun createScreen(gameProfile: GameProfile, profile: SkyBlockProfile?): BasePvWindowedScreen {
+        fun createScreen(gameProfile: GameProfile, profile: SkyBlockProfile?): BaseWindowedPvScreen {
             if (profile?.collections == null) {
                 return MINION.create(gameProfile, profile)
             }

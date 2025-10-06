@@ -12,7 +12,7 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.api.skills.*
 import me.owdding.skyblockpv.data.repo.EssenceData.addFishingPerk
-import me.owdding.skyblockpv.screens.windowed.BasePvWindowedScreen
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.text
 import me.owdding.skyblockpv.utils.Utils.whiteText
@@ -37,7 +37,7 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 
 class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
-    BasePvWindowedScreen("Fishing", gameProfile, profile) {
+    BaseWindowedPvScreen("Fishing", gameProfile, profile) {
 
     private val numberFormatInstance = DecimalFormat.getCompactNumberInstance().apply {
         this.roundingMode = RoundingMode.FLOOR

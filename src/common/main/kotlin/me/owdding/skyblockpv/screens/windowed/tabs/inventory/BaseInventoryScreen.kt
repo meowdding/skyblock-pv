@@ -8,7 +8,7 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
-import me.owdding.skyblockpv.screens.windowed.BasePvWindowedScreen
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import me.owdding.skyblockpv.utils.components.CarouselWidget
@@ -20,7 +20,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-enum class InventoryCategory(val screen: KClass<out BasePvWindowedScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
+enum class InventoryCategory(val screen: KClass<out BaseWindowedPvScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
     INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
     ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
     BACKPACK(BackpackScreen::class, SkullTextures.BACKPACK.skull),

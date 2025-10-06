@@ -10,7 +10,7 @@ import me.owdding.lib.layouts.Scalable
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
-import me.owdding.skyblockpv.screens.windowed.BasePvWindowedScreen
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.client.gui.layouts.FrameLayout
@@ -23,7 +23,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text.asComponent
 import kotlin.math.min
 
 abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
-    BasePvWindowedScreen(name, gameProfile, profile) {
+    BaseWindowedPvScreen(name, gameProfile, profile) {
 
     abstract val categories: List<Category>
 

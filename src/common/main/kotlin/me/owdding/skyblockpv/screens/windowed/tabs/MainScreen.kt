@@ -25,7 +25,7 @@ import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
 import me.owdding.skyblockpv.screens.PvTab
-import me.owdding.skyblockpv.screens.windowed.BasePvWindowedScreen
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
 import me.owdding.skyblockpv.utils.FakePlayer
@@ -68,7 +68,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
 
 
-class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvWindowedScreen("MAIN", gameProfile, profile) {
+class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseWindowedPvScreen("MAIN", gameProfile, profile) {
 
     private val rightClick = keys {
         withButton(InputConstants.MOUSE_BUTTON_RIGHT)

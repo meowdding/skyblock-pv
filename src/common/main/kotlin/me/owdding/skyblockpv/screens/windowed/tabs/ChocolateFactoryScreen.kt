@@ -12,7 +12,7 @@ import me.owdding.skyblockpv.data.api.CfData
 import me.owdding.skyblockpv.data.api.RabbitEmployee
 import me.owdding.skyblockpv.data.repo.CfCodecs
 import me.owdding.skyblockpv.data.repo.SkullTextures
-import me.owdding.skyblockpv.screens.windowed.BasePvWindowedScreen
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -34,7 +34,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.split
 import java.time.Instant
 
-class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePvWindowedScreen("CHOCOLATE_FACTORY", gameProfile, profile) {
+class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseWindowedPvScreen("CHOCOLATE_FACTORY", gameProfile, profile) {
 
     override fun create(bg: DisplayWidget) {
         val cf = profile.chocolateFactoryData ?: return
