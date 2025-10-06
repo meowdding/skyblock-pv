@@ -327,7 +327,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
             if (!tab.isSelected()) {
                 button.withCallback { McClient.setScreenAsync { tab.create(gameProfile, profile) } }
             }
-            // Don't bother actually aligning the icon yet, design will change anyway :3
             button.withRenderer(
                 WidgetRenderers.layered(
                     WidgetRenderers.sprite(if (tab.isSelected()) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP),
@@ -412,6 +411,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     private fun createSocialDropdown(): LayoutElement {
         val entries = listOf(
             SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}"),
+            SocialEntry("EliteBot", "https://elitebot.dev/@${gameProfile.name}/${profile.id.name}"),
             *PlayerAPI.getCached(gameProfile.id)?.socials?.map { it.key.toEntry(it.value) }.orEmpty().toTypedArray(),
         )
 
