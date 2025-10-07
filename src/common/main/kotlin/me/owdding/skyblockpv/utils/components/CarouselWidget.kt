@@ -8,7 +8,7 @@ import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.platform.screens.BaseWidget
 import me.owdding.lib.platform.screens.MouseButtonEvent
-import me.owdding.skyblockpv.screens.elements.ExtraConstants
+import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout

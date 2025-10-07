@@ -142,8 +142,8 @@ cloche {
 
             dependencies {
                 fabricApi(fabricApiVersion, minecraftVersion)
+                modImplementation(rlib)
                 modImplementation(olympus) { isTransitive = false }
-                modImplementation(rlib) { isTransitive = false }
                 modImplementation(rconfig) { isTransitive = false }
                 modImplementation(rconfigkt) { isTransitive = false }
 
