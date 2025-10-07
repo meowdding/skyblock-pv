@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.owdding.lib.displays.Alignment
-import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
@@ -75,8 +74,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
     fun isProfileInitialized() = this::profile.isInitialized
     fun isProfileOfUser() = gameProfile.id == McPlayer.uuid
-
-    abstract fun create(bg: DisplayWidget)
 
     protected fun safelyRebuild() {
         if (this.minecraft == null) return

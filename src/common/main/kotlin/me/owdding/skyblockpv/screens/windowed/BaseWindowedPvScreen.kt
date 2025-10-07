@@ -57,6 +57,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
     override val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
     override val uiHeight get() = (this.height * 0.65).toInt()
 
+    abstract fun create(bg: DisplayWidget)
+
     override fun init() {
         val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
 
