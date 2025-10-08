@@ -1,15 +1,24 @@
 package me.owdding.skyblockpv.utils.components
 
 import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.Displays
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.ProfileId
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastManager
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 
-data class FailedToLoadToast(
+data class PvToast(
     private val display: Display,
     private val time: Int,
 ) : Toast {
@@ -35,15 +44,37 @@ data class FailedToLoadToast(
 
         private val failedToLoadForUsers = mutableMapOf<ProfileId, Long>()
 
-        fun add(
+        fun addFailedToLoadForUsers(
             profile: SkyBlockProfile,
-            display: Display,
+            disabledTabs: List<PvTab>,
             time: Int = 5000,
         ) {
             val lastTime = failedToLoadForUsers[profile.id]
             if (lastTime != null && System.currentTimeMillis() - lastTime < RESEND_TIME) return
             failedToLoadForUsers[profile.id] = System.currentTimeMillis()
-            McClient.toasts.addToast(FailedToLoadToast(display, time))
+            val display = Displays.background(
+                ThemeSupport.texture(SkyBlockPv.id("buttons/normal")),
+                Displays.padding(
+                    5,
+                    Displays.column(
+                        ExtraDisplays.component(+"messages.toast.disabled_tabs", shadow = false),
+                        "messages.toast.disabled_tabs.explanation".asTranslated(disabledTabs.joinToString(", ") { it.name.toTitleCase() })
+                            .multiLineDisplay(shadow = false),
+                    ),
+                ),
+            )
+            McClient.toasts.addToast(PvToast(display, time))
+        }
+
+        fun addSocialsCopiedToast(text: String, time: Int = 5000) {
+            val display = Displays.background(
+                ThemeSupport.texture(SkyBlockPv.id("buttons/normal")),
+                Displays.padding(
+                    5,
+                    ExtraDisplays.component("messages.toast.socials_copied".asTranslated(text), shadow = false),
+                ),
+            )
+            McClient.toasts.addToast(PvToast(display, time))
         }
     }
 }

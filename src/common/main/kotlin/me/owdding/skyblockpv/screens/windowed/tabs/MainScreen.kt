@@ -33,13 +33,11 @@ import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
-import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.plus
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
-import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
-import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays.grayText
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
@@ -466,21 +464,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             .filter { it.getTabState(profile) != TriState.TRUE }
             .filter { it.canDisplay(profile) }
         if (disabledTabs.isNotEmpty()) {
-            FailedToLoadToast.add(
-                profile,
-                Displays.background(
-                    ThemeSupport.texture(SkyBlockPv.id("buttons/normal")),
-                    Displays.padding(
-                        5,
-                        Displays.column(
-                            ExtraDisplays.component(+"messages.toast_disabled", shadow = false),
-                            "messages.toast_disabled.explanation".asTranslated(disabledTabs.joinToString(", ") { it.name.toTitleCase() })
-                                .multiLineDisplay(shadow = false),
-                        ),
-                    ),
-                ),
-                5000,
-            )
+            PvToast.addFailedToLoadForUsers(profile, disabledTabs)
         }
     }
 }

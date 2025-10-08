@@ -25,11 +25,11 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
-import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
@@ -293,7 +293,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                     if (it == null) return@withCallback
                     if (it.shouldCopy) {
                         McClient.clipboard = it.url
-                        "messages.socials_copy".asTranslated(it.url).sendWithPrefix()
+                        PvToast.addSocialsCopiedToast(it.url)
                     } else {
                         Util.getPlatform().openUri(it.url)
                     }
