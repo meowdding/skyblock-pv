@@ -50,16 +50,18 @@
         },
         "unknown_essence_perks": "<0> unknown essence perks.",
         "player_not_found": "<red>Player could not be found</red>",
-        "toast_disabled": {
-            "@value": "<pink>SbPv</pink><red>: Disabled Tabs on Profile</red>",
-            "explanation": [
-                "<red>Due to missing data or disabled apis,</red>",
-                "<red>the following tabs are disabled or altered:</red>",
-                "<red><0></red>"
-            ]
-        },
         "click_to_open_pv": "<yellow>Click to open <0>'s profile in SkyBlock Profile Viewer.</yellow>",
-        "socials_copy": "<green>Click to copy <0> to clipboard!</green>"
+        "toast": {
+            "disabled_tabs": {
+                "@value": "<pink>SbPv</pink><red>: Disabled Tabs on Profile</red>",
+                "explanation": [
+                    "<red>Due to missing data or disabled apis,</red>",
+                    "<red>the following tabs are disabled or altered:</red>",
+                    "<red><0></red>"
+                ]
+            },
+            "socials_copied": "<green>Copied <0> to clipboard!</green>"
+        }
     },
     "config": {
         "spying": {
