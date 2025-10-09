@@ -61,6 +61,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
@@ -341,6 +342,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 TooltipBuilder().apply {
                     add(skill.data.name) { this.color = PvColors.YELLOW }
                     add("Exp: ${num.shorten()}") { this.color = PvColors.GRAY }
+                    if (skill.id == "HUNTING" && num == 0L) { // TODO REMOVE
+                        add("Hypixel currently does not share your Hunting XP so we cant actually show a value") {
+                            color = TextColor.RED
+                        }
+                        add("This entry exists for when Hypixel finally adds it") {
+                            color = TextColor.RED
+                        }
+                    }
                     add {
                         append(+"screens.main.skills.progress")
                         this.color = PvColors.GRAY
