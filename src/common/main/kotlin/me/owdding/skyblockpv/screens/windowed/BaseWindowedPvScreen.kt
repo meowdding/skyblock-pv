@@ -31,7 +31,6 @@ import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
-import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
@@ -39,15 +38,12 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.util.TriState
-import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
 import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
 private const val ASPECT_RATIO = 16.0 / 9.0
@@ -98,7 +94,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
         createTabs().applyLayout(bg.x + 20, bg.y - 22)
         createSearch(bg).applyLayout()
-        createProfileDropdown(bg).let {
+        getProfileDropdown(bg).let {
             it.applyLayout()
 
             if (!Config.socials) return@let
@@ -230,49 +226,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         return username
     }
 
-    private fun createProfileDropdown(bg: DisplayWidget): LayoutElement {
-        val width = 100
-
-        val dropdownState = DropdownState<SkyBlockProfile>.of(profile)
-        val dropdown = Widgets.dropdown(
-            dropdownState,
-            profiles,
-            { profile ->
-                Text.of {
-                    color = PvColors.WHITE
-                    if (profile.selected) {
-                        underlined = true
-                        append("◆ ")
-                    } else {
-                        append("◇ ")
-                    }
-                    append(profile.id.name)
-                    append(
-                        when (profile.profileType) {
-                            ProfileType.NORMAL -> ""
-                            ProfileType.BINGO -> " §9Ⓑ"
-                            ProfileType.IRONMAN -> " ♻"
-                            ProfileType.STRANDED -> " §a☀"
-                            ProfileType.UNKNOWN -> " §c§ka"
-                        },
-                    )
-                }
-            },
-            { button -> button.withSize(width, 20) },
-            { builder ->
-                builder.withCallback { profile ->
-                    this.profile = profile ?: return@withCallback
-                    this.onProfileSwitch(profile)
-                    this.safelyRebuild()
-                }
-                builder.withAlignment(OverlayAlignment.TOP_LEFT)
-            },
-        ).apply {
-            withTexture(ExtraConstants.BUTTON_DARK)
-            setPosition(bg.x, bg.y + bg.height)
-        }
-
-        return dropdown
+    private fun getProfileDropdown(bg: DisplayWidget): LayoutElement = createProfileDropdown(100).apply {
+        setPosition(bg.x, bg.y + bg.height)
     }
 
     private fun createSocialDropdown(): LayoutElement {

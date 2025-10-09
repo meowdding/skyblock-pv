@@ -14,7 +14,7 @@ import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
-import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.screens.fullscreen.TestFullScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -91,7 +91,8 @@ object Utils {
             """.trimIndent(),
             )
         } else {
-            McClient.setScreenAsync { PvTab.MAIN.create(profile) }
+            //McClient.setScreenAsync { PvTab.MAIN.create(profile) }
+            McClient.setScreenAsync { TestFullScreen(profile, null) }
         }
     }
 

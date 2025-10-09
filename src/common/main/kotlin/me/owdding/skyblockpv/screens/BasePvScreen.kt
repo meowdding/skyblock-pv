@@ -5,7 +5,9 @@ import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.ui.OverlayAlignment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,11 +18,13 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerAPI
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.Util
 import net.minecraft.client.gui.layouts.FrameLayout
@@ -28,11 +32,15 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import java.lang.reflect.Type
 import java.nio.file.Files
 import java.util.concurrent.CompletableFuture
@@ -111,6 +119,55 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
 
         FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
         errorWidget.applyLayout()
+    }
+
+    protected fun createProfileDropdown(width: Int): LayoutElement {
+        if (!isProfileInitialized()) {
+            return Widgets.button()
+                .withTexture(ExtraConstants.BUTTON_DARK)
+                .withRenderer(WidgetRenderers.text(+"widgets.profile.loading"))
+                .withSize(width, 20)
+        }
+
+        val dropdownState = DropdownState<SkyBlockProfile>.of(profile)
+        val dropdown = Widgets.dropdown(
+            dropdownState,
+            profiles,
+            { profile ->
+                Text.of {
+                    color = PvColors.WHITE
+                    if (profile.selected) {
+                        underlined = true
+                        append("◆ ")
+                    } else {
+                        append("◇ ")
+                    }
+                    append(profile.id.name)
+                    append(
+                        when (profile.profileType) {
+                            ProfileType.NORMAL -> ""
+                            ProfileType.BINGO -> " §9Ⓑ"
+                            ProfileType.IRONMAN -> " ♻"
+                            ProfileType.STRANDED -> " §a☀"
+                            ProfileType.UNKNOWN -> " §c§ka"
+                        },
+                    )
+                }
+            },
+            { button -> button.withSize(width, 20) },
+            { builder ->
+                builder.withCallback { profile ->
+                    this.profile = profile ?: return@withCallback
+                    this.onProfileSwitch(profile)
+                    this.safelyRebuild()
+                }
+                builder.withAlignment(OverlayAlignment.TOP_LEFT)
+            },
+        ).apply {
+            withTexture(ExtraConstants.BUTTON_DARK)
+        }
+
+        return dropdown
     }
 
     protected fun saveProfiles() {
