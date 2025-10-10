@@ -8,7 +8,7 @@ import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.extensions.floorToHalf
 import me.owdding.lib.layouts.Scalable
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants

@@ -7,7 +7,7 @@ import me.owdding.lib.displays.asTable
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.extensions.withTooltip
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SackCodecs
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays

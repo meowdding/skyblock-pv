@@ -6,7 +6,7 @@ import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally

@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.feature
 
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.LowestBinAPI
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.Pricing

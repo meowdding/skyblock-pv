@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
 import me.owdding.lib.extensions.withTooltip
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.museum.MuseumArmor
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.data.museum.RepoMuseumData

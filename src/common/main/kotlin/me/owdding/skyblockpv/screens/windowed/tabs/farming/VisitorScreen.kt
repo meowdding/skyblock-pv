@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.*
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.Commission
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.data.repo.StaticVisitorData

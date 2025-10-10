@@ -11,6 +11,7 @@ import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
 import earth.terrarium.olympus.client.utils.State
 import me.owdding.lib.builder.LayoutBuilder
+import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
@@ -18,8 +19,10 @@ import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.PlayerAPI
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.api.data.SocialEntry
+import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile.Reason
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
@@ -27,6 +30,7 @@ import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvToast
@@ -63,7 +67,11 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
         bg.applyLayout()
 
-        addLoader()
+        when (val profile = profile) {
+            is EmptySkyBlockProfile if profile.reason == Reason.LOADING -> addLoader()
+            is EmptySkyBlockProfile if profile.reason == Reason.NO_PROFILES -> addNoProfiles()
+            is EmptySkyBlockProfile if profile.reason == Reason.ERROR -> addParsingError(profile.throwable!!)
+        }
         createTopRow(bg).applyLayout(5, 5)
 
         if (!isProfileInitialized()) return
@@ -72,7 +80,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         try {
             create(bg)
         } catch (e: Exception) {
-            e.printStackTrace()
+            SkyBlockPv.error("Failed to display profile ${this::class.simpleName} from player ${gameProfile.name} (${gameProfile.id}) and profile ${profile.id.name}")
 
             val errorWidget = PvLayouts.vertical {
                 val text = "widgets.error.stacktrace".asTranslated(
@@ -111,6 +119,36 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                 .withSize(this.uiWidth, 20)
                 .withPosition(bg.x, bg.bottom + 2),
         )
+    }
+
+    private fun addNoProfiles() {
+        val errorWidget = PvLayouts.vertical(alignment = 0.5f) {
+            display("widgets.error.no_profiles".asTranslated(gameProfile.name).multiLineDisplay(Alignment.CENTER))
+        }
+
+        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
+        errorWidget.applyLayout()
+    }
+
+    private fun addParsingError(throwable: Throwable) {
+        SkyBlockPv.error("Failed to parse profile!", throwable)
+
+        val errorWidget = PvLayouts.vertical {
+            val text = "widgets.error.parsing_error".asTranslated(
+                name,
+                gameProfile.name,
+                gameProfile.id,
+                throwable.javaClass.name,
+                throwable.message,
+                throwable.getStackTraceString(7),
+            )
+
+            text.splitLines().forEach {
+                widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
+            }
+        }
+        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
+        errorWidget.applyLayout()
     }
 
     private fun createTopRow(bg: DisplayWidget) = PvLayouts.horizontal(5) {

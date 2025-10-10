@@ -6,7 +6,7 @@ import me.owdding.lib.displays.asTable
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
 import me.owdding.skyblockpv.data.repo.CatacombsCodecs

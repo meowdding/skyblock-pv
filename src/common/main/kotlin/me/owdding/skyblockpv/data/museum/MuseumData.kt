@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.data.museum
 
 import com.google.gson.JsonObject
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import me.owdding.skyblockpv.utils.getNbt
 import me.owdding.skyblockpv.utils.json.getPathAs

@@ -4,7 +4,7 @@ import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.ProfileId
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay

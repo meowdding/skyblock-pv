@@ -7,7 +7,7 @@ import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.api.skills.Pet

@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.mining
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.MiningGear
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets

@@ -7,7 +7,7 @@ import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.api.CollectionAPI
 import me.owdding.skyblockpv.api.CollectionAPI.getProgressToMax
 import me.owdding.skyblockpv.api.CollectionAPI.getProgressToNextLevel
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.CollectionItem
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -55,7 +55,7 @@ class CommonCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         }
 
         val hover = Text.multiline(
-            "§l${col.itemStack.hoverName?.stripped ?: col.itemId}",
+            "§l${col.itemStack.hoverName.stripped}",
             "§7Collected: ${col.amount.toFormattedString()}",
             if (!isMaxed) "§7Progress to ${progNext.first}: ${(progNext.second * 100).round()}%" else null,
             "§7Progress to Max: ${if (isMaxed) "§2Maxed" else "${(progMaxed * 100).round()}%"}",
@@ -64,7 +64,7 @@ class CommonCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         return Displays.row(
             Displays.item(col.itemStack),
             listOf(
-                ExtraDisplays.text(Text.join(col.itemStack.hoverName?.stripped ?: col.itemId, ": ${col.amount.shorten()}")),
+                ExtraDisplays.text(Text.join(col.itemStack.hoverName.stripped, ": ${col.amount.shorten()}")),
                 listOf(ExtraDisplays.progress(progNext.second), progressText).toRow(3),
             ).toColumn(1),
             spacing = 5,
