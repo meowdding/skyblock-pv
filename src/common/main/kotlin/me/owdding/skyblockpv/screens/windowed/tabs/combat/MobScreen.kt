@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.combat
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.components.base.ListWidget
 import me.owdding.lib.displays.DisplayWidget
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.combat.MobData
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.PvLayouts

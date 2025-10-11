@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.rift
 
 import com.mojang.authlib.GameProfile
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import net.minecraft.client.gui.screens.Screen

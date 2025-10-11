@@ -19,6 +19,8 @@ data class CrimsonIsleData(
     val factionReputation: Map<Faction, Int>,
 ) {
     companion object {
+        val EMPTY = CrimsonIsleData(emptyList(), emptyList(), null, emptyMap())
+
         fun fromJson(ciData: JsonObject?): CrimsonIsleData {
             val data = ciData ?: JsonObject()
             val reputation = Faction.entries.associateWith {

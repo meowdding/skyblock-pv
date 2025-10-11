@@ -5,10 +5,12 @@ import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.HypixelPlayer
 import me.owdding.skyblockpv.api.data.PlayerStatus
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.utils.Utils.mapInParallel
+import tech.thatgravyboat.skyblockapi.platform.id
+import tech.thatgravyboat.skyblockapi.platform.name
 import java.util.*
 
 object CachedApis {

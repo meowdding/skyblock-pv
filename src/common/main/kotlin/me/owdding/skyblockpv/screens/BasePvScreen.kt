@@ -17,7 +17,8 @@ import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerAPI
 import me.owdding.skyblockpv.api.ProfileAPI
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
@@ -36,7 +37,6 @@ import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.platform.id
-import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -44,9 +44,8 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import java.lang.reflect.Type
 import java.nio.file.Files
 import java.util.concurrent.CompletableFuture
-import kotlin.time.Duration.Companion.seconds
 
-abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, profile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
+abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, initProfile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
 
     val starttime = System.currentTimeMillis()
     var profiles: List<SkyBlockProfile> = emptyList()
@@ -55,36 +54,47 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     abstract val uiHeight: Int
 
     var initedWithProfile = false
+    private var requireRebuild = false
 
     open val tabTitle: Component get() = +"tab.${name.lowercase()}"
 
-    lateinit var profile: SkyBlockProfile
+    var profile: SkyBlockProfile = EmptySkyBlockProfile(gameProfile.id, EmptySkyBlockProfile.Reason.LOADING)
 
     init {
+        CoroutineScope(Dispatchers.IO).launch { PlayerAPI.getPlayer(gameProfile) /*Load player data in the background*/ }
         CoroutineScope(Dispatchers.IO).launch {
             profiles = ProfileAPI.getProfiles(gameProfile)
-            PlayerAPI.getPlayer(gameProfile) // Load player data in the background
-            (profile ?: profiles.find { it.selected })?.let {
-                onProfileSwitch(it)
-                this@BasePvScreen.profile = it
+            if (profiles.isEmpty()) {
+                profile = EmptySkyBlockProfile(gameProfile.id, EmptySkyBlockProfile.Reason.NO_PROFILES)
+                requireRebuild = true
+                return@launch
             }
-            if (!initedWithProfile) {
-                McClient.runNextTick { safelyRebuild() }
-            }
-        }
-
-        Scheduling.schedule(10.seconds) {
-            if (profile == null) {
-                McClient.runNextTick { safelyRebuild() }
+            if (initedWithProfile) return@launch
+            val selected = initProfile ?: profiles.find { it.selected } ?: return@launch
+            onProfileSwitch(selected)
+            profile = selected
+            requireRebuild = true
+            selected.dataFuture.whenComplete { _, throwable ->
+                if (throwable != null) {
+                    profile = EmptySkyBlockProfile(gameProfile.id, EmptySkyBlockProfile.Reason.ERROR, throwable)
+                }
+                requireRebuild = true
             }
         }
     }
 
-    fun isProfileInitialized() = this::profile.isInitialized
+    override fun tick() {
+        super.tick()
+        if (requireRebuild) safelyRebuild()
+    }
+
+    fun isProfileInitialized() = profile !is EmptySkyBlockProfile
     fun isProfileOfUser() = gameProfile.id == McPlayer.uuid
 
     protected fun safelyRebuild() {
         if (this.minecraft == null) return
+        if (isProfileInitialized()) onProfileSwitch(profile)
+        requireRebuild = false
         rebuildWidgets()
     }
 
@@ -92,7 +102,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, prof
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
 
     protected fun addLoader() {
-        if (this::profile.isInitialized) return
+        if (isProfileInitialized()) return
 
         val loading = ExtraDisplays.loading().asWidget()
         FrameLayout.centerInRectangle(loading, 0, 0, this.width, this.height)

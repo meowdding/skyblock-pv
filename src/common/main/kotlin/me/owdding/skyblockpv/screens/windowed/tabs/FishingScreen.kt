@@ -7,7 +7,7 @@ import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.transpose
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.api.skills.*
@@ -165,13 +165,14 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
         PvLayouts.vertical {
-            if (profile.trophyFish.lastCatch == null) {
+            val lastCatch = profile.trophyFish.lastCatch
+            if (lastCatch == null) {
                 string(Text.of("Never caught a trophy fish!") { this.color = PvColors.RED })
             } else {
                 string(
                     Text.join(
                         Text.of("Last Catch: ") { this.color = PvColors.DARK_GRAY },
-                        profile.trophyFish.lastCatch.displayName,
+                        lastCatch.displayName,
                     ),
                 )
             }

@@ -18,7 +18,7 @@ import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
 import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.PlayerStatus
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
@@ -31,11 +31,10 @@ import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
-import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.plus
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
-import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.components.PvWidgets.getPlayerWidget
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -53,12 +52,14 @@ import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
@@ -310,6 +311,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 TooltipBuilder().apply {
                     add(skill.data.name) { this.color = PvColors.YELLOW }
                     add("Exp: ${num.shorten()}") { this.color = PvColors.GRAY }
+                    if (skill.id == "HUNTING" && num == 0L) { // TODO REMOVE
+                        add("Hypixel currently does not share your Hunting XP so we cant actually show a value") {
+                            color = TextColor.RED
+                        }
+                        add("This entry exists for when Hypixel finally adds it") {
+                            color = TextColor.RED
+                        }
+                    }
                     add {
                         append(+"screens.main.skills.progress")
                         this.color = PvColors.GRAY
@@ -423,31 +432,17 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
             }.build()
         },
-    )
-    { name, data ->
+    ) { _, data ->
         data.first.getLevel(data.second.exp)
     }
 
     override fun onProfileSwitch(profile: SkyBlockProfile) {
+        if (!profile.dataFuture.isDone) return
         val disabledTabs = PvTab.entries
             .filter { it.getTabState(profile) != TriState.TRUE }
             .filter { it.canDisplay(profile) }
         if (disabledTabs.isNotEmpty()) {
-            FailedToLoadToast.add(
-                profile,
-                Displays.background(
-                    ThemeSupport.texture(SkyBlockPv.id("buttons/normal")),
-                    Displays.padding(
-                        5,
-                        Displays.column(
-                            ExtraDisplays.component(+"messages.toast_disabled", shadow = false),
-                            "messages.toast_disabled.explanation".asTranslated(disabledTabs.joinToString(", ") { it.name.toTitleCase() })
-                                .multiLineDisplay(shadow = false),
-                        ),
-                    ),
-                ),
-                5000,
-            )
+            McClient.runNextTick { PvToast.addFailedToLoadForUsers(profile, disabledTabs) }
         }
     }
 }

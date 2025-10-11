@@ -7,7 +7,7 @@ import me.owdding.lib.extensions.shorten
 import me.owdding.lib.extensions.toReadableString
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.CfData
 import me.owdding.skyblockpv.data.api.RabbitEmployee
 import me.owdding.skyblockpv.data.repo.CfCodecs

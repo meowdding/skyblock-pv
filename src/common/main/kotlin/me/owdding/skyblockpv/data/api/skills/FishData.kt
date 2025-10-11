@@ -22,6 +22,7 @@ data class TrophyFishData(
     val rewards: List<Int>,
 ) {
     companion object {
+        val EMPTY = TrophyFishData(emptyMap(), null, 0, emptyList())
         fun fromJson(member: JsonObject): TrophyFishData {
             val trophyFishData = member.getAs<JsonObject>("trophy_fish") ?: return TrophyFishData(mapOf(), null, 0, listOf())
 
@@ -44,6 +45,7 @@ data class FishData(
     val itemsFished: ItemsFished,
 ) {
     companion object {
+        val EMPTY = FishData(0, 0, ItemsFished(0, 0, 0, 0, 0))
         fun fromJson(member: JsonObject, playerStats: JsonObject?, playerData: JsonObject?): FishData {
             val itemsFished = playerStats?.get("items_fished") as JsonObject?
             val leveling = member.get("leveling") as JsonObject?

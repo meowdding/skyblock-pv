@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.combat
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.withTooltip
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.combat.CrimsonIsleData
 import me.owdding.skyblockpv.data.api.skills.combat.DojoEntry
 import me.owdding.skyblockpv.data.api.skills.combat.KuudraEntry

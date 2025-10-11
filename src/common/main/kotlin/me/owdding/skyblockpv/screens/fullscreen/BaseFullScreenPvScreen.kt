@@ -5,7 +5,6 @@ import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.withPadding
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.components.PvLayouts

@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.rift
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.*
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.LayoutUtils.center
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
