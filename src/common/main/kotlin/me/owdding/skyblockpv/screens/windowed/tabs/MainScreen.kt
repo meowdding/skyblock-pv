@@ -9,7 +9,6 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
-import me.owdding.lib.extensions.floor
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.layouts.setPos
@@ -28,7 +27,6 @@ import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
-import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
@@ -39,6 +37,7 @@ import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.FailedToLoadToast
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.components.PvWidgets.getPlayerWidget
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays.grayText
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -47,7 +46,6 @@ import me.owdding.skyblockpv.widgets.PronounWidget
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LinearLayout
-import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -56,8 +54,6 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.platform.id
-import tech.thatgravyboat.skyblockapi.platform.name
-import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
@@ -100,7 +96,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     widget(getGeneralInfo(profile, sideColumnWidth))
                 }
                 vertical {
-                    val player = getPlayerDisplay(profile, middleColumnWidth)
+                    val player = getPlayerColumn(middleColumnWidth)
                     player.arrangeElements()
                     spacer(height = (uiHeight - player.height) / 2)
                     widget(player)
@@ -113,7 +109,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         PvLayouts.horizontal {
             val newWidth = (uiWidth * 0.35).toInt()
             vertical {
-                val playerDisplay = getPlayerDisplay(profile, newWidth)
+                val playerDisplay = getPlayerColumn(newWidth)
                 playerDisplay.arrangeElements()
                 spacer(newWidth, (uiHeight - playerDisplay.height) / 2)
                 horizontal {
@@ -220,43 +216,14 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         widget(PvWidgets.getMainContentWidget(infoColumn, width))
     }
 
-    private fun getPlayerDisplay(profile: SkyBlockProfile, width: Int): LinearLayout {
-        val height = (width * 1.1).toInt()
-        val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
-        val skyblockLvl = profile.skyBlockLevel.first
-        val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
-        val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
-        val fakePlayer = FakePlayer(gameProfile, name, armor)
-        val nakedFakePlayer = FakePlayer(gameProfile, name)
-        val playerWidget = Displays.background(ThemeSupport.texture(SkyBlockPv.id("buttons/disabled")), width, height).asWidget().withRenderer { gr, ctx, _ ->
-            val isHovered = ctx.mouseX in ctx.x..(ctx.x + width) && ctx.mouseY in ctx.y..(ctx.y + height)
-            val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
-            val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
-            gr.pushPop {
-                Displays.entity(
-                    if (rightClick.isDown() && isHovered) {
-                        nakedFakePlayer
-                    } else {
-                        fakePlayer
-                    },
-                    width,
-                    height,
-                    (width / 3f).floor(),
-                    eyesX, eyesY,
-                ).render(gr, ctx.x, ctx.y + height / 10)
-            }
-        }
-
-        val layout = LinearLayout.vertical()
-        layout.addChild(playerWidget)
-        layout.addChild(SpacerElement.height(5))
-        layout.addChild(getStatusButton().withSize(width, 20))
-        layout.addChild(SpacerElement.height(3))
+    private fun getPlayerColumn(width: Int) = LayoutFactory.vertical {
+        widget(getPlayerWidget(width))
+        spacer(height = 5)
+        widget(getStatusButton().withSize(width, 20))
+        spacer(height = 3)
         if (Config.showPronouns) {
-            layout.addChild(PronounWidget.getPronounDisplay(gameProfile.id, width).asWidget())
+            widget(PronounWidget.getPronounDisplay(gameProfile.id, width).asWidget())
         }
-
-        return layout
     }
 
     fun <D, T> createSection(

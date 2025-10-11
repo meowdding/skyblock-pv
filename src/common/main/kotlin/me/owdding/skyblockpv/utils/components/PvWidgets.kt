@@ -1,19 +1,25 @@
 package me.owdding.skyblockpv.utils.components
 
+import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.string.TextWidget
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.displays.*
+import me.owdding.lib.extensions.floor
 import me.owdding.lib.extensions.rightPad
+import me.owdding.lib.utils.keys
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
+import me.owdding.skyblockpv.screens.BasePvScreen
+import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays.asTable
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
+import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -22,6 +28,8 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.platform.name
+import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 object PvWidgets {
@@ -210,5 +218,41 @@ object PvWidgets {
             9, itemDisplays.size,
             Displays.padding(2, itemDisplays.asTable()),
         )
+    }
+
+    private val rightClick = keys {
+        withButton(InputConstants.MOUSE_BUTTON_RIGHT)
+    }
+    private var cachedX = 0.0F
+    private var cachedY = 0.0F
+
+    fun BasePvScreen.getPlayerWidget(width: Int): AbstractWidget {
+        val height = (width * 1.1).toInt()
+        val armor = (if (isProfileInitialized()) profile.inventory?.armorItems?.inventory else null) ?: List(4) { ItemStack.EMPTY }
+        val name = if (isProfileInitialized()) {
+            val skyblockLvl = profile.skyBlockLevel.first
+            val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
+            Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
+        } else Text.of(gameProfile.name)
+        val fakePlayer = FakePlayer(gameProfile, name, armor)
+        val nakedFakePlayer = FakePlayer(gameProfile, name)
+        return Displays.background(ThemeSupport.texture(SkyBlockPv.id("buttons/disabled")), width, height).asWidget().withRenderer { gr, ctx, _ ->
+            val isHovered = ctx.mouseX in ctx.x..(ctx.x + width) && ctx.mouseY in ctx.y..(ctx.y + height)
+            val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
+            val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
+            gr.pushPop {
+                Displays.entity(
+                    if (rightClick.isDown() && isHovered) {
+                        nakedFakePlayer
+                    } else {
+                        fakePlayer
+                    },
+                    width,
+                    height,
+                    (width / 3f).floor(),
+                    eyesX, eyesY,
+                ).render(gr, ctx.x, ctx.y + height / 10)
+            }
+        }
     }
 }
