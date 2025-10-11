@@ -281,6 +281,20 @@
                 "",
                 "Exception: <4>: <5>",
                 "Stacktrace: <6>"
+            ],
+            "no_profiles": [
+                "<red>No profiles found for <0>",
+                "<gray>If you believe this is a mistake,",
+                "<gray>then report it on our discord!"
+            ],
+            "parsing_error": [
+                "Failed to parse profile!",
+                "Report this in the discord!",
+                "",
+                "User: <1> - <2>",
+                "",
+                "Exception: <4>: <5>",
+                "Stacktrace: <6>"
             ]
         },
         "open_logs": "Open Logs",

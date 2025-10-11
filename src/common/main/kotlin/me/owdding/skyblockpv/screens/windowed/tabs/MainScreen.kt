@@ -19,7 +19,7 @@ import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
 import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.PlayerStatus
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
@@ -53,6 +53,7 @@ import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.platform.pushPop
@@ -463,17 +464,17 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
             }.build()
         },
-    )
-    { name, data ->
+    ) { _, data ->
         data.first.getLevel(data.second.exp)
     }
 
     override fun onProfileSwitch(profile: SkyBlockProfile) {
+        if (!profile.dataFuture.isDone) return
         val disabledTabs = PvTab.entries
             .filter { it.getTabState(profile) != TriState.TRUE }
             .filter { it.canDisplay(profile) }
         if (disabledTabs.isNotEmpty()) {
-            PvToast.addFailedToLoadForUsers(profile, disabledTabs)
+            McClient.runNextTick { PvToast.addFailedToLoadForUsers(profile, disabledTabs) }
         }
     }
 }

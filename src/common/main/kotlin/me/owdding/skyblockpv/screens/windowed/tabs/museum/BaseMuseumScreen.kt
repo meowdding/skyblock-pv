@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.museum
 
 import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.api.MuseumAPI
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedLoadingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category

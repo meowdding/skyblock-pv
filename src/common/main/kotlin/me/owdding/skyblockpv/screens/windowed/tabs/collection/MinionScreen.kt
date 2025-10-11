@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.collection
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.MinionCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget

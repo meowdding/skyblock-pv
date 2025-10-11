@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.FossilTypes
 import me.owdding.skyblockpv.data.api.skills.GlaciteData
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk

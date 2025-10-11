@@ -11,7 +11,11 @@ data class GardenData(
     val copper: Int,
     val larvaConsumed: Int,
     val glowingMushroomBroken: Int,
-)
+) {
+    companion object {
+        val EMPTY = GardenData(0, 0, 0)
+    }
+}
 
 data class GardenProfile(
     val unlockedPlots: List<StaticPlotData>,

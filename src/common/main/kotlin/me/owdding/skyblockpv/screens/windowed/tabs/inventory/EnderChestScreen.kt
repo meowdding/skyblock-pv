@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.inventory
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.Display
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.world.item.Items
 

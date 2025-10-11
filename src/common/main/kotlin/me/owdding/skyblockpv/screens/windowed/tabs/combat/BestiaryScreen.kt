@@ -10,7 +10,7 @@ import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.withTooltip
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally

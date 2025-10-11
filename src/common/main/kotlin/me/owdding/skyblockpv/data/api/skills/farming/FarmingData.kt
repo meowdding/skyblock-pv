@@ -17,6 +17,7 @@ data class FarmingData(
     val personalBests: Map<GardenResource, Int>,
 ) {
     companion object {
+        val EMPTY = FarmingData(emptyMap(), FarmingPerks(0, 0, false), emptyList(), emptyMap(), emptyMap())
         fun fromJson(data: JsonObject?) = FarmingData(
             medalInventory = data?.getAs<JsonObject>("medals_inv").asMap { key, element ->
                 MedalType.valueOf(key.uppercase()) to element.asInt(0)

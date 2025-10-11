@@ -5,7 +5,7 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.extensions.shorten
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.utils.Utils.append

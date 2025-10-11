@@ -9,7 +9,7 @@ import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.toReadableString
 import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.data.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.RiftData
 import me.owdding.skyblockpv.data.repo.RiftCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
