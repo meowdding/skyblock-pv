@@ -8,10 +8,12 @@ import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.ui.OverlayAlignment
+import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.owdding.lib.displays.Alignment
+import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
@@ -19,8 +21,11 @@ import me.owdding.skyblockpv.api.PlayerAPI
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
+import me.owdding.skyblockpv.screens.fullscreen.TestFullScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -37,8 +42,10 @@ import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.platform.id
+import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import java.lang.reflect.Type
@@ -100,6 +107,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
 
     fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
+
+    abstract fun create(bg: DisplayWidget)
 
     protected fun addLoader() {
         if (isProfileInitialized()) return
@@ -178,6 +187,27 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
         }
 
         return dropdown
+    }
+
+    protected fun createSearch(width: Int): LayoutElement {
+        val usernameState = State.of(gameProfile.name)
+        val username = Widgets.autocomplete<String>(usernameState) { box ->
+            box.withEnterCallback {
+                Utils.fetchGameProfile(box.value) { profile ->
+                    profile?.let {
+                        // TODO: MAKE BETTER
+                        //McClient.setScreenAsync { PvTab.MAIN.create(it) }
+                        McClient.setScreenAsync { TestFullScreen(it, null) }
+                    }
+                }
+            }
+            box.withTexture(ExtraConstants.TEXTBOX)
+        }
+        username.withAlwaysShow(true)
+        username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
+        username.withPlaceholder((+"widgets.username_input").stripped)
+        username.withSize(width, 20)
+        return username
     }
 
     protected fun saveProfiles() {

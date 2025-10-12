@@ -2,19 +2,28 @@ package me.owdding.skyblockpv.utils.components
 
 import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
+import earth.terrarium.olympus.client.components.buttons.Button
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.components.string.TextWidget
 import earth.terrarium.olympus.client.utils.Orientation
+import kotlinx.coroutines.runBlocking
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.floor
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.utils.keys
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.api.StatusAPI
+import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.screens.BasePvScreen
+import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
+import me.owdding.skyblockpv.utils.Utils.plus
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays.asTable
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -28,6 +37,8 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
+import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -252,6 +263,40 @@ object PvWidgets {
                     (width / 3f).floor(),
                     eyesX, eyesY,
                 ).render(gr, ctx.x, ctx.y + height / 10)
+            }
+        }
+    }
+
+    fun BasePvScreen.getStatusButton(width: Int): Button {
+        val status = StatusAPI.getCached(gameProfile.id)
+
+        fun getStatusDisplay(status: PlayerStatus): WidgetRenderer<Button> {
+            val statusText = +"screens.main.status.${status.status.name.lowercase()}"
+            val location = SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location
+            val locationText = location?.let { Text.of(it).withColor(PvColors.GREEN) } ?: +"screens.main.status.unknown"
+            return WidgetRenderers.text(statusText + locationText)
+        }
+
+        return Button().also { button ->
+            button.withTexture(ExtraConstants.BUTTON_DARK)
+            button.withRenderer(WidgetRenderers.text(+"screens.main.status.load"))
+            button.withCallback {
+                button.withRenderer(WidgetRenderers.text(+"screens.main.status.loading"))
+                runBlocking {
+                    val status = StatusAPI.getData(gameProfile.id).getOrNull()
+                    if (status == null) {
+                        button.withRenderer(WidgetRenderers.text(+"screens.main.status.error"))
+                    } else {
+                        button.withRenderer(getStatusDisplay(status))
+                        button.asDisabled()
+                    }
+                }
+            }
+            button.withSize(width, 20)
+
+            if (status != null) {
+                button.withRenderer(getStatusDisplay(status))
+                button.asDisabled()
             }
         }
     }

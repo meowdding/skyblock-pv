@@ -1,23 +1,15 @@
 package me.owdding.skyblockpv.screens.windowed.tabs
 
 import com.mojang.authlib.GameProfile
-import com.mojang.blaze3d.platform.InputConstants
-import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
-import earth.terrarium.olympus.client.components.buttons.Button
-import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.layouts.setPos
-import me.owdding.lib.utils.keys
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.SkillAPI.getSkillLevel
-import me.owdding.skyblockpv.api.StatusAPI
-import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
@@ -25,19 +17,17 @@ import me.owdding.skyblockpv.data.api.skills.combat.getIconFromSlayerName
 import me.owdding.skyblockpv.data.repo.SlayerCodecs
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
-import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
-import me.owdding.skyblockpv.utils.Utils.plus
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.components.PvWidgets.getPlayerWidget
-import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.components.PvWidgets.getStatusButton
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays.grayText
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
@@ -50,7 +40,6 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.id
@@ -66,13 +55,6 @@ import java.text.SimpleDateFormat
 
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseWindowedPvScreen("MAIN", gameProfile, profile) {
-
-    private val rightClick = keys {
-        withButton(InputConstants.MOUSE_BUTTON_RIGHT)
-    }
-
-    private var cachedX = 0.0F
-    private var cachedY = 0.0F
 
     override fun create(bg: DisplayWidget) {
         val middleColumnWidth = (uiWidth * 0.2).toInt()
@@ -220,7 +202,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     private fun getPlayerColumn(width: Int) = LayoutFactory.vertical {
         widget(getPlayerWidget(width))
         spacer(height = 5)
-        widget(getStatusButton().withSize(width, 20))
+        widget(getStatusButton(width))
         spacer(height = 3)
         if (Config.showPronouns) {
             widget(PronounWidget.getPronounDisplay(gameProfile.id, width).asWidget())
@@ -267,39 +249,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             },
             icon = titleIcon,
         )
-    }
-
-    fun getStatusButton(): Button {
-        val status = StatusAPI.getCached(gameProfile.id)
-
-        fun getStatusDisplay(status: PlayerStatus): WidgetRenderer<Button> {
-            val statusText = +"screens.main.status.${status.status.name.lowercase()}"
-            val location = SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location
-            val locationText = location?.let { Text.of(it).withColor(PvColors.GREEN) } ?: +"screens.main.status.unknown"
-            return WidgetRenderers.text(statusText + locationText)
-        }
-
-        return Button().also { button ->
-            button.withTexture(ExtraConstants.BUTTON_DARK)
-            button.withRenderer(WidgetRenderers.text(+"screens.main.status.load"))
-            button.withCallback {
-                button.withRenderer(WidgetRenderers.text(+"screens.main.status.loading"))
-                runBlocking {
-                    val status = StatusAPI.getData(gameProfile.id).getOrNull()
-                    if (status == null) {
-                        button.withRenderer(WidgetRenderers.text(+"screens.main.status.error"))
-                    } else {
-                        button.withRenderer(getStatusDisplay(status))
-                        button.asDisabled()
-                    }
-                }
-            }
-
-            if (status != null) {
-                button.withRenderer(getStatusDisplay(status))
-                button.asDisabled()
-            }
-        }
     }
 
     fun getSkillSection(profile: SkyBlockProfile, width: Int) = createSection(

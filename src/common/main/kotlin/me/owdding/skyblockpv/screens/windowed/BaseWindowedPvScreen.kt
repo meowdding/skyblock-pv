@@ -9,7 +9,6 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
-import earth.terrarium.olympus.client.utils.State
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
@@ -23,12 +22,10 @@ import me.owdding.skyblockpv.api.data.SocialEntry
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile.Reason
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
-import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
@@ -56,8 +53,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
     override val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
     override val uiHeight get() = (this.height * 0.65).toInt()
-
-    abstract fun create(bg: DisplayWidget)
 
     override fun init() {
         val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
@@ -101,7 +96,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
 
         createTabs().applyLayout(bg.x + 20, bg.y - 22)
-        createSearch(bg).applyLayout()
+        getSearch(bg).applyLayout()
         getProfileDropdown(bg).let {
             it.applyLayout()
 
@@ -242,26 +237,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
     }
 
-    private fun createSearch(bg: DisplayWidget): LayoutElement {
-        val width = 100
-
-        val usernameState = State.of(gameProfile.name)
-        val username = Widgets.autocomplete<String>(usernameState) { box ->
-            box.withEnterCallback {
-                Utils.fetchGameProfile(box.value) { profile ->
-                    profile?.let {
-                        McClient.setScreenAsync { PvTab.MAIN.create(it) }
-                    }
-                }
-            }
-            box.withTexture(ExtraConstants.TEXTBOX)
-        }
-        username.withAlwaysShow(true)
-        username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
-        username.withPlaceholder((+"widgets.username_input").stripped)
-        username.withSize(width, 20)
-        username.setPosition(bg.x + bg.width - width, bg.y + bg.height)
-        return username
+    private fun getSearch(bg: DisplayWidget): LayoutElement = createSearch(100).apply {
+        setPosition(bg.x + bg.width - this.width, bg.y + bg.height)
     }
 
     private fun getProfileDropdown(bg: DisplayWidget): LayoutElement = createProfileDropdown(100).apply {
