@@ -303,5 +303,6 @@ object PvWidgets {
         }
     }
 
-    fun Layout.centerIn(x: Int, y: Int, width: Int, height: Int) = apply { FrameLayout.centerInRectangle(this, 0, 0, this.width, this.height) }
+    fun Layout.centerIn(x: Int, y: Int, width: Int, height: Int) = apply { FrameLayout.centerInRectangle(this, x, y, width, height) }
+    fun Layout.centerIn(layout: LayoutElement) = centerIn(layout.x, layout.y, layout.width, layout.height)
 }
