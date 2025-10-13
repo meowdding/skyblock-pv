@@ -2,7 +2,6 @@ package me.owdding.skyblockpv.screens.fullscreen
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutFactory
-import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.getStackTraceString
@@ -15,11 +14,11 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.components.PvWidgets.centerIn
 import me.owdding.skyblockpv.utils.components.PvWidgets.getPlayerWidget
 import me.owdding.skyblockpv.utils.components.PvWidgets.getStatusButton
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import me.owdding.skyblockpv.widgets.PronounWidget
-import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.id
@@ -31,13 +30,15 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
     override val uiWidth: Int get() = McClient.window.guiScaledWidth
     override val uiHeight: Int get() = McClient.window.guiScaledHeight
 
+    abstract fun create(x: Int, y: Int, width: Int, height: Int)
+
     override fun init() {
         val leftSidePadding = 5
         val leftSideWidth = (uiWidth * 0.2).toInt() - leftSidePadding * 2 - 2
         val topBarHeight = 22
 
         val backgroundWidget =
-            Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth - leftSideWidth - 12, uiHeight - topBarHeight - 2).asWidget()
+            Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth - leftSideWidth - 13, uiHeight - topBarHeight - 3).asWidget()
 
         LayoutFactory.horizontal {
             LayoutFactory.frame(leftSideWidth, uiHeight) {
@@ -80,11 +81,11 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
         }.applyLayout()
 
         try {
-            create(backgroundWidget)
+            create(backgroundWidget.x + 5, backgroundWidget.y + 5, backgroundWidget.width - 10, backgroundWidget.height - 10)
         } catch (e: Exception) {
             e.printStackTrace()
 
-            val errorWidget = PvLayouts.vertical {
+            PvLayouts.vertical {
                 val text = "widgets.error.stacktrace".asTranslated(
                     name,
                     gameProfile.name,
@@ -98,21 +99,19 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                 text.splitLines().forEach {
                     widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
                 }
-            }
-            FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-            errorWidget.applyLayout()
+            }.centerIn(0, 0, this.width, this.height).applyLayout()
         }
     }
 }
 
 class TestFullScreen(gameProfile: GameProfile, profile: SkyBlockProfile?) : BaseFullScreenPvScreen("Test", gameProfile, profile) {
-    override fun create(bg: DisplayWidget) {
+    override fun create(x: Int, y: Int, width: Int, height: Int) {
         fun Layout.applyLayout() {
-            this.setPos(bg.x, bg.y).visitWidgets(this@TestFullScreen::addRenderableWidget)
+            this.setPos(x, y).visitWidgets(this@TestFullScreen::addRenderableWidget)
         }
 
         LayoutFactory.vertical {
-            string("meow")
+            display(Displays.background(0x80000000u, Displays.empty(10, 10)))
         }.applyLayout()
     }
 }

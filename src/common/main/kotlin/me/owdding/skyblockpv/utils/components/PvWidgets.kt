@@ -29,6 +29,8 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays.asTable
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.layouts.FrameLayout
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -300,4 +302,6 @@ object PvWidgets {
             }
         }
     }
+
+    fun Layout.centerIn(x: Int, y: Int, width: Int, height: Int) = apply { FrameLayout.centerInRectangle(this, 0, 0, this.width, this.height) }
 }

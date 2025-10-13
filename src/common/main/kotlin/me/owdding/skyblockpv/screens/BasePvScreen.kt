@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.owdding.lib.displays.Alignment
-import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
@@ -107,8 +106,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
 
     fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
-
-    abstract fun create(bg: DisplayWidget)
 
     protected fun addLoader() {
         if (isProfileInitialized()) return
