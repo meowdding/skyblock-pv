@@ -4,6 +4,7 @@ import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
+import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -20,6 +21,7 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
@@ -179,4 +181,6 @@ object Utils {
     fun <T : Any> JsonElement?.toDataOrThrow(codec: MapCodec<T>): T = this.toDataOrThrow(codec.codec())
 
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
+
+    fun openConfig(screen: Screen? = null) = McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(screen) }
 }

@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv
 
 import com.mojang.brigadier.arguments.StringArgumentType
-import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
@@ -124,9 +123,7 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
                 Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
             }
 
-            callback {
-                McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(MOD_ID).apply(null) }
-            }
+            callback { Utils.openConfig() }
         }
     }
 

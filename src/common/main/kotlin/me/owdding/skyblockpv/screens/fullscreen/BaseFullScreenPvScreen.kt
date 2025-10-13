@@ -1,9 +1,10 @@
 package me.owdding.skyblockpv.screens.fullscreen
 
 import com.mojang.authlib.GameProfile
-import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.UIIcons
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Displays
@@ -12,11 +13,11 @@ import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
 import me.owdding.lib.layouts.withPadding
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.SkyBlockPv.MOD_ID
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
@@ -41,7 +42,7 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
     override fun init() {
         val leftSidePadding = 5
         val leftSideWidth = (uiWidth * 0.2).toInt() - leftSidePadding * 2 - 2
-        val topBarHeight = 22
+        val topBarHeight = 24
         // todo: why do i need -13
 
         val backgroundWidget =
@@ -79,16 +80,19 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                     }
                     // TODO
                     //  categories
-                    //  settings button
                     //  other things
 
                     LayoutFactory.horizontal(3) {
                         Widgets.button {
-                            it.withTexture(ExtraConstants.BUTTON_DARK)
-                            it.withRenderer(WidgetRenderers.icon(UIIcons.DISK))
-                            it.withSize(18, 18)
-                            // Todo openConfig()
-                            it.withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(MOD_ID).apply(null) } }
+                            it.withRenderer(
+                                WidgetRenderers.layered(
+                                    WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK),
+                                    WidgetRenderers.icon<Button>(UIIcons.PENCIL).withColor(MinecraftColors.WHITE).withPadding(2),
+                                ),
+                            )
+                            it.withTexture(null)
+                            it.withSize(22, 22)
+                            it.withCallback { Utils.openConfig(this@BaseFullScreenPvScreen) }
                         }.add()
                     }.add {
                         alignVerticallyMiddle()

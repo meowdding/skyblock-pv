@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.windowed
 
 import com.mojang.authlib.GameProfile
-import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
@@ -26,6 +25,7 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
@@ -156,7 +156,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             .withSize(20, 20)
             .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
             .withTexture(null)
-            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
+            .withCallback { Utils.openConfig(this@BaseWindowedPvScreen) }
             .withTooltip(+"widgets.open_settings")
 
         val themeSwitcher = Widgets.button()
