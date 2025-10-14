@@ -41,28 +41,31 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
 
     override fun init() {
         val leftSidePadding = 5
-        val leftSideWidth = (uiWidth * 0.2).toInt() - leftSidePadding * 2 - 2
+        val leftSideWidth = (uiWidth * 0.2).toInt()
+        val leftSideWidthInnerWidth = leftSideWidth - leftSidePadding * 2 - 2
         val topBarHeight = 24
-        // todo: why do i need -13
 
-        val backgroundWidget =
-            Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth - leftSideWidth - 13, uiHeight - topBarHeight - 3).asWidget()
+        val backgroundWidget = Displays.background(
+            ThemeSupport.texture(SkyBlockPv.backgroundTexture),
+            uiWidth - leftSideWidth - 2,
+            uiHeight - topBarHeight - 3,
+        ).asWidget()
 
         LayoutFactory.horizontal {
-            LayoutFactory.frame(leftSideWidth, uiHeight) {
+            LayoutFactory.frame(leftSideWidthInnerWidth, uiHeight) {
                 widget(
                     LayoutFactory.vertical(3) {
-                        widget(getPlayerWidget(leftSideWidth))
-                        widget(getStatusButton(leftSideWidth))
+                        widget(getPlayerWidget(leftSideWidthInnerWidth))
+                        widget(getStatusButton(leftSideWidthInnerWidth))
                         if (Config.showPronouns) {
-                            widget(PronounWidget.getPronounDisplay(gameProfile.id, leftSideWidth).asWidget())
+                            widget(PronounWidget.getPronounDisplay(gameProfile.id, leftSideWidthInnerWidth).asWidget())
                         }
                     },
                 ) {
                     alignVertically(0.4f)
                 }
-                val search = createSearch(leftSideWidth).withPadding(leftSidePadding)
-                widget(createProfileDropdown(leftSideWidth).withPadding(leftSidePadding)) {
+                val search = createSearch(leftSideWidthInnerWidth).withPadding(leftSidePadding)
+                widget(createProfileDropdown(leftSideWidthInnerWidth).withPadding(leftSidePadding)) {
                     alignVerticallyBottom()
                     paddingBottom(search.height)
                 }
@@ -73,7 +76,7 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
             display(Displays.background(0xFF202020u, Displays.empty(2, uiHeight)))
 
             vertical {
-                LayoutFactory.frame(uiWidth - leftSideWidth - 13, topBarHeight) {
+                LayoutFactory.frame(uiWidth - leftSideWidthInnerWidth - 13, topBarHeight) {
                     widget(PvWidgets.text("SkyBlockPv v1")) {
                         alignVerticallyMiddle()
                         alignHorizontallyLeft()
@@ -99,7 +102,7 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                         alignHorizontallyRight()
                     }
                 }.add()
-                display(Displays.background(0xFF303030u, Displays.empty(uiWidth - leftSideWidth, 2)))
+                display(Displays.background(0xFF303030u, Displays.empty(uiWidth - leftSideWidthInnerWidth, 2)))
                 widget(backgroundWidget)
             }
         }.applyLayout()
