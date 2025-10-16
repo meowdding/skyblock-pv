@@ -83,7 +83,13 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                     }
                     // TODO
                     //  categories
-                    //  other things
+                    //  themes
+                    //  debug options:
+                    //   - refresh screen
+                    //   - screen size maybe?
+                    //   - save profiles
+                    //   - clear cache
+                    //   - networth debug
 
                     LayoutFactory.horizontal(3) {
                         Widgets.button {
