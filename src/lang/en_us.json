@@ -108,15 +108,7 @@
             "desc": [
                 "Scales displays to better fill the space available",
                 "<red>This might lead to unexpected behaviour and overflowing.</red>"
-            ],
-            "1218": {
-                "@value": "Enable Display Scaling",
-                "desc": [
-                    "Scales displays to better fill the space available",
-                    "<red>This might lead to unexpected behaviour and overflowing.</red>",
-                    "<red>Furthermore this will also make 3d items pixelated due to how item rendering works in 1.21.6+</red>"
-                ]
-            }
+            ]
         },
         "theme": {
             "@value": "Theme",
