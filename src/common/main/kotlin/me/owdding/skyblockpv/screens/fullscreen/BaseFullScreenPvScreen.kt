@@ -13,12 +13,14 @@ import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
 import me.owdding.lib.layouts.withPadding
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.components.PvWidgets.centerIn
@@ -26,10 +28,14 @@ import me.owdding.skyblockpv.utils.components.PvWidgets.getPlayerWidget
 import me.owdding.skyblockpv.utils.components.PvWidgets.getStatusButton
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import me.owdding.skyblockpv.widgets.PronounWidget
+import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.platform.name
+import tech.thatgravyboat.skyblockapi.utils.text.Text.asComponent
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
 abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, profile: SkyBlockProfile?) : BasePvScreen(name, gameProfile, profile) {
@@ -47,21 +53,19 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
 
         val backgroundWidget = Displays.background(
             ThemeSupport.texture(SkyBlockPv.backgroundTexture),
-            uiWidth - leftSideWidth - 2,
+            uiWidth - leftSideWidth - 2 - if (SkyBlockPv.isDevMode) topBarHeight - 2 else 0,
             uiHeight - topBarHeight - 3,
         ).asWidget()
 
         LayoutFactory.horizontal {
             LayoutFactory.frame(leftSideWidthInnerWidth, uiHeight) {
-                widget(
-                    LayoutFactory.vertical(3) {
-                        widget(getPlayerWidget(leftSideWidthInnerWidth))
-                        widget(getStatusButton(leftSideWidthInnerWidth))
-                        if (Config.showPronouns) {
-                            widget(PronounWidget.getPronounDisplay(gameProfile.id, leftSideWidthInnerWidth).asWidget())
-                        }
-                    },
-                ) {
+                LayoutFactory.vertical(3) {
+                    widget(getPlayerWidget(leftSideWidthInnerWidth))
+                    widget(getStatusButton(leftSideWidthInnerWidth))
+                    if (Config.showPronouns) {
+                        widget(PronounWidget.getPronounDisplay(gameProfile.id, leftSideWidthInnerWidth).asWidget())
+                    }
+                }.add {
                     alignVertically(0.4f)
                 }
                 val search = createSearch(leftSideWidthInnerWidth).withPadding(leftSidePadding)
@@ -84,24 +88,10 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                     // TODO
                     //  categories
                     //  themes
-                    //  debug options:
-                    //   - refresh screen
-                    //   - screen size maybe?
-                    //   - save profiles
-                    //   - clear cache
-                    //   - networth debug
 
                     LayoutFactory.horizontal(3) {
-                        Widgets.button {
-                            it.withRenderer(
-                                WidgetRenderers.layered(
-                                    WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK),
-                                    WidgetRenderers.icon<Button>(UIIcons.PENCIL).withColor(MinecraftColors.WHITE).withPadding(2),
-                                ),
-                            )
-                            it.withTexture(null)
-                            it.withSize(22, 22)
-                            it.withCallback { Utils.openConfig(this@BaseFullScreenPvScreen) }
+                        button(UIIcons.PENCIL, +"widgets.open_settings") {
+                            Utils.openConfig(this@BaseFullScreenPvScreen)
                         }.add()
                     }.add {
                         alignVerticallyMiddle()
@@ -109,7 +99,19 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                     }
                 }.add()
                 display(Displays.background(0xFF303030u, Displays.empty(uiWidth - leftSideWidthInnerWidth, 2)))
-                widget(backgroundWidget)
+                horizontal {
+                    widget(backgroundWidget)
+                    if (SkyBlockPv.isDevMode) {
+                        display(Displays.background(0xFF303030u, Displays.empty(2, uiHeight - topBarHeight)))
+                        vertical(3) {
+                            // screen size maybe?
+                            // networth debug
+                            button(UIIcons.CHAIN, "Refresh Screen") { safelyRebuild() }.add() // better icon
+                            button(UIIcons.SAVE, "Save Profiles") { saveProfiles() }.add()
+                            button(UIIcons.USER_X, "Clear Cache", CachedApis::clearCaches).add() // probably better icon..?
+                        }
+                    }
+                }
             }
         }.applyLayout()
 
@@ -134,6 +136,20 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                 }
             }.centerIn(backgroundWidget).applyLayout()
         }
+    }
+
+    private fun button(icon: ResourceLocation, tooltip: String? = null, callback: () -> Unit) = button(icon, tooltip?.asComponent(), callback)
+    private fun button(icon: ResourceLocation, tooltip: Component? = null, callback: () -> Unit): AbstractWidget = Widgets.button {
+        it.withRenderer(
+            WidgetRenderers.layered(
+                WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK),
+                WidgetRenderers.icon<Button>(icon).withColor(MinecraftColors.WHITE).withPadding(2),
+            ),
+        )
+        it.withTexture(null)
+        it.withSize(22, 22)
+        it.withCallback(callback)
+        tooltip?.let { tooltip -> it.withTooltip(tooltip) }
     }
 }
 

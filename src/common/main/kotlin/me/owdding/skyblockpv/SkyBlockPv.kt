@@ -58,7 +58,7 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
     private val configurator = Configurator(MOD_ID)
     val config by lazy { Config.register(configurator) }
 
-    val isDevMode get() = McClient.isDev || DevConfig.devMode
+    val isDevMode get() = /*McClient.isDev || */DevConfig.devMode
     val isSuperUser by lazy { McPlayer.uuid.isMeowddingDev() }
 
     val backgroundTexture = id("buttons/normal")
