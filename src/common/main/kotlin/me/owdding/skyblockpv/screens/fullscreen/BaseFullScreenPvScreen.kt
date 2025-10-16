@@ -87,9 +87,13 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                     }
                     // TODO
                     //  categories
-                    //  themes
 
                     LayoutFactory.horizontal(3) {
+                        button(UIIcons.COLOR_PICKER, "widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation)) {
+                            ThemeSupport.nextTheme()
+                            safelyRebuild()
+                            SkyBlockPv.config.save()
+                        }.add()
                         button(UIIcons.PENCIL, +"widgets.open_settings") {
                             Utils.openConfig(this@BaseFullScreenPvScreen)
                         }.add()
@@ -106,6 +110,7 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                         vertical(3) {
                             // screen size maybe?
                             // networth debug
+                            spacer(height = 10)
                             button(UIIcons.CHAIN, "Refresh Screen") { safelyRebuild() }.add() // better icon
                             button(UIIcons.SAVE, "Save Profiles") { saveProfiles() }.add()
                             button(UIIcons.USER_X, "Clear Cache", CachedApis::clearCaches).add() // probably better icon..?
