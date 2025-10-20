@@ -40,6 +40,14 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
         data = null
         initiatedWithData = false
         isDoneLoading = false
+        val cachedData = api.getCached(profile)
+        if (cachedData != null) {
+            data = Result.success(cachedData)
+            isDoneLoading = true
+            initiatedWithData = true
+            return
+        }
+
         CoroutineScope(Dispatchers.IO).launch {
             this@AbstractCategorizedLoadingScreen.data = api.getData(profile).onFailure { exception ->
                 SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
@@ -57,7 +65,6 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
             }
         }
     }
-
 
     protected fun loading(
         onSuccess: (V) -> Unit,
