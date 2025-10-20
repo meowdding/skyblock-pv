@@ -81,4 +81,16 @@ object NetworthDisplay {
             { ExtraDisplays.component(+"widgets.networth.loading", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false) },
         ),
     )
+
+    /*fun networthDebug(profile: SkyBlockProfile): List<String> = buildList {
+        fun addLine(name: String, amount: Number?) = add(" - $name: ${amount?.toFormattedString()}")
+
+        add("# Networth Breakdown: ${profile.netWorth.get().first.toFormattedString()}")
+        add("## Currency:")
+        addLine("Purse", profile.currency?.purse)
+        addLine("Solo Bank", profile.bank?.soloBank)
+        addLine("Profile Bank", profile.bank?.profileBank)
+        add(" ")
+
+    }*/
 }

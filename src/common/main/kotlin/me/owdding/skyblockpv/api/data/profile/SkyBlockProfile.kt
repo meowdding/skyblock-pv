@@ -19,8 +19,8 @@ import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
 import me.owdding.skyblockpv.data.repo.MagicalPowerCodecs
-import me.owdding.skyblockpv.feature.Networth
-import me.owdding.skyblockpv.feature.NetworthCalculator
+import me.owdding.skyblockpv.feature.networth.Networth
+import me.owdding.skyblockpv.feature.networth.NetworthCalculator
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
