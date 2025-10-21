@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items
 class EnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
     private val enderChests get() = profile.inventory?.enderChestPages ?: emptyList()
 
-    override fun getInventories(): List<Display> = enderChests.map { PvWidgets.createInventory(it.items.inventory) }
+    override fun getInventories(): List<Display> = enderChests.map { PvWidgets.createInventory(it) }
 
     override fun getIcons() = List(enderChests.size) { Items.ENDER_CHEST.defaultInstance }
 }

@@ -44,12 +44,13 @@ data class RiftData(
     }
 }
 
+@Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
 data class RiftInventory(
     val inventory: List<ItemStack>,
     val armor: List<ItemStack>,
     val enderChest: List<List<ItemStack>>,
     val equipment: List<ItemStack>,
-) {
+) : List<ItemStack> by inventory {
     companion object {
         fun fromJson(json: JsonObject): RiftInventory {
             return RiftInventory(

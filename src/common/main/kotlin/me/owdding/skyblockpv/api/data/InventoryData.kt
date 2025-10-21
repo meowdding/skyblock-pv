@@ -34,27 +34,28 @@ data class InventoryData(
     /** Get all items from all sources, **EXCEPT** for sacks.*/
     fun getAllItems() = buildList {
         fun addAll(list: List<ItemStack>?) = list?.let { this.addAll(it) }
+        fun addAll(list: List<List<ItemStack>>?) = list?.let { addAll(it.flatten()) }
 
-        addAll(inventoryItems?.inventory)
-        addAll(armorItems?.inventory)
-        addAll(equipmentItems?.inventory)
-        addAll(enderChestPages?.flatMap { it.items.inventory })
-        addAll(backpacks?.flatMap { it.items.inventory })
-        addAll(potionBag?.inventory)
-        addAll(talismans?.flatMap { it.talismans.inventory })
-        addAll(fishingBag?.inventory)
-        addAll(quiver?.inventory)
-        addAll(personalVault?.inventory)
-        addAll(wardrobe?.armor?.armor?.inventory)
+        addAll(inventoryItems)
+        addAll(armorItems)
+        addAll(equipmentItems)
+        addAll(enderChestPages)
+        addAll(backpacks)
+        addAll(potionBag)
+        addAll(talismans)
+        addAll(fishingBag)
+        addAll(quiver)
+        addAll(personalVault)
+        addAll(wardrobe)
     }
 
     data class Wardrobe(
         val equippedArmor: Int,
-        val armor: WardrobeArmor,
-    ) {
+        @get:Deprecated("Use the delegation instead!") val armor: WardrobeArmor,
+    ) : List<ItemStack> by armor {
         data class WardrobeArmor(
-            val armor: Inventory,
-        )
+            @get:Deprecated("Use the delegation instead!") val armor: Inventory,
+        ) : List<ItemStack> by armor
 
         companion object {
             fun fromJson(json: JsonObject): WardrobeArmor = WardrobeArmor(Inventory.fromJson(json))
@@ -63,17 +64,17 @@ data class InventoryData(
 
     // todo: last ec page if not maxed uses full page instead of only 1 row
     data class EnderChestPage(
-        val items: Inventory,
-    ) {
+        @get:Deprecated("Use the delegation instead!") val items: Inventory,
+    ) : List<ItemStack> by items {
         companion object {
             fun fromJson(json: JsonObject) = json.getInventoryData().chunked(45).map { it.completableInventory() }.map { EnderChestPage(it) }
         }
     }
 
     data class Backpack(
-        val items: Inventory,
+        @get:Deprecated("Use the delegation instead!") val items: Inventory,
         val icon: ItemStack,
-    ) {
+    ) : List<ItemStack> by items {
         companion object {
             fun icons(json: JsonObject): Map<Int, ItemStack> = json.entrySet().associate { entry ->
                 entry.key.toInt() to entry.value.asJsonObject.get("data").getNbt().getListOrEmpty("i").first().legacyStack()
@@ -86,16 +87,17 @@ data class InventoryData(
     }
 
     data class TalismansPage(
-        val talismans: Inventory,
-    ) {
+        @get:Deprecated("Use the delegation instead!") val talismans: Inventory,
+    ) : List<ItemStack> by talismans {
         companion object {
             fun fromJson(json: JsonObject) = json.getInventoryData().chunked(45).map { it.completableInventory() }.map { TalismansPage(it) }
         }
     }
 
+    @Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
     data class Inventory(
-        val inventory: List<ItemStack>,
-    ) {
+        @get:Deprecated("Use the delegation instead!") val inventory: List<ItemStack>,
+    ) : List<ItemStack> by inventory {
         companion object {
             fun fromJson(json: JsonObject): Inventory = json.getInventoryData().completableInventory()
         }

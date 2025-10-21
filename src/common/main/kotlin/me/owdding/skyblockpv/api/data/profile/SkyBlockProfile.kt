@@ -32,6 +32,7 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvOpenedEvent
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
@@ -329,7 +330,7 @@ data class BackingSkyBlockProfile(
             // perks that are unlocked but not in the repo:
             val unknownPerks = perks.keys - EssenceData.allPerks.keys
 
-            if (unknownPerks.isNotEmpty()) {
+            if (unknownPerks.isNotEmpty()) McClient.runNextTick {
                 SkyBlockPv.warn("Unknown essence perks: $unknownPerks")
                 if (SkyBlockPv.isDevMode) "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
             }

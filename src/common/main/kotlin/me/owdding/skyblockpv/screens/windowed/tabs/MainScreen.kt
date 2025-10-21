@@ -222,7 +222,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     private fun getPlayerDisplay(profile: SkyBlockProfile, width: Int): LinearLayout {
         val height = (width * 1.1).toInt()
-        val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
+        val armor = profile.inventory?.armorItems ?: List(4) { ItemStack.EMPTY }
         val skyblockLvl = profile.skyBlockLevel.first
         val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
         val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
