@@ -28,7 +28,7 @@ class RiftInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = 
         )
 
         spacer(width = 10)
-        val inventoryItems = inventory.inventory.chunked(9)
+        val inventoryItems = inventory.chunked(9)
         val reorderedItems = (inventoryItems.drop(1) + inventoryItems.take(1)).flatten()
         widget(PvWidgets.createInventory(reorderedItems).asWidget().center(-1, height))
     }

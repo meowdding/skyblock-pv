@@ -13,8 +13,8 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget) = PvLayouts.horizontal(10) {
         val inventory = profile.inventory ?: return@horizontal
-        val armor = inventory.armorItems?.inventory.orEmpty(4)
-        val equipment = inventory.equipmentItems?.inventory.orEmpty(4)
+        val armor = inventory.armorItems.orEmpty(4)
+        val equipment = inventory.equipmentItems.orEmpty(4)
 
         val armorAndEquipment = listOf(
             PvWidgets.orderedArmorDisplay(armor.reversed()),
@@ -28,7 +28,7 @@ class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             ),
         )
 
-        val inventoryItems = inventory.inventoryItems?.inventory.orEmpty(36).chunked(9)
+        val inventoryItems = inventory.inventoryItems.orEmpty(36).chunked(9)
         val reorderedItems = (inventoryItems.drop(1) + inventoryItems.take(1)).flatten()
         widget(PvWidgets.createInventory(reorderedItems).asWidget())
     }

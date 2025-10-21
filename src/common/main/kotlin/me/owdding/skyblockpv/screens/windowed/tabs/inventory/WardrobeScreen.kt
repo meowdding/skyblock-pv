@@ -10,10 +10,10 @@ import net.minecraft.world.item.Items
 class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
 
     private val inventory get() = profile.inventory
-    private val activeArmor get() = inventory?.armorItems?.inventory.orEmpty(4).asReversed()
+    private val activeArmor get() = inventory?.armorItems.orEmpty(4).asReversed()
     private val wardrobe get() = inventory?.wardrobe
     private val selected get() = wardrobe?.equippedArmor?.takeUnless { it == -1 }?.minus(1) ?: -1
-    private val armor get() = wardrobe?.armor?.armor?.inventory?.chunked(36) ?: emptyList()
+    private val armor get() = wardrobe?.chunked(36) ?: emptyList()
 
     override fun getExtraLine() = if (selected == -1) {
         "No Armor Selected"
