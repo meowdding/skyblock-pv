@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.feature.networth
 
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.utils.Utils.filterNotAir
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.LowestBinAPI
@@ -41,7 +42,7 @@ interface NetworthSource {
 
 interface ItemListNetworthSource : NetworthSource {
     override fun getItemValues(profile: SkyBlockProfile): Map<String, Long> = buildMap {
-        getItems(profile)?.forEach {
+        getItems(profile)?.filterNotAir()?.forEach {
             put(it.cleanName, it.getItemValue().price)
         }
     }

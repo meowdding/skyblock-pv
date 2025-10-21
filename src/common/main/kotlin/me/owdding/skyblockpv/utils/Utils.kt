@@ -178,4 +178,6 @@ object Utils {
     fun <T : Any> JsonElement?.toDataOrThrow(codec: MapCodec<T>): T = this.toDataOrThrow(codec.codec())
 
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
+
+    fun Collection<ItemStack>.filterNotAir() = filterNot { it.isEmpty }
 }
