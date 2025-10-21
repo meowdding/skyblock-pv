@@ -6,9 +6,10 @@ import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.LowestBinAPI
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.Pricing
 import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
 
-enum class NetworthCategory(val source: NetworthSource) {
-    CURRENCY(CurrencySource),
+enum class NetworthCategory(val source: NetworthSource, formatted: String? = null) {
+    CURRENCY(CurrencySource, "Purse/Bank"),
     INVENTORY(InventorySource),
     ARMOR(ArmorSource),
     ENDERCHEST(EnderchestSource),
@@ -21,6 +22,10 @@ enum class NetworthCategory(val source: NetworthSource) {
     FISHING_BAG(FishingBagSource),
     QUIVER_BAG(QuiverBagSource),
     PERSONAL_VAULT(PersonalVaultSource),
+    ;
+
+    val formatted = formatted ?: toFormattedName()
+    override fun toString() = formatted
 }
 
 interface NetworthSource {
