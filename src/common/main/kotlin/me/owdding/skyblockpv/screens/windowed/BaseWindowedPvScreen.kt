@@ -25,6 +25,7 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
+import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
@@ -206,11 +207,18 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             .withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback(CachedApis::clearCaches)
 
+        val networthDebug = Button()
+            .withRenderer(WidgetRenderers.text(Text.of("Networth")))
+            .withSize(60, 20)
+            .withTexture(ExtraConstants.BUTTON_DARK)
+            .withCallback { McClient.clipboard = NetworthDisplay.networthDebug(profile).joinToString("\n") }
+
 
         widget(refreshButton)
         widget(screenSizeText)
         widget(saveButton)
         widget(clearCache)
+        widget(networthDebug)
     }
 
     private fun createTabs() = PvLayouts.horizontal(2) {

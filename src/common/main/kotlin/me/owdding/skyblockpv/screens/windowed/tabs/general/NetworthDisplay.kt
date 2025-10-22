@@ -8,6 +8,7 @@ import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.CurrenciesAPI
+import me.owdding.skyblockpv.feature.networth.Networth
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
@@ -21,7 +22,7 @@ import kotlin.math.roundToLong
 
 object NetworthDisplay {
 
-    private fun Display.addTooltip(networth: Pair<Long, Map<String, Long>>): Display {
+    private fun Display.addTooltip(networth: Networth): Display {
         val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
         val networthCookies = if (cookiePrice > 0) (networth.first / cookiePrice).roundToLong() else 0L
         val networthUSD = ((networthCookies * 325.0) / 675.0) * 4.99
@@ -52,11 +53,12 @@ object NetworthDisplay {
             this.add(+"widgets.networth.tooltip.note")
             this.space()
             this.add(+"widgets.networth.tooltip.sources")
-            networth.second.forEach {
+            networth.second.forEach { (category, map) ->
                 this.add {
-                    this.append(it.key) { this.color = PvColors.YELLOW }
+                    this.append(category.toString()) { this.color = PvColors.YELLOW }
+                    val categoryTotal = map.values.sum()
                     this.append(": ") { this.color = PvColors.YELLOW }
-                    this.append(it.value.toFormattedString()) { this.color = PvColors.GREEN }
+                    this.append(categoryTotal.toFormattedString()) { this.color = PvColors.GREEN }
                 }
             }
         }
@@ -81,4 +83,18 @@ object NetworthDisplay {
             { ExtraDisplays.component(+"widgets.networth.loading", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false) },
         ),
     )
+
+    fun networthDebug(profile: SkyBlockProfile): List<String> = buildList {
+        fun addLine(name: String, amount: Number?) = add(" - $name: ${amount?.toFormattedString()}")
+
+        add("# Networth Breakdown: ${profile.netWorth.get().first.toFormattedString()}")
+
+        profile.netWorth.get().second.forEach { (category, map) ->
+            val categoryTotal = map.values.sum()
+            add("## $category - ${categoryTotal.toFormattedString()}")
+            map.toList().sortedByDescending(Pair<String, Long>::second).take(20).forEach { (itemName, itemValue) ->
+                addLine(itemName, itemValue)
+            }
+        }
+    }
 }

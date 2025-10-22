@@ -93,6 +93,7 @@ data class InventoryData(
         }
     }
 
+    // TODO: find a replacement for this, kinda annoying to write .inventory every single time
     data class Inventory(
         val inventory: List<ItemStack>,
     ) {

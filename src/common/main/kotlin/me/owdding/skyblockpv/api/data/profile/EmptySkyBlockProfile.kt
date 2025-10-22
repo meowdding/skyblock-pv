@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.api.data.profile
 
 import me.owdding.skyblockpv.api.data.ProfileId
-import me.owdding.skyblockpv.feature.Networth
+import me.owdding.skyblockpv.feature.networth.Networth
 import net.minecraft.network.chat.Component
 import java.util.*
 import java.util.concurrent.CompletableFuture

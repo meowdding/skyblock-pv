@@ -182,5 +182,7 @@ object Utils {
 
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
 
+    fun Collection<ItemStack>.filterNotAir() = filterNot { it.isEmpty }
+
     fun openConfig(screen: Screen? = null) = McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(screen) }
 }
