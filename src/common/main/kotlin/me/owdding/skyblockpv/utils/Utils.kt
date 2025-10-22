@@ -185,4 +185,6 @@ object Utils {
     fun openConfig(screen: Screen? = null) = McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(screen) }
 
     fun Collection<ItemStack>.filterNotAir() = filterNot { it.isEmpty }
+
+    fun openConfig(screen: Screen? = null) = McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(screen) }
 }
