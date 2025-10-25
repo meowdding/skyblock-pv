@@ -1,16 +1,17 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.combat
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.displays.DisplayWidget
-import me.owdding.lib.displays.asTable
-import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
+import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
+import me.owdding.skyblockpv.data.api.skills.combat.DungeonFloor
 import me.owdding.skyblockpv.data.repo.CatacombsCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -18,20 +19,10 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
-
-    var classToLevel: Map<String, Pair<Int, Float>>? = null
-
-    override fun onProfileSwitch(profile: SkyBlockProfile) {
-        super.onProfileSwitch(profile)
-
-        classToLevel = profile.dungeonData?.classExperience?.map { (name, xp) ->
-            name to CatacombsCodecs.getLevelAndProgress(xp, Config.skillOverflow)
-        }?.toMap()
-    }
-
     override fun getLayout(bg: DisplayWidget): Layout {
         val dungeonData = profile.dungeonData ?: return PvLayouts.vertical {
             string("No Dungeon Data")
@@ -63,13 +54,13 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun countRuns(completions: Map<String, Long>?) = completions?.filterKeys { it != "total" }?.values?.sum() ?: 0
 
     private fun createInfoBoxDisplay(dungeonData: DungeonData): LayoutElement {
-        val catacombsCompl = dungeonData.dungeonTypes["catacombs"]?.tierCompletions
-        val masterModeCompl = dungeonData.dungeonTypes["master_catacombs"]?.tierCompletions
+        val catacombsCompl = dungeonData.dungeonTypes["catacombs"]?.completions
+        val masterModeCompl = dungeonData.dungeonTypes["master_catacombs"]?.completions
 
         val runCounts = (countRuns(catacombsCompl) + countRuns(masterModeCompl)).coerceAtLeast(1)
 
         val mainContent = PvLayouts.vertical {
-            string("Class Average: ${classToLevel?.map { it.value.first.coerceAtMost(50) }?.toList()?.average()}")
+            string("Class Average: ${dungeonData.classToLevel.map { it.value.first.coerceAtMost(50) }.toList().average()}")
             string("Secrets: ${dungeonData.secrets.toFormattedString()}")
             string("Secrets/Run: ${(dungeonData.secrets / runCounts).round()}")
         }
@@ -83,7 +74,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val (catacombsLevel, catacombsProgressToNext) = CatacombsCodecs.getLevelAndProgress(catacombsXp, Config.skillOverflow)
 
         fun getClass(name: String) = PvLayouts.vertical(5) {
-            val (level, progress) = classToLevel?.get(name)!!
+            val (level, progress) = dungeonData.classToLevel[name]!!
             textDisplay("${name.replaceFirstChar { it.uppercase() }}: $level") {
                 color = if (dungeonData.selectedClass == name) PvColors.DARK_GREEN else PvColors.DARK_GRAY
             }
@@ -108,14 +99,32 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     private fun createRunsDisplay(dungeonData: DungeonData): LayoutElement {
         val catacombs = dungeonData.dungeonTypes["catacombs"]
         val masterMode = dungeonData.dungeonTypes["master_catacombs"]
-        val catacombsComp = catacombs?.tierCompletions
-        val masterComp = masterMode?.tierCompletions
+        val catacombsComp = catacombs?.completions
+        val masterComp = masterMode?.completions
 
-        fun MutableList<List<String>>.getRow(name: String, floor: String) {
-            add(listOf(name, catacombsComp?.get(floor)?.toString() ?: "0", masterComp?.get(floor)?.toString() ?: "0"))
-        }
+        fun MutableList<List<Display>>.getRow(name: String, floor: String) = buildList {
+            fun widget(floor: DungeonFloor) = ExtraDisplays.grayText(floor.completions.toString()).withTooltip {
+                fun add(text: String, value: String) {
+                    add("$text: ") {
+                        color = TextColor.GRAY
+                        append(value) { color = TextColor.WHITE }
+                    }
+                }
+
+                add("Times Played", floor.timesPlayed.toString())
+                add("Completions", floor.completions.toString())
+                add("Fastest Time", if (floor.fastestTime.isPositive()) floor.fastestTime.toReadableTime(allowMs = true) else "N/A")
+                add("Best Score", if (floor.bestScore > 0) floor.bestScore.toString() else "N/A")
+            }
+
+            add(ExtraDisplays.grayText(name))
+            add(widget(catacombs?.floors?.get(floor) ?: DungeonFloor.EMPTY))
+            add(widget(masterMode?.floors?.get(floor) ?: DungeonFloor.EMPTY))
+        }.let(this::add)
 
         val table = buildList {
+            fun add(strings: List<String>) = add(strings.map { ExtraDisplays.grayText(it) })
+
             add(listOf("", "Cata", "Master"))
             getRow("Bonzo", "1")
             getRow("Scarf", "2")
@@ -125,7 +134,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             getRow("Sadan", "6")
             getRow("Necron", "7")
             add(listOf("Total", countRuns(catacombsComp).toString(), countRuns(masterComp).toString()))
-        }.map { it.map { ExtraDisplays.grayText(it) } }.asTable(10).asWidget()
+        }.asTable(10).asWidget()
 
         return PvWidgets.label("Dungeon Runs", table, 20)
     }
