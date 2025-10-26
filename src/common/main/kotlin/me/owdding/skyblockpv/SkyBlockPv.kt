@@ -14,13 +14,16 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.DevConfig
 import me.owdding.skyblockpv.config.THEME_RENDERER
 import me.owdding.skyblockpv.config.ThemeRenderer
+import me.owdding.skyblockpv.feature.PartyFinderJoin.getDungeonData
 import me.owdding.skyblockpv.generated.SkyBlockPVExtraData
 import me.owdding.skyblockpv.generated.SkyBlockPVModules
 import me.owdding.skyblockpv.screens.DisplayTest
 import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
@@ -30,6 +33,7 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
@@ -123,6 +127,29 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
             thenCallback("version") {
                 Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
             }
+
+            then("pfjoin") {
+                then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
+                    callback {
+                        fetchGameProfile(this.getArgument("player", String::class.java)) { profile ->
+                            if (profile == null) {
+                                (+"messages.player_not_found").sendWithPrefix()
+                            } else if (!RepoAPI.isInitialized()) {
+                                ChatUtils.chat(
+                                    """
+                            §cThe external repo is not initialized.
+                            §cThis can mean your network is blocking our domain or your internet is not working.
+                            §cPlease try again later or check your network connection. If the problem persists, please report it on our Discord server with your full log.
+                            """.trimIndent(),
+                                )
+                            } else {
+                                getDungeonData(profile)
+                            }
+                        }
+                    }
+                }
+            }
+
 
             callback {
                 McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(MOD_ID).apply(null) }

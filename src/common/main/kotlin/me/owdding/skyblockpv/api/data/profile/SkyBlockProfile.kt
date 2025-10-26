@@ -32,6 +32,7 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvOpenedEvent
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
@@ -331,7 +332,9 @@ data class BackingSkyBlockProfile(
 
             if (unknownPerks.isNotEmpty()) {
                 SkyBlockPv.warn("Unknown essence perks: $unknownPerks")
-                if (SkyBlockPv.isDevMode) "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
+                if (SkyBlockPv.isDevMode) McClient.runNextTick {
+                    "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
+                }
             }
 
             return perks

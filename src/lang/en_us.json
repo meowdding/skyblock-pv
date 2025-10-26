@@ -50,6 +50,20 @@
         },
         "unknown_essence_perks": "<0> unknown essence perks.",
         "player_not_found": "<red>Player could not be found</red>",
+        "no_dungeon_data": "<red>No Dungeon Data found for <0>.</red>",
+        "dungeon_partyfinder": {
+            "header": "<red><0></red><gray>'s Dungeon Stats</gray>",
+            "general_info_header": "  <red>General Info</red>",
+            "level": "    <red>Catacombs </red><gray>Level: <0></gray>\n    <green><1> </green><gray>Level: <2></gray>",
+            "secrets_found": "    <gold>Secrets Found</gold><gray>: <0> (<1>/run)</gray>",
+            "utilities_header": "    <red>Utilities</red>",
+            "has_bonus_item_true": "      <green><0></green><gray>:</gray> <green>✔</green>",
+            "has_bonus_item_false": "      <red><0></red><gray>:</gray> <red>✘</red>",
+            "equipment_header": "  <red>Equipment</red>",
+            "floor_info_header": "    <0><red> Floor Info</red>",
+            "floor_info": "<gray> Floor</gray><red> <0></red><gray>: </gray><green><1></green><gray> completions | PB: </gray><gold><2></gold>",
+            "empty_slot": "<run_cmd '/sbpv pfjoin <!0>'><red>Empty Slot! Click to Recheck</red></run_cmd>"
+        },
         "click_to_open_pv": "<yellow>Click to open <0>'s profile in SkyBlock Profile Viewer.</yellow>",
         "toast": {
             "disabled_tabs": {
