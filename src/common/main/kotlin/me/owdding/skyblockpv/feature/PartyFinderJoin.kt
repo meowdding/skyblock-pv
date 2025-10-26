@@ -78,12 +78,14 @@ object PartyFinderJoin {
                         return@whenComplete
                     }
 
-                    Text.join(
-                        sendBasicInfo(gameProfile, dungeonData, selected),
-                        sendEquipmentInfo(gameProfile, selected),
-                        "messages.party_finder_join".asTranslated(gameProfile.name).sendWithPrefix(),
-                        separator = Text.of("\n")
-                    ).send()
+                    McClient.runNextTick {
+                        Text.join(
+                            sendBasicInfo(gameProfile, dungeonData, selected),
+                            sendEquipmentInfo(gameProfile, selected),
+                            "messages.party_finder_join".asTranslated(gameProfile.name).sendWithPrefix(),
+                            separator = Text.of("\n")
+                        ).send()
+                    }
                 }
             }
         }
