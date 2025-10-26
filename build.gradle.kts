@@ -46,7 +46,7 @@ tasks.withType<KotlinCompile>().configureEach {
             "-Xmulti-platform",
             "-Xno-check-actual",
             "-Xexpect-actual-classes",
-            "-Xopt-in=kotlin.time.ExperimentalTime",
+            "-opt-in=kotlin.time.ExperimentalTime",
         )
     }
 }

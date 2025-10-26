@@ -17,7 +17,7 @@ hypixelapi = "1.0.1+build.1+mc1.21"
 placeholders = "2.6.1+1.21.5"
 mixinconstraints = "1.0.7"
 
-meowdding-lib = "3.0.4"
+meowdding-lib = "3.0.6"
 meowdding-ktmodules = "1.0.5"
 meowdding-ktcodecs = "1.0.28"
 meowdding-repo = "1.0.17"
