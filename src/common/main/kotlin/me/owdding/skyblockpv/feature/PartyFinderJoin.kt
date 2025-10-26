@@ -11,32 +11,45 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
 import me.owdding.skyblockpv.data.repo.CatacombsCodecs
-import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
-import me.owdding.skyblockpv.utils.Utils.unaryPlus
+import me.owdding.skyblockpv.utils.displays.InventoryTooltipComponent
+import net.minecraft.core.component.DataComponentMap
+import net.minecraft.core.component.DataComponentPatch
+import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
+import net.minecraft.world.inventory.tooltip.TooltipComponent
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.repolib.api.RepoAPI
+import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.chat.ChatReceivedEvent
+import tech.thatgravyboat.skyblockapi.api.events.minecraft.ui.GatherItemTooltipComponentsEvent
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.extentions.capitalize
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
+import tech.thatgravyboat.skyblockapi.utils.extentions.set
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
+import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.hover
+import java.util.WeakHashMap
+import kotlin.collections.List
+import kotlin.collections.chunked
 
 @Module
 object PartyFinderJoin {
 
     private val joinMessageRegex = "Party Finder > (?<username>.*) joined the(?: dungeon)? group!.*".toRegex()
+
+    private val itemComponentMap = WeakHashMap<ItemStack, InventoryTooltipComponent>()
 
     @Subscription
     fun onChat(event: ChatReceivedEvent.Pre) {
@@ -63,29 +76,25 @@ object PartyFinderJoin {
             }
             val selected = profiles.find { it.selected } ?: return@launch
 
-            CoroutineScope(Dispatchers.IO).launch {
-                selected.dataFuture.whenComplete {
-                        _, throwable ->
-                    if (throwable != null) {
-                        SkyBlockPv.error("Failed to load profile data for dungeon party finder join for: ${gameProfile.name}", throwable)
-                    }
+            selected.dataFuture.whenComplete { _, throwable ->
+                if (throwable != null) {
+                    SkyBlockPv.error("Failed to load profile data for dungeon party finder join for: ${gameProfile.name}", throwable)
+                }
 
-                    val dungeonData = selected.dungeonData
-                    if (dungeonData == null) {
-                        McClient.runNextTick {
-                            "messages.no_dungeon_data".asTranslated(gameProfile.name).sendWithPrefix()
-                        }
-                        return@whenComplete
-                    }
-
+                val dungeonData = selected.dungeonData
+                if (dungeonData == null) {
                     McClient.runNextTick {
-                        Text.join(
-                            sendBasicInfo(gameProfile, dungeonData, selected),
-                            sendEquipmentInfo(gameProfile, selected),
-                            separator = Text.of("\n")
-                        ).sendWithPrefix()
-                        "messages.party_finder_join".asTranslated(gameProfile.name).sendWithPrefix()
+                        "messages.no_dungeon_data".asTranslated(gameProfile.name).sendWithPrefix()
                     }
+                    return@whenComplete
+                }
+
+                McClient.runNextTick {
+                    Text.multiline(
+                        sendBasicInfo(gameProfile, dungeonData, selected),
+                        sendEquipmentInfo(gameProfile, selected),
+                    ).sendWithPrefix()
+                    "messages.party_finder_join".asTranslated(gameProfile.name).sendWithPrefix()
                 }
             }
         }
@@ -120,13 +129,13 @@ object PartyFinderJoin {
 
         var catacombsFloorInfoComponents = dungeonData.dungeonTypes["catacombs"]?.floors?.map { (floorId, floorData) ->
             if (floorId == "total") return@map null
-            Text.of("") {
+            Text.of {
                 append("messages.dungeon_partyfinder.floor_info".asTranslated(floorId, floorData.completions, floorData.fastestTime))
             }
         }
         if (catacombsFloorInfoComponents.isNullOrEmpty()) {
             catacombsFloorInfoComponents = listOf(
-                Text.of(" §aThis player hasn't completed any Catacombs floors yet :3")
+                Text.of(" §aThis player hasn't completed any Catacombs floors yet")
             )
         }
 
@@ -138,7 +147,7 @@ object PartyFinderJoin {
         }
         if (mastermodeFloorInfoComponents.isNullOrEmpty()) {
             mastermodeFloorInfoComponents = listOf(
-                Text.of(" §aThis player hasn't completed any Mastermode floors yet :3")
+                Text.of(" §aThis player hasn't completed any Mastermode floors yet")
             )
         }
 
@@ -154,27 +163,25 @@ object PartyFinderJoin {
 
         components.add(
             Text.of {
-                append("messages.dungeon_partyfinder.floor_info_header".asTranslated("§2Catacombs"))
-                this.hover = Text.join(
+                append("messages.dungeon_partyfinder.catacombs_floor_info_header".asTranslated())
+                this.hover = Text.multiline(
                     Text.of("§2Catacombs §cFloors\n"),
                     catacombsFloorInfoComponents,
-                    separator = Text.of("\n")
                 )
             }
         )
         components.add(
             Text.of {
-                append("messages.dungeon_partyfinder.floor_info_header".asTranslated("§cMastermode"))
-                this.hover = Text.join(
+                append("messages.dungeon_partyfinder.mastermode_floor_info_header".asTranslated())
+                this.hover = Text.multiline(
                     Text.of("§cMastermode Floors\n"),
                     mastermodeFloorInfoComponents,
-                    separator = Text.of("\n")
+
                 )
             }
         )
-        return Text.join(
+        return Text.multiline(
             components,
-            separator = Text.of("\n")
         )
     }
 
@@ -184,7 +191,6 @@ object PartyFinderJoin {
         val equippedArmor = profile.inventory?.armorItems?.inventory?.reversed() ?: List(4) { ItemStack.EMPTY }
         val equipment = profile.inventory?.equipmentItems?.inventory ?: List(4) { ItemStack.EMPTY }
 
-        // VERY resource intensive, might limit what storages we should check :3
         val inventoryItems = profile.inventory?.getAllItems() ?: emptyList()
 
         val hasDungeonBreaker = inventoryItems.hasSkyBlockId("DUNGEONBREAKER")
@@ -194,28 +200,40 @@ object PartyFinderJoin {
 
         components.addAll(
             listOf(
-                "messages.dungeon_partyfinder.equipment_header".asTranslated(),
+                Text.of {
+                    append("messages.dungeon_partyfinder.equipment_header".asTranslated())
+                    if (profile.inventory?.inventoryItems != null) {
+                        val inventoryItems = (profile.inventory?.inventoryItems?.inventory ?: List(36) { ItemStack.EMPTY }).chunked(9)
+                        val reorderedItems = (inventoryItems.drop(1) + inventoryItems.take(1)).flatten()
+
+                        val item = ItemStack(Items.BARRIER)
+                        item.set(DataComponents.CUSTOM_NAME, Text.of("Inventory"))
+                        val hoverEvent = HoverEvent.ShowItem(item)
+
+                        itemComponentMap[hoverEvent.item()] = InventoryTooltipComponent(reorderedItems, 9)
+
+                        this.style = Style.EMPTY.withHoverEvent(hoverEvent)
+                    }
+                },
                 getItemStackComponent(equippedArmor, gameProfile),
                 getItemStackComponent(equipment, gameProfile),
                 Text.of("    ") {
                     append("messages.dungeon_partyfinder.utilities_header".asTranslated())
-                    this.hover = Text.join(
+                    this.hover = Text.multiline(
                         "messages.dungeon_partyfinder.utilities_header".asTranslated(),
-                        Text.of(""),
+                        CommonText.EMPTY,
                         listOf(
                             "messages.dungeon_partyfinder.has_bonus_item_$hasDungeonBreaker".asTranslated("Dungeonbreaker"),
                             "messages.dungeon_partyfinder.has_bonus_item_$hasInfiniteSuperboom".asTranslated("Infinityboom TNT"),
                             "messages.dungeon_partyfinder.has_bonus_item_$hasInfileap".asTranslated("Infinileap"),
                             "messages.dungeon_partyfinder.has_bonus_item_$hasSpringBoots".asTranslated("Spring Boots"),
                         ),
-                        separator = Text.of("\n"),
                     )
                 }
             )
         )
-        return Text.join(
+        return Text.multiline(
             components,
-            separator = Text.of("\n")
         )
     }
 
@@ -232,15 +250,19 @@ object PartyFinderJoin {
                 components.add(
                     Text.of("    ") {
                         append(itemStack.hoverName)
-                        this.hover = Text.join(itemStack.hoverName, Text.of(""), itemStack.getLore(), separator = Text.of("\n"))
+                        this.hover = Text.multiline(itemStack.hoverName, CommonText.EMPTY, itemStack.getLore())
                     }
                 )
             }
         }
-        return Text.join(
+        return Text.multiline(
             components,
-            separator = Text.of("\n")
         )
+    }
+
+    @Subscription
+    private fun GatherItemTooltipComponentsEvent.onComponents() {
+        itemComponentMap[this.item]?.let { components.add(it) }
     }
 }
 

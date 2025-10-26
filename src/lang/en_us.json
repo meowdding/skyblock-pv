@@ -53,14 +53,15 @@
         "no_dungeon_data": "<red>No Dungeon Data found for <0>.</red>",
         "dungeon_partyfinder": {
             "header": "<red><0></red><gray>'s Dungeon Stats</gray>",
-            "general_info_header": "  <red>General Info</red>",
+            "general_info_header": "  <bold><red>General Info</red></bold>",
             "level": "    <red>Catacombs </red><gray>Level: <0></gray>\n    <green><1> </green><gray>Level: <2></gray>",
             "secrets_found": "    <gold>Secrets Found</gold><gray>: <0> (<1>/run)</gray>",
-            "utilities_header": "<red>Utilities</red>",
+            "utilities_header": "<underline><red>Utilities</red></underline>",
             "has_bonus_item_true": " <green><0></green><gray>:</gray> <green>✔</green>",
             "has_bonus_item_false": " <red><0></red><gray>:</gray> <red>✘</red>",
-            "equipment_header": "  <red>Equipment</red>",
-            "floor_info_header": "    <0><red> Floor Info</red>",
+            "equipment_header": "  <underline><bold><red>Equipment</red></bold></underline>",
+            "catacombs_floor_info_header": "    <underline><dark_green>Catacombs</dark_green></underline> <underline><red>Floor Info</red></underline>",
+            "mastermode_floor_info_header": "    <underline><red>Mastermode</red></underline> <underline><red>Floor Info</red></underline>",
             "floor_info": "<gray> Floor</gray><red> <0></red><gray>: </gray><green><1></green><gray> completions | PB: </gray><gold><2></gold>",
             "empty_slot": "<run_cmd '/sbpv pfjoin <!0>'><red>Empty Slot! Click to Recheck</red></run_cmd>"
         },
@@ -104,7 +105,7 @@
         },
         "party_finder_message": {
             "@value": "Party Finder Message",
-            "desc": "Shows a message in chat to view the joined players profile."
+            "desc": "Shows a chat breakdown of the joined players profile."
         },
         "disable_outside_hypixel": {
             "@value": "Disable outside hypixel",
