@@ -104,12 +104,14 @@ object PartyFinderJoin {
 
         val (catacombsLevel, catacombsProgressToNext) = CatacombsCodecs.getLevelAndProgress(catacombsXp, Config.skillOverflow)
         val cataLevel: Float = catacombsLevel + catacombsProgressToNext
+        val cataLevelFormatted = String.format("%.2f", cataLevel)
 
         val selectedClass = dungeonData.selectedClass
         val classXp = dungeonData.classExperience[selectedClass] ?: 0
 
         val (classLevelFloor, classProgressToNext) = CatacombsCodecs.getLevelAndProgress(classXp, Config.skillOverflow)
         val classLevel: Float = classLevelFloor + classProgressToNext
+        val classLevelFormatted = String.format("%.2f", classLevel)
 
         val catacombsCompl = dungeonData.dungeonTypes["catacombs"]?.completions
         val masterModeCompl = dungeonData.dungeonTypes["master_catacombs"]?.completions
@@ -118,6 +120,7 @@ object PartyFinderJoin {
 
         val secrets = dungeonData.secrets
         val secretAverage = secrets.toFloat() / runCounts.toFloat()
+        val secretAverageFormatted = String.format("%.1f", secretAverage)
 
         var catacombsFloorInfoComponents = dungeonData.dungeonTypes["catacombs"]?.floors?.map { (floorId, floorData) ->
             if (floorId == "total") return@map null
@@ -147,8 +150,8 @@ object PartyFinderJoin {
             "messages.dungeon_partyfinder.header".asTranslated(gameProfile.name).sendWithPrefix()
             "messages.dungeon_partyfinder.general_info_header".asTranslated().send()
 
-            "messages.dungeon_partyfinder.level".asTranslated(cataLevel, selectedClass.capitalize(), classLevel).send()
-            "messages.dungeon_partyfinder.secrets_found".asTranslated(secrets, secretAverage).send()
+            "messages.dungeon_partyfinder.level".asTranslated(cataLevelFormatted, selectedClass.capitalize(), classLevelFormatted).send()
+            "messages.dungeon_partyfinder.secrets_found".asTranslated(secrets, secretAverageFormatted).send()
 
             Text.of("") {
                 append("messages.dungeon_partyfinder.floor_info_header".asTranslated("§2Catacombs"))
@@ -186,7 +189,7 @@ object PartyFinderJoin {
             "messages.dungeon_partyfinder.equipment_header".asTranslated().send()
             sendItemStackInfo(equippedArmor, gameProfile)
             sendItemStackInfo(equipment, gameProfile)
-            Text.of("") {
+            Text.of("    ") {
                 append("messages.dungeon_partyfinder.utilities_header".asTranslated())
                 this.hover = Text.join(
                     "messages.dungeon_partyfinder.utilities_header".asTranslated(),
@@ -199,7 +202,7 @@ object PartyFinderJoin {
                     ),
                     separator = Text.of("\n"),
                 )
-            }
+            }.send()
         }
     }
 
