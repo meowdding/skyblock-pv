@@ -161,15 +161,14 @@ object PartyFinderJoin {
                     separator = Text.of("\n")
                 )
             }.send()
-            // When mastermode implementation :(
-            // Text.of("") {
-            //     append("messages.dungeon_partyfinder.floor_info_header".asTranslated("§cMastermode"))
-            //     this.hover = Text.join(
-            //         Text.of("§cMastermode Floors\n"),
-            //         mastermodeFloorInfoComponents,
-            //         separator = Text.of("\n")
-            //     )
-            // }.send()
+            Text.of("") {
+                append("messages.dungeon_partyfinder.floor_info_header".asTranslated("§cMastermode"))
+                this.hover = Text.join(
+                    Text.of("§cMastermode Floors\n"),
+                    mastermodeFloorInfoComponents,
+                    separator = Text.of("\n")
+                )
+            }.send()
         }
     }
 
