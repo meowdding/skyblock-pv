@@ -13,9 +13,11 @@ import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
 import me.owdding.skyblockpv.data.repo.CatacombsCodecs
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
@@ -46,18 +48,8 @@ object PartyFinderJoin {
             }
 
             fetchGameProfile(username) { profile ->
-                if (profile == null) {
-                    (+"messages.player_not_found").sendWithPrefix()
-                } else if (!RepoAPI.isInitialized()) {
-                    ChatUtils.chat(
-                        """
-                            §cThe external repo is not initialized.
-                            §cThis can mean your network is blocking our domain or your internet is not working.
-                            §cPlease try again later or check your network connection. If the problem persists, please report it on our Discord server with your full log.
-                            """.trimIndent(),
-                        )
-                } else {
-                    getDungeonData(profile)
+                Utils.validateGameProfile(profile) {
+                    getDungeonData(profile!!)
                 }
             }
         }
@@ -86,12 +78,12 @@ object PartyFinderJoin {
                         return@whenComplete
                     }
 
-                    sendBasicInfo(gameProfile, dungeonData, selected)
-                    sendEquipmentInfo(gameProfile, selected)
-
-                    McClient.runNextTick {
-                        "messages.party_finder_join".asTranslated(gameProfile.name).sendWithPrefix()
-                    }
+                    Text.join(
+                        sendBasicInfo(gameProfile, dungeonData, selected),
+                        sendEquipmentInfo(gameProfile, selected),
+                        "messages.party_finder_join".asTranslated(gameProfile.name).sendWithPrefix(),
+                        separator = Text.of("\n")
+                    ).send()
                 }
             }
         }
@@ -99,7 +91,9 @@ object PartyFinderJoin {
 
     private fun countRuns(completions: Map<String, Long>?) = completions?.filterKeys { it != "total" }?.values?.sum() ?: 0
 
-    fun sendBasicInfo(gameProfile: GameProfile, dungeonData: DungeonData, profile: SkyBlockProfile) {
+    fun sendBasicInfo(gameProfile: GameProfile, dungeonData: DungeonData, profile: SkyBlockProfile): List<Component> {
+        val components = mutableListOf<Component>()
+
         val catacombsXp = dungeonData.dungeonTypes["catacombs"]?.experience ?: 0
 
         val (catacombsLevel, catacombsProgressToNext) = CatacombsCodecs.getLevelAndProgress(catacombsXp, Config.skillOverflow)
@@ -136,7 +130,7 @@ object PartyFinderJoin {
 
         var mastermodeFloorInfoComponents = dungeonData.dungeonTypes["master_catacombs"]?.floors?.map { (floorId, floorData) ->
             if (floorId == "total") return@map null
-            Text.of("") {
+            Text.of {
                 append("messages.dungeon_partyfinder.floor_info".asTranslated(floorId, floorData.completions, floorData.fastestTime))
             }
         }
@@ -146,33 +140,42 @@ object PartyFinderJoin {
             )
         }
 
-        McClient.runNextTick {
-            "messages.dungeon_partyfinder.header".asTranslated(gameProfile.name).sendWithPrefix()
-            "messages.dungeon_partyfinder.general_info_header".asTranslated().send()
+        components.addAll(
+            listOf(
+                "messages.dungeon_partyfinder.header".asTranslated(gameProfile.name),
+                "messages.dungeon_partyfinder.general_info_header".asTranslated(),
 
-            "messages.dungeon_partyfinder.level".asTranslated(cataLevelFormatted, selectedClass.capitalize(), classLevelFormatted).send()
-            "messages.dungeon_partyfinder.secrets_found".asTranslated(secrets, secretAverageFormatted).send()
+                "messages.dungeon_partyfinder.level".asTranslated(cataLevelFormatted, selectedClass.capitalize(), classLevelFormatted),
+                "messages.dungeon_partyfinder.secrets_found".asTranslated(secrets, secretAverageFormatted),
+            )
+        )
 
-            Text.of("") {
+        components.add(
+            Text.of {
                 append("messages.dungeon_partyfinder.floor_info_header".asTranslated("§2Catacombs"))
                 this.hover = Text.join(
                     Text.of("§2Catacombs §cFloors\n"),
                     catacombsFloorInfoComponents,
                     separator = Text.of("\n")
                 )
-            }.send()
-            Text.of("") {
+            }
+        )
+        components.add(
+            Text.of {
                 append("messages.dungeon_partyfinder.floor_info_header".asTranslated("§cMastermode"))
                 this.hover = Text.join(
                     Text.of("§cMastermode Floors\n"),
                     mastermodeFloorInfoComponents,
                     separator = Text.of("\n")
                 )
-            }.send()
-        }
+            }
+        )
+        return components
     }
 
-    fun sendEquipmentInfo(gameProfile: GameProfile, profile: SkyBlockProfile) {
+    fun sendEquipmentInfo(gameProfile: GameProfile, profile: SkyBlockProfile): List<Component> {
+        val components = mutableListOf<Component>()
+
         val equippedArmor = profile.inventory?.armorItems?.inventory?.reversed() ?: List(4) { ItemStack.EMPTY }
         val equipment = profile.inventory?.equipmentItems?.inventory ?: List(4) { ItemStack.EMPTY }
 
@@ -184,44 +187,57 @@ object PartyFinderJoin {
         val hasInfileap = inventoryItems.hasSkyBlockId("INFINITE_SPIRIT_LEAP")
         val hasSpringBoots = inventoryItems.hasSkyBlockId("SPRING_BOOTS")
 
-        McClient.runNextTick {
-            "messages.dungeon_partyfinder.equipment_header".asTranslated().send()
-            sendItemStackInfo(equippedArmor, gameProfile)
-            sendItemStackInfo(equipment, gameProfile)
-            Text.of("    ") {
-                append("messages.dungeon_partyfinder.utilities_header".asTranslated())
-                this.hover = Text.join(
-                    "messages.dungeon_partyfinder.utilities_header".asTranslated(),
-                    Text.of(""),
-                    listOf(
-                        "messages.dungeon_partyfinder.has_bonus_item_$hasDungeonBreaker".asTranslated("Dungeonbreaker"),
-                        "messages.dungeon_partyfinder.has_bonus_item_$hasInfiniteSuperboom".asTranslated("Infinityboom TNT"),
-                        "messages.dungeon_partyfinder.has_bonus_item_$hasInfileap".asTranslated("Infinileap"),
-                        "messages.dungeon_partyfinder.has_bonus_item_$hasSpringBoots".asTranslated("Spring Boots"),
-                    ),
-                    separator = Text.of("\n"),
-                )
-            }.send()
-        }
+        components.addAll(
+            listOf(
+                "messages.dungeon_partyfinder.equipment_header".asTranslated(),
+                getItemStackComponent(equippedArmor, gameProfile),
+                getItemStackComponent(equipment, gameProfile),
+                Text.of("    ") {
+                    append("messages.dungeon_partyfinder.utilities_header".asTranslated())
+                    this.hover = Text.join(
+                        "messages.dungeon_partyfinder.utilities_header".asTranslated(),
+                        Text.of(""),
+                        listOf(
+                            "messages.dungeon_partyfinder.has_bonus_item_$hasDungeonBreaker".asTranslated("Dungeonbreaker"),
+                            "messages.dungeon_partyfinder.has_bonus_item_$hasInfiniteSuperboom".asTranslated("Infinityboom TNT"),
+                            "messages.dungeon_partyfinder.has_bonus_item_$hasInfileap".asTranslated("Infinileap"),
+                            "messages.dungeon_partyfinder.has_bonus_item_$hasSpringBoots".asTranslated("Spring Boots"),
+                        ),
+                        separator = Text.of("\n"),
+                    )
+                }
+            )
+        )
+        return components
     }
 
-    private fun sendItemStackInfo(list: List<ItemStack>, gameProfile: GameProfile) {
+    private fun getItemStackComponent(list: List<ItemStack>, gameProfile: GameProfile): Component {
+        val components = mutableListOf<Component>()
         list.forEach { itemStack ->
             if (itemStack.isEmpty) {
-                Text.of("    ") {
-                    append("messages.dungeon_partyfinder.empty_slot".asTranslated(gameProfile.name))
-                }
+                components.add(
+                    Text.of("    ") {
+                        append("messages.dungeon_partyfinder.empty_slot".asTranslated(gameProfile.name))
+                    }
+                )
             } else {
-                Text.of("    ") {
-                    append(itemStack.hoverName)
-                    this.hover = Text.join(itemStack.hoverName, Text.of(""), itemStack.getLore(), separator = Text.of("\n"))
-                }.send()
+                components.add(
+                    Text.of("    ") {
+                        append(itemStack.hoverName)
+                        this.hover = Text.join(itemStack.hoverName, Text.of(""), itemStack.getLore(), separator = Text.of("\n"))
+                    }
+                )
             }
         }
+        return Text.join(
+            Text.of(""),
+            components,
+            separator = Text.of("\n")
+        )
     }
 }
 
-fun List<ItemStack>.hasSkyBlockId(id: String): Boolean {
+private fun List<ItemStack>.hasSkyBlockId(id: String): Boolean {
     return this.any { stack ->
         SkyBlockId.fromItem(stack)?.skyblockId == id
     }
