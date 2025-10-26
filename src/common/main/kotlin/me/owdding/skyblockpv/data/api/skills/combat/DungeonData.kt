@@ -15,7 +15,8 @@ data class DungeonData(
     val selectedClass: String,
     val secrets: Long,
 ) {
-    val classToLevel = classExperience.map { (name, xp) ->
+    val classToLevel
+        get() = classExperience.map { (name, xp) ->
         name to CatacombsCodecs.getLevelAndProgress(xp, Config.skillOverflow)
     }.toMap()
 
@@ -43,7 +44,6 @@ data class DungeonData(
         }
 
         private fun JsonObject.parseDungeonType(): DungeonTypeData {
-            val timesPlayed = this["times_played"].asMap { id, amount -> id to amount.asLong(0) }
             val tierCompletions = this["tier_completions"].asMap { id, amount -> id to amount.asLong(0) }
             val fastestTime = this["fastest_time"].asMap { id, amount -> id to amount.asLong(0) }
             val bestScore = this["best_score"].asMap { id, amount -> id to amount.asLong(0) }
@@ -51,9 +51,8 @@ data class DungeonData(
 
             return DungeonTypeData(
                 experience = experience,
-                floors = timesPlayed.keys.associateWith { floor ->
+                floors = tierCompletions.keys.associateWith { floor ->
                     DungeonFloor(
-                        timesPlayed = timesPlayed[floor] ?: 0,
                         completions = tierCompletions[floor] ?: 0,
                         fastestTime = (fastestTime[floor] ?: 0).milliseconds,
                         bestScore = bestScore[floor] ?: 0,
@@ -72,12 +71,11 @@ data class DungeonTypeData(
 }
 
 data class DungeonFloor(
-    val timesPlayed: Long,
     val completions: Long,
     val fastestTime: Duration,
     val bestScore: Long,
 ) {
     companion object {
-        val EMPTY = DungeonFloor(0, 0, Duration.ZERO, 0)
+        val EMPTY = DungeonFloor(0, Duration.ZERO, 0)
     }
 }
