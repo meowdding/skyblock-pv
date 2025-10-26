@@ -111,7 +111,6 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     }
                 }
 
-                add("Times Played", floor.timesPlayed.toString())
                 add("Completions", floor.completions.toString())
                 add("Fastest Time", if (floor.fastestTime.isPositive()) floor.fastestTime.toReadableTime(allowMs = true) else "N/A")
                 add("Best Score", if (floor.bestScore > 0) floor.bestScore.toString() else "N/A")
