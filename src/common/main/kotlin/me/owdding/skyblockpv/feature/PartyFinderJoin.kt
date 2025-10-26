@@ -82,9 +82,9 @@ object PartyFinderJoin {
                         Text.join(
                             sendBasicInfo(gameProfile, dungeonData, selected),
                             sendEquipmentInfo(gameProfile, selected),
-                            "messages.party_finder_join".asTranslated(gameProfile.name).sendWithPrefix(),
                             separator = Text.of("\n")
-                        ).send()
+                        ).sendWithPrefix()
+                        "messages.party_finder_join".asTranslated(gameProfile.name).sendWithPrefix()
                     }
                 }
             }
@@ -93,7 +93,7 @@ object PartyFinderJoin {
 
     private fun countRuns(completions: Map<String, Long>?) = completions?.filterKeys { it != "total" }?.values?.sum() ?: 0
 
-    fun sendBasicInfo(gameProfile: GameProfile, dungeonData: DungeonData, profile: SkyBlockProfile): List<Component> {
+    fun sendBasicInfo(gameProfile: GameProfile, dungeonData: DungeonData, profile: SkyBlockProfile): Component {
         val components = mutableListOf<Component>()
 
         val catacombsXp = dungeonData.dungeonTypes["catacombs"]?.experience ?: 0
@@ -172,10 +172,13 @@ object PartyFinderJoin {
                 )
             }
         )
-        return components
+        return Text.join(
+            components,
+            separator = Text.of("\n")
+        )
     }
 
-    fun sendEquipmentInfo(gameProfile: GameProfile, profile: SkyBlockProfile): List<Component> {
+    fun sendEquipmentInfo(gameProfile: GameProfile, profile: SkyBlockProfile): Component {
         val components = mutableListOf<Component>()
 
         val equippedArmor = profile.inventory?.armorItems?.inventory?.reversed() ?: List(4) { ItemStack.EMPTY }
@@ -210,7 +213,10 @@ object PartyFinderJoin {
                 }
             )
         )
-        return components
+        return Text.join(
+            components,
+            separator = Text.of("\n")
+        )
     }
 
     private fun getItemStackComponent(list: List<ItemStack>, gameProfile: GameProfile): Component {
@@ -232,7 +238,6 @@ object PartyFinderJoin {
             }
         }
         return Text.join(
-            Text.of(""),
             components,
             separator = Text.of("\n")
         )
