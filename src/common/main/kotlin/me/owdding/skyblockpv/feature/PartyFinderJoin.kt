@@ -233,20 +233,19 @@ object PartyFinderJoin {
     }
 
     private fun getItemStackComponent(list: List<ItemStack>, gameProfile: GameProfile): Component {
-        val components = list.map {
-            if (it.isEmpty) {
-                Text.of("    ") {
-                    append("messages.dungeon_partyfinder.empty_slot".asTranslated(gameProfile.name))
-                }
-            } else {
-                Text.of("    ") {
-                    append(it.hoverName)
-                    this.hover = Text.multiline(it.hoverName, CommonText.EMPTY, it.getLore())
+        return Text.multiline(
+            list.map {
+                if (it.isEmpty) {
+                    Text.of("    ") {
+                        append("messages.dungeon_partyfinder.empty_slot".asTranslated(gameProfile.name))
+                    }
+                } else {
+                    Text.of("    ") {
+                        append(it.hoverName)
+                        this.hover = Text.multiline(it.hoverName, CommonText.EMPTY, it.getLore())
+                    }
                 }
             }
-        }
-        return Text.multiline(
-            components,
         )
     }
 
