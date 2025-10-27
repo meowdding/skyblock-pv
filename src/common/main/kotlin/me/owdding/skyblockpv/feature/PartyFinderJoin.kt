@@ -44,7 +44,7 @@ object PartyFinderJoin {
 
     private val joinMessageRegex = "Party Finder > (?<username>.*) joined the(?: dungeon)? group!.*".toRegex()
 
-    private val itemComponentMap = WeakHashMap<ItemStack, InventoryTooltipComponent>()
+    private val itemComponentMap = IdentityHashMap<ItemStack, InventoryTooltipComponent>()
 
     @Subscription
     fun onChat(event: ChatReceivedEvent.Pre) {
