@@ -105,7 +105,7 @@
         },
         "party_finder_message": {
             "@value": "Party Finder Message",
-            "desc": "Shows a chat breakdown of the joined players profile."
+            "desc": "Shows a breakdown of the joined players profile in chat, giving you a quick overview."
         },
         "disable_outside_hypixel": {
             "@value": "Disable outside hypixel",

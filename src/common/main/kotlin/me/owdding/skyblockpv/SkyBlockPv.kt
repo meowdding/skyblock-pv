@@ -126,18 +126,13 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
                 Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
             }
 
-            then("pfjoin") {
-                then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
-                    callback {
-                        fetchGameProfile(this.getArgument("player", String::class.java)) { profile ->
-                            Utils.validateGameProfile(profile) {
-                                getDungeonData(profile!!)
-                            }
-                        }
+            thenCallback("pfjoin player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
+                fetchGameProfile(this.getArgument("player", String::class.java)) { profile ->
+                    Utils.validateGameProfile(profile) {
+                        getDungeonData(profile!!)
                     }
                 }
             }
-
 
             callback {
                 McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(MOD_ID).apply(null) }

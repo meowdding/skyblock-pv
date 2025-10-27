@@ -5,6 +5,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.owdding.ktmodules.Module
+import me.owdding.lib.builder.ComponentBuilder
+import me.owdding.lib.builder.MultilineComponentBuilder
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
@@ -16,14 +18,10 @@ import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.displays.InventoryTooltipComponent
-import net.minecraft.core.component.DataComponentMap
-import net.minecraft.core.component.DataComponentPatch
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.Style
-import net.minecraft.world.inventory.tooltip.TooltipComponent
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
@@ -35,14 +33,11 @@ import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.extentions.capitalize
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
-import tech.thatgravyboat.skyblockapi.utils.extentions.set
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.hover
-import java.util.WeakHashMap
-import kotlin.collections.List
-import kotlin.collections.chunked
+import java.util.*
 
 @Module
 object PartyFinderJoin {
@@ -238,21 +233,16 @@ object PartyFinderJoin {
     }
 
     private fun getItemStackComponent(list: List<ItemStack>, gameProfile: GameProfile): Component {
-        val components = mutableListOf<Component>()
-        list.forEach { itemStack ->
-            if (itemStack.isEmpty) {
-                components.add(
-                    Text.of("    ") {
-                        append("messages.dungeon_partyfinder.empty_slot".asTranslated(gameProfile.name))
-                    }
-                )
+        val components = list.map {
+            if (it.isEmpty) {
+                Text.of("    ") {
+                    append("messages.dungeon_partyfinder.empty_slot".asTranslated(gameProfile.name))
+                }
             } else {
-                components.add(
-                    Text.of("    ") {
-                        append(itemStack.hoverName)
-                        this.hover = Text.multiline(itemStack.hoverName, CommonText.EMPTY, itemStack.getLore())
-                    }
-                )
+                Text.of("    ") {
+                    append(it.hoverName)
+                    this.hover = Text.multiline(it.hoverName, CommonText.EMPTY, it.getLore())
+                }
             }
         }
         return Text.multiline(
