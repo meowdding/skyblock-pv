@@ -5,8 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.owdding.ktmodules.Module
-import me.owdding.lib.builder.ComponentBuilder
-import me.owdding.lib.builder.MultilineComponentBuilder
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
@@ -44,7 +42,8 @@ object PartyFinderJoin {
 
     private val joinMessageRegex = "Party Finder > (?<username>.*) joined the(?: dungeon)? group!.*".toRegex()
 
-    private val itemComponentMap = IdentityHashMap<ItemStack, InventoryTooltipComponent>()
+    // TODO: Use (weak)IdentityHashMap in the future as ItemStacks dont implement hashCode/equals
+    private val itemComponentMap = WeakHashMap<ItemStack, InventoryTooltipComponent>()
 
     @Subscription
     fun onChat(event: ChatReceivedEvent.Pre) {
