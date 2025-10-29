@@ -68,6 +68,7 @@ data class DungeonTypeData(
     val floors: Map<String, DungeonFloor>,
 ) {
     val completions = floors.mapValues { it.value.completions }
+    val totalCompletions = completions.filterKeys { it != "total" }.values.sum()
 }
 
 data class DungeonFloor(
