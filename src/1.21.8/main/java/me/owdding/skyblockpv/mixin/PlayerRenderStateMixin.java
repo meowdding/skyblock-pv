@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.mixin;
 
 import me.owdding.lib.rendering.text.TextShader;
-import me.owdding.skyblockpv.utils.CatOnShoulder;
 import me.owdding.skyblockpv.utils.PlayerRenderStateAccessor;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import org.jetbrains.annotations.Nullable;
@@ -12,19 +11,19 @@ import org.spongepowered.asm.mixin.Unique;
 public class PlayerRenderStateMixin implements PlayerRenderStateAccessor {
 
     @Unique
-    private CatOnShoulder skyblockpv$catOnShould = null;
+    private String skyblockpv$catOnShould = null;
     @Unique
     private TextShader skyblockpv$nameShader = null;
     @Unique
     private TextShader skyblockpv$scoreShader = null;
 
     @Override
-    public @Nullable CatOnShoulder getSkyblockpv$catOnShoulder() {
+    public @Nullable String getSkyblockpv$catOnShoulder() {
         return skyblockpv$catOnShould;
     }
 
     @Override
-    public void setSkyblockpv$catOnShoulder(@Nullable CatOnShoulder catOnShoulder) {
+    public void setSkyblockpv$catOnShoulder(@Nullable String catOnShoulder) {
         skyblockpv$catOnShould = catOnShoulder;
     }
 

@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack
 expect fun FakePlayer(gameProfile: GameProfile, customDisplayName: Component, armor: List<ItemStack> = List(4) { ItemStack.EMPTY }): LivingEntity
 
 interface PlayerRenderStateAccessor {
-    var `skyblockpv$catOnShoulder`: CatOnShoulder?
+    var `skyblockpv$catOnShoulder`: String?
     var `skyblockpv$nameShader`: TextShader?
     var `skyblockpv$scoreShader`: TextShader?
 }
