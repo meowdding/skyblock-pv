@@ -80,18 +80,24 @@ object Utils {
     }
 
     fun openMainScreen(name: String) = fetchGameProfile(name) { profile ->
-        if (profile == null) {
+        validateGameProfile(profile) {
+            McClient.setScreenAsync { PvTab.MAIN.create(profile!!) }
+        }
+    }
+
+    fun validateGameProfile(gameProfile: GameProfile?, onValid: () -> Unit) {
+        if (gameProfile == null) {
             (+"messages.player_not_found").sendWithPrefix()
         } else if (!RepoAPI.isInitialized()) {
             ChatUtils.chat(
                 """
-            §cThe external repo is not initialized.
-            §cThis can mean your network is blocking our domain or your internet is not working.
-            §cPlease try again later or check your network connection. If the problem persists, please report it on our Discord server with your full log.
-            """.trimIndent(),
+                §cThe external repo is not initialized.
+                §cThis can mean your network is blocking our domain or your internet is not working.
+                §cPlease try again later or check your network connection. If the problem persists, please report it on our Discord server with your full log.
+                """.trimIndent(),
             )
         } else {
-            McClient.setScreenAsync { PvTab.MAIN.create(profile) }
+            onValid()
         }
     }
 
