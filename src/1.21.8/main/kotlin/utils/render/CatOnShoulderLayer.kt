@@ -1,7 +1,9 @@
 package me.owdding.skyblockpv.utils.render
 
 import com.mojang.blaze3d.vertex.PoseStack
+import me.owdding.lib.cosmetics.CosmeticManager
 import me.owdding.skyblockpv.utils.PlayerRenderStateAccessor
+import me.owdding.skyblockpv.utils.codecs.clientAssetConverter
 import net.minecraft.client.model.CatModel
 import net.minecraft.client.model.PlayerModel
 import net.minecraft.client.model.geom.EntityModelSet
@@ -11,8 +13,10 @@ import net.minecraft.client.renderer.entity.RenderLayerParent
 import net.minecraft.client.renderer.entity.layers.RenderLayer
 import net.minecraft.client.renderer.entity.state.CatRenderState
 import net.minecraft.client.renderer.entity.state.PlayerRenderState
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite
 import net.minecraft.client.renderer.texture.OverlayTexture
 import net.minecraft.resources.ResourceLocation
+import java.net.URI
 
 class CatOnShoulderLayer(renderer: RenderLayerParent<PlayerRenderState, PlayerModel>, modelSet: EntityModelSet) :
     RenderLayer<PlayerRenderState, PlayerModel>(renderer) {
@@ -25,7 +29,11 @@ class CatOnShoulderLayer(renderer: RenderLayerParent<PlayerRenderState, PlayerMo
 
     override fun render(poseStack: PoseStack, bufferSource: MultiBufferSource, packedLight: Int, renderState: PlayerRenderState, yRot: Float, xRot: Float) {
         (renderState as PlayerRenderStateAccessor).`skyblockpv$catOnShoulder`?.let {
-            renderOnShoulder(poseStack, bufferSource, packedLight, renderState, it.asset.texturePath(), yRot, xRot, it.leftSide)
+            val catResource = CosmeticManager.imageProvider.get(URI(it))
+            if (catResource.equals(MissingTextureAtlasSprite.getLocation())) return
+            val asset = clientAssetConverter()(catResource)
+            val leftShoulder = renderState.parrotOnLeftShoulder == null
+            renderOnShoulder(poseStack, bufferSource, packedLight, renderState, asset.texturePath(), yRot, xRot, leftShoulder)
         }
     }
 

@@ -331,9 +331,9 @@ data class BackingSkyBlockProfile(
             val unknownPerks = perks.keys - EssenceData.allPerks.keys
 
             if (unknownPerks.isNotEmpty()) {
-                SkyBlockPv.warn("Unknown essence perks: $unknownPerks")
-                if (SkyBlockPv.isDevMode) McClient.runNextTick {
-                    "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
+                McClient.runNextTick {
+                    SkyBlockPv.warn("Unknown essence perks: $unknownPerks")
+                    if (SkyBlockPv.isDevMode) "messages.unknown_essence_perks".asTranslated(unknownPerks.size).sendWithPrefix()
                 }
             }
 
