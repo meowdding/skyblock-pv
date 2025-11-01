@@ -30,17 +30,13 @@ object ContributorHandler {
 
     @Subscription
     fun onCostmeticLoad(event: CosmeticLoadEvent) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val contributorData = CosmeticManager.playerList.associateNotNull(
-                keySelector = { it.uuid },
-                valueSelector = { playerEntry ->
-                    playerEntry.data.toData(SkyBlockPVCodecs.getCodec<ContributorData>()).takeUnless { data -> data == emptyData }
-                },
-            )
-
-            contributors.putAll(contributorData)
-            println("Loaded ${contributors.size} contributors with cosmetics. ($contributors)")
-        }
+        val contributorData = CosmeticManager.playerList.associateNotNull(
+            keySelector = { it.uuid },
+            valueSelector = { playerEntry ->
+                playerEntry.data.toData(SkyBlockPVCodecs.getCodec<ContributorData>()).takeUnless { data -> data == emptyData }
+            },
+        )
+        contributors.putAll(contributorData)
     }
 }
 
