@@ -14,6 +14,7 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.DevConfig
 import me.owdding.skyblockpv.config.THEME_RENDERER
 import me.owdding.skyblockpv.config.ThemeRenderer
+import me.owdding.skyblockpv.feature.PartyFinderJoin.getDungeonData
 import me.owdding.skyblockpv.generated.SkyBlockPVExtraData
 import me.owdding.skyblockpv.generated.SkyBlockPVModules
 import me.owdding.skyblockpv.screens.DisplayTest
@@ -21,6 +22,7 @@ import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
+import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
@@ -122,6 +124,14 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
 
             thenCallback("version") {
                 Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
+            }
+
+            thenCallback("pfjoin player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
+                fetchGameProfile(this.getArgument("player", String::class.java)) { profile ->
+                    Utils.validateGameProfile(profile) {
+                        getDungeonData(profile!!)
+                    }
+                }
             }
 
             callback {
