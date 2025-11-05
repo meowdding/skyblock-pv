@@ -120,12 +120,12 @@ object PartyFinderJoin {
 
         val catacombsFloorInfoComponents = dungeonData.dungeonTypes["catacombs"]?.floors?.mapNotNull { (floorId, floorData) ->
             if (floorId == "total") return@mapNotNull null
-            "messages.dungeon_partyfinder.floor_info".asTranslated(floorId, floorData.completions, floorData.fastestTime)
+            "messages.dungeon_partyfinder.floor_info".asTranslated(floorId, floorData.completions, floorData.fastestTime, floorData.fastestTimeSplus)
         }.takeUnless { it.isNullOrEmpty() } ?: listOf(Text.of(" §aThis player hasn't completed any Catacombs floors yet"))
 
         val mastermodeFloorInfoComponents = dungeonData.dungeonTypes["master_catacombs"]?.floors?.mapNotNull { (floorId, floorData) ->
             if (floorId == "total") return@mapNotNull null
-            "messages.dungeon_partyfinder.floor_info".asTranslated(floorId, floorData.completions, floorData.fastestTime)
+            "messages.dungeon_partyfinder.floor_info".asTranslated(floorId, floorData.completions, floorData.fastestTime, floorData.fastestTimeSplus)
         }.takeUnless { it.isNullOrEmpty() } ?: listOf(Text.of(" §aThis player hasn't completed any Mastermode floors yet"))
 
 

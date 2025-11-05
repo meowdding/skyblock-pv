@@ -46,6 +46,7 @@ data class DungeonData(
         private fun JsonObject.parseDungeonType(): DungeonTypeData {
             val tierCompletions = this["tier_completions"].asMap { id, amount -> id to amount.asLong(0) }
             val fastestTime = this["fastest_time"].asMap { id, amount -> id to amount.asLong(0) }
+            val fastestTimeSPlus = this["fastest_time_s_plus"].asMap { id, amount -> id to amount.asLong(0) }
             val bestScore = this["best_score"].asMap { id, amount -> id to amount.asLong(0) }
             val experience = this["experience"].asLong(0)
 
@@ -55,6 +56,7 @@ data class DungeonData(
                     DungeonFloor(
                         completions = tierCompletions[floor] ?: 0,
                         fastestTime = (fastestTime[floor] ?: 0).milliseconds,
+                        fastestTimeSplus = (fastestTimeSPlus[floor] ?: 0).milliseconds,
                         bestScore = bestScore[floor] ?: 0,
                     )
                 },
@@ -74,9 +76,10 @@ data class DungeonTypeData(
 data class DungeonFloor(
     val completions: Long,
     val fastestTime: Duration,
+    val fastestTimeSplus: Duration,
     val bestScore: Long,
 ) {
     companion object {
-        val EMPTY = DungeonFloor(0, Duration.ZERO, 0)
+        val EMPTY = DungeonFloor(0, Duration.ZERO, Duration.ZERO, 0)
     }
 }
