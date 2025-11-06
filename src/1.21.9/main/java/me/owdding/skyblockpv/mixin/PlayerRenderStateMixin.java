@@ -7,23 +7,25 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+import java.net.URI;
+
 @Mixin(AvatarRenderState.class)
 public class PlayerRenderStateMixin implements PlayerRenderStateAccessor {
 
     @Unique
-    private String skyblockpv$catOnShould = null;
+    private URI skyblockpv$catOnShould = null;
     @Unique
     private TextShader skyblockpv$nameShader = null;
     @Unique
     private TextShader skyblockpv$scoreShader = null;
 
     @Override
-    public @Nullable String getSkyblockpv$catOnShoulder() {
+    public @Nullable URI getSkyblockpv$catOnShoulder() {
         return skyblockpv$catOnShould;
     }
 
     @Override
-    public void setSkyblockpv$catOnShoulder(@Nullable String catOnShoulder) {
+    public void setSkyblockpv$catOnShoulder(@Nullable URI catOnShoulder) {
         skyblockpv$catOnShould = catOnShoulder;
     }
 

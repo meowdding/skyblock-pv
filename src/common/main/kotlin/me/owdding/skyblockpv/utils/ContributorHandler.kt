@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.utils
 
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.ktmodules.Module
 import me.owdding.lib.cosmetics.CosmeticManager
@@ -14,6 +15,7 @@ import net.minecraft.network.chat.TextColor
 import net.minecraft.world.entity.animal.Parrot
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
+import java.net.URI
 import java.util.*
 
 @Module
@@ -31,13 +33,16 @@ object ContributorHandler {
         )
         contributors.putAll(contributorData)
     }
+
+    @IncludedCodec(named = "cosmetic_url")
+    val COSMETIC_URL = CosmeticManager.COSMETIC_URL
 }
 
 @GenerateCodec
 data class ContributorData(
     @NamedCodec("component_tag") @FieldName("pv:title") val title: Component?,
     @FieldName("pv:parrot") val parrot: ParrotOnShoulder?,
-    @FieldName("pv:cat_texture") val cat: String?,
+    @NamedCodec("cosmetic_url") @FieldName("pv:cat_texture") val cat: URI?,
     @FieldName("pv:shaking") val shaking: Boolean = false,
     @FieldName("pv:title_colors") val tileColors: List<TextColor>?,
 ) {

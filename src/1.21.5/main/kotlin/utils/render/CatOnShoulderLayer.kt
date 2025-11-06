@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.entity.state.PlayerRenderState
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite
 import net.minecraft.client.renderer.texture.OverlayTexture
 import net.minecraft.resources.ResourceLocation
-import java.net.URI
 
 class CatOnShoulderLayer(renderer: RenderLayerParent<PlayerRenderState, PlayerModel>, modelSet: EntityModelSet) :
     RenderLayer<PlayerRenderState, PlayerModel>(renderer) {
@@ -29,11 +28,11 @@ class CatOnShoulderLayer(renderer: RenderLayerParent<PlayerRenderState, PlayerMo
 
     override fun render(poseStack: PoseStack, bufferSource: MultiBufferSource, packedLight: Int, renderState: PlayerRenderState, yRot: Float, xRot: Float) {
         (renderState as PlayerRenderStateAccessor).`skyblockpv$catOnShoulder`?.let {
-            val catResource = CosmeticManager.imageProvider.get(URI(it))
+            val catResource = CosmeticManager.imageProvider.get(it)
             if (catResource.equals(MissingTextureAtlasSprite.getLocation())) return
             val asset = clientAssetConverter()(catResource)
             val leftShoulder = renderState.parrotOnLeftShoulder == null
-            renderOnShoulder(poseStack, bufferSource, packedLight, renderState, asset.texturePath(), yRot, xRot, leftShoulder)
+            renderOnShoulder(poseStack, bufferSource, packedLight, renderState, asset.id(), yRot, xRot, leftShoulder)
         }
     }
 
