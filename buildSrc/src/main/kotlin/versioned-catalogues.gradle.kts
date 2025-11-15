@@ -1,4 +1,4 @@
-import gradle.kotlin.dsl.accessors._2f6785c9131286d9d1030ac08c37b2f3.versionCatalogs
+import gradle.kotlin.dsl.accessors._e422e1462cee4e63d7e2347987997eb8.versionCatalogs
 
 versionCatalogs {
     entries[project] = ForwardingVersionCatalog(

@@ -56,7 +56,7 @@ dependencies {
     })
     includeImplementation(libs.skyblockapi)
     includeImplementation(libs.meowdding.lib)
-    includeImplementation(libs.meowdding.remote.repo)
+    //includeImplementation(libs.meowdding.remote.repo)
     //includeImplementation(versionedCatalog["placeholders"])
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.language.kotlin)
