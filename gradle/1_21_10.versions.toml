@@ -1,0 +1,5 @@
+[libraries]
+
+olympus-lib = { module = "earth.terrarium.olympus:olympus-fabric-1.21.9", version = "1.6.1" }
+resourceful-config = { module = "com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9", version = "3.9.0" }
+resourceful-lib = { module = "com.teamresourceful.resourcefullib:resourcefullib-fabric-1.21.9", version = "3.9.0" }
