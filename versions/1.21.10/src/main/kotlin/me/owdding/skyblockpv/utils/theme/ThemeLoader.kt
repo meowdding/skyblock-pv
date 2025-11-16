@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.utils.theme
 
 import com.google.gson.JsonElement
+import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils.toData
 import me.owdding.skyblockpv.utils.theme.ThemeHelper.location
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
+@Module
 object ThemeLoader : IdentifiableResourceReloadListener {
     override fun getFabricId() = SkyBlockPv.id("themes")
 
