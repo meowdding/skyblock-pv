@@ -26,7 +26,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 object CodecUtils {
     internal fun clientAssetConverter(): (ResourceLocation) -> ClientAsset {
-        //? if > 1.21.9 {
+        //? if >= 1.21.9 {
         return ClientAsset::ResourceTexture
         //?} else
         /*return ::ClientAsset*/
