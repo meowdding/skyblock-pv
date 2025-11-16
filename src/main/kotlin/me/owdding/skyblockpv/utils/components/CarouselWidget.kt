@@ -36,6 +36,14 @@ class CarouselWidget(
         this.width = width
     }
 
+    private fun GuiGraphics.renderCarouselOverlay(block: GuiGraphics.() -> Unit) {
+        this.pushPop {
+            //? if = 1.21.5
+            /*this.pose().translate(0f, 0f, 300f)*/
+            block()
+        }
+    }
+
     override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTicks: Float) {
         cursor = CursorScreen.Cursor.DEFAULT
 
