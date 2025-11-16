@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.utils
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import me.owdding.skyblockpv.dfu.LegacyDataFixer
+import me.owdding.dfu.item.LegacyDataFixer
 import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items

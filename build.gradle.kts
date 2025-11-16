@@ -70,6 +70,7 @@ dependencies {
     includeImplementation(libs.resourceful.configkt)
     compileOnly(libs.meowdding.ktmodules)
     compileOnly(libs.meowdding.ktcodecs)
+    compileOnly(libs.meowdding.item.dfu)
     ksp(libs.meowdding.ktmodules)
     ksp(libs.meowdding.ktcodecs)
 }
