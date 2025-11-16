@@ -5,10 +5,9 @@ import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
+import me.owdding.lib.repo.*
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.MiningCore
-import me.owdding.skyblockpv.data.api.skills.PowderType
-import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.withScrollToBottom
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -37,13 +36,13 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         val gridLayout = GridLayout()
 
         // nodes that are unlocked but not in the repo:
-        val unknownNodes = mining.nodes.keys - MiningNodes.miningNodes.map { it.id }
+        val unknownNodes = mining.nodes.keys - TreeRepoData.hotm.map { it.id }.toSet()
 
         if (unknownNodes.isNotEmpty()) {
             println("Unknown hotm nodes: $unknownNodes")
         }
 
-        MiningNodes.miningNodes.forEach { node ->
+        TreeRepoData.hotm.forEach { node ->
             if (node is SpacerNode) {
                 gridLayout.addChild(
                     SpacerElement(node.size.x, node.size.y),
@@ -54,7 +53,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             }
 
             val level = (mining.nodes[node.id] ?: -1).let {
-                if (node is AbilityMiningNode && it != -1) {
+                if (node is AbilityTreeNode && it != -1) {
                     return@let mining.getAbilityLevel()
                 }
                 if (node is TierNode) {
@@ -64,7 +63,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 it
             }
             val disabled = mining.toggledNodes.contains(node.id).let {
-                if (node is AbilityMiningNode) {
+                if (node is AbilityTreeNode) {
                     return@let mining.miningAbility != node.id
                 }
                 return@let it
@@ -95,7 +94,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
     }
 
-    private fun getNode(miningNode: MiningNode, level: Int, disabled: Boolean, miningCore: MiningCore): Display {
+    private fun getNode(miningNode: TreeNode, level: Int, disabled: Boolean, miningCore: MiningCore): Display {
         val item = when (miningNode) {
             is TierNode -> when {
                 miningNode.isMaxed(level) -> Items.GREEN_STAINED_GLASS_PANE
@@ -103,14 +102,14 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 else -> Items.RED_STAINED_GLASS_PANE
             }
 
-            is CoreMiningNode -> when {
+            is CoreTreeNode -> when {
                 level == 10 -> Items.DIAMOND_BLOCK
                 level < 0 -> Items.BEDROCK
                 level == 1 -> Items.IRON_BLOCK
                 else -> Items.REDSTONE_BLOCK
             }
 
-            is AbilityMiningNode -> when {
+            is AbilityTreeNode -> when {
                 miningCore.miningAbility == miningNode.id -> Items.EMERALD_BLOCK
                 level > 0 -> Items.REDSTONE_BLOCK
                 else -> Items.COAL_BLOCK
@@ -196,7 +195,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
     }
 
-    private fun getTooltip(miningNode: MiningNode, level: Int, disabled: Boolean, miningCore: MiningCore) = buildList {
+    private fun getTooltip(miningNode: TreeNode, level: Int, disabled: Boolean, miningCore: MiningCore) = buildList {
         if (miningNode is TierNode) {
             addAll(getTierNodeTooltip(miningNode, level, miningCore))
             return@buildList
@@ -210,7 +209,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             }
         }
 
-        if (miningNode is LevelableMiningNode) {
+        if (miningNode is LevelableTreeNode) {
             if (level == miningNode.maxLevel) {
                 addGray("Level $level")
             } else {
@@ -225,7 +224,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
         addAll(miningNode.tooltip(Context(miningCore.getHotmLevel(), level)))
         when (miningNode) {
-            is AbilityMiningNode -> {
+            is AbilityTreeNode -> {
                 if (!disabled) {
                     addEmpty()
                     addGray("SELECTED") {
@@ -235,13 +234,13 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 }
             }
 
-            !is CoreMiningNode -> {
+            !is CoreTreeNode -> {
                 if (level <= 0) {
                     return@buildList
                 }
 
                 addEmpty()
-                if (miningNode is LevelableMiningNode) {
+                if (miningNode is LevelableTreeNode) {
                     addAll(getPowderSpent(miningNode, level))
                 }
 
@@ -260,16 +259,17 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
     }
 
-    private fun getPowderSpent(miningNode: LevelableMiningNode, level: Int): List<Component> = buildList {
-        fun getAmountUntil(level: Int): Map<PowderType, Int> {
-            return (1 until level).map { miningNode.costForLevel(it) }.groupBy { it.first }.mapValues { it.value.sumOf { it.second } }
+    private fun getPowderSpent(miningNode: LevelableTreeNode, level: Int): List<Component> = buildList {
+        fun getAmountUntil(level: Int): Map<CostType, Int> {
+            return (1 until level).map { miningNode.costForLevel(it) }.groupBy { it.first }.filterNot { (key) -> key is FreeCostType }
+                .mapValues { it.value.sumOf { it.second } }
         }
 
-        val totalAmountRequired = getAmountUntil(miningNode.maxLevel + ((1).takeIf { miningNode is CoreMiningNode } ?: 0))
+        val totalAmountRequired = getAmountUntil(miningNode.maxLevel + ((1).takeIf { miningNode is CoreTreeNode } ?: 0))
         val amountSpend = if (level == miningNode.maxLevel) {
             totalAmountRequired
         } else {
-            getAmountUntil(level + ((1).takeIf { miningNode is CoreMiningNode } ?: 0))
+            getAmountUntil(level + ((1).takeIf { miningNode is CoreTreeNode } ?: 0))
         }
 
 
@@ -278,8 +278,8 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             addGray {
                 val amountSpent = amountSpend[type] ?: 0
 
-                withStyle(type.formatting)
-                append(type.name.lowercase().replaceFirstChar(Char::uppercase))
+                withStyle(type.formatting!!)
+                append(type.displayName!!.string.lowercase().replaceFirstChar(Char::uppercase))
                 appendGray(": ")
                 appendGray(amountSpent.toFormattedString())
                 appendGray("/")
