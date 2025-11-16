@@ -158,7 +158,7 @@ tasks.processResources {
 }
 
 autoMixins {
-    mixinPackage = "me.owdding.skyblockpv.mixins"
+    mixinPackage = "me.owdding.skyblockpv.mixin"
     projectName = "skyblockpv"
 }
 
