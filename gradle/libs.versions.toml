@@ -13,14 +13,16 @@ kotlin-symbol-processor = "2.2.0-2.0.2"
 skyblockapi = "3.0.13"
 repolib = "2.0.2"
 
+resourceful-configkt = "3.5.12"
+
 hypixelapi = "1.0.1+build.1+mc1.21"
-placeholders = "2.6.1+1.21.5"
 mixinconstraints = "1.0.7"
 
 meowdding-lib = "3.0.13"
 meowdding-ktmodules = "1.0.5"
 meowdding-ktcodecs = "1.0.28"
-meowdding-resources = "1.0.15"
+meowdding-resources = "1.0.17"
+meowdding-remote-repo = "1.0.4"
 meowdding-auto-mixins = "1.0.3"
 
 # Build src dependencies
@@ -37,13 +39,13 @@ repolib = { module = "tech.thatgravyboat.repo-lib:repo-lib", version.ref = "repo
 mixinconstraints = { module = "com.moulberry:mixinconstraints", version.ref = "mixinconstraints" }
 
 keval = { module = "com.notkamui.libs:keval", version.ref = "keval" }
-placeholders = { module = "eu.pb4:placeholder-api", version.ref = "placeholders" }
 
-resourceful-configkt = { module = "com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5", version = "3.5.12" }
+resourceful-configkt = { module = "com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5", version.ref = "resourceful-configkt" }
 
 meowdding-ktmodules = { module = "me.owdding.ktmodules:KtModules", version.ref = "meowdding-ktmodules" }
 meowdding-ktcodecs = { module = "me.owdding.ktcodecs:KtCodecs", version.ref = "meowdding-ktcodecs" }
 meowdding-lib = { module = "me.owdding.meowdding-lib:meowdding-lib", version.ref = "meowdding-lib" }
+meowdding-remote-repo = { module = "me.owdding.repo:remote-repo", version.ref = "meowdding-remote-repo" }
 meowdding-resources = { module = "me.owdding.repo:compacting-resources", version.ref = "meowdding-resources" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

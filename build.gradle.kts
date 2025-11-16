@@ -54,18 +54,20 @@ dependencies {
             artifactType("zip")
         })
     })
+    includeImplementation(libs.repolib)
     includeImplementation(libs.skyblockapi)
     includeImplementation(libs.meowdding.lib)
-    //includeImplementation(libs.meowdding.remote.repo)
-    //includeImplementation(versionedCatalog["placeholders"])
+    includeImplementation(libs.meowdding.remote.repo)
+    includeImplementation(versionedCatalog["placeholders"])
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.language.kotlin)
     modImplementation(versionedCatalog["fabric.api"])
+    modImplementation(libs.mixinconstraints)
     includeImplementation(versionedCatalog["resourceful.lib"])
     includeImplementation(versionedCatalog["resourceful.config"])
     includeImplementation(versionedCatalog["olympus"])
     includeImplementation(libs.keval)
-    includeImplementation(libs.resourceful.config.kotlin)
+    includeImplementation(libs.resourceful.configkt)
     compileOnly(libs.meowdding.ktmodules)
     compileOnly(libs.meowdding.ktcodecs)
     ksp(libs.meowdding.ktmodules)
@@ -114,7 +116,7 @@ compactingResources {
 }
 
 ksp {
-    arg("meowdding.project_name", "SkyBlockPv")
+    arg("meowdding.project_name", "SkyBlockPV")
     arg("meowdding.package", "me.owdding.skyblockpv.generated")
 }
 
@@ -143,8 +145,8 @@ tasks.processResources {
         "olympus" to versionedCatalog.versions["olympus"],
         "sbapi" to libs.versions.skyblockapi.get(),
         "mlib" to libs.versions.meowdding.lib.get(),
-        "rconfigkt" to libs.versions.resourceful.config.kotlin.get(),
-        "rconfig" to versionedCatalog.versions["resourceful.config"],
+        "rconfigkt" to libs.versions.resourceful.configkt.get(),
+        "rconfig" to versionedCatalog.versions["resourceful-config"],
     )
     inputs.properties(replacements)
 
@@ -155,7 +157,7 @@ tasks.processResources {
 
 autoMixins {
     mixinPackage = "me.owdding.skyblockpv.mixins"
-    projectName = "skyblock-pv"
+    projectName = "skyblockpv"
 }
 
 idea {
