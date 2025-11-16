@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Unique;
 import java.net.URI;
 
 @Mixin(AvatarRenderState.class)
-public class PlayerRenderStateMixin implements PlayerRenderStateAccessor {
+public class AvatarRenderStateMixin implements PlayerRenderStateAccessor {
 
     @Unique
     private URI skyblockpv$catOnShould = null;
