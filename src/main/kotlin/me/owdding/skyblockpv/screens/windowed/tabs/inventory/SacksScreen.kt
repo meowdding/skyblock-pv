@@ -9,7 +9,6 @@ import me.owdding.lib.extensions.shorten
 import me.owdding.lib.extensions.withTooltip
 import me.owdding.lib.repo.SacksRepoData
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.data.repo.SackCodecs
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.ItemStack
@@ -51,7 +50,7 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
                 )
             }
 
-            sack.item to display
+            RepoItemsAPI.getItem(sack.sack) to display
         }.toMap()
 
     override fun getInventories(): List<Display> = sackDisplays.values.toList()

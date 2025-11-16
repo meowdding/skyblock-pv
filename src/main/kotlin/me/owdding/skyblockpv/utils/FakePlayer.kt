@@ -13,5 +13,5 @@ interface PlayerRenderStateAccessor {
     var `skyblockpv$scoreShader`: TextShader?
 }
 
-fun FakePlayer(gameProfile: GameProfile, customDisplayName: Component, armor: List<ItemStack> = emptyList()): LivingEntity =
+fun FakePlayer(gameProfile: GameProfile, customDisplayName: Component, armor: List<ItemStack> = List(4) { ItemStack.EMPTY }): LivingEntity =
     FakePlayer(gameProfile, armor, customDisplayName)
