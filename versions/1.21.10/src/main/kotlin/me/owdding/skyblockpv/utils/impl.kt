@@ -35,9 +35,6 @@ fun GuiGraphics.drawRoundedRec(
 internal fun fetchGameProfile(username: String): CompletableFuture<Optional<GameProfile>> =
     CompletableFuture.supplyAsync { McClient.self.services().profileResolver.fetchByName(username) }
 
-fun FakePlayer(gameProfile: GameProfile, customDisplayName: Component, armor: List<ItemStack> = emptyList()): LivingEntity =
-    FakePlayer(gameProfile, armor, customDisplayName)
-
 class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val customDisplayName: Component) :
     ClientMannequin(McClient.self.level!!, McClient.self.playerSkinRenderCache()) {
     private val _profile = ResolvableProfile.createResolved(gameProfile).apply {

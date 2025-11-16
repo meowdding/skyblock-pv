@@ -33,9 +33,6 @@ fun GuiGraphics.drawRoundedRec(
 
 internal fun fetchGameProfile(username: String): CompletableFuture<Optional<GameProfile>> = SkullBlockEntity.fetchGameProfile(username)
 
-fun FakePlayer(gameProfile: GameProfile, customDisplayName: Component, armor: List<ItemStack> = emptyList()): LivingEntity =
-    FakePlayer(gameProfile, armor, customDisplayName)
-
 class FakePlayer(gameProfile: GameProfile, val armor: List<ItemStack>, val customDisplayName: Component) : RemotePlayer(McClient.self.level!!, gameProfile) {
 
     init {
