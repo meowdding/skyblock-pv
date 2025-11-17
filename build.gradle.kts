@@ -1,269 +1,110 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.google.devtools.ksp.gradle.KspTask
-import earth.terrarium.cloche.api.metadata.ModMetadata
-import me.owdding.gradle.dependency
-import net.msrandom.minecraftcodev.core.utils.toPath
-import net.msrandom.minecraftcodev.fabric.task.JarInJar
-import net.msrandom.stubs.GenerateStubApi
+import net.fabricmc.loom.task.ValidateAccessWidenerTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import kotlin.io.path.exists
 
 plugins {
     idea
-    `maven-publish`
-    `museum-data` // defined in buildSrc
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.terrarium.cloche)
-    alias(libs.plugins.terrarium.multiplatform)
-    alias(libs.plugins.meowdding.repo)
+    id("fabric-loom")
+    `museum-data`
+    `versioned-catalogues`
+    kotlin("jvm") version "2.2.20"
     alias(libs.plugins.meowdding.resources)
-    alias(libs.plugins.meowdding.gradle)
+    alias(libs.plugins.meowdding.auto.mixins)
     alias(libs.plugins.kotlin.symbol.processor)
 }
 
-base {
-    archivesName.set(project.name.lowercase())
+repositories {
+    fun scopedMaven(url: String, vararg paths: String) = maven(url) { content { paths.forEach(::includeGroupAndSubgroups) } }
+
+    scopedMaven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1", "me.djtheredstoner")
+    scopedMaven("https://repo.hypixel.net/repository/Hypixel", "net.hypixel")
+    scopedMaven("https://maven.parchmentmc.org/", "org.parchmentmc")
+    scopedMaven("https://api.modrinth.com/maven", "maven.modrinth")
+    scopedMaven(
+        "https://maven.teamresourceful.com/repository/maven-public/",
+        "earth.terrarium",
+        "com.teamresourceful",
+        "tech.thatgravyboat",
+        "me.owdding",
+        "com.terraformersmc"
+    )
+    scopedMaven("https://maven.nucleoid.xyz/", "eu.pb4")
+    mavenCentral()
 }
 
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-    withSourcesJar()
+configurations {
+    modImplementation {
+        attributes.attribute(Attribute.of("earth.terrarium.cloche.modLoader", String::class.java), "fabric")
+    }
 }
 
 dependencies {
-    ksp(libs.meowdding.ktcodecs)
+    attributesSchema {
+        attribute(Attribute.of("earth.terrarium.cloche.minecraftVersion", String::class.java)) {
+            disambiguationRules.add(ClocheDisambiguationRule::class) {
+                params(versionedCatalog.versions.getOrFallback("sbapi-mc-version", "minecraft").toString())
+            }
+        }
+    }
+
+    minecraft(versionedCatalog["minecraft"])
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment(variantOf(versionedCatalog["parchment"]) {
+            artifactType("zip")
+        })
+    })
+    includeImplementation(libs.repolib)
+    includeImplementation(libs.skyblockapi)
+    includeImplementation(libs.meowdding.lib)
+    includeImplementation(libs.meowdding.remote.repo)
+    includeImplementation(versionedCatalog["placeholders"])
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.fabric.language.kotlin)
+    modImplementation(versionedCatalog["fabric.api"])
+    modImplementation(libs.mixinconstraints)
+    includeImplementation(versionedCatalog["resourceful.lib"])
+    includeImplementation(versionedCatalog["resourceful.config"])
+    includeImplementation(versionedCatalog["olympus"])
+    includeImplementation(libs.keval)
+    includeImplementation(libs.resourceful.configkt)
+    compileOnly(libs.meowdding.ktmodules)
+    compileOnly(libs.meowdding.ktcodecs)
+    compileOnly(libs.meowdding.item.dfu)
     ksp(libs.meowdding.ktmodules)
-    compileOnly(libs.keval)
+    ksp(libs.meowdding.ktcodecs)
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        languageVersion = KotlinVersion.KOTLIN_2_2
-        freeCompilerArgs.addAll(
-            "-Xmulti-platform",
-            "-Xno-check-actual",
-            "-Xexpect-actual-classes",
-            "-opt-in=kotlin.time.ExperimentalTime",
-        )
-    }
+fun DependencyHandler.includeImplementation(dep: Any) {
+    include(dep)
+    modImplementation(dep)
 }
 
-cloche {
-    metadata {
-        modId = "skyblockpv"
-        name = "SkyBlockPv"
-        license = ""
-        clientOnly = true
-        icon = "assets/skyblock-pv/skyblock-pv.png"
+val mcVersion = stonecutter.current.version.replace(".", "")
+val accessWidenerFile = rootProject.file("src/skyblockpv.accesswidener")
+loom {
+    runConfigs["client"].apply {
+        ideConfigGenerated(true)
+        runDir = "../../run"
+        vmArg("-Dfabric.modsFolder=" + '"' + rootProject.projectDir.resolve("run/${mcVersion}Mods").absolutePath + '"')
     }
 
-    common {
-        mixins.from("src/mixins/skyblock-pv.common.mixins.json")
-        accessWideners.from("src/skyblock-pv.accesswidener")
-
-        dependencies {
-            compileOnly(libs.meowdding.ktcodecs)
-            compileOnly(libs.meowdding.ktmodules)
-            implementation(libs.keval)
-            implementation(libs.repolib)
-
-            modImplementation(libs.hypixelapi)
-            modImplementation(libs.mixinconstraints)
-            modImplementation(libs.skyblockapi)
-            modImplementation(libs.meowdding.lib)
-            modImplementation(libs.placeholders) { isTransitive = false }
-
-            modImplementation(libs.fabric.language.kotlin)
-        }
+    if (accessWidenerFile.exists()) {
+        accessWidenerPath.set(accessWidenerFile)
     }
 
-    fun createVersion(
-        name: String,
-        version: String = name,
-        loaderVersion: Provider<String> = libs.versions.fabric.loader,
-        fabricApiVersion: Provider<String> = libs.versions.fabric.api,
-        endAtSameVersion: Boolean = true,
-        minecraftVersionRange: ModMetadata.VersionRange.() -> Unit = {
-            start = version
-            if (endAtSameVersion) {
-                end = version
-                endExclusive = false
-            }
-        },
-        dependencies: MutableMap<String, Provider<MinimalExternalModuleDependency>>.() -> Unit = { },
-    ) {
-        val dependencies = mutableMapOf<String, Provider<MinimalExternalModuleDependency>>().apply(dependencies)
-        val rlib = dependencies["resourcefullib"]!!
-        val rconfig = dependencies["resourcefulconfig"]!!
-        val rconfigkt = dependencies["resourcefulconfigkt"]!!
-        val olympus = dependencies["olympus"]!!
-
-
-        fabric(name) {
-            includedClient()
-            minecraftVersion = version
-            this.loaderVersion = loaderVersion.get()
-            val accessWidenerFile = layout.projectDirectory.file("src/$name/skyblock-pv.${sourceSet.name}.accesswidener")
-            val mixinFile = layout.projectDirectory.file("src/mixins/skyblock-pv.${sourceSet.name}.mixins.json")
-
-            if (accessWidenerFile.toPath().exists()) {
-                accessWideners.from(accessWidenerFile)
-            }
-
-            if (mixinFile.toPath().exists()) {
-                mixins.from(mixinFile)
-            }
-
-            metadata {
-                entrypoint("client") {
-                    adapter = "kotlin"
-                    value = "me.owdding.skyblockpv.SkyBlockPv"
-                }
-
-                dependency {
-                    modId = "minecraft"
-                    required = true
-                    version(minecraftVersionRange)
-                }
-                dependency("fabric")
-                dependency("fabricloader", loaderVersion)
-                dependency("fabric-language-kotlin", libs.versions.fabric.language.kotlin)
-                dependency("resourcefullib", rlib.map { it.version!! })
-                dependency("skyblock-api", libs.versions.skyblockapi)
-                dependency("olympus", olympus.map { it.version!! })
-                dependency("placeholder-api", libs.versions.placeholders)
-                dependency("resourcefulconfigkt", rconfigkt.map { it.version!! })
-                dependency("resourcefulconfig", rconfig.map { it.version!! })
-                dependency("meowdding-lib", libs.versions.meowdding.lib)
-            }
-
-            dependencies {
-                fabricApi(fabricApiVersion, minecraftVersion)
-                modImplementation(rlib)
-                modImplementation(olympus) { isTransitive = false }
-                modImplementation(rconfig) { isTransitive = false }
-                modImplementation(rconfigkt) { isTransitive = false }
-
-                include(libs.skyblockapi)
-                include(libs.meowdding.lib)
-                include(rlib)
-                include(rconfigkt)
-                include(rconfig)
-                include(olympus)
-                include(libs.placeholders)
-                include(libs.keval)
-                include(libs.mixinconstraints)
-            }
-
-            runs {
-                client {
-                    arguments("--quickPlaySingleplayer=\"${name.replace(".", "")}\"")
-                    jvmArgs("-Ddevauth.enabled=true")
-                }
-            }
-        }
+    mixin {
+        defaultRefmapName = "skyblockpv-refmap.json"
     }
-
-    createVersion("1.21.5", fabricApiVersion = provider { "0.127.1" }) {
-        this["resourcefullib"] = libs.resourceful.lib1215
-        this["resourcefulconfig"] = libs.resourceful.config1215
-        this["resourcefulconfigkt"] = libs.resourceful.configkt1215
-        this["olympus"] = libs.olympus.lib1215
-    }
-    createVersion("1.21.8", minecraftVersionRange = {
-        start = "1.21.6"
-        end = "1.21.8"
-        endExclusive = false
-    }) {
-        this["resourcefullib"] = libs.resourceful.lib1218
-        this["resourcefulconfig"] = libs.resourceful.config1218
-        this["resourcefulconfigkt"] = libs.resourceful.configkt1218
-        this["olympus"] = libs.olympus.lib1218
-    }
-    createVersion("1.21.9", endAtSameVersion = false, fabricApiVersion = provider { "0.133.7" }) {
-        this["resourcefullib"] = libs.resourceful.lib1219
-        this["resourcefulconfig"] = libs.resourceful.config1219
-        this["resourcefulconfigkt"] = libs.resourceful.configkt1219
-        this["olympus"] = libs.olympus.lib1219
-    }
-
-    mappings { official() }
-}
-
-tasks.named("createCommonApiStub", GenerateStubApi::class).configure {
-    excludes.addAll(
-        "org.jetbrains.kotlin",
-        "me.owdding",
-        "net.hypixel",
-        "maven.modrinth",
-        "com.fasterxml.jackson",
-        "com.google",
-        "com.ibm",
-        "io.netty",
-        "net.fabricmc:fabric-language-kotlin",
-        "com.mojang:datafixerupper",
-        "com.mojang:brigardier",
-        "io.github.llamalad7:mixinextras",
-        "net.minidev",
-        "com.nimbusds",
-        "tech.thatgravyboat",
-        "net.msrandom",
-        "eu.pb4"
-    )
-}
-
-repositories {
-    maven(url = "https://maven.teamresourceful.com/repository/maven-public/")
-    maven(url = "https://maven.fabricmc.net/")
-    maven(url = "https://maven.teamresourceful.com/repository/msrandom/")
-    maven(url = "https://repo.hypixel.net/repository/Hypixel/")
-    maven(url = "https://api.modrinth.com/maven")
-    maven(url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
-    maven(url = "https://maven.nucleoid.xyz")
-    mavenCentral()
-    mavenLocal()
-}
-
-tasks.withType<ProcessResources>().configureEach {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
-    options.release.set(21)
-}
-
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xwhen-guards")
-    }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
-}
-
-idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
-
-        excludeDirs.add(file("run"))
-    }
-}
-
-repo {
-    hotm { includeAll() }
-    sacks { includeAll() }
 }
 
 compactingResources {
     basePath = "repo"
+    pathDirectory = "../../src"
 
-    tasks.withType<ProcessResources> { configureTask(this) }
+    configureTask(tasks.named<AbstractCopyTask>("processResources").get())
 
     compactToObject("garden_data")
     compactToObject("chocolate_factory")
@@ -281,21 +122,86 @@ compactingResources {
     downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/misc.json", "neu_misc.json")
 }
 
-afterEvaluate {
-    tasks.withType<KspTask>().configureEach {
-        outputs.upToDateWhen { false }
+ksp {
+    arg("meowdding.project_name", "SkyBlockPV")
+    arg("meowdding.package", "me.owdding.skyblockpv.generated")
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(21)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+    compilerOptions.optIn.add("kotlin.time.ExperimentalTime")
+}
+
+tasks.processResources {
+    val replacements = mapOf(
+        "version" to version,
+        "minecraft_start" to versionedCatalog.versions.getOrFallback("minecraft.start", "minecraft"),
+        "minecraft_end" to versionedCatalog.versions.getOrFallback("minecraft.end", "minecraft"),
+        "fabric_lang_kotlin" to libs.versions.fabric.language.kotlin.get(),
+        "rlib" to versionedCatalog.versions["resourceful-lib"],
+        "olympus" to versionedCatalog.versions["olympus"],
+        "sbapi" to libs.versions.skyblockapi.get(),
+        "mlib" to libs.versions.meowdding.lib.get(),
+        "rconfigkt" to libs.versions.resourceful.configkt.get(),
+        "rconfig" to versionedCatalog.versions["resourceful-config"],
+    )
+    inputs.properties(replacements)
+
+    filesMatching("fabric.mod.json") {
+        expand(replacements)
     }
 }
 
-tasks.withType<JarInJar>().configureEach {
-    archiveBaseName = "SkyBlockPv"
+autoMixins {
+    mixinPackage = "me.owdding.skyblockpv.mixin"
+    projectName = "skyblockpv"
 }
 
-meowdding {
-    generatedPackage = "me.owdding.skyblockpv.generated"
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
 
-    setupClocheClasspathFix()
-    hasAccessWideners = true
-    configureCodecs = true
-    configureModules = true
+        excludeDirs.add(file("run"))
+    }
 }
+
+tasks.withType<ProcessResources>().configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
+        filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
+    }
+    with(copySpec {
+        from(rootProject.file("src/lang")).include("*.json").into("assets/skyblock-pv/lang")
+    })
+    with(copySpec {
+        from(accessWidenerFile)
+    })
+}
+
+val archiveName = "SkyBlockPv"
+
+base {
+    archivesName.set("$archiveName-${archivesName.get()}")
+}
+
+tasks.named("build") {
+    doLast {
+        val sourceFile = rootProject.projectDir.resolve("versions/${project.name}/build/libs/${archiveName}-${stonecutter.current.version}-$version.jar")
+        val targetFile = rootProject.projectDir.resolve("build/libs/${archiveName}-$version-${stonecutter.current.version}.jar")
+        targetFile.parentFile.mkdirs()
+        targetFile.writeBytes(sourceFile.readBytes())
+    }
+}
+
+tasks.withType<ValidateAccessWidenerTask> { enabled = false }

@@ -1,0 +1,34 @@
+{
+    "schemaVersion": 1,
+    "id": "skyblockpv",
+    "version": "${version}",
+    "name": "SkyBlock Profile Viewer",
+    "description": "",
+    "authors": [],
+    "license": "",
+    "icon": "assets/skyblock-pv/skyblock-pv.png",
+    "mixins": [
+        "skyblockpv.mixins.json"
+    ],
+    "entrypoints": {
+        "client": [
+            {
+                "value": "me.owdding.skyblockpv.SkyBlockPv",
+                "adapter": "kotlin"
+            }
+        ]
+    },
+    "depends": {
+        "fabricloader": ">=0.16.10",
+        "minecraft": ">=${minecraft_start} <=${minecraft_end}",
+        "fabric": "*",
+        "fabric-language-kotlin": ">=${fabric_lang_kotlin}",
+        "resourcefullib": ">=${rlib}",
+        "olympus": ">=${olympus}",
+        "skyblock-api": ">=${sbapi}",
+        "meowdding-lib": ">=${mlib}",
+        "resourcefulconfigkt": ">=${rconfigkt}",
+        "resourcefulconfig": ">=${rconfig}"
+    },
+    "accessWidener": "skyblockpv.accesswidener"
+}
