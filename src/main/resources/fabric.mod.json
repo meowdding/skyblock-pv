@@ -29,5 +29,6 @@
         "meowdding-lib": ">=${mlib}",
         "resourcefulconfigkt": ">=${rconfigkt}",
         "resourcefulconfig": ">=${rconfig}"
-    }
+    },
+    "accessWidener": "skyblockpv.accesswidener"
 }

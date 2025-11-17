@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
+import net.fabricmc.loom.task.ValidateAccessWidenerTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -92,6 +93,10 @@ loom {
 
     if (accessWidenerFile.exists()) {
         accessWidenerPath.set(accessWidenerFile)
+    }
+
+    mixin {
+        defaultRefmapName = "skyblockpv-refmap.json"
     }
 }
 
@@ -198,3 +203,5 @@ tasks.named("build") {
         targetFile.writeBytes(sourceFile.readBytes())
     }
 }
+
+tasks.withType<ValidateAccessWidenerTask> { enabled = false }
