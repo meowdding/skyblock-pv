@@ -57,6 +57,10 @@
         "forbidden_blessing": {
             "name": "Forbidden Blessing",
             "max_level": 10
+        },
+        "dungeonbreaker_secrets": {
+            "name": "Echos of the Lost",
+            "max_level": 5
         }
     },
     "dragon": {
