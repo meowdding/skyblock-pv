@@ -25,12 +25,11 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 object CodecUtils {
-    internal fun clientAssetConverter(): (ResourceLocation) -> ClientAsset {
+    internal fun clientAssetConverter(): (ResourceLocation) -> ClientAsset =
         //? if >= 1.21.9 {
-        return ClientAsset::ResourceTexture
+        ClientAsset::ResourceTexture
         //?} else
-        /*return ::ClientAsset*/
-    }
+    /*::ClientAsset*/
 
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
         Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())

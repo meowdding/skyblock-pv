@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.utils.render
 import com.mojang.blaze3d.vertex.PoseStack
 import me.owdding.lib.cosmetics.CosmeticManager
 import me.owdding.skyblockpv.utils.PlayerRenderStateAccessor
-import me.owdding.skyblockpv.utils.codecs.clientAssetConverter
+import me.owdding.skyblockpv.utils.codecs.CodecUtils.clientAssetConverter
 import net.minecraft.client.model.CatModel
 import net.minecraft.client.model.PlayerModel
 import net.minecraft.client.model.geom.EntityModelSet
