@@ -82,6 +82,7 @@ fun DependencyHandler.includeImplementation(dep: Any) {
 }
 
 val mcVersion = stonecutter.current.version.replace(".", "")
+val accessWidenerFile = rootProject.file("src/skyblockpv.accesswidener")
 loom {
     runConfigs["client"].apply {
         ideConfigGenerated(true)
@@ -89,7 +90,6 @@ loom {
         vmArg("-Dfabric.modsFolder=" + '"' + rootProject.projectDir.resolve("run/${mcVersion}Mods").absolutePath + '"')
     }
 
-    val accessWidenerFile = project.file("skyblockpv.accesswidener")
     if (accessWidenerFile.exists()) {
         accessWidenerPath.set(accessWidenerFile)
     }
@@ -178,6 +178,9 @@ tasks.withType<ProcessResources>().configureEach {
     }
     with(copySpec {
         from(rootProject.file("src/lang")).include("*.json").into("assets/skyblock-pv/lang")
+    })
+    with(copySpec {
+        from(accessWidenerFile)
     })
 }
 
