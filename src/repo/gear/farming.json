@@ -46,7 +46,8 @@
     "cloaks": [
         "LOTUS_CLOAK",
         "ZORROS_CAPE",
-        "PESTHUNTERS_CLOAK"
+        "PESTHUNTERS_CLOAK",
+        "PEST_VEST"
     ],
     "necklaces": [
         "LOTUS_NECKLACE",
@@ -67,6 +68,8 @@
         "HEDGEHOG",
         "MOOSHROOM_COW",
         "SLUG",
-        "ELEPHANT"
+        "ELEPHANT",
+        "CHICKEN",
+        "MOSQUITO"
     ]
 }
