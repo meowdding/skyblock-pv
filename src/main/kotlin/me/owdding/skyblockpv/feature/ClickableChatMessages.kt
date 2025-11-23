@@ -5,10 +5,12 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.base.predicates.OnlyOnSkyBlock
 import tech.thatgravyboat.skyblockapi.api.events.chat.ChatReceivedEvent
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.command
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.hover
 
@@ -27,12 +29,13 @@ object ClickableChatMessages {
 
         for (component in event.component.siblings) {
             val command = (component.style.clickEvent as? ClickEvent.RunCommand)?.command()
-            if (command?.startsWith("/socialoptions ") != true) {
+            val hoverText = (component.style.hoverEvent as? HoverEvent.ShowText)?.value?.stripped
+            if ((command?.startsWith("/socialoptions ") != true && command?.startsWith("/viewprofile ") != true) || hoverText == null) {
                 output.append(component)
                 continue
             }
 
-            val username = command.removePrefix("/socialoptions ")
+            val username = getUsername(command, hoverText)
             val nameComponent = component.copy()
             nameComponent.command = "/sbpv pv $username"
             nameComponent.hover = "messages.click_to_open_pv".asTranslated(username)
@@ -43,6 +46,13 @@ object ClickableChatMessages {
 
         if (!hasReplaced) return
         event.component = output
+    }
+
+    private val nameRegex = Regex("Click here to view (.{1,16}?)'s profile")
+
+    fun getUsername(command: String, hoverText: String): String {
+        return if (command.startsWith("/socialoptions ")) command.substringAfter(" ")
+        else hoverText.replace(nameRegex, "$1")
     }
 
     @Subscription
