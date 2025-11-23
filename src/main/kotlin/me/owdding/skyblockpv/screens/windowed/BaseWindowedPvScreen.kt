@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.windowed
 
 import com.mojang.authlib.GameProfile
-import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
@@ -9,7 +8,6 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
-import earth.terrarium.olympus.client.utils.State
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
@@ -23,7 +21,6 @@ import me.owdding.skyblockpv.api.data.SocialEntry
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile.Reason
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
@@ -36,7 +33,6 @@ import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
-import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
@@ -44,13 +40,10 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.util.TriState
-import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
 private const val ASPECT_RATIO = 16.0 / 9.0
@@ -59,6 +52,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
     override val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
     override val uiHeight get() = (this.height * 0.65).toInt()
+
+    abstract fun create(bg: DisplayWidget)
 
     override fun init() {
         val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
@@ -102,8 +97,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
 
         createTabs().applyLayout(bg.x + 20, bg.y - 22)
-        createSearch(bg).applyLayout()
-        createProfileDropdown(bg).let {
+        getSearch(bg).applyLayout()
+        getProfileDropdown(bg).let {
             it.applyLayout()
 
             if (!Config.socials) return@let
@@ -160,7 +155,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             .withSize(20, 20)
             .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
             .withTexture(null)
-            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
+            .withCallback { Utils.openConfig(this@BaseWindowedPvScreen) }
             .withTooltip(+"widgets.open_settings")
 
         val themeSwitcher = Widgets.button()
@@ -250,71 +245,12 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
     }
 
-    private fun createSearch(bg: DisplayWidget): LayoutElement {
-        val width = 100
-
-        val usernameState = State.of(gameProfile.name)
-        val username = Widgets.autocomplete<String>(usernameState) { box ->
-            box.withEnterCallback {
-                Utils.fetchGameProfile(box.value) { profile ->
-                    profile?.let {
-                        McClient.setScreenAsync { PvTab.MAIN.create(it) }
-                    }
-                }
-            }
-            box.withTexture(ExtraConstants.TEXTBOX)
-        }
-        username.withAlwaysShow(true)
-        username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
-        username.withPlaceholder((+"widgets.username_input").stripped)
-        username.withSize(width, 20)
-        username.setPosition(bg.x + bg.width - width, bg.y + bg.height)
-        return username
+    private fun getSearch(bg: DisplayWidget): LayoutElement = createSearch(100).apply {
+        setPosition(bg.x + bg.width - this.width, bg.y + bg.height)
     }
 
-    private fun createProfileDropdown(bg: DisplayWidget): LayoutElement {
-        val width = 100
-
-        val dropdownState = DropdownState<SkyBlockProfile>.of(profile)
-        val dropdown = Widgets.dropdown(
-            dropdownState,
-            profiles,
-            { profile ->
-                Text.of {
-                    color = PvColors.WHITE
-                    if (profile.selected) {
-                        underlined = true
-                        append("◆ ")
-                    } else {
-                        append("◇ ")
-                    }
-                    append(profile.id.name)
-                    append(
-                        when (profile.profileType) {
-                            ProfileType.NORMAL -> ""
-                            ProfileType.BINGO -> " §9Ⓑ"
-                            ProfileType.IRONMAN -> " ♻"
-                            ProfileType.STRANDED -> " §a☀"
-                            ProfileType.UNKNOWN -> " §c§ka"
-                        },
-                    )
-                }
-            },
-            { button -> button.withSize(width, 20) },
-            { builder ->
-                builder.withCallback { profile ->
-                    this.profile = profile ?: return@withCallback
-                    this.onProfileSwitch(profile)
-                    this.safelyRebuild()
-                }
-                builder.withAlignment(OverlayAlignment.TOP_LEFT)
-            },
-        ).apply {
-            withTexture(ExtraConstants.BUTTON_DARK)
-            setPosition(bg.x, bg.y + bg.height)
-        }
-
-        return dropdown
+    private fun getProfileDropdown(bg: DisplayWidget): LayoutElement = createProfileDropdown(100).apply {
+        setPosition(bg.x, bg.y + bg.height)
     }
 
     private fun createSocialDropdown(): LayoutElement {

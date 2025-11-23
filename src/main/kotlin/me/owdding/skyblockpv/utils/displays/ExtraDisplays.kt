@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.utils.displays
 
 import earth.terrarium.olympus.client.utils.Orientation
+import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.rendering.text.TextShader
@@ -73,8 +74,13 @@ object ExtraDisplays {
     fun component(component: Component, maxWidth: Int = -1, color: () -> UInt = { PvColors.WHITE.toUInt() }, shadow: Boolean = true) =
         Displays.component(component, maxWidth, color, shadow)
 
-    fun wrappedText(text: FormattedText, maxWidth: Int, color: () -> UInt = { PvColors.DARK_GRAY.toUInt() }, shadow: Boolean = true) =
-        Displays.wrappedText(text, maxWidth, color, shadow)
+    fun wrappedText(
+        component: FormattedText,
+        maxWidth: Int,
+        color: () -> UInt = { PvColors.DARK_GRAY.toUInt() },
+        shadow: Boolean = true,
+        textAlignment: Alignment = Alignment.START,
+    ) = Displays.wrappedText(component, maxWidth, color, shadow, textAlignment)
 
     fun progress(
         progress: Float,
