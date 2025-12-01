@@ -212,7 +212,12 @@ data class BackingSkyBlockProfile(
                         else -> ProfileType.NORMAL
                     }
                 },
-                inventory = future { member.getAs<JsonObject>("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) } },
+                inventory = (member.getAs<JsonObject>("inventory") ?: JsonObject()).let {
+                    InventoryData.fromJson(
+                        it,
+                        member.getAsJsonObject("shared_inventory"),
+                    )
+                },
                 currency = future { Currency.fromJson(member) },
                 bank = future { Bank.fromJson(json, member) },
                 firstJoin = profile.getAs<Long>("first_join", 0L),

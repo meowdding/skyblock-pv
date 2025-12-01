@@ -59,19 +59,19 @@ object CurrencySource : NetworthSource {
 }
 
 object InventorySource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.inventoryItems?.inventory
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.inventoryItems
 }
 
 object ArmorSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.armorItems?.inventory
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.armorItems
 }
 
 object EnderchestSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.enderChestPages?.flatMap { it.items.inventory }
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.enderChestPages?.flatten()
 }
 
 object BackpacksSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.backpacks?.flatMap { it.items.inventory }
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.backpacks?.flatten()
 }
 
 object SacksSource : NetworthSource {
@@ -90,25 +90,25 @@ object PetsSource : NetworthSource {
 }
 
 object WardrobeSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.wardrobe?.armor?.armor?.inventory
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.wardrobe
 }
 
 object Equipmentource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.equipmentItems?.inventory
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.equipmentItems
 }
 
 object TalismanBagSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.talismans?.flatMap { it.talismans.inventory }
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.talismans?.flatten()
 }
 
 object FishingBagSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.fishingBag?.inventory
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.fishingBag
 }
 
 object QuiverBagSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.quiver?.inventory
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.quiver
 }
 
 object PersonalVaultSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.personalVault?.inventory
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.personalVault
 }
