@@ -28,7 +28,6 @@ import tech.thatgravyboat.skyblockapi.api.events.minecraft.ui.GatherItemTooltipC
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.extentions.capitalize
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
@@ -151,8 +150,8 @@ object PartyFinderJoin {
     }
 
     fun sendEquipmentInfo(gameProfile: GameProfile, profile: SkyBlockProfile) = ComponentFactory.multiline {
-        val equippedArmor = profile.inventory?.armorItems?.inventory?.reversed() ?: List(4) { ItemStack.EMPTY }
-        val equipment = profile.inventory?.equipmentItems?.inventory ?: List(4) { ItemStack.EMPTY }
+        val equippedArmor = profile.inventory?.armorItems?.reversed() ?: List(4) { ItemStack.EMPTY }
+        val equipment = profile.inventory?.equipmentItems ?: List(4) { ItemStack.EMPTY }
 
         val inventoryItems = profile.inventory?.getAllItems() ?: emptyList()
 
@@ -163,7 +162,7 @@ object PartyFinderJoin {
 
         component("messages.dungeon_partyfinder.equipment_header".asTranslated()) {
             if (profile.inventory?.inventoryItems != null) {
-                val inventoryItems = (profile.inventory?.inventoryItems?.inventory ?: List(36) { ItemStack.EMPTY }).chunked(9)
+                val inventoryItems = (profile.inventory?.inventoryItems ?: List(36) { ItemStack.EMPTY }).chunked(9)
                 val reorderedItems = (inventoryItems.drop(1) + inventoryItems.take(1)).flatten()
 
                 val item = Items.BARRIER.defaultInstance

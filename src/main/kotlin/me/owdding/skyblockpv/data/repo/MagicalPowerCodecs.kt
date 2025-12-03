@@ -41,7 +41,7 @@ object MagicalPowerCodecs : ExtraData {
     }
 
     fun calculateMagicalPower(profile: SkyBlockProfile): Pair<Int, Component> {
-        val items = (profile.inventory?.talismans ?: emptyList()).flatMap { it.talismans.inventory }
+        val items = (profile.inventory?.talismans ?: emptyList()).flatten()
 
         val base = items.associateWith { data.getMagicalPower(it) }.filterDuplicates().toMutableMap()
 
