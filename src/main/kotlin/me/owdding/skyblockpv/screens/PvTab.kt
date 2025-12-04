@@ -100,7 +100,5 @@ enum class PvTab(
         return icon(gameProfile)
     }
 
-    fun canDisplay(profile: SkyBlockProfile?): Boolean {
-        return !this.hideOnStranded || profile?.onStranded != true
-    }
+    fun canDisplay(profile: SkyBlockProfile?): Boolean = !this.hideOnStranded || profile?.onStranded != true
 }

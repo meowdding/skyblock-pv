@@ -19,7 +19,6 @@ import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.Util
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
@@ -30,7 +29,6 @@ import org.joml.Matrix3x2fStack
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
@@ -66,6 +64,23 @@ object Utils {
             callback(it)
             isFetchingGameProfile = false
         } ?: fetchGameProfile(username).thenAccept { profile ->
+            callback(profile.getOrNull())
+            isFetchingGameProfile = false
+        }
+    }
+
+    fun fetchGameProfile(uuid: UUID, callback: (GameProfile?) -> Unit) {
+        if (isFetchingGameProfile) return
+        isFetchingGameProfile = true
+        if (uuid == McPlayer.uuid) {
+            callback(McClient.self.gameProfile)
+            isFetchingGameProfile = false
+            return
+        }
+        PlayerDbAPI.getProfile(uuid.toString()).takeUnless { it?.id == Util.NIL_UUID }?.let {
+            callback(it)
+            isFetchingGameProfile = false
+        } ?: fetchGameProfile(uuid).thenAccept { profile ->
             callback(profile.getOrNull())
             isFetchingGameProfile = false
         }
@@ -131,6 +146,14 @@ object Utils {
 
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, PvColors.WHITE.toUInt(), init)
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
+
+    fun String.toUuid(): UUID? = runCatching {
+        when (this.length) {
+            32 -> UUID.fromString("${this.substring(0, 8)}-${this.substring(8, 12)}-${this.substring(12, 16)}-${this.substring(16, 20)}-${this.substring(20)}")
+            36 -> UUID.fromString(this)
+            else -> null
+        }
+    }.getOrNull()
 
     fun UUID.toDashlessString(): String = this.toString().replace("-", "")
 

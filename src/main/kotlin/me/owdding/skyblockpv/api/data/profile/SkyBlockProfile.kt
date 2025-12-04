@@ -24,6 +24,7 @@ import me.owdding.skyblockpv.feature.networth.NetworthCalculator
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
+import me.owdding.skyblockpv.utils.Utils.toUuid
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
 import net.minecraft.Util
@@ -86,6 +87,8 @@ interface SkyBlockProfile {
     val onStranded: Boolean get() = profileType == ProfileType.STRANDED
     val isOwnProfile get() = userId == McPlayer.uuid && selected
 
+    val coopMembers: List<UUID> get() = backingProfile.coopMembers
+
     val isEmpty: Boolean
 
     companion object {
@@ -136,6 +139,7 @@ data class BackingSkyBlockProfile(
     val crimsonIsleData: CompletableFuture<CrimsonIsleData> = emptyFuture(),
     val minions: CompletableFuture<List<String>?> = emptyFuture(),
     val maxwell: CompletableFuture<Maxwell?> = emptyFuture(),
+    val coopMembers: List<UUID> = emptyList(),
 ) {
     val dataFuture: CompletableFuture<Void> = CompletableFuture.allOf(
         profileType,
@@ -276,6 +280,7 @@ data class BackingSkyBlockProfile(
                     }.filterNotNull().flatten().sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
                 },
                 maxwell = future { member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(member, it) } },
+                coopMembers = json.getAs<JsonObject>("members")?.entrySet()?.mapNotNull { (k, _) -> k.toUuid() }?.filter { it != user } ?: emptyList(),
             )
         }
 
