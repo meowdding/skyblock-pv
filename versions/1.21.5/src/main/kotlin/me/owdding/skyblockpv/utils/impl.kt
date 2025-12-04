@@ -8,7 +8,6 @@ import net.minecraft.client.player.RemotePlayer
 import net.minecraft.client.renderer.entity.state.PlayerRenderState
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.EquipmentSlot
-import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.PlayerModelPart
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.entity.SkullBlockEntity
@@ -32,6 +31,7 @@ fun GuiGraphics.drawRoundedRec(
 }
 
 internal fun fetchGameProfile(username: String): CompletableFuture<Optional<GameProfile>> = SkullBlockEntity.fetchGameProfile(username)
+internal fun fetchGameProfile(uuid: UUID): CompletableFuture<Optional<GameProfile>> = SkullBlockEntity.fetchGameProfile(uuid)
 
 class FakePlayer(gameProfile: GameProfile, val armor: List<ItemStack>, val customDisplayName: Component) : RemotePlayer(McClient.self.level!!, gameProfile) {
 
