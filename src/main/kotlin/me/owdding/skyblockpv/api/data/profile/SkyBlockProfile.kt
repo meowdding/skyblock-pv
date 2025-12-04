@@ -227,7 +227,11 @@ data class BackingSkyBlockProfile(
 
                     experience / 100 to (experience % 100)
                 },
-                skill = playerData.getSkillData(),
+                skill = playerData.getSkillData(
+                    allMembers {
+                        it.getPathAs<Long>("player_data.experience." + SkillAPI.Skills.SOCIAL.skillApiId) ?: 0
+                    }.sum(),
+                ),
                 collections = future {
                     allMembers(::getCollectionData) { members ->
                         members.filterNotNull().flatten().groupBy { it.itemId }.values.mapNotNull { items ->
@@ -269,14 +273,13 @@ data class BackingSkyBlockProfile(
                     allMembers {
                         it.getPathAs<JsonArray>("player_data.crafted_generators")?.asStringList()
                             ?.filter { it.isNotBlank() }
-                            ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
-                    }.mapNotNull { it }.flatten()
+                    }.filterNotNull().flatten().sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
                 },
                 maxwell = future { member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(member, it) } },
             )
         }
 
-        private fun JsonObject?.getSkillData(): CompletableFuture<Map<String, Long>> = future {
+        private fun JsonObject?.getSkillData(totalSocialXp: Long): CompletableFuture<Map<String, Long>> = future {
             val skills = this?.getAs<JsonElement>("experience").asMap { id, amount -> id to amount.asLong(0) }
                 .filterKeys { it != "SKILL_DUNGEONEERING" }
                 .toMutableMap()
@@ -284,6 +287,8 @@ data class BackingSkyBlockProfile(
             SkillAPI.Skills.entries.forEach { skill ->
                 skills.putIfAbsent(skill.skillApiId, 0)
             }
+
+            skills[SkillAPI.Skills.SOCIAL.skillApiId] = totalSocialXp
 
             skills.sortToSkillsOrder()
         }
