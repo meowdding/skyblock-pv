@@ -17,4 +17,8 @@ object ExtraWidgetRenderers {
     fun <T : AbstractWidget> display(display: Display) = WidgetRenderer<T> { graphics, context, partialTicks ->
         display.render(graphics, context.x, context.y)
     }
+
+    fun <T : AbstractWidget> supplied(supplier: () -> WidgetRenderer<T>) = WidgetRenderer<T> { graphics, context, partial ->
+        supplier().render(graphics, context, partial)
+    }
 }

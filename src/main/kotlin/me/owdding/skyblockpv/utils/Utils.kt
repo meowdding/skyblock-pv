@@ -39,50 +39,51 @@ import java.nio.file.Files
 import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import kotlin.jvm.optionals.getOrNull
 
 object Utils {
 
-    fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
+    var preferedProfileId: UUID? = null
 
-    var isFetchingGameProfile = false
-        private set
+    val executorPool: ExecutorService = Executors.newFixedThreadPool(12)
+
+    fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
 
     val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
 
     fun <K, V> MutableMap<K, V>.removeIf(predicate: (Map.Entry<K, V>) -> Boolean): MutableMap<K, V> = also { entries.removeIf(predicate) }
 
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
-        if (isFetchingGameProfile) return
-        isFetchingGameProfile = true
         if (username.equals(McPlayer.name, true)) {
-            callback(McClient.self.gameProfile)
-            isFetchingGameProfile = false
+            McClient.runNextTick { callback(McClient.self.gameProfile) }
             return
         }
-        PlayerDbAPI.getProfile(username).takeUnless { it?.id == Util.NIL_UUID }?.let {
-            callback(it)
-            isFetchingGameProfile = false
-        } ?: fetchGameProfile(username).thenAccept { profile ->
-            callback(profile.getOrNull())
-            isFetchingGameProfile = false
+        PlayerDbAPI.getProfileAsync(username).thenCompose {
+            it?.let { CompletableFuture.completedStage(it) } ?: fetchGameProfile(username).thenApply(Optional<GameProfile>::getOrNull)
+        }.thenAccept { profile ->
+            McClient.runNextTick {
+                profile.takeUnless { it?.id == Util.NIL_UUID }?.let {
+                    callback(it)
+                }
+            }
         }
     }
 
     fun fetchGameProfile(uuid: UUID, callback: (GameProfile?) -> Unit) {
-        if (isFetchingGameProfile) return
-        isFetchingGameProfile = true
         if (uuid == McPlayer.uuid) {
-            callback(McClient.self.gameProfile)
-            isFetchingGameProfile = false
+            McClient.runNextTick { callback(McClient.self.gameProfile) }
             return
         }
-        PlayerDbAPI.getProfile(uuid.toString()).takeUnless { it?.id == Util.NIL_UUID }?.let {
-            callback(it)
-            isFetchingGameProfile = false
-        } ?: fetchGameProfile(uuid).thenAccept { profile ->
-            callback(profile.getOrNull())
-            isFetchingGameProfile = false
+        PlayerDbAPI.getProfileAsync(uuid.toString()).thenCompose {
+            it?.let { CompletableFuture.completedStage(it) } ?: fetchGameProfile(uuid).thenApply(Optional<GameProfile>::getOrNull)
+        }.thenAccept { profile ->
+            McClient.runNextTick {
+                profile.takeUnless { it?.id == Util.NIL_UUID }?.let {
+                    callback(it)
+                }
+            }
         }
     }
 

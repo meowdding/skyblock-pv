@@ -19,6 +19,7 @@ import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -61,8 +62,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
                 return@launch
             }
             if (initedWithProfile) return@launch
-            val selected = initProfile ?: profiles.find { it.selected } ?: return@launch
+            val selected = initProfile ?: profiles.find { it.id.id == Utils.preferedProfileId } ?: profiles.find { it.selected } ?: return@launch
             onProfileSwitch(selected)
+            Utils.preferedProfileId = null
             profile = selected
             requireRebuild = true
             selected.dataFuture.whenComplete { _, throwable ->

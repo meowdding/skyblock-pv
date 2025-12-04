@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.entity.state.AvatarRenderState
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.EquipmentSlot
-import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.PlayerModelPart
 import net.minecraft.world.entity.player.PlayerSkin
 import net.minecraft.world.item.ItemStack
@@ -33,9 +32,9 @@ fun GuiGraphics.drawRoundedRec(
 }
 
 internal fun fetchGameProfile(username: String): CompletableFuture<Optional<GameProfile>> =
-    CompletableFuture.supplyAsync { McClient.self.services().profileResolver.fetchByName(username) }
+    CompletableFuture.supplyAsync({ McClient.self.services().profileResolver.fetchByName(username) }, Utils.executorPool)
 internal fun fetchGameProfile(uuid: UUID): CompletableFuture<Optional<GameProfile>> =
-    CompletableFuture.supplyAsync { McClient.self.services().profileResolver.fetchById(uuid) }
+    CompletableFuture.supplyAsync({ McClient.self.services().profileResolver.fetchById(uuid) }, Utils.executorPool)
 
 class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val customDisplayName: Component) :
     ClientMannequin(McClient.self.level!!, McClient.self.playerSkinRenderCache()) {
