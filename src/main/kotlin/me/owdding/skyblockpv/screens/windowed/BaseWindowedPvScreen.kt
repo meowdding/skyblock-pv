@@ -242,11 +242,11 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
         return LayoutFactory.horizontal {
             val coopDropdown = Button().apply {
-                withSize(20, 20)
+                withSize(12, 20)
                 withTexture(null)
                 withRenderer(
                     WidgetRenderers.padded(
-                        4, 4, 4, 4,
+                        4, 0, 4, 0,
                         WidgetRenderers.icon<AbstractWidget>(UIIcons.CHEVRON_UP).withColor(MinecraftColors.WHITE),
                     ),
                 )
@@ -355,7 +355,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             if (profile.coopMembers.isNotEmpty()) {
                 widget(coopDropdown)
                 spacer(5)
-                width += 25
+                width += coopDropdown.width + 5
             }
             if (coopDropdownVisible) {
                 widget(coopMemberDropdown)
