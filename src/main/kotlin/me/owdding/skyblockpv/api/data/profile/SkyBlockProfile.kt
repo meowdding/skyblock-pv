@@ -3,8 +3,10 @@ package me.owdding.skyblockpv.api.data.profile
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CollectionAPI
+import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.data.InventoryData
 import me.owdding.skyblockpv.api.data.ProfileId
@@ -22,8 +24,10 @@ import me.owdding.skyblockpv.data.repo.MagicalPowerCodecs
 import me.owdding.skyblockpv.feature.networth.Networth
 import me.owdding.skyblockpv.feature.networth.NetworthCalculator
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
+import me.owdding.skyblockpv.utils.Utils.toUuid
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
 import net.minecraft.Util
@@ -38,7 +42,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executors
 
 interface SkyBlockProfile {
     val selected: Boolean get() = backingProfile.selected
@@ -85,6 +88,8 @@ interface SkyBlockProfile {
 
     val onStranded: Boolean get() = profileType == ProfileType.STRANDED
     val isOwnProfile get() = userId == McPlayer.uuid && selected
+
+    val coopMembers: Map<UUID, CompletableFuture<GameProfile?>> get() = backingProfile.coopMembers
 
     val isEmpty: Boolean
 
@@ -136,6 +141,7 @@ data class BackingSkyBlockProfile(
     val crimsonIsleData: CompletableFuture<CrimsonIsleData> = emptyFuture(),
     val minions: CompletableFuture<List<String>?> = emptyFuture(),
     val maxwell: CompletableFuture<Maxwell?> = emptyFuture(),
+    val coopMembers: Map<UUID, CompletableFuture<GameProfile?>> = mapOf(),
 ) {
     val dataFuture: CompletableFuture<Void> = CompletableFuture.allOf(
         profileType,
@@ -168,8 +174,6 @@ data class BackingSkyBlockProfile(
     )
 
     companion object {
-
-        private val executorPool = Executors.newFixedThreadPool(12)
 
         private fun <T> emptyFuture(): CompletableFuture<T> = CompletableFuture()
 
@@ -276,6 +280,11 @@ data class BackingSkyBlockProfile(
                     }.filterNotNull().flatten().sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
                 },
                 maxwell = future { member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(member, it) } },
+                coopMembers = PlayerDbAPI.bulkFetch(
+                    json.getAs<JsonObject>("members")?.entrySet()?.mapNotNull { (k, entry) ->
+                        k.toUuid().takeUnless { entry.getPath("profile.deletion_notice") != null }
+                    }?.filter { it != user } ?: emptyList(),
+                ),
             )
         }
 
@@ -350,6 +359,6 @@ data class BackingSkyBlockProfile(
             return perks
         }
 
-        fun <T> future(supplier: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(supplier, executorPool)
+        fun <T> future(supplier: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(supplier, Utils.executorPool)
     }
 }

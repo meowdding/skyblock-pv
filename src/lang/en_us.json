@@ -319,7 +319,8 @@
                 "sources": "<gray>Source: "
             }
         },
-        "socials": "<white>Socials</white>"
+        "socials": "<white>Socials</white>",
+        "coop_search_tooltip": "<gray>View Co-op Members</gray>"
     },
     "screens": {
         "main": {
