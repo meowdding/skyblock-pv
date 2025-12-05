@@ -100,6 +100,7 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
         ClientCommandRegistrationCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, commandId)
         ClientCommandRegistrationCallback.EVENT.register(commandId) { dispatcher, _ ->
             if (!Config.isDisabled) {
+                dispatcher.root.children.removeIf { it.name == "pv" }
                 dispatcher.register(
                     ClientCommandManager.literal("pv")
                         .then(
