@@ -69,6 +69,7 @@ object PlayerAPI : CachedApi<UUID, HypixelPlayer, UUID>(Long.MAX_VALUE) {
             .onSuccess(handler)
             .onFailure {
                 SkyBlockPv.error("Failed to get player for: ${gameProfile.name} (${gameProfile.id})", it)
+                handler(null)
             }
     }
 }

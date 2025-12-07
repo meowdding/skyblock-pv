@@ -22,7 +22,7 @@ import kotlin.io.path.writeText
 
 
 const val CACHE_TIME = 5 * 60 * 1000L // 5 minutes
-const val TIMEOUT_TIME = 30 * 1000L // 15 seconds
+const val TIMEOUT_TIME = 30 * 1000L // 30 seconds
 
 abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
 
