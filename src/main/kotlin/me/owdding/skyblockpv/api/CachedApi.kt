@@ -2,13 +2,19 @@ package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.config.DevConfig
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils.hash
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toPrettyString
 import java.nio.file.StandardOpenOption
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 import kotlin.io.path.readText
@@ -16,10 +22,12 @@ import kotlin.io.path.writeText
 
 
 const val CACHE_TIME = 5 * 60 * 1000L // 5 minutes
+const val TIMEOUT_TIME = 30 * 1000L // 15 seconds
 
 abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
 
     private val cache: MutableMap<K, CacheEntry<Result<V>>> = mutableMapOf()
+    private val requests: MutableMap<K, OutgoingRequest<V>> = mutableMapOf()
 
     /**
      * Gets the cached data if it exists and is not expired.
@@ -79,6 +87,28 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
         getData(data)
     }
 
+    fun getDataAsync(data: D, intent: String? = null, handler: (Result<V>) -> Unit) {
+        val entry = requests[getKey(data)]
+        if (entry != null && !entry.completed.get() && !entry.isExpired()) {
+            entry.handlers.add(handler)
+        } else {
+            entry?.handlers?.clear()
+
+            val request = OutgoingRequest<V>()
+            request.handlers.add(handler)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val result = getData(data, intent)
+                request.completed.set(true)
+                McClient.runNextTick {
+                    request.handlers.forEach { it.invoke(result) }
+                    request.handlers.clear()
+                }
+            }
+            requests[getKey(data)] = request
+        }
+    }
+
     abstract fun path(data: D): String
     abstract fun getKey(data: D): K
     abstract fun decode(data: JsonObject, originalData: D): V?
@@ -92,5 +122,13 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
         val timestamp: Long = System.currentTimeMillis(),
     ) {
         fun isExpired() = System.currentTimeMillis() - timestamp >= maxCache
+    }
+
+    internal class OutgoingRequest<T>(
+        val handlers: MutableList<(Result<T>) -> Unit> = CopyOnWriteArrayList(),
+        val completed: AtomicBoolean = AtomicBoolean(false),
+        val timestamp: Long = System.currentTimeMillis(),
+    ) {
+        fun isExpired() = System.currentTimeMillis() - timestamp >= TIMEOUT_TIME
     }
 }
