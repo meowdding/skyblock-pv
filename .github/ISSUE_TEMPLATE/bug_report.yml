@@ -1,0 +1,28 @@
+name: Bug Report
+description: Create a Bug Report
+labels: [ bug ]
+body:
+    -   type: textarea
+        id: what-issue
+        attributes:
+            label: What's your Issue?
+            description: Please describe the issue you are having. Provide the username of the person you are viewing.
+            placeholder: Describe the issue here
+        validations:
+            required: true
+    -   type: textarea
+        id: logs
+        attributes:
+            label: Logs
+            description: Please provide your latest.log from .minecraft/logs/ if this issue happened in your current session. If you have rebooted by now, send the log with the fitting timestamp.
+            placeholder: Paste your logs here
+        validations:
+            required: false
+    -   type: input
+        id: mod-version
+        attributes:
+            label: SkyBlockPv Version
+            description: The version of SkyBlockPv you are using.
+            placeholder: e.g., "1.6.2-1.21.10"
+        validations:
+            required: true
