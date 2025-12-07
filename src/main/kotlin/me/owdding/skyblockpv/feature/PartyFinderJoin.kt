@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.feature
 
 import com.mojang.authlib.GameProfile
+import com.teamresourceful.resourcefulconfig.api.types.info.Translatable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,18 +46,32 @@ object PartyFinderJoin {
     // TODO: Use (weak)IdentityHashMap in the future as ItemStacks dont implement hashCode/equals
     private val itemComponentMap = WeakHashMap<ItemStack, InventoryTooltipComponent>()
 
+    enum class State : Translatable {
+        OFF,
+        OPEN_PV,
+        BREAKDOWN;
+
+        override fun getTranslationKey() = "skyblockpv.config.party_finder_message.${this.name.lowercase()}"
+    }
+
     @Subscription
     fun onChat(event: ChatReceivedEvent.Pre) {
-        if (!Config.partyFinderMessage) return
+        if (Config.partyFinderMessage == State.OFF) return
 
         joinMessageRegex.match(event.text, "username") { (username) ->
             if (username.equals(McPlayer.name, ignoreCase = true)) {
                 return@match
             }
 
-            fetchGameProfile(username) { profile ->
-                Utils.validateGameProfile(profile) {
-                    getDungeonData(profile!!)
+            if (Config.partyFinderMessage == State.BREAKDOWN) {
+                fetchGameProfile(username) { profile ->
+                    Utils.validateGameProfile(profile) {
+                        getDungeonData(profile!!)
+                    }
+                }
+            } else if (Config.partyFinderMessage == State.OPEN_PV) {
+                McClient.runNextTick {
+                    "messages.party_finder_join".asTranslated(username).sendWithPrefix()
                 }
             }
         }
