@@ -79,7 +79,7 @@ object PartyFinderJoin {
 
     fun getDungeonData(gameProfile: GameProfile) {
         CoroutineScope(Dispatchers.IO).launch {
-            val profiles = ProfileAPI.getProfiles(gameProfile)
+            val profiles = ProfileAPI.getProfiles(gameProfile, "dungeon_party_finder")
             if (profiles.isEmpty()) {
                 return@launch
             }

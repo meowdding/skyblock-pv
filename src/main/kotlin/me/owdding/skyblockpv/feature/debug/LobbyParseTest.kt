@@ -32,7 +32,7 @@ object LobbyParseTest {
                 runBlocking {
                     McClient.players.forEach {
                         val profile = it.profile
-                        val failed = ProfileAPI.getProfiles(profile).isEmpty()
+                        val failed = ProfileAPI.getProfiles(profile, "lobby_test").isEmpty()
 
                         if (failed) {
                             Text.of {

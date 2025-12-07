@@ -32,7 +32,7 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
     /**
      * Gets from the cache or fetches data from the API if not cached or expired.
      */
-    suspend fun getData(data: D): Result<V> = cache.getOrPut(getKey(data)) {
+    suspend fun getData(data: D, intent: String? = null): Result<V> = cache.getOrPut(getKey(data)) {
         val path = path(data)
         val hash = path.hash()
         val cachedFile = SkyBlockPv.configDir.resolve("cache").resolve(hash)
@@ -44,7 +44,7 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
             )
         }
 
-        val (result, expire) = PvAPI.get(path) ?: run {
+        val (result, expire) = PvAPI.get(path, intent) ?: run {
             (+"messages.api.something_went_wrong").sendWithPrefix()
             return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong for $path")))
         }

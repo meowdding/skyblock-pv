@@ -55,7 +55,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
     init {
         CoroutineScope(Dispatchers.IO).launch { PlayerAPI.getPlayer(gameProfile) /*Load player data in the background*/ }
         CoroutineScope(Dispatchers.IO).launch {
-            profiles = ProfileAPI.getProfiles(gameProfile)
+            profiles = ProfileAPI.getProfiles(gameProfile, "screen")
             if (profiles.isEmpty()) {
                 profile = EmptySkyBlockProfile(gameProfile.id, EmptySkyBlockProfile.Reason.NO_PROFILES)
                 requireRebuild = true

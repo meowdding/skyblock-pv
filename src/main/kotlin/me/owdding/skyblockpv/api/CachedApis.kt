@@ -49,7 +49,7 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
 
     override fun getKey(data: UUID) = data
 
-    suspend fun getProfiles(gameProfile: GameProfile): List<SkyBlockProfile> = getData(gameProfile.id).getOrElse {
+    suspend fun getProfiles(gameProfile: GameProfile, intent: String): List<SkyBlockProfile> = getData(gameProfile.id, intent).getOrElse {
         SkyBlockPv.error("Failed to get profiles for: ${gameProfile.name} (${gameProfile.id})", it)
         emptyList()
     }

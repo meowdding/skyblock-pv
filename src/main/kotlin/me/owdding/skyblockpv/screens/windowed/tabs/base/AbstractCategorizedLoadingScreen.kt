@@ -48,7 +48,7 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            this@AbstractCategorizedLoadingScreen.data = api.getData(profile).onFailure { exception ->
+            this@AbstractCategorizedLoadingScreen.data = api.getData(profile, "screen").onFailure { exception ->
                 SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
             }
 

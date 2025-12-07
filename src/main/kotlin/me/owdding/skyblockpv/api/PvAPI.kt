@@ -59,7 +59,7 @@ object PvAPI {
         }
     }
 
-    suspend fun get(endpoint: String): Pair<JsonObject, Instant>? {
+    suspend fun get(endpoint: String, intent: String? = null): Pair<JsonObject, Instant>? {
         if (this.key == null || failedToAuth) {
             SkyBlockPv.error(AUTHENTICATION_FAILED_MESSAGE)
             return null
@@ -68,8 +68,9 @@ object PvAPI {
         val response = Http.get(
             url = API_URL.format(endpoint),
             headers = mapOf(
-                "User-Agent" to "SkyBlockPV (${SkyBlockPv.version.friendlyString})",
+                "User-Agent" to "SkyBlockPV (${SkyBlockPv.version.friendlyString}/${McClient.version})",
                 "Authorization" to this.key!!,
+                "X-Intent" to (intent ?: "unknown"),
             ),
             handler = { this },
         )
