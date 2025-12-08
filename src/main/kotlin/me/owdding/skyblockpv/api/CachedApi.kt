@@ -88,9 +88,9 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
     }
 
     fun getDataAsync(data: D, intent: String? = null, handler: (Result<V>) -> Unit) {
-        val cached = getCached(data)
+        val cached = cache[getKey(data)]?.takeIf { System.currentTimeMillis() - it.timestamp < maxCache }?.data
         if (cached != null) {
-            handler(Result.success(cached))
+            handler(cached)
         } else {
             val entry = requests[getKey(data)]
             if (entry != null && !entry.completed.get() && !entry.isExpired()) {

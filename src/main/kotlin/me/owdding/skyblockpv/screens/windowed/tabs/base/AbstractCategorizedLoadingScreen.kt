@@ -10,6 +10,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
@@ -20,6 +21,7 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
     var data: Result<V>? = null
     private var isDoneLoading = false
     private var initiatedWithData = false
+    private var lastProfileId: UUID? = null
 
     init {
         profile?.let { onProfileSwitch(it) }
@@ -41,23 +43,25 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
             data = Result.success(cachedData)
             isDoneLoading = true
             initiatedWithData = true
-            return
-        }
+        } else {
+            if (lastProfileId != profile.id.id) {
+                lastProfileId = profile.id.id
+                api.getDataAsync(profile, "screen") { result ->
+                    this@AbstractCategorizedLoadingScreen.data = result.onFailure { exception ->
+                        SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
+                    }
 
-        api.getDataAsync(profile, "screen") { result ->
-            this@AbstractCategorizedLoadingScreen.data = result.onFailure { exception ->
-                SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
+                    isDoneLoading = true
+                    if (!initiatedWithData) {
+                        safelyRebuild()
+                    }
+                }
             }
 
-            isDoneLoading = true
-            if (!initiatedWithData) {
-                safelyRebuild()
-            }
-        }
-
-        Scheduling.schedule(10.seconds) {
-            if (data == null) {
-                McClient.runNextTick { safelyRebuild() }
+            Scheduling.schedule(10.seconds) {
+                if (data == null) {
+                    McClient.runNextTick { safelyRebuild() }
+                }
             }
         }
     }
