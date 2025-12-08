@@ -17,7 +17,7 @@ data class EmptySkyBlockProfile(
         userId,
     )
     override val netWorth: CompletableFuture<Networth> = CompletableFuture()
-    override val magicalPower: Pair<Int, Component> = 0 to Component.empty()
+    override val magicalPower: CompletableFuture<Pair<Int, Component>> = CompletableFuture.completedFuture(0 to Component.empty())
     override val isEmpty: Boolean = true
 
     enum class Reason {

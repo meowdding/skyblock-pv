@@ -8,12 +8,14 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.withTooltip
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
+import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor
 
@@ -27,13 +29,24 @@ class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     override fun getExtraLine() = DisplayFactory.vertical(alignment = Alignment.CENTER) {
         val maxwell = profile.maxwell ?: return@vertical
 
-        val display = Displays.text(
-            Text.of("Magical Power: ${profile.magicalPower.first.toFormattedString()}") {
+        val display = profile.magicalPower.thenApply { (magicalPower, breakdown) ->
+            Displays.text(
+                Text.of("Magical Power: $magicalPower") {
+                    color = PvColors.DARK_GRAY
+                    shadowColor = null
+                },
+            ).withTooltip(breakdown)
+        }
+        val loadingDisplay = Displays.text(
+            Text.of("Magical Power: ") {
                 color = PvColors.DARK_GRAY
                 shadowColor = null
+                append("Loading...") {
+                    this.color = TextColor.RED
+                }
             },
-        ).withTooltip(profile.magicalPower.second)
-        display(display)
+        )
+        display(Displays.supplied { display.getNow(loadingDisplay) })
 
         string("Highest Magical Power: ${maxwell.highestMp.toFormattedString()}") {
             color = PvColors.DARK_GRAY

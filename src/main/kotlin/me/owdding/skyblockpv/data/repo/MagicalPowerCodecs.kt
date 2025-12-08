@@ -20,6 +20,7 @@ import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import java.util.concurrent.CompletableFuture
 import kotlin.math.roundToInt
 import kotlin.reflect.KClass
 
@@ -40,49 +41,52 @@ object MagicalPowerCodecs : ExtraData {
         data = Utils.loadRepoData<MagicalPowerRepoData>("magical_power")
     }
 
-    fun calculateMagicalPower(profile: SkyBlockProfile): Pair<Int, Component> {
-        val items = (profile.inventory?.talismans ?: emptyList()).flatten()
+    fun calculateMagicalPower(profile: SkyBlockProfile): CompletableFuture<Pair<Int, Component>> = profile.dataFuture.thenApplyAsync(
+        {
+            val items = (profile.inventory?.talismans ?: emptyList()).flatten()
 
-        val base = items.associateWith { data.getMagicalPower(it) }.filterDuplicates().toMutableMap()
+            val base = items.associateWith { data.getMagicalPower(it) }.filterDuplicates().toMutableMap()
 
-        val riftPrism = if (profile.maxwell?.consumedRiftPrism == true) {
-            base.removeIf { (k, _) -> k.getSkyBlockId() == RIFT_PRISM }
-            11
-        } else 0
-        val hasAbicase = items.any { it.getSkyBlockId()?.cleanId?.startsWith("abicase_", true) == true }
-        val abicase = if (hasAbicase) profile.maxwell?.abiphoneContacts?.floorDiv(2) ?: 0 else 0
+            val riftPrism = if (profile.maxwell?.consumedRiftPrism == true) {
+                base.removeIf { (k, _) -> k.getSkyBlockId() == RIFT_PRISM }
+                11
+            } else 0
+            val hasAbicase = items.any { it.getSkyBlockId()?.cleanId?.startsWith("abicase_", true) == true }
+            val abicase = if (hasAbicase) profile.maxwell?.abiphoneContacts?.floorDiv(2) ?: 0 else 0
 
-        val lore = TooltipBuilder.multiline {
-            add("Magical Power Breakdown:") { color = TextColor.GRAY }
-            base.toList()
-                .sortedByDescending { it.first.getData(DataTypes.RARITY) }
-                .groupBy { it.first.getData(DataTypes.RARITY) }
-                .forEach { (rarity, items) ->
-                    val rarity = rarity ?: return@forEach
-                    val totalPower = items.sumOf { it.second }
-                    add("") {
-                        color = TextColor.ORANGE
+            val lore = TooltipBuilder.multiline {
+                add("Magical Power Breakdown:") { color = TextColor.GRAY }
+                base.toList()
+                    .sortedByDescending { it.first.getData(DataTypes.RARITY) }
+                    .groupBy { it.first.getData(DataTypes.RARITY) }
+                    .forEach { (rarity, items) ->
+                        val rarity = rarity ?: return@forEach
+                        val totalPower = items.sumOf { it.second }
+                        add("") {
+                            color = TextColor.ORANGE
 
-                        append(rarity.displayText)
-                        append(": +${totalPower.toFormattedString()}")
-                        append(" (${items.size})") { color = TextColor.GRAY }
+                            append(rarity.displayText)
+                            append(": +${totalPower.toFormattedString()}")
+                            append(" (${items.size})") { color = TextColor.GRAY }
+                        }
                     }
+
+                space()
+                add("Rift Prism:") {
+                    color = TextColor.BLUE
+                    append(" +${11.takeIf { profile.maxwell?.consumedRiftPrism == true } ?: 0}") { color = TextColor.GOLD }
+                }
+                add("Abiphone Case:") {
+                    color = TextColor.BLUE
+                    append(" +${abicase}") { color = TextColor.GOLD }
                 }
 
-            space()
-            add("Rift Prism:") {
-                color = TextColor.BLUE
-                append(" +${11.takeIf { profile.maxwell?.consumedRiftPrism == true } ?: 0}") { color = TextColor.GOLD }
-            }
-            add("Abiphone Case:") {
-                color = TextColor.BLUE
-                append(" +${abicase}") { color = TextColor.GOLD }
             }
 
-        }
-
-        return base.values.sum() + riftPrism + abicase to lore
-    }
+            base.values.sum() + riftPrism + abicase to lore
+        },
+        Utils.executorPool,
+    )
 
     private fun Map<ItemStack, Int>.filterDuplicates(): Map<ItemStack, Int> {
         val pairs = toList().sortedByDescending { it.second }.distinctBy { it.first.getSkyBlockId() }
