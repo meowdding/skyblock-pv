@@ -42,7 +42,7 @@ object PvAPI {
                     emptyMap()
                 },
                 headers = mapOf(
-                    "User-Agent" to "SkyBlockPV (${SkyBlockPv.version.friendlyString})",
+                    "User-Agent" to "SkyBlockPV/${SkyBlockPv.version.friendlyString}/${McClient.version}",
                     "x-minecraft-username" to user.name,
                     "x-minecraft-server" to server,
                 ),
@@ -68,7 +68,7 @@ object PvAPI {
         val response = Http.get(
             url = API_URL.format(endpoint),
             headers = mapOf(
-                "User-Agent" to "SkyBlockPV (${SkyBlockPv.version.friendlyString}/${McClient.version})",
+                "User-Agent" to "SkyBlockPV/${SkyBlockPv.version.friendlyString}/${McClient.version}",
                 "Authorization" to this.key!!,
                 "X-Intent" to (intent ?: "unknown"),
             ),

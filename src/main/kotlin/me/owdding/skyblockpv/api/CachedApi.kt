@@ -88,24 +88,29 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
     }
 
     fun getDataAsync(data: D, intent: String? = null, handler: (Result<V>) -> Unit) {
-        val entry = requests[getKey(data)]
-        if (entry != null && !entry.completed.get() && !entry.isExpired()) {
-            entry.handlers.add(handler)
+        val cached = getCached(data)
+        if (cached != null) {
+            handler(Result.success(cached))
         } else {
-            entry?.handlers?.clear()
+            val entry = requests[getKey(data)]
+            if (entry != null && !entry.completed.get() && !entry.isExpired()) {
+                entry.handlers.add(handler)
+            } else {
+                entry?.handlers?.clear()
 
-            val request = OutgoingRequest<V>()
-            request.handlers.add(handler)
+                val request = OutgoingRequest<V>()
+                request.handlers.add(handler)
 
-            CoroutineScope(Dispatchers.IO).launch {
-                val result = getData(data, intent)
-                request.completed.set(true)
-                McClient.runNextTick {
-                    request.handlers.forEach { it.invoke(result) }
-                    request.handlers.clear()
+                CoroutineScope(Dispatchers.IO).launch {
+                    val result = getData(data, intent)
+                    request.completed.set(true)
+                    McClient.runNextTick {
+                        request.handlers.forEach { it.invoke(result) }
+                        request.handlers.clear()
+                    }
                 }
+                requests[getKey(data)] = request
             }
-            requests[getKey(data)] = request
         }
     }
 
