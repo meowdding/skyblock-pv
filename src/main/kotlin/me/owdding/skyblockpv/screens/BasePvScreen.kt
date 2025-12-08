@@ -6,9 +6,6 @@ import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.asWidget
@@ -53,16 +50,16 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
     var profile: SkyBlockProfile = EmptySkyBlockProfile(gameProfile.id, EmptySkyBlockProfile.Reason.LOADING)
 
     init {
-        CoroutineScope(Dispatchers.IO).launch { PlayerAPI.getPlayer(gameProfile) /*Load player data in the background*/ }
-        CoroutineScope(Dispatchers.IO).launch {
-            profiles = ProfileAPI.getProfiles(gameProfile, "screen")
+        PlayerAPI.getPlayer(gameProfile) { /*Load player data in the background*/ }
+        ProfileAPI.getProfiles(gameProfile, "screen") { profiles ->
+            this.profiles = profiles
             if (profiles.isEmpty()) {
                 profile = EmptySkyBlockProfile(gameProfile.id, EmptySkyBlockProfile.Reason.NO_PROFILES)
                 requireRebuild = true
-                return@launch
+                return@getProfiles
             }
-            if (initedWithProfile) return@launch
-            val selected = initProfile ?: profiles.find { it.id.id == Utils.preferedProfileId } ?: profiles.find { it.selected } ?: return@launch
+            if (initedWithProfile) return@getProfiles
+            val selected = initProfile ?: profiles.find { it.id.id == Utils.preferedProfileId } ?: profiles.find { it.selected } ?: return@getProfiles
             onProfileSwitch(selected)
             Utils.preferedProfileId = null
             profile = selected

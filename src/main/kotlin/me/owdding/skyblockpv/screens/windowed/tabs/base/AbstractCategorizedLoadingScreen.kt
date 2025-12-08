@@ -1,9 +1,6 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.base
 
 import com.mojang.authlib.GameProfile
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApi
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
@@ -47,14 +44,14 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
             return
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            this@AbstractCategorizedLoadingScreen.data = api.getData(profile, "screen").onFailure { exception ->
+        api.getDataAsync(profile, "screen") { result ->
+            this@AbstractCategorizedLoadingScreen.data = result.onFailure { exception ->
                 SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
             }
 
             isDoneLoading = true
             if (!initiatedWithData) {
-                McClient.runNextTick { safelyRebuild() }
+                safelyRebuild()
             }
         }
 

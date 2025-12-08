@@ -2,9 +2,6 @@ package me.owdding.skyblockpv.feature
 
 import com.mojang.authlib.GameProfile
 import com.teamresourceful.resourcefulconfig.api.types.info.Translatable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import me.owdding.ktmodules.Module
 import me.owdding.lib.builder.ComponentFactory
 import me.owdding.skyblockpv.SkyBlockPv
@@ -78,12 +75,11 @@ object PartyFinderJoin {
     }
 
     fun getDungeonData(gameProfile: GameProfile) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val profiles = ProfileAPI.getProfiles(gameProfile, "dungeon_party_finder")
+        ProfileAPI.getProfiles(gameProfile, "dungeon_party_finder") { profiles ->
             if (profiles.isEmpty()) {
-                return@launch
+                return@getProfiles
             }
-            val selected = profiles.find { it.selected } ?: return@launch
+            val selected = profiles.find { it.selected } ?: return@getProfiles
 
             selected.dataFuture.whenComplete { _, throwable ->
                 if (throwable != null) {
