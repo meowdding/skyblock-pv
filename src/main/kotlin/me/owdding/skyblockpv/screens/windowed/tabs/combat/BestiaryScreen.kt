@@ -10,6 +10,7 @@ import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.withTooltip
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
@@ -35,6 +36,10 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private val MOBS_PER_ROW_COMPLEX = 8
 
     override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical {
+        val unknownBestiaryKills = profile.bestiaryData.map { it.mobId }
+            .filter { mobId -> BestiaryCodecs.allMobs.none { it == mobId } }
+            .distinct()
+
         val categories = getCategories()
         val inventories = categories.values.toList()
         val icons = categories.keys.toList()
@@ -53,6 +58,9 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 widget(carousel!!.centerHorizontally(uiWidth))
             }.asScrollable(uiWidth, uiHeight),
         )
+        SkyBlockPv.ifDevMode {
+            SkyBlockPv.info("Found unknown bestiary kills: $unknownBestiaryKills")
+        }
     }
 
     private fun getCategories(): Map<ItemStack, Display> = BestiaryCodecs.data.categories.map { (_, v) ->

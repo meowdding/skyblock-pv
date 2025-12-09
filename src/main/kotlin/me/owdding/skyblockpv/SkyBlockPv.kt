@@ -64,6 +64,10 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
 
     val backgroundTexture = id("buttons/normal")
 
+    fun ifDevMode(action: () -> Unit) {
+        if (isDevMode) action()
+    }
+
     override fun onInitializeClient() {
         config // used to instantiate the lazy :3
         ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
