@@ -49,9 +49,13 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
 
     override fun getKey(data: UUID) = data
 
-    suspend fun getProfiles(gameProfile: GameProfile): List<SkyBlockProfile> = getData(gameProfile.id).getOrElse {
-        SkyBlockPv.error("Failed to get profiles for: ${gameProfile.name} (${gameProfile.id})", it)
-        emptyList()
+    fun getProfiles(gameProfile: GameProfile, intent: String, handler: (List<SkyBlockProfile>) -> Unit) = getDataAsync(gameProfile.id, intent) { result ->
+        result
+            .onSuccess(handler)
+            .onFailure {
+                SkyBlockPv.error("Failed to get profiles for: ${gameProfile.name} (${gameProfile.id})", it)
+                handler(listOf())
+            }
     }
 }
 
@@ -60,8 +64,12 @@ object PlayerAPI : CachedApi<UUID, HypixelPlayer, UUID>(Long.MAX_VALUE) {
     override fun decode(data: JsonObject, originalData: UUID): HypixelPlayer = HypixelPlayer.fromJson(data)
     override fun getKey(data: UUID) = data
 
-    suspend fun getPlayer(gameProfile: GameProfile): HypixelPlayer? = getData(gameProfile.id).getOrElse {
-        SkyBlockPv.error("Failed to get player for: ${gameProfile.name} (${gameProfile.id})", it)
-        null
+    fun getPlayer(gameProfile: GameProfile, handler: (HypixelPlayer?) -> Unit) = getDataAsync(gameProfile.id, "cache") { result ->
+        result
+            .onSuccess(handler)
+            .onFailure {
+                SkyBlockPv.error("Failed to get player for: ${gameProfile.name} (${gameProfile.id})", it)
+                handler(null)
+            }
     }
 }

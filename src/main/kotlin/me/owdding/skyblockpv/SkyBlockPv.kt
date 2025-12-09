@@ -25,6 +25,9 @@ import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.Version
@@ -34,7 +37,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
-import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -96,28 +98,43 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
             }
         }
         runBlocking { PvAPI.authenticate() }
+
+        // Prioritise over skyblocker pv
+        val commandId = id("skyblock_pv_command")
+        ClientCommandRegistrationCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, commandId)
+        ClientCommandRegistrationCallback.EVENT.register(commandId) { dispatcher, _ ->
+            if (!Config.isDisabled) {
+                dispatcher.root.children.removeIf { it.name == "pv" }
+                dispatcher.register(
+                    ClientCommandManager.literal("pv")
+                        .then(
+                            ClientCommandManager.argument("player", StringArgumentType.string()).suggests(SkyBlockPlayerSuggestionProvider).executes {
+                                Utils.openMainScreen(it.getArgument("player", String::class.java))
+                                1
+                            },
+                        ).executes {
+                            McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
+                            1
+                        },
+                )
+            }
+        }
     }
 
     @Subscription
     fun onRegisterCommands(event: RegisterCommandsEvent) {
 
-        val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
-            callback {
-                McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
-            }
-            then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
+        event.register("sbpv") {
+            then("pv") {
                 callback {
-                    Utils.openMainScreen(this.getArgument("player", String::class.java))
+                    McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
+                }
+                then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
+                    callback {
+                        Utils.openMainScreen(this.getArgument("player", String::class.java))
+                    }
                 }
             }
-        }
-
-        if (!Config.isDisabled) {
-            event.register("pv") { pvCommand() }
-        }
-
-        event.register("sbpv") {
-            then("pv") { pvCommand() }
 
             thenCallback("displaytest") {
                 McClient.setScreenAsync { DisplayTest }

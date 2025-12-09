@@ -54,8 +54,6 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockapi.platform.id
-import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -222,7 +220,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     private fun getPlayerDisplay(profile: SkyBlockProfile, width: Int): LinearLayout {
         val height = (width * 1.1).toInt()
-        val armor = profile.inventory?.armorItems?.inventory ?: List(4) { ItemStack.EMPTY }
+        val armor = profile.inventory?.armorItems ?: List(4) { ItemStack.EMPTY }
         val skyblockLvl = profile.skyBlockLevel.first
         val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
         val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)

@@ -14,12 +14,12 @@ val carnivalMaskBag by RepoItemsAPI.getItemLazy("CARNIVAL_MASK_BAG")
 
 class MiscBagScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
     override fun getInventories(): List<Display> = listOf(
-        PvWidgets.createInventory(profile.inventory?.personalVault?.inventory.orEmpty(36)),
-        PvWidgets.createInventory(profile.inventory?.potionBag?.inventory.orEmpty(45)),
-        PvWidgets.createInventory(profile.inventory?.quiver?.inventory.orEmpty(45)),
-        PvWidgets.createInventory(profile.inventory?.fishingBag?.inventory.orEmpty(45)),
-        PvWidgets.createInventory(profile.inventory?.candy?.inventory.orEmpty(27)),
-        PvWidgets.createInventory(profile.inventory?.carnivalMaskBag?.inventory.orEmpty(9)),
+        PvWidgets.createInventory(profile.inventory?.personalVault.orEmpty(36)),
+        PvWidgets.createInventory(profile.inventory?.potionBag.orEmpty(45)),
+        PvWidgets.createInventory(profile.inventory?.quiver.orEmpty(45)),
+        PvWidgets.createInventory(profile.inventory?.fishingBag.orEmpty(45)),
+        PvWidgets.createInventory(profile.inventory?.candy.orEmpty(27)),
+        PvWidgets.createInventory(profile.inventory?.carnivalMaskBag.orEmpty(9)),
     )
 
     override fun getIcons(): List<ItemStack> = listOf(

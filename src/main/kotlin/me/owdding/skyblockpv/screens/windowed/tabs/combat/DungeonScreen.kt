@@ -74,7 +74,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val (catacombsLevel, catacombsProgressToNext) = CatacombsCodecs.getLevelAndProgress(catacombsXp, Config.skillOverflow)
 
         fun getClass(name: String) = PvLayouts.vertical(5) {
-            val (level, progress) = dungeonData.classToLevel[name]!!
+            val (level, progress) = dungeonData.classToLevel[name] ?: (0 to 0f)
             textDisplay("${name.replaceFirstChar { it.uppercase() }}: $level") {
                 color = if (dungeonData.selectedClass == name) PvColors.DARK_GREEN else PvColors.DARK_GRAY
             }

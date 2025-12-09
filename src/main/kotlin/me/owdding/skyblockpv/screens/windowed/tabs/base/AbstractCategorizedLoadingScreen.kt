@@ -1,9 +1,6 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.base
 
 import com.mojang.authlib.GameProfile
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApi
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
@@ -13,6 +10,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
@@ -23,6 +21,7 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
     var data: Result<V>? = null
     private var isDoneLoading = false
     private var initiatedWithData = false
+    private var lastProfileId: UUID? = null
 
     init {
         profile?.let { onProfileSwitch(it) }
@@ -44,23 +43,25 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
             data = Result.success(cachedData)
             isDoneLoading = true
             initiatedWithData = true
-            return
-        }
+        } else {
+            if (lastProfileId != profile.id.id) {
+                lastProfileId = profile.id.id
+                api.getDataAsync(profile, "screen") { result ->
+                    this@AbstractCategorizedLoadingScreen.data = result.onFailure { exception ->
+                        SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
+                    }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            this@AbstractCategorizedLoadingScreen.data = api.getData(profile).onFailure { exception ->
-                SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
+                    isDoneLoading = true
+                    if (!initiatedWithData) {
+                        safelyRebuild()
+                    }
+                }
             }
 
-            isDoneLoading = true
-            if (!initiatedWithData) {
-                McClient.runNextTick { safelyRebuild() }
-            }
-        }
-
-        Scheduling.schedule(10.seconds) {
-            if (data == null) {
-                McClient.runNextTick { safelyRebuild() }
+            Scheduling.schedule(10.seconds) {
+                if (data == null) {
+                    McClient.runNextTick { safelyRebuild() }
+                }
             }
         }
     }

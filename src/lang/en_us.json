@@ -105,7 +105,10 @@
         },
         "party_finder_message": {
             "@value": "Party Finder Message",
-            "desc": "Shows a breakdown of the joined players profile in chat, giving you a quick overview."
+            "desc": "Shows a breakdown of the joined players profile in chat, giving you a quick overview.",
+            "off": "Disabled",
+            "open_pv": "Click to Open PV",
+            "breakdown": "Profile Breakdown"
         },
         "disable_outside_hypixel": {
             "@value": "Disable outside hypixel",
@@ -319,7 +322,8 @@
                 "sources": "<gray>Source: "
             }
         },
-        "socials": "<white>Socials</white>"
+        "socials": "<white>Socials</white>",
+        "coop_search_tooltip": "<gray>View Co-op Members</gray>"
     },
     "screens": {
         "main": {

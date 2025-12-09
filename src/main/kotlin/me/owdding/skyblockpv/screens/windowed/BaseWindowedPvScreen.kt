@@ -11,11 +11,15 @@ import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
 import earth.terrarium.olympus.client.utils.State
 import me.owdding.lib.builder.LayoutBuilder
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.getStackTraceString
+import me.owdding.lib.layouts.setPos
+import me.owdding.lib.platform.screens.MouseButtonEvent
+import me.owdding.lib.platform.screens.mouseClicked
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.PlayerAPI
@@ -29,6 +33,8 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
@@ -43,11 +49,13 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.util.TriState
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
@@ -113,10 +121,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
 
         addRenderableOnly(
-            PvWidgets.text(this.tabTitle)
-                .withCenterAlignment()
-                .withSize(this.uiWidth, 20)
-                .withPosition(bg.x, bg.bottom + 2),
+            PvWidgets.text(this.tabTitle).withCenterAlignment().withSize(this.uiWidth, 20).withPosition(bg.x, bg.bottom + 2),
         )
     }
 
@@ -156,23 +161,19 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
     }
 
     private fun LayoutBuilder.createUserRow() = horizontal(5) {
-        val settingsButton = Button()
-            .withSize(20, 20)
-            .withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
-            .withTexture(null)
-            .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
-            .withTooltip(+"widgets.open_settings")
+        val settingsButton =
+            Button().withSize(20, 20).withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
+                .withTexture(null)
+                .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
+                .withTooltip(+"widgets.open_settings")
 
-        val themeSwitcher = Widgets.button()
-            .withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.EYE_DROPPER).withColor(MinecraftColors.WHITE))
-            .withSize(20, 20)
-            .withTexture(null)
-            .withCallback {
-                ThemeSupport.nextTheme()
-                safelyRebuild()
-                SkyBlockPv.config.save()
-            }
-            .withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
+        val themeSwitcher =
+            Widgets.button().withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.EYE_DROPPER).withColor(MinecraftColors.WHITE)).withSize(20, 20)
+                .withTexture(null).withCallback {
+                    ThemeSupport.nextTheme()
+                    safelyRebuild()
+                    SkyBlockPv.config.save()
+                }.withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
 
         widget(settingsButton)
         widget(themeSwitcher)
@@ -180,10 +181,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
     private fun LayoutBuilder.createDevRow(bg: DisplayWidget) = horizontal(5) {
         // Useful for hotswaps
-        val refreshButton = Button()
-            .withRenderer(WidgetRenderers.text(Text.of("Refresh Screen")))
-            .withSize(60, 20)
-            .withTexture(ExtraConstants.BUTTON_DARK)
+        val refreshButton = Button().withRenderer(WidgetRenderers.text(Text.of("Refresh Screen"))).withSize(60, 20).withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback { this@BaseWindowedPvScreen.safelyRebuild() }
 
         val hoverText = Text.multiline(
@@ -191,29 +189,16 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             "UI: ${uiWidth}x${uiHeight}",
             "BG: ${bg.width}x${bg.height}",
         )
-        val screenSizeText = Button()
-            .withRenderer(WidgetRenderers.text(Text.of("Screen Size")))
-            .withSize(60, 20)
-            .withTexture(ExtraConstants.BUTTON_DARK)
-            .withCallback { McClient.self.keyboardHandler.clipboard = hoverText.stripped }
-            .withTooltip(hoverText)
+        val screenSizeText = Button().withRenderer(WidgetRenderers.text(Text.of("Screen Size"))).withSize(60, 20).withTexture(ExtraConstants.BUTTON_DARK)
+            .withCallback { McClient.self.keyboardHandler.clipboard = hoverText.stripped }.withTooltip(hoverText)
 
-        val saveButton = Button()
-            .withRenderer(WidgetRenderers.text(Text.of("Save Profiles")))
-            .withSize(60, 20)
-            .withTexture(ExtraConstants.BUTTON_DARK)
+        val saveButton = Button().withRenderer(WidgetRenderers.text(Text.of("Save Profiles"))).withSize(60, 20).withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback { saveProfiles() }
 
-        val clearCache = Button()
-            .withRenderer(WidgetRenderers.text(Text.of("Clear Cache")))
-            .withSize(60, 20)
-            .withTexture(ExtraConstants.BUTTON_DARK)
+        val clearCache = Button().withRenderer(WidgetRenderers.text(Text.of("Clear Cache"))).withSize(60, 20).withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback(CachedApis::clearCaches)
 
-        val networthDebug = Button()
-            .withRenderer(WidgetRenderers.text(Text.of("Networth")))
-            .withSize(60, 20)
-            .withTexture(ExtraConstants.BUTTON_DARK)
+        val networthDebug = Button().withRenderer(WidgetRenderers.text(Text.of("Networth"))).withSize(60, 20).withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback { McClient.clipboard = NetworthDisplay.networthDebug(profile).joinToString("\n") }
 
 
@@ -250,26 +235,137 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
     }
 
-    private fun createSearch(bg: DisplayWidget): LayoutElement {
-        val width = 100
 
-        val usernameState = State.of(gameProfile.name)
-        val username = Widgets.autocomplete<String>(usernameState) { box ->
-            box.withEnterCallback {
-                Utils.fetchGameProfile(box.value) { profile ->
-                    profile?.let {
-                        McClient.setScreenAsync { PvTab.MAIN.create(it) }
-                    }
+    private var coopDropdownVisible = false
+    private fun createSearch(bg: DisplayWidget): LayoutElement {
+        var width = 100
+
+        return LayoutFactory.horizontal {
+            val coopDropdown = Button().apply {
+                withSize(12, 20)
+                withTexture(null)
+                withRenderer(
+                    WidgetRenderers.padded(
+                        4, 0, 4, 0,
+                        WidgetRenderers.icon<AbstractWidget>(UIIcons.CHEVRON_UP).withColor(MinecraftColors.WHITE),
+                    ),
+                )
+                withTooltip(+"widgets.coop_search_tooltip")
+                withCallback {
+                    coopDropdownVisible = !coopDropdownVisible
+                    safelyRebuild()
                 }
             }
-            box.withTexture(ExtraConstants.TEXTBOX)
-        }
-        username.withAlwaysShow(true)
-        username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
-        username.withPlaceholder((+"widgets.username_input").stripped)
-        username.withSize(width, 20)
-        username.setPosition(bg.x + bg.width - width, bg.y + bg.height)
-        return username
+
+            val usernameState = State.of(gameProfile.name)
+            val username = Widgets.autocomplete<String>(usernameState) { box ->
+                box.withEnterCallback {
+                    Utils.fetchGameProfile(box.value) { profile ->
+                        profile?.let {
+                            McClient.setScreenAsync { PvTab.MAIN.create(it) }
+                        }
+                    }
+                }
+                box.withTexture(ExtraConstants.TEXTBOX)
+            }
+            username.withAlwaysShow(true)
+            username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
+            username.withPlaceholder((+"widgets.username_input").stripped)
+            username.withSize(width, 20)
+
+
+            val coopMemberDropdownState = DropdownState(null, State.of(profile.userId), true)
+            val coopMemberDropdown = Widgets.dropdown(
+                coopMemberDropdownState,
+                profile.coopMembers.keys.toList(),
+                { _ -> CommonComponents.EMPTY },
+                { button ->
+                    button.withSize(width, 20)
+                    button.withRenderer(
+                        WidgetRenderers.text<Button>(
+                            Text.of {
+                                color = PvColors.WHITE
+                                append("◆ ")
+                                append(gameProfile.name)
+                            },
+                        ).withPadding(4, 6),
+                    )
+                },
+                { builder ->
+                    builder.withCallback { coopProfile ->
+                        val profile = profile.coopMembers[coopProfile]
+
+                        if (profile == null) {
+                            Text.of("Unknown member!") { color = TextColor.RED }.sendWithPrefix()
+                            return@withCallback
+                        }
+
+                        val gameProfile = profile.getNow(null)
+                        if (gameProfile != null) {
+                            Utils.preferedProfileId = this@BaseWindowedPvScreen.profile.id.id
+                            McClient.setScreenAsync { PvTab.MAIN.create(gameProfile) }
+                        } else if (profile.isCompletedExceptionally) {
+                            Text.of("Failed to fetch username!").sendWithPrefix()
+                        } else {
+                            Text.of("Still fetching!").sendWithPrefix()
+                        }
+
+                    }
+
+                    val loadingRenderer = WidgetRenderers.text<Button>(Text.of("Loading...") { this.color = TextColor.RED })
+                        .withLeftAlignment()
+                        .withPadding(0, 4)
+                    val failedToLoad = WidgetRenderers.text<Button>(Text.of("Error!") { this.color = TextColor.RED })
+                        .withLeftAlignment()
+                        .withPadding(0, 4)
+                    builder.withEntryRenderer { id ->
+                        val future = profile.coopMembers[id] ?: return@withEntryRenderer WidgetRenderers.text<Button>(
+                            Text.of("Unknown!") {
+                                this.color = TextColor.DARK_RED
+                            },
+                        ).withLeftAlignment().withPadding(0, 4)
+                        val widgetRenderer = future.thenApply { profile ->
+                            if (profile == null) return@thenApply null
+
+                            WidgetRenderers.text<Button>(
+                                Text.of {
+                                    color = PvColors.WHITE
+                                    if (id == profile) {
+                                        underlined = true
+                                        append("◆ ")
+                                    } else {
+                                        append("◇ ")
+                                    }
+                                    append(profile.name.toString())
+                                },
+                            ).withLeftAlignment().withPadding(0, 4)
+                        }
+
+                        ExtraWidgetRenderers.supplied {
+                            widgetRenderer.getNow(loadingRenderer) ?: failedToLoad
+                        }
+                    }
+                    builder.withAlignment(OverlayAlignment.TOP_LEFT)
+                },
+            ).apply {
+                withTexture(ExtraConstants.BUTTON_DARK)
+                setPosition(bg.x, bg.y + bg.height)
+            }
+
+            if (profile.coopMembers.isNotEmpty()) {
+                widget(coopDropdown)
+                spacer(5)
+                width += coopDropdown.width + 5
+            }
+            if (coopDropdownVisible) {
+                widget(coopMemberDropdown)
+                McClient.runNextTick {
+                    coopMemberDropdown.mouseClicked(MouseButtonEvent(coopMemberDropdown.x + 1.0, coopMemberDropdown.y + 1.0, 1), false)
+                }
+                coopDropdownVisible = false
+            } else widget(username)
+
+        }.setPos(bg.x + bg.width - width, bg.y + bg.height)
     }
 
     private fun createProfileDropdown(bg: DisplayWidget): LayoutElement {
