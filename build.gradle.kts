@@ -6,8 +6,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     idea
-    id("fabric-loom")
     `museum-data`
+    id("fabric-loom")
     `versioned-catalogues`
     kotlin("jvm") version "2.2.20"
     alias(libs.plugins.meowdding.resources)
