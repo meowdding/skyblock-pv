@@ -4,7 +4,8 @@ import me.owdding.skyblockpv.SkyBlockPv.id
 import me.owdding.skyblockpv.accessor.WidgetSpritesAccessor
 import me.owdding.skyblockpv.config.Config
 import net.minecraft.client.gui.components.WidgetSprites
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
+import kotlin.collections.toList
 
 object ThemeSupport {
 
@@ -19,15 +20,15 @@ object ThemeSupport {
     }
 
     fun texture(path: String) = texture(id(path))
-    fun texture(path: ResourceLocation) = pvTextures.getOrDefault(path, path)
+    fun texture(path: Identifier) = pvTextures.getOrDefault(path, path)
 
     fun WidgetSprites.withThemeSupport(): WidgetSprites = also { WidgetSpritesAccessor.withThemeSupport(it) }
 
     fun ThemedWidgetSprites(
-        enabled: ResourceLocation,
-        disabled: ResourceLocation,
-        enabledFocused: ResourceLocation,
-        disabledFocused: ResourceLocation = disabled,
+        enabled: Identifier,
+        disabled: Identifier,
+        enabledFocused: Identifier,
+        disabledFocused: Identifier = disabled,
     ) = WidgetSprites(enabled, disabled, enabledFocused, disabledFocused).withThemeSupport()
 
 }

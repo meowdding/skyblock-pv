@@ -44,7 +44,7 @@ import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
-import net.minecraft.Util
+import net.minecraft.util.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout

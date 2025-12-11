@@ -48,7 +48,7 @@ import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
@@ -259,7 +259,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     fun <D, T> createSection(
         title: Component,
-        titleIcon: ResourceLocation? = null,
+        titleIcon: Identifier? = null,
         width: Int,
         data: Sequence<Pair<D, T>>,
         getToolTip: (D, T) -> Component? = { _, _ -> null },
@@ -270,7 +270,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             val level = getLevel(name, data).toString()
             val iconValue = getIcon(name)
             val icon = when (iconValue) {
-                is ResourceLocation -> Displays.sprite(ThemeSupport.texture(iconValue), 12, 12)
+                is Identifier -> Displays.sprite(ThemeSupport.texture(iconValue), 12, 12)
                 is ItemStack -> Displays.item(iconValue, 12, 12)
                 else -> error("Invalid icon type")
             }
