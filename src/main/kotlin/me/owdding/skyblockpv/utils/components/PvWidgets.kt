@@ -16,7 +16,7 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
@@ -33,10 +33,10 @@ object PvWidgets {
     ).toRow(1).let { Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/rounded_box_thin")), Displays.padding(2, it)) }
 
     fun iconNumberElement(icon: ItemLike, text: Component) = iconNumberElement(icon.asItem().defaultInstance, text)
-    fun label(title: String, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: ResourceLocation? = null) =
+    fun label(title: String, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: Identifier? = null) =
         label(Text.of(title), element, padding, width, icon)
 
-    fun label(title: Component, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: ResourceLocation? = null) =
+    fun label(title: Component, element: LayoutElement, padding: Int = 0, width: Int = element.width + padding + 20, icon: Identifier? = null) =
         PvLayouts.vertical {
             widget(getTitleWidget(title, width, icon))
             widget(getMainContentWidget(element, width))
@@ -113,11 +113,11 @@ object PvWidgets {
         ).asWidget()
     }
 
-    private val ARMOR_BACKGROUND_IDS = listOf<ResourceLocation>(
-        ResourceLocation.withDefaultNamespace("container/slot/helmet"),
-        ResourceLocation.withDefaultNamespace("container/slot/chestplate"),
-        ResourceLocation.withDefaultNamespace("container/slot/leggings"),
-        ResourceLocation.withDefaultNamespace("container/slot/boots"),
+    private val ARMOR_BACKGROUND_IDS = listOf<Identifier>(
+        Identifier.withDefaultNamespace("container/slot/helmet"),
+        Identifier.withDefaultNamespace("container/slot/chestplate"),
+        Identifier.withDefaultNamespace("container/slot/leggings"),
+        Identifier.withDefaultNamespace("container/slot/boots"),
     )
 
     fun orderedArmorDisplay(list: List<ItemStack>): Display {
@@ -159,7 +159,7 @@ object PvWidgets {
                     2,
                     Displays.item(itemStack, showTooltip = true).let {
                         it.takeUnless { itemStack.isEmpty } ?: Displays.background(
-                            ThemeSupport.texture(ResourceLocation.parse("container/slot/${type.lowercase()}")),
+                            ThemeSupport.texture(Identifier.parse("container/slot/${type.lowercase()}")),
                             it,
                         )
                     },
@@ -176,8 +176,8 @@ object PvWidgets {
     fun text(text: Component): TextWidget = Widgets.text(text).withColor(PvColors.DARK_GRAY_COLOR)
     fun text(text: String): TextWidget = Widgets.text(text).withColor(PvColors.DARK_GRAY_COLOR)
 
-    fun getTitleWidget(title: String, width: Int, icon: ResourceLocation? = null) = getTitleWidget(Text.of(title), width, icon)
-    fun getTitleWidget(title: Component, width: Int, icon: ResourceLocation? = null): LayoutElement = Widgets.frame { compoundWidget ->
+    fun getTitleWidget(title: String, width: Int, icon: Identifier? = null) = getTitleWidget(Text.of(title), width, icon)
+    fun getTitleWidget(title: Component, width: Int, icon: Identifier? = null): LayoutElement = Widgets.frame { compoundWidget ->
         compoundWidget.withContents { contents ->
             contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/title")), width - 10, 20).asWidget())
             if (icon != null) contents.addChild(Displays.padding(0, width - 30, 0, 0, Displays.sprite(ThemeSupport.texture(icon), 12, 12)).asWidget())

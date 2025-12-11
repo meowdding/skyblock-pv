@@ -6,8 +6,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     idea
-    id("fabric-loom")
     `museum-data`
+    id("fabric-loom")
     `versioned-catalogues`
     kotlin("jvm") version "2.2.20"
     alias(libs.plugins.meowdding.resources)
@@ -57,14 +57,27 @@ dependencies {
         })
     })
     includeImplementation(libs.repolib)
-    includeImplementation(libs.skyblockapi)
-    includeImplementation(libs.meowdding.lib)
+
+    api(libs.skyblockapi) {
+        capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${stonecutter.current.version}") }
+    }
+    include(libs.skyblockapi) {
+        capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${stonecutter.current.version}-remapped") }
+    }
+    api(libs.meowdding.lib) {
+        capabilities { requireCapability("me.owdding.meowdding-lib:meowdding-lib-${stonecutter.current.version}") }
+    }
+    include(libs.meowdding.lib) {
+        capabilities { requireCapability("me.owdding.meowdding-lib:meowdding-lib-${stonecutter.current.version}-remapped") }
+    }
+
     includeImplementation(libs.meowdding.remote.repo)
     includeImplementation(versionedCatalog["placeholders"])
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.language.kotlin)
     modImplementation(versionedCatalog["fabric.api"])
     modImplementation(libs.mixinconstraints)
+    modRuntimeOnly(libs.hypixelapi)
     includeImplementation(versionedCatalog["resourceful.lib"])
     includeImplementation(versionedCatalog["resourceful.config"])
     includeImplementation(versionedCatalog["olympus"])
@@ -72,7 +85,6 @@ dependencies {
     includeImplementation(libs.resourceful.configkt)
     compileOnly(libs.meowdding.ktmodules)
     compileOnly(libs.meowdding.ktcodecs)
-    compileOnly(libs.meowdding.item.dfu)
     ksp(libs.meowdding.ktmodules)
     ksp(libs.meowdding.ktcodecs)
 }
@@ -140,6 +152,9 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
     compilerOptions.optIn.add("kotlin.time.ExperimentalTime")
+    compilerOptions.freeCompilerArgs.add(
+        "-Xnullability-annotations=@org.jspecify.annotations:warn"
+    )
 }
 
 tasks.processResources {

@@ -8,8 +8,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.SkyBlockPv.id
 import me.owdding.skyblockpv.feature.PartyFinderJoin
 import me.owdding.skyblockpv.utils.Utils
-import net.minecraft.resources.ResourceLocation
-import org.jetbrains.annotations.Range
+import net.minecraft.resources.Identifier
 import java.util.function.UnaryOperator
 
 object Config : ConfigKt("skyblockpv/config") {
@@ -54,7 +53,7 @@ object Config : ConfigKt("skyblockpv/config") {
             renderer = THEME_RENDERER
         },
         { it.toString() },
-        { ResourceLocation.tryParse(it) ?: id("normal") },
+        { Identifier.tryParse(it) ?: id("normal") },
     )
     var socials by boolean(true) { this.translation = "skyblockpv.config.socials" }
 

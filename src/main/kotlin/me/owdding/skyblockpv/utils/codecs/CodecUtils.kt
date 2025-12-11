@@ -10,7 +10,7 @@ import net.minecraft.core.ClientAsset
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.util.ExtraCodecs
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -25,7 +25,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 object CodecUtils {
-    internal fun clientAssetConverter(): (ResourceLocation) -> ClientAsset =
+    internal fun clientAssetConverter(): (Identifier) -> ClientAsset =
         //? if >= 1.21.9 {
         ClientAsset::ResourceTexture
         //?} else
@@ -43,7 +43,7 @@ object CodecUtils {
     }
 
     @IncludedCodec
-    val CLIENT_ASSET: Codec<ClientAsset> = ResourceLocation.CODEC.xmap(clientAssetConverter()) { it.id() }
+    val CLIENT_ASSET: Codec<ClientAsset> = Identifier.CODEC.xmap(clientAssetConverter()) { it.id() }
 
     @IncludedCodec(named = "cum_int_list_alt")
     val CUMULATIVE_INT_LIST_ALT: Codec<List<Int>> =
@@ -106,7 +106,7 @@ object CodecUtils {
     )
 
     @IncludedCodec(named = "lazy_item_ref")
-    val ITEM_REFERENCE: Codec<Lazy<ItemStack>> = ResourceLocation.CODEC.xmap(
+    val ITEM_REFERENCE: Codec<Lazy<ItemStack>> = Identifier.CODEC.xmap(
         {
             lazy {
                 if (it.namespace.equals("skyblock")) {
@@ -125,10 +125,10 @@ object CodecUtils {
             val value = it.value
             val id = value.getData(DataTypes.ID)
             if (id != null) {
-                ResourceLocation.fromNamespaceAndPath("skyblock", id.lowercase())
+                Identifier.fromNamespaceAndPath("skyblock", id.lowercase())
             } else {
                 if (value.`is`(Items.BARRIER) && !value.componentsPatch.isEmpty) {
-                    ResourceLocation.parse(value.get(DataComponents.ITEM_NAME)?.stripped ?: "barrier")
+                    Identifier.parse(value.get(DataComponents.ITEM_NAME)?.stripped ?: "barrier")
                 } else {
                     BuiltInRegistries.ITEM.getKey(value.item)
                 }
@@ -145,6 +145,6 @@ object CodecUtils {
     @IncludedCodec(named = "compact_string_list")
     val COMPACT_STRING_LIST: Codec<List<String>> = ExtraCodecs.compactListCodec(Codec.STRING)
 
-    @IncludedCodec(named = "resource_map")
-    val RESOURCE_MAP: Codec<Map<ResourceLocation, ResourceLocation>> = Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC)
+    @IncludedCodec(named = "identifier_map")
+    val RESOURCE_MAP: Codec<Map<Identifier, Identifier>> = Codec.unboundedMap(Identifier.CODEC, Identifier.CODEC)
 }

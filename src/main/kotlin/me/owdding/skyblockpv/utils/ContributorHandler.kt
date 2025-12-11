@@ -12,7 +12,7 @@ import me.owdding.lib.rendering.text.builtin.GradientTextShader
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
-import net.minecraft.world.entity.animal.Parrot
+import net.minecraft.world.entity.animal.parrot.Parrot
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import java.net.URI

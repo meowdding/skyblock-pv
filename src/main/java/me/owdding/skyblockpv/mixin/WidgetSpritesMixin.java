@@ -1,10 +1,11 @@
+//~ named_identifier
 package me.owdding.skyblockpv.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.owdding.skyblockpv.accessor.WidgetSpritesAccessor;
 import me.owdding.skyblockpv.utils.theme.ThemeSupport;
 import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +22,7 @@ public class WidgetSpritesMixin implements WidgetSpritesAccessor {
     }
 
     @ModifyReturnValue(method = {"disabled", "disabledFocused", "enabled", "enabledFocused", "get"}, at = @At("RETURN"))
-    public ResourceLocation get(ResourceLocation resourceLocation) {
+    public Identifier get(Identifier resourceLocation) {
         if (skyblockpv$enableThemeSupport) {
             return ThemeSupport.INSTANCE.texture(resourceLocation);
         }

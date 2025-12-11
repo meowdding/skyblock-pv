@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap
 import java.util.stream.Stream
 import kotlin.jvm.optionals.getOrNull
 
-class ReservedUnboundMapCodec<K, V>(
+class ReservedUnboundMapCodec<K : Any, V : Any>(
     private val keyCodec: Codec<K>,
     private val elementCodec: Codec<V>,
     private val excludedKeys: Set<K>,

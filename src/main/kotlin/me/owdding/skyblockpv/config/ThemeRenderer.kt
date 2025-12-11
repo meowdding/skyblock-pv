@@ -18,7 +18,8 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.network.chat.Component
-import tech.thatgravyboat.skyblockapi.helpers.McClient
+//? < 1.21.11
+/*import tech.thatgravyboat.skyblockapi.helpers.McClient*/
 import tech.thatgravyboat.skyblockapi.platform.drawSprite
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.util.function.Consumer
@@ -64,7 +65,18 @@ class ThemeWidget(
             getWidth(),
             getHeight(),
         )
-        renderScrollingString(
+        //? > 1.21.10 {
+        graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
+            Text.translatable(
+                ThemeHelper.themes.entries.firstOrNull { (key) ->
+                    key.toString() == this.getter.get()
+                }?.value?.name ?: "Unknown",
+            ).withColor(UIConstants.TEXT_PARAGRAPH),
+            x + 4, x + getWidth() - 16,
+            y + 4, y + getHeight() - 4,
+        )
+        //?} else {
+        /*renderScrollingString(
             graphics,
             McClient.self.font,
             Text.translatable(ThemeHelper.themes.entries.firstOrNull { (key) -> key.toString() == this.getter.get() }?.value?.name ?: "Unknown"),
@@ -74,6 +86,7 @@ class ThemeWidget(
             y + getHeight() - 4,
             UIConstants.TEXT_PARAGRAPH,
         )
+        *///?}
         graphics.drawSprite(
             ModSprites.CHEVRON_DOWN,
             x + getWidth() - 12,
@@ -89,7 +102,7 @@ class ThemeWidget(
 
     class DropdownOverlay(private val widget: ThemeWidget) : Overlay(Minecraft.getInstance().screen) {
         override fun init() {
-            val list: DropdownList = addRenderableWidget(DropdownList.Companion.of(widget))
+            val list: DropdownList = addRenderableWidget(DropdownList.of(widget))
             for ((option, theme) in ThemeHelper.themes) {
                 list.add(
                     DropdownItem(
@@ -155,12 +168,21 @@ class ThemeWidget(
                 getHeight(),
             )
             val color = if (this.isHovered()) UIConstants.TEXT_TITLE else UIConstants.TEXT_PARAGRAPH
-            renderScrollingString(
+            //? > 1.21.10 {
+            graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
+                Text.translatable(translationKey).withColor(color),
+                x + 4, x + getWidth() - 4,
+                y + 1, y + getHeight() - 1,
+            )
+            //?} else {
+            /*renderScrollingString(
                 graphics, McClient.self.font, Text.translatable(translationKey),
                 x + 4, y + 1,
                 x + getWidth() - 4, y + getHeight() - 1,
                 color,
             )
+            *///?}
+
         }
 
         override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {

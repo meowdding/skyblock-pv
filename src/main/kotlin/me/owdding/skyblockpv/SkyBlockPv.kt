@@ -32,7 +32,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
@@ -158,6 +158,6 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
         }
     }
 
-    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(RESOURCE_PATH, path)
-    fun olympusId(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("olympus", path)
+    fun id(path: String): Identifier = Identifier.fromNamespaceAndPath(RESOURCE_PATH, path)
+    fun olympusId(path: String): Identifier = Identifier.fromNamespaceAndPath("olympus", path)
 }

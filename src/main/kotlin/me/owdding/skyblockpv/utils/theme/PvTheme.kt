@@ -9,12 +9,12 @@ import me.owdding.ktcodecs.NamedCodec
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.FileToIdConverter
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 object ThemeHelper {
 
     val location: FileToIdConverter = FileToIdConverter.json("themes")
-    val themes: MutableMap<ResourceLocation, PvTheme> = mutableMapOf()
+    val themes: MutableMap<Identifier, PvTheme> = mutableMapOf()
     val ids get() = themes.keys
     val defaultColors: PvThemeColors = PvThemeColors()
     val fallbackTheme: PvTheme = PvTheme(name = "skyblockpv.themes.fallback")
@@ -30,7 +30,7 @@ object ThemeHelper {
 @GenerateCodec
 data class PvTheme(
     val colors: PvThemeColors = ThemeHelper.defaultColors,
-    @NamedCodec("resource_map") val textures: Map<ResourceLocation, ResourceLocation> = mapOf(),
+    @NamedCodec("identifier_map") val textures: Map<Identifier, Identifier> = mapOf(),
     val name: String,
     @FieldName("background_blur") val backgroundBlur: Boolean = true,
 ) {
