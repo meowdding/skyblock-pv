@@ -13,7 +13,7 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.util.FormattedCharSequence
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -188,7 +188,7 @@ object ExtraDisplays {
                 it.map { element ->
                     when (element) {
                         is Display -> element
-                        is ResourceLocation -> Displays.sprite(element, 12, 12)
+                        is Identifier -> Displays.sprite(element, 12, 12)
                         is Component -> Displays.text(element, { PvColors.DARK_GRAY.toUInt() }, false)
                         else -> Displays.text(element.toString(), color = { PvColors.DARK_GRAY.toUInt() }, shadow = false)
                     }

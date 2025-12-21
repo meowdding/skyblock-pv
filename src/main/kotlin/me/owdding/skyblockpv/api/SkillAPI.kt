@@ -6,7 +6,7 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.SkillData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
@@ -43,7 +43,7 @@ object SkillAPI {
     interface Skill {
         val data: SkillData
         val id: String
-        val icon: ResourceLocation
+        val icon: Identifier
         fun maxLevel(profile: SkyBlockProfile): Int = data.maxLevel
         fun hasFloatingLevelCap(): Boolean = false
         val skillApiId get() = "SKILL_$id"
@@ -73,7 +73,7 @@ object SkillAPI {
         override val data: SkillData
             get() = internalSkillData ?: throw UnsupportedOperationException("Internal skill data is not yet supported")
         override val id: String = name
-        override val icon: ResourceLocation by lazy { SkyBlockPv.id("icon/skill/${id.lowercase()}") }
+        override val icon: Identifier by lazy { SkyBlockPv.id("icon/skill/${id.lowercase()}") }
 
         @LoadData
         companion object : ExtraData {
@@ -93,10 +93,10 @@ object SkillAPI {
     }
 
     data class UnknownSkill(override val id: String, override val data: SkillData) : Skill {
-        override val icon: ResourceLocation = QUESTIONMARK
+        override val icon: Identifier = QUESTIONMARK
 
         companion object {
-            val QUESTIONMARK: ResourceLocation = SkyBlockPv.id("icon/questionmark")
+            val QUESTIONMARK: Identifier = SkyBlockPv.id("icon/questionmark")
             fun empty(name: String) = UnknownSkill(name, SkillData(name, 0, emptyMap()))
         }
     }
