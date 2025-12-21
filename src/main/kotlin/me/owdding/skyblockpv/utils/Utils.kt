@@ -191,7 +191,7 @@ object Utils {
     operator fun String.unaryMinus(): MutableComponent = Component.translatable("skyblockpv.$this").withoutShadow()
 
     fun String.asTranslated(vararg args: Any?, shadow: Boolean = true): MutableComponent =
-        Component.translatable("skyblockpv.$this", *args.toTypedArray()).let { if (!shadow) it.withoutShadow() else it }
+        Component.translatable("skyblockpv.$this", *args).let { if (!shadow) it.withoutShadow() else it }
 
     operator fun MutableComponent.plus(other: Component): MutableComponent = this.append(other)
 
