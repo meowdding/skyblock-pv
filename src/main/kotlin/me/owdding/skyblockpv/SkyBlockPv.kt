@@ -25,7 +25,6 @@ import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.loader.api.FabricLoader
@@ -37,6 +36,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
+import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -53,6 +53,7 @@ import java.util.concurrent.CompletableFuture
 object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
     const val MOD_ID: String = "skyblockpv"
     const val RESOURCE_PATH: String = "skyblock-pv"
+    const val DISCORD: String = "https://meowdd.ing/discord"
     val mod: ModContainer = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow()
     val configDir: Path = FabricLoader.getInstance().configDir.resolve(MOD_ID)
     val version: Version = mod.metadata.version
@@ -105,36 +106,35 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
         ClientCommandRegistrationCallback.EVENT.register(commandId) { dispatcher, _ ->
             if (!Config.isDisabled) {
                 dispatcher.root.children.removeIf { it.name == "pv" }
-                dispatcher.register(
-                    ClientCommandManager.literal("pv")
-                        .then(
-                            ClientCommandManager.argument("player", StringArgumentType.string()).suggests(SkyBlockPlayerSuggestionProvider).executes {
-                                Utils.openMainScreen(it.getArgument("player", String::class.java))
-                                1
-                            },
-                        ).executes {
-                            McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
-                            1
-                        },
-                )
+                onRegisterCommands(RegisterCommandsEvent(dispatcher))
             }
         }
     }
 
     @Subscription
     fun onRegisterCommands(event: RegisterCommandsEvent) {
-
-        event.register("sbpv") {
-            then("pv") {
-                callback {
-                    McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
+        val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
+            callback {
+                if (!PvAPI.isAuthenticated()) {
+                    (+"messages.api.not_authenticated").sendWithPrefix()
+                    return@callback
                 }
-                then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
-                    callback {
-                        Utils.openMainScreen(this.getArgument("player", String::class.java))
+                McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
+            }
+            then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
+                callback {
+                    if (!PvAPI.isAuthenticated()) {
+                        (+"messages.api.not_authenticated").sendWithPrefix()
+                        return@callback
                     }
+                    Utils.openMainScreen(this.getArgument("player", String::class.java))
                 }
             }
+        }
+
+        event.register("pv") { pvCommand() }
+        event.register("sbpv") {
+            then("pv") { pvCommand() }
 
             thenCallback("displaytest") {
                 McClient.setScreenAsync { DisplayTest }
@@ -142,6 +142,13 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
 
             thenCallback("version") {
                 Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
+            }
+
+            thenCallback("discord") {
+                Text.of("Join the Meowdding Discord!").apply {
+                    this.url = DISCORD
+                    this.hover = Text.of(DISCORD).withColor(TextColor.GRAY)
+                }.sendWithPrefix()
             }
 
             thenCallback("pfjoin player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {

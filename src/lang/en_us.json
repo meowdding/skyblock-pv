@@ -46,7 +46,12 @@
         },
         "api": {
             "something_went_wrong": "Something went wrong fetching the status from Hypixel. Please report this on the Discord or the GitHub!",
-            "failed_to_authenticate": "Failed to authenticate with PV API. Check if you are connected to Mojang servers."
+            "failed_to_authenticate": "<hover 'Click to retry!'><run_cmd '/sbpv refreshauth'>Failed to authenticate with PV API. Check if you are connected to Mojang servers. Click to retry.</run_cmd></hover>",
+            "auth_cooldown": "<red>Authentication is on cooldown. Please wait <0> seconds before retrying.</red>",
+            "authenticating": "<gray>Authenticating with PV API...</gray>",
+            "auth_successful": "<green>Successfully authenticated with PV API!</green>",
+            "auth_failed": "<run_cmd '/sbpv discord'><red>Failed to authenticate with PV API. Please try again later or ask in the <blue>Discord</blue>!.</red></run_cmd>"
+            "not_authenticated": "<run_cmd '/sbpv refreshauth'>Not authenticated with PV API. Click to try and authenticate.</run_cmd>"
         },
         "unknown_essence_perks": "<0> unknown essence perks.",
         "player_not_found": "<red>Player could not be found</red>",
