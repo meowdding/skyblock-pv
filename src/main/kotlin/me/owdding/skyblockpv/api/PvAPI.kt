@@ -18,6 +18,7 @@ import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockapi.utils.json.Json
 import tech.thatgravyboat.skyblockapi.utils.time.currentInstant
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
@@ -55,12 +56,14 @@ object PvAPI {
             lastAuthTry = now
 
             (+"messages.api.authenticating").sendWithPrefix()
-            runBlocking {
-                authenticate()
-                if (isAuthenticated()) {
-                    (+"messages.api.auth_successful").sendWithPrefix()
-                } else {
-                    (+"messages.api.auth_failed").sendWithPrefix()
+            CompletableFuture.runAsync {
+                runBlocking {
+                    authenticate()
+                    if (isAuthenticated()) {
+                        (+"messages.api.auth_successful").sendWithPrefix()
+                    } else {
+                        (+"messages.api.auth_failed").sendWithPrefix()
+                    }
                 }
             }
         }
