@@ -50,7 +50,7 @@
             "auth_cooldown": "<red>Authentication is on cooldown. Please wait <0> seconds before retrying.</red>",
             "authenticating": "<gray>Authenticating with PV API...</gray>",
             "auth_successful": "<green>Successfully authenticated with PV API!</green>",
-            "auth_failed": "<run_cmd '/sbpv discord'><red>Failed to authenticate with PV API. Please try again later or ask in the <blue>Discord</blue>!.</red></run_cmd>"
+            "auth_failed": "<run_cmd '/sbpv discord'><red>Failed to authenticate with PV API. Please try again later or ask in the <blue>Discord</blue>!.</red></run_cmd>",
             "not_authenticated": "<run_cmd '/sbpv refreshauth'>Not authenticated with PV API. Click to try and authenticate.</run_cmd>"
         },
         "unknown_essence_perks": "<0> unknown essence perks.",

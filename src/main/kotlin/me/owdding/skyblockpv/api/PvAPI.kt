@@ -59,10 +59,12 @@ object PvAPI {
             CompletableFuture.runAsync {
                 runBlocking {
                     authenticate()
-                    if (isAuthenticated()) {
-                        (+"messages.api.auth_successful").sendWithPrefix()
-                    } else {
-                        (+"messages.api.auth_failed").sendWithPrefix()
+                    McClient.runOrNextTick {
+                        if (isAuthenticated()) {
+                            (+"messages.api.auth_successful").sendWithPrefix()
+                        } else {
+                            (+"messages.api.auth_failed").sendWithPrefix()
+                        }
                     }
                 }
             }
