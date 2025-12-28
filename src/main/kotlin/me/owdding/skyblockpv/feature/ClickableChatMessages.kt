@@ -36,6 +36,10 @@ object ClickableChatMessages {
             }
 
             val username = getUsername(command, hoverText)
+            if (username == null) {
+                output = output.append(component)
+                continue
+            }
             val nameComponent = component.copy()
             nameComponent.command = "/sbpv pv $username"
             nameComponent.hover = "messages.click_to_open_pv".asTranslated(username)
@@ -48,11 +52,11 @@ object ClickableChatMessages {
         event.component = output
     }
 
-    private val nameRegex = Regex("Click here to view (.{1,16}?)'s profile")
+    private val nameRegex = Regex("^Click here to view ((?i)[a-z0-9_]{1,16}?)'s profile$")
 
-    fun getUsername(command: String, hoverText: String): String {
+    fun getUsername(command: String, hoverText: String): String? {
         return if (command.startsWith("/socialoptions ")) command.substringAfter(" ")
-        else hoverText.replace(nameRegex, "$1")
+        else hoverText.lines().firstOrNull { it.matches(nameRegex) }?.replace(nameRegex, "$1")
     }
 
     @Subscription
