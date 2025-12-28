@@ -258,9 +258,9 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     loaded(
                         whileLoading = Items.BARRIER.defaultInstance,
                         onError = Items.BEDROCK.defaultInstance,
-                    ) { it.selectedBarnSkin.getItem() },
+                    ) { it.selectedBarnSkin },
                 ),
-                loadingComponent { it.selectedBarnSkin.displayName },
+                loadingComponent { it.selectedBarnSkin.hoverName },
             )
 
             val plots = map.map { it.reversed().map { Displays.padding(2, it) } }.transpose().asTable()

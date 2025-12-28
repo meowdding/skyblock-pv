@@ -18,6 +18,7 @@ import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.theme.PvColors
+import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.util.StringRepresentable
@@ -81,7 +82,7 @@ object GardenCodecs {
 
 @LoadData
 data object StaticGardenData : ExtraData {
-    lateinit var barnSkins: Map<String, StaticBarnSkin>
+    lateinit var barnSkins: Map<String, DefaultBarnSkin>
         private set
     lateinit var composterData: Map<ComposterUpgrade, StaticComposterData>
         private set
@@ -104,7 +105,7 @@ data object StaticGardenData : ExtraData {
 
     @GenerateCodec
     data class GardenData(
-        @FieldName("barn_skins") val barnSkins: Map<String, StaticBarnSkin>,
+        @FieldName("barn_skins") val barnSkins: Map<String, DefaultBarnSkin>,
         @FieldName("composter_data") val composterData: Map<ComposterUpgrade, StaticComposterData>,
         @NamedCodec("garden§crop_milestones") @FieldName("crop_milestones") val cropMilestones: Map<GardenResource, List<Int>>,
         @FieldName("misc") val miscData: StaticMiscData,
@@ -132,14 +133,16 @@ data object StaticGardenData : ExtraData {
 }
 
 @GenerateCodec
-data class StaticBarnSkin(
+data class DefaultBarnSkin(
     @NamedCodec("component_tag") @FieldName("displayname") val displayName: Component,
     val item: String,
 ) {
-    fun getItem() = RepoItemsAPI.getItem(item)
+    fun getItem(): ItemStack = RepoItemsAPI.getItem(item).copy().apply {
+        set(DataComponents.CUSTOM_NAME, this@DefaultBarnSkin.displayName)
+    }
 
     companion object {
-        val UNKNOWN = StaticBarnSkin(Text.of("Unknown") { this.color = PvColors.RED }, "barrier")
+        val UNKNOWN = DefaultBarnSkin(Text.of("Unknown") { this.color = PvColors.RED }, "barrier")
     }
 }
 

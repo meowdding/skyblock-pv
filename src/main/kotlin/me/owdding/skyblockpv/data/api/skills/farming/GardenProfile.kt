@@ -9,6 +9,8 @@ import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.json.getAs
+import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 
 data class GardenData(
@@ -23,10 +25,10 @@ data class GardenData(
 
 data class GardenProfile(
     val unlockedPlots: List<StaticPlotData>,
-    val selectedBarnSkin: StaticBarnSkin,
+    val selectedBarnSkin: ItemStack,
     val commissionData: CommissionData,
     val gardenExperience: Long,
-    val unlockedBarnSkins: List<StaticBarnSkin>,
+    val unlockedBarnSkins: List<ItemStack>,
     val composterData: ComposterData,
     val resourcesCollected: Map<GardenResource, Long>,
     val cropUpgradeLevels: Map<GardenResource, Short>,
@@ -73,8 +75,9 @@ data class GardenProfile(
             )
         }
 
-        private fun JsonElement?.toBarnSkin(): StaticBarnSkin {
-            return this?.asString?.let { StaticGardenData.barnSkins[it] } ?: StaticBarnSkin.UNKNOWN
+        private fun JsonElement?.toBarnSkin(): ItemStack {
+            val string = this?.asString ?: return DefaultBarnSkin.UNKNOWN.getItem()
+            return StaticGardenData.barnSkins[string]?.getItem() ?: RepoItemsAPI.getItemOrNull("${string}_BARN_SKIN") ?: DefaultBarnSkin.UNKNOWN.getItem()
         }
 
         private fun JsonObject?.toCommissionData(): CommissionData {
