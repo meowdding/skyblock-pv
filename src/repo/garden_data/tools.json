@@ -100,7 +100,7 @@
     },
     "DOUBLE_PLANT": {
         "type": "hoe",
-        "displayname": "Sunflower Hoe",
+        "displayname": "Eclipse Hoe",
         "id": [
             "THEORETICAL_HOE_SUNFLOWER_1",
             "THEORETICAL_HOE_SUNFLOWER_2",
