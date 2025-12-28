@@ -1,9 +1,7 @@
 package me.owdding.skyblockpv.feature
 
 import com.mojang.authlib.GameProfile
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.teamresourceful.resourcefulconfig.api.types.info.Translatable
 import me.owdding.ktmodules.Module
 import me.owdding.lib.builder.ComponentFactory
 import me.owdding.skyblockpv.SkyBlockPv
@@ -28,7 +26,6 @@ import tech.thatgravyboat.skyblockapi.api.events.minecraft.ui.GatherItemTooltipC
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.extentions.capitalize
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
@@ -46,30 +43,43 @@ object PartyFinderJoin {
     // TODO: Use (weak)IdentityHashMap in the future as ItemStacks dont implement hashCode/equals
     private val itemComponentMap = WeakHashMap<ItemStack, InventoryTooltipComponent>()
 
+    enum class State : Translatable {
+        OFF,
+        OPEN_PV,
+        BREAKDOWN;
+
+        override fun getTranslationKey() = "skyblockpv.config.party_finder_message.${this.name.lowercase()}"
+    }
+
     @Subscription
     fun onChat(event: ChatReceivedEvent.Pre) {
-        if (!Config.partyFinderMessage) return
+        if (Config.partyFinderMessage == State.OFF) return
 
         joinMessageRegex.match(event.text, "username") { (username) ->
             if (username.equals(McPlayer.name, ignoreCase = true)) {
                 return@match
             }
 
-            fetchGameProfile(username) { profile ->
-                Utils.validateGameProfile(profile) {
-                    getDungeonData(profile!!)
+            if (Config.partyFinderMessage == State.BREAKDOWN) {
+                fetchGameProfile(username) { profile ->
+                    Utils.validateGameProfile(profile) {
+                        getDungeonData(profile!!)
+                    }
+                }
+            } else if (Config.partyFinderMessage == State.OPEN_PV) {
+                McClient.runNextTick {
+                    "messages.party_finder_join".asTranslated(username).sendWithPrefix()
                 }
             }
         }
     }
 
     fun getDungeonData(gameProfile: GameProfile) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val profiles = ProfileAPI.getProfiles(gameProfile)
+        ProfileAPI.getProfiles(gameProfile, "dungeon_party_finder") { profiles ->
             if (profiles.isEmpty()) {
-                return@launch
+                return@getProfiles
             }
-            val selected = profiles.find { it.selected } ?: return@launch
+            val selected = profiles.find { it.selected } ?: return@getProfiles
 
             selected.dataFuture.whenComplete { _, throwable ->
                 if (throwable != null) {
@@ -151,8 +161,8 @@ object PartyFinderJoin {
     }
 
     fun sendEquipmentInfo(gameProfile: GameProfile, profile: SkyBlockProfile) = ComponentFactory.multiline {
-        val equippedArmor = profile.inventory?.armorItems?.inventory?.reversed() ?: List(4) { ItemStack.EMPTY }
-        val equipment = profile.inventory?.equipmentItems?.inventory ?: List(4) { ItemStack.EMPTY }
+        val equippedArmor = profile.inventory?.armorItems?.reversed() ?: List(4) { ItemStack.EMPTY }
+        val equipment = profile.inventory?.equipmentItems ?: List(4) { ItemStack.EMPTY }
 
         val inventoryItems = profile.inventory?.getAllItems() ?: emptyList()
 
@@ -163,7 +173,7 @@ object PartyFinderJoin {
 
         component("messages.dungeon_partyfinder.equipment_header".asTranslated()) {
             if (profile.inventory?.inventoryItems != null) {
-                val inventoryItems = (profile.inventory?.inventoryItems?.inventory ?: List(36) { ItemStack.EMPTY }).chunked(9)
+                val inventoryItems = (profile.inventory?.inventoryItems ?: List(36) { ItemStack.EMPTY }).chunked(9)
                 val reorderedItems = (inventoryItems.drop(1) + inventoryItems.take(1)).flatten()
 
                 val item = Items.BARRIER.defaultInstance

@@ -15,6 +15,7 @@ import me.owdding.skyblockpv.utils.codecs.DispatchedCodec
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.codecs.ReservedUnboundMapCodec
+import kotlin.jvm.optionals.getOrNull
 
 typealias BestiaryIcon = Either<String, Pair<String, String>>
 typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, ComplexBestiaryCategoryEntry>
@@ -24,6 +25,14 @@ object BestiaryCodecs : ExtraData {
 
     lateinit var data: BestiaryRepoData
         private set
+
+    val allMobs: List<String> by lazy {
+        data.categories.values.flatMap { categoryEntry ->
+            (categoryEntry.left().getOrNull()?.mobs
+                ?: categoryEntry.right().getOrNull()?.subcategories?.values?.flatMap { subcategory -> subcategory.mobs }
+                ?: emptyList()).flatMap { it.mobs }
+        }
+    }
 
     @IncludedCodec(named = "be§icon")
     val ICON: MapCodec<BestiaryIcon> = Codec.mapEither(

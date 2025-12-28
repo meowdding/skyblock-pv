@@ -5,6 +5,7 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
+import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingUpdateChecker
 import me.owdding.lib.utils.isMeowddingDev
 import me.owdding.skyblockpv.api.PvAPI
@@ -24,11 +25,13 @@ import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
@@ -47,9 +50,10 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 
 @Module
-object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
+object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.autoResolve() {
     const val MOD_ID: String = "skyblockpv"
     const val RESOURCE_PATH: String = "skyblock-pv"
+    const val DISCORD: String = "https://meowdd.ing/discord"
     val mod: ModContainer = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow()
     val configDir: Path = FabricLoader.getInstance().configDir.resolve(MOD_ID)
     val version: Version = mod.metadata.version
@@ -62,6 +66,10 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
     val isSuperUser by lazy { McPlayer.uuid.isMeowddingDev() }
 
     val backgroundTexture = id("buttons/normal")
+
+    fun ifDevMode(action: () -> Unit) {
+        if (isDevMode) action()
+    }
 
     override fun onInitializeClient() {
         config // used to instantiate the lazy :3
@@ -91,26 +99,40 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
             }
         }
         runBlocking { PvAPI.authenticate() }
+
+        // Prioritise over skyblocker pv
+        val commandId = id("skyblock_pv_command")
+        ClientCommandRegistrationCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, commandId)
+        ClientCommandRegistrationCallback.EVENT.register(commandId) { dispatcher, _ ->
+            if (!Config.isDisabled) {
+                dispatcher.root.children.removeIf { it.name == "pv" }
+                onRegisterCommands(RegisterCommandsEvent(dispatcher))
+            }
+        }
     }
 
     @Subscription
     fun onRegisterCommands(event: RegisterCommandsEvent) {
-
         val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
             callback {
+                if (!PvAPI.isAuthenticated()) {
+                    (+"messages.api.not_authenticated").sendWithPrefix()
+                    return@callback
+                }
                 McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
             }
             then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 callback {
+                    if (!PvAPI.isAuthenticated()) {
+                        (+"messages.api.not_authenticated").sendWithPrefix()
+                        return@callback
+                    }
                     Utils.openMainScreen(this.getArgument("player", String::class.java))
                 }
             }
         }
 
-        if (!Config.isDisabled) {
-            event.register("pv") { pvCommand() }
-        }
-
+        event.register("pv") { pvCommand() }
         event.register("sbpv") {
             then("pv") { pvCommand() }
 
@@ -120,6 +142,13 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
 
             thenCallback("version") {
                 Text.of("Version: $version").withColor(TextColor.GRAY).sendWithPrefix()
+            }
+
+            thenCallback("discord") {
+                Text.of("Join the Meowdding Discord!").apply {
+                    this.url = DISCORD
+                    this.hover = Text.of(DISCORD).withColor(TextColor.GRAY)
+                }.sendWithPrefix()
             }
 
             thenCallback("pfjoin player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
@@ -134,6 +163,6 @@ object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("Sky
         }
     }
 
-    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(RESOURCE_PATH, path)
-    fun olympusId(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath("olympus", path)
+    fun id(path: String): Identifier = Identifier.fromNamespaceAndPath(RESOURCE_PATH, path)
+    fun olympusId(path: String): Identifier = Identifier.fromNamespaceAndPath("olympus", path)
 }

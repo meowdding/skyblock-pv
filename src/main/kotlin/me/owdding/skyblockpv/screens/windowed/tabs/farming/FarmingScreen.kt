@@ -215,6 +215,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         .filter { FarmingGear.pets.contains(it.type) }
         .sortedWith(Comparator.comparingInt<Pet> { it.rarity.ordinal }.thenByDescending { pet -> pet.exp })
         .distinctBy { it.type }
+        .take(4)
         .mapTo(mutableListOf()) { Displays.item(it.itemStack, showTooltip = true, customStackText = it.level) }
         .rightPad(4, Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/bone")), Displays.empty(16, 16)))
         .map { Displays.padding(2, it) }
@@ -347,7 +348,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
         }.map { Displays.padding(2, it) }.chunked(5)
             .map { it.toColumn() }
-            .toRow().let { ExtraDisplays.inventoryBackground(2, 5, Displays.padding(2, it)) }.asWidget(),
+            .toRow().let { ExtraDisplays.inventoryBackground(3, 5, Displays.padding(2, it)) }.asWidget(),
     )
 }
 

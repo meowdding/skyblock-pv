@@ -3,6 +3,10 @@ package me.owdding.skyblockpv.data.api.skills.farming
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import me.owdding.lib.utils.FeatureName
+import me.owdding.lib.utils.MeowddingLogger
+import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.json.getAs
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
@@ -27,7 +31,8 @@ data class GardenProfile(
     val resourcesCollected: Map<GardenResource, Long>,
     val cropUpgradeLevels: Map<GardenResource, Short>,
 ) {
-    companion object {
+    @FeatureName("GardenProfileParser")
+    companion object : MeowddingLogger by SkyBlockPv.featureLogger() {
         private fun <T> JsonObject?.asGardenResourceMap(mapper: (JsonElement?) -> T): Map<GardenResource, T> {
             if (this == null) return emptyMap()
 
@@ -77,11 +82,11 @@ data class GardenProfile(
             val completed = this?.getAs<JsonObject>("completed")
             val commissions = visits.mapNotNull { (id, visit) ->
                 id.let { StaticGardenData.visitors.find { it.id == id } }
-                    ?.let { Commission(it, visit, completed?.get(id).asInt(0)) }.let {
+                    .let {
                         if (it == null) {
-                            println("failed to create visitor, $this")
+                            warn("Unknown visitor with id '$id'")
                         }
-                        it
+                        Commission(it, visit, completed?.get(id).asInt(0), id)
                     }
             }
 
@@ -104,9 +109,10 @@ data class CommissionData(
 )
 
 data class Commission(
-    val visitor: StaticVisitorData,
+    val visitor: StaticVisitorData?,
     val total: Int,
     val accepted: Int,
+    val visitorId: String,
 )
 
 enum class ComposterUpgrade {

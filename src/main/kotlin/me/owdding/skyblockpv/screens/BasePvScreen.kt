@@ -31,7 +31,7 @@ import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.Util
+import net.minecraft.util.Util
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -67,17 +67,18 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
     var profile: SkyBlockProfile = EmptySkyBlockProfile(gameProfile.id, EmptySkyBlockProfile.Reason.LOADING)
 
     init {
-        CoroutineScope(Dispatchers.IO).launch { PlayerAPI.getPlayer(gameProfile) /*Load player data in the background*/ }
-        CoroutineScope(Dispatchers.IO).launch {
-            profiles = ProfileAPI.getProfiles(gameProfile)
+        PlayerAPI.getPlayer(gameProfile) { /*Load player data in the background*/ }
+        ProfileAPI.getProfiles(gameProfile, "screen") { profiles ->
+            this.profiles = profiles
             if (profiles.isEmpty()) {
                 profile = EmptySkyBlockProfile(gameProfile.id, EmptySkyBlockProfile.Reason.NO_PROFILES)
                 requireRebuild = true
-                return@launch
+                return@getProfiles
             }
-            if (initedWithProfile) return@launch
-            val selected = initProfile ?: profiles.find { it.selected } ?: return@launch
+            if (initedWithProfile) return@getProfiles
+            val selected = initProfile ?: profiles.find { it.id.id == Utils.preferedProfileId } ?: profiles.find { it.selected } ?: return@getProfiles
             onProfileSwitch(selected)
+            Utils.preferedProfileId = null
             profile = selected
             requireRebuild = true
             selected.dataFuture.whenComplete { _, throwable ->

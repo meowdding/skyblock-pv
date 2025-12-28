@@ -32,9 +32,9 @@ object LobbyParseTest {
                 runBlocking {
                     McClient.players.forEach {
                         val profile = it.profile
-                        val failed = ProfileAPI.getProfiles(profile).isEmpty()
+                        val result = ProfileAPI.getData(profile.id, "lobby_test")
 
-                        if (failed) {
+                        if (result.isSuccess) {
                             Text.of {
                                 color = PvColors.RED
                                 append("Failed to get profiles for ")
@@ -42,6 +42,7 @@ object LobbyParseTest {
                             }.sendWithPrefix()
                             failedParses++
                         } else {
+                            SkyBlockPv.error("Failed to get profiles for: ${profile.name} (${profile.id})", result.exceptionOrNull()!!)
                             Text.of {
                                 color = PvColors.GREEN
                                 append("Successfully got profiles for ")

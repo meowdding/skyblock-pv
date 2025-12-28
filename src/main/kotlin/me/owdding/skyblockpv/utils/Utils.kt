@@ -22,17 +22,17 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.util.Util
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.world.item.ItemStack
 import org.joml.Matrix3x2f
 import org.joml.Matrix3x2fStack
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
@@ -43,33 +43,51 @@ import java.nio.file.Files
 import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import kotlin.jvm.optionals.getOrNull
 
 object Utils {
 
-    fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(id)).defaultInstance
+    var preferedProfileId: UUID? = null
 
-    var isFetchingGameProfile = false
-        private set
+    val executorPool: ExecutorService = Executors.newFixedThreadPool(12)
+
+    fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(id)).defaultInstance
 
     val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
 
     fun <K, V> MutableMap<K, V>.removeIf(predicate: (Map.Entry<K, V>) -> Boolean): MutableMap<K, V> = also { entries.removeIf(predicate) }
 
     fun fetchGameProfile(username: String, callback: (GameProfile?) -> Unit) {
-        if (isFetchingGameProfile) return
-        isFetchingGameProfile = true
         if (username.equals(McPlayer.name, true)) {
-            callback(McClient.self.gameProfile)
-            isFetchingGameProfile = false
+            McClient.runNextTick { callback(McClient.self.gameProfile) }
             return
         }
-        PlayerDbAPI.getProfile(username).takeUnless { it?.id == Util.NIL_UUID }?.let {
-            callback(it)
-            isFetchingGameProfile = false
-        } ?: fetchGameProfile(username).thenAccept { profile ->
-            callback(profile.getOrNull())
-            isFetchingGameProfile = false
+        PlayerDbAPI.getProfileAsync(username).thenCompose {
+            it?.let { CompletableFuture.completedStage(it) } ?: fetchGameProfile(username).thenApply(Optional<GameProfile>::getOrNull)
+        }.thenAccept { profile ->
+            McClient.runNextTick {
+                profile.takeUnless { it?.id == Util.NIL_UUID }?.let {
+                    callback(it)
+                }
+            }
+        }
+    }
+
+    fun fetchGameProfile(uuid: UUID, callback: (GameProfile?) -> Unit) {
+        if (uuid == McPlayer.uuid) {
+            McClient.runNextTick { callback(McClient.self.gameProfile) }
+            return
+        }
+        PlayerDbAPI.getProfileAsync(uuid.toString()).thenCompose {
+            it?.let { CompletableFuture.completedStage(it) } ?: fetchGameProfile(uuid).thenApply(Optional<GameProfile>::getOrNull)
+        }.thenAccept { profile ->
+            McClient.runNextTick {
+                profile.takeUnless { it?.id == Util.NIL_UUID }?.let {
+                    callback(it)
+                }
+            }
         }
     }
 
@@ -134,6 +152,14 @@ object Utils {
 
     fun whiteText(text: String = "", init: MutableComponent.() -> Unit = {}) = text(text, PvColors.WHITE.toUInt(), init)
     fun MutableComponent.append(text: String, init: MutableComponent.() -> Unit): MutableComponent = this.append(Text.of(text, init))
+
+    fun String.toUuid(): UUID? = runCatching {
+        when (this.length) {
+            32 -> UUID.fromString("${this.substring(0, 8)}-${this.substring(8, 12)}-${this.substring(12, 16)}-${this.substring(16, 20)}-${this.substring(20)}")
+            36 -> UUID.fromString(this)
+            else -> null
+        }
+    }.getOrNull()
 
     fun UUID.toDashlessString(): String = this.toString().replace("-", "")
 

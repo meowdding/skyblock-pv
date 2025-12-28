@@ -8,7 +8,7 @@
         "upgrades": [
             {
                 "copper": 100,
-                "ENCHANTED_WHEAT": 150
+                "ENCHANTED_WHEAT": 128
             },
             {
                 "copper": 150,
@@ -41,7 +41,7 @@
             },
             {
                 "copper": 600,
-                "ENCHANTED_HAY_BALE": 16,
+                "ENCHANTED_HAY_BALE": 12,
                 "CROPIE": 6
             },
             {
@@ -51,78 +51,78 @@
             },
             {
                 "copper": 800,
-                "ENCHANTED_HAY_BALE": 24,
-                "CROPIE": 32
+                "ENCHANTED_HAY_BALE": 16,
+                "CROPIE": 24
             },
             {
                 "copper": 900,
-                "ENCHANTED_GOLDEN_CARROT": 48,
-                "CROPIE": 64
+                "ENCHANTED_GOLDEN_CARROT": 40,
+                "CROPIE": 48
             },
             {
                 "copper": 1000,
-                "ENCHANTED_HAY_BALE": 32,
-                "CROPIE": 128
+                "ENCHANTED_HAY_BALE": 24,
+                "CROPIE": 96
             },
             {
                 "copper": 1200,
-                "ENCHANTED_GOLDEN_CARROT": 64,
+                "ENCHANTED_GOLDEN_CARROT": 48,
                 "SQUASH": 3
             },
             {
                 "copper": 1400,
-                "ENCHANTED_HAY_BALE": 48,
+                "ENCHANTED_HAY_BALE": 32,
                 "SQUASH": 6
             },
             {
                 "copper": 1600,
-                "ENCHANTED_GOLDEN_CARROT": 96,
+                "ENCHANTED_GOLDEN_CARROT": 64,
                 "SQUASH": 12
             },
             {
                 "copper": 1800,
-                "ENCHANTED_HAY_BALE": 64,
-                "SQUASH": 32
+                "ENCHANTED_HAY_BALE": 40,
+                "SQUASH": 24
             },
             {
-                "copper": 200,
-                "ENCHANTED_GOLDEN_CARROT": 64,
-                "SQUASH": 64
+                "copper": 2000,
+                "ENCHANTED_GOLDEN_CARROT": 96,
+                "SQUASH": 48
             },
             {
                 "copper": 2250,
-                "ENCHANTED_HAY_BALE": 80,
-                "SQUASH": 128
+                "ENCHANTED_HAY_BALE": 48,
+                "SQUASH": 96
             },
             {
                 "copper": 2500,
-                "ENCHANTED_GOLDEN_CARROT": 192,
+                "ENCHANTED_GOLDEN_CARROT": 128,
                 "FERMENTO": 3
             },
             {
                 "copper": 2750,
-                "ENCHANTED_HAY_BALE": 104,
+                "ENCHANTED_HAY_BALE": 64,
                 "FERMENTO": 6
             },
             {
                 "copper": 3000,
-                "ENCHANTED_GOLDEN_CARROT": 256,
+                "ENCHANTED_GOLDEN_CARROT": 192,
                 "FERMENTO": 12
             },
             {
                 "copper": 3300,
-                "ENCHANTED_HAY_BALE": 128,
-                "CONDENSED_FERMENTO": 4
+                "ENCHANTED_HAY_BALE": 96,
+                "CONDENSED_FERMENTO": 2
             },
             {
                 "copper": 3600,
-                "ENCHANTED_GOLDEN_CARROT": 320,
-                "CONDENSED_FERMENTO": 7
+                "ENCHANTED_GOLDEN_CARROT": 256,
+                "CONDENSED_FERMENTO": 4
             },
             {
                 "copper": 4000,
-                "ENCHANTED_HAY_BALE": 160,
-                "CONDENSED_FERMENTO": 14
+                "ENCHANTED_HAY_BALE": 128,
+                "CONDENSED_FERMENTO": 8
             }
         ]
     },
@@ -179,21 +179,21 @@
             {
                 "copper": 800,
                 "ENCHANTED_BAKED_POTATO": 32,
-                "CROPIE": 32
+                "CROPIE": 24
             },
             {
                 "copper": 900,
                 "POLISHED_PUMPKIN": 16,
-                "CROPIE": 64
+                "CROPIE": 48
             },
             {
                 "copper": 1000,
                 "ENCHANTED_BAKED_POTATO": 48,
-                "CROPIE": 128
+                "CROPIE": 96
             },
             {
                 "copper": 1200,
-                "POLISHED_PUMPKIN": 32,
+                "POLISHED_PUMPKIN": 24,
                 "SQUASH": 3
             },
             {
@@ -203,53 +203,53 @@
             },
             {
                 "copper": 1600,
-                "POLISHED_PUMPKIN": 48,
+                "POLISHED_PUMPKIN": 32,
                 "SQUASH": 12
             },
             {
                 "copper": 1800,
-                "ENCHANTED_BAKED_POTATO": 96,
-                "SQUASH": 32
+                "ENCHANTED_BAKED_POTATO": 80,
+                "SQUASH": 24
             },
             {
-                "copper": 200,
-                "POLISHED_PUMPKIN": 64,
-                "SQUASH": 64
+                "copper": 2000,
+                "POLISHED_PUMPKIN": 48,
+                "SQUASH": 48
             },
             {
                 "copper": 2250,
-                "ENCHANTED_BAKED_POTATO": 128,
-                "SQUASH": 128
+                "ENCHANTED_BAKED_POTATO": 112,
+                "SQUASH": 96
             },
             {
                 "copper": 2500,
-                "POLISHED_PUMPKIN": 96,
+                "POLISHED_PUMPKIN": 64,
                 "FERMENTO": 3
             },
             {
                 "copper": 2750,
-                "ENCHANTED_BAKED_POTATO": 192,
+                "ENCHANTED_BAKED_POTATO": 144,
                 "FERMENTO": 6
             },
             {
                 "copper": 3000,
-                "POLISHED_PUMPKIN": 128,
+                "POLISHED_PUMPKIN": 96,
                 "FERMENTO": 12
             },
             {
                 "copper": 3300,
-                "ENCHANTED_BAKED_POTATO": 256,
-                "CONDENSED_FERMENTO": 4
+                "ENCHANTED_BAKED_POTATO": 176,
+                "CONDENSED_FERMENTO": 2
             },
             {
                 "copper": 3600,
-                "POLISHED_PUMPKIN": 192,
-                "CONDENSED_FERMENTO": 7
+                "POLISHED_PUMPKIN": 128,
+                "CONDENSED_FERMENTO": 4
             },
             {
                 "copper": 4000,
-                "ENCHANTED_BAKED_POTATO": 320,
-                "CONDENSED_FERMENTO": 14
+                "ENCHANTED_BAKED_POTATO": 224,
+                "CONDENSED_FERMENTO": 8
             }
         ]
     },
@@ -300,83 +300,83 @@
             },
             {
                 "copper": 700,
-                "ENCHANTED_MELON_BLOCK": 48,
+                "ENCHANTED_MELON_BLOCK": 40,
                 "CROPIE": 12
             },
             {
                 "copper": 800,
                 "ENCHANTED_SUGAR_CANE": 32,
-                "CROPIE": 32
+                "CROPIE": 24
             },
             {
                 "copper": 900,
-                "ENCHANTED_MELON_BLOCK": 64,
-                "CROPIE": 64
+                "ENCHANTED_MELON_BLOCK": 48,
+                "CROPIE": 48
             },
             {
                 "copper": 1000,
-                "ENCHANTED_SUGAR_CANE": 48,
-                "CROPIE": 128
+                "ENCHANTED_SUGAR_CANE": 40,
+                "CROPIE": 96
             },
             {
                 "copper": 1200,
-                "ENCHANTED_MELON_BLOCK": 96,
+                "ENCHANTED_MELON_BLOCK": 64,
                 "SQUASH": 3
             },
             {
                 "copper": 1400,
-                "ENCHANTED_SUGAR_CANE": 64,
+                "ENCHANTED_SUGAR_CANE": 48,
                 "SQUASH": 6
             },
             {
                 "copper": 1600,
-                "ENCHANTED_MELON_BLOCK": 128,
+                "ENCHANTED_MELON_BLOCK": 96,
                 "SQUASH": 12
             },
             {
                 "copper": 1800,
-                "ENCHANTED_SUGAR_CANE": 96,
-                "SQUASH": 32
+                "ENCHANTED_SUGAR_CANE": 64,
+                "SQUASH": 24
             },
             {
-                "copper": 200,
-                "ENCHANTED_MELON_BLOCK": 192,
-                "SQUASH": 64
+                "copper": 2000,
+                "ENCHANTED_MELON_BLOCK": 128,
+                "SQUASH": 48
             },
             {
                 "copper": 2250,
-                "ENCHANTED_SUGAR_CANE": 128,
-                "SQUASH": 128
+                "ENCHANTED_SUGAR_CANE": 96,
+                "SQUASH": 96
             },
             {
                 "copper": 2500,
-                "ENCHANTED_MELON_BLOCK": 256,
+                "ENCHANTED_MELON_BLOCK": 192,
                 "FERMENTO": 3
             },
             {
                 "copper": 2750,
-                "ENCHANTED_SUGAR_CANE": 192,
+                "ENCHANTED_SUGAR_CANE": 144,
                 "FERMENTO": 6
             },
             {
                 "copper": 3000,
-                "ENCHANTED_MELON_BLOCK": 384,
+                "ENCHANTED_MELON_BLOCK": 288,
                 "FERMENTO": 12
             },
             {
                 "copper": 3300,
-                "ENCHANTED_SUGAR_CANE": 256,
-                "CONDENSED_FERMENTO": 4
+                "ENCHANTED_SUGAR_CANE": 192,
+                "CONDENSED_FERMENTO": 2
             },
             {
                 "copper": 3600,
-                "ENCHANTED_MELON_BLOCK": 512,
-                "CONDENSED_FERMENTO": 7
+                "ENCHANTED_MELON_BLOCK": 384,
+                "CONDENSED_FERMENTO": 4
             },
             {
                 "copper": 4000,
-                "ENCHANTED_SUGAR_CANE": 320,
-                "CONDENSED_FERMENTO": 14
+                "ENCHANTED_SUGAR_CANE": 256,
+                "CONDENSED_FERMENTO": 8
             }
         ]
     },
@@ -433,17 +433,17 @@
             {
                 "copper": 800,
                 "ENCHANTED_CACTUS": 16,
-                "CROPIE": 32
+                "CROPIE": 24
             },
             {
                 "copper": 900,
-                "ENCHANTED_COOKIE": 72,
-                "CROPIE": 64
+                "ENCHANTED_COOKIE": 64,
+                "CROPIE": 48
             },
             {
                 "copper": 1000,
                 "ENCHANTED_CACTUS": 24,
-                "CROPIE": 128
+                "CROPIE": 96
             },
             {
                 "copper": 1200,
@@ -457,53 +457,53 @@
             },
             {
                 "copper": 1600,
-                "ENCHANTED_COOKIE": 144,
+                "ENCHANTED_COOKIE": 128,
                 "SQUASH": 12
             },
             {
                 "copper": 1800,
-                "ENCHANTED_CACTUS": 48,
-                "SQUASH": 32
+                "ENCHANTED_CACTUS": 40,
+                "SQUASH": 24
             },
             {
-                "copper": 200,
-                "ENCHANTED_COOKIE": 192,
-                "SQUASH": 64
+                "copper": 2000,
+                "ENCHANTED_COOKIE": 160,
+                "SQUASH": 48
             },
             {
                 "copper": 2250,
-                "ENCHANTED_CACTUS": 64,
-                "SQUASH": 128
+                "ENCHANTED_CACTUS": 48,
+                "SQUASH": 96
             },
             {
                 "copper": 2500,
-                "ENCHANTED_COOKIE": 256,
+                "ENCHANTED_COOKIE": 208,
                 "FERMENTO": 3
             },
             {
                 "copper": 2750,
-                "ENCHANTED_CACTUS": 96,
+                "ENCHANTED_CACTUS": 64,
                 "FERMENTO": 6
             },
             {
                 "copper": 3000,
-                "ENCHANTED_COOKIE": 352,
+                "ENCHANTED_COOKIE": 256,
                 "FERMENTO": 12
             },
             {
                 "copper": 3300,
-                "ENCHANTED_CACTUS": 128,
-                "CONDENSED_FERMENTO": 4
+                "ENCHANTED_CACTUS": 96,
+                "CONDENSED_FERMENTO": 2
             },
             {
                 "copper": 3600,
-                "ENCHANTED_COOKIE": 448,
-                "CONDENSED_FERMENTO": 7
+                "ENCHANTED_COOKIE": 320,
+                "CONDENSED_FERMENTO": 4
             },
             {
                 "copper": 4000,
-                "ENCHANTED_CACTUS": 160,
-                "CONDENSED_FERMENTO": 14
+                "ENCHANTED_CACTUS": 128,
+                "CONDENSED_FERMENTO": 8
             }
         ]
     },
@@ -540,7 +540,7 @@
             },
             {
                 "copper": 400,
-                "ENCHANTED_HUGE_MUSHROOM_2": 16
+                "ENCHANTED_HUGE_MUSHROOM_2": 8
             },
             {
                 "copper": 500,
@@ -549,7 +549,7 @@
             },
             {
                 "copper": 600,
-                "ENCHANTED_HUGE_MUSHROOM_1": 32,
+                "ENCHANTED_HUGE_MUSHROOM_1": 16,
                 "CROPIE": 6
             },
             {
@@ -559,18 +559,18 @@
             },
             {
                 "copper": 800,
-                "ENCHANTED_HUGE_MUSHROOM_2": 64,
-                "CROPIE": 32
+                "ENCHANTED_HUGE_MUSHROOM_2": 24,
+                "CROPIE": 24
             },
             {
                 "copper": 900,
                 "MUTANT_NETHER_STALK": 32,
-                "CROPIE": 64
+                "CROPIE": 48
             },
             {
                 "copper": 1000,
-                "ENCHANTED_HUGE_MUSHROOM_1": 128,
-                "CROPIE": 128
+                "ENCHANTED_HUGE_MUSHROOM_1": 32,
+                "CROPIE": 96
             },
             {
                 "copper": 1200,
@@ -579,7 +579,7 @@
             },
             {
                 "copper": 1400,
-                "ENCHANTED_HUGE_MUSHROOM_2": 256,
+                "ENCHANTED_HUGE_MUSHROOM_2": 48,
                 "SQUASH": 6
             },
             {
@@ -589,48 +589,48 @@
             },
             {
                 "copper": 1800,
-                "ENCHANTED_HUGE_MUSHROOM_1": 448,
-                "SQUASH": 32
+                "ENCHANTED_HUGE_MUSHROOM_1": 64,
+                "SQUASH": 24
             },
             {
-                "copper": 200,
-                "MUTANT_NETHER_STALK": 96,
-                "SQUASH": 64
+                "copper": 2000,
+                "MUTANT_NETHER_STALK": 80,
+                "SQUASH": 48
             },
             {
                 "copper": 2250,
-                "ENCHANTED_HUGE_MUSHROOM_2": 640,
-                "SQUASH": 128
+                "ENCHANTED_HUGE_MUSHROOM_2": 96,
+                "SQUASH": 96
             },
             {
                 "copper": 2500,
-                "MUTANT_NETHER_STALK": 160,
+                "MUTANT_NETHER_STALK": 112,
                 "FERMENTO": 3
             },
             {
                 "copper": 2750,
-                "ENCHANTED_HUGE_MUSHROOM_1": 823,
+                "ENCHANTED_HUGE_MUSHROOM_1": 128,
                 "FERMENTO": 6
             },
             {
                 "copper": 3000,
-                "MUTANT_NETHER_STALK": 224,
+                "MUTANT_NETHER_STALK": 160,
                 "FERMENTO": 12
             },
             {
                 "copper": 3300,
-                "ENCHANTED_HUGE_MUSHROOM_2": 1024,
-                "CONDENSED_FERMENTO": 4
+                "ENCHANTED_HUGE_MUSHROOM_2": 160,
+                "CONDENSED_FERMENTO": 2
             },
             {
                 "copper": 3600,
-                "MUTANT_NETHER_STALK": 288,
-                "CONDENSED_FERMENTO": 7
+                "MUTANT_NETHER_STALK": 224,
+                "CONDENSED_FERMENTO": 4
             },
             {
                 "copper": 4000,
-                "ENCHANTED_HUGE_MUSHROOM_1": 1216,
-                "CONDENSED_FERMENTO": 14
+                "ENCHANTED_HUGE_MUSHROOM_1": 192,
+                "CONDENSED_FERMENTO": 8
             }
         ]
     }

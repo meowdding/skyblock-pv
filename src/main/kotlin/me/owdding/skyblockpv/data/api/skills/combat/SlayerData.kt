@@ -2,10 +2,10 @@ package me.owdding.skyblockpv.data.api.skills.combat
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.SkyBlockPv
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 
-fun getIconFromSlayerName(name: String): ResourceLocation = SkyBlockPv.id("icon/slayer/$name")
+fun getIconFromSlayerName(name: String): Identifier = SkyBlockPv.id("icon/slayer/$name")
 
 data class SlayerTypeData(
     val exp: Long,

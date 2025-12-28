@@ -2,9 +2,9 @@ name: Build
 
 on:
     push:
-        branches: [ "master" ]
+        branches: [ "*" ]
     pull_request:
-        branches: [ "master" ]
+        branches: [ "*" ]
 
 permissions:
     contents: read
@@ -20,8 +20,6 @@ jobs:
                     java-version: '21'
             -   name: Setup gradle
                 uses: gradle/actions/setup-gradle@v5
-                with:
-                    add-job-summary-as-pr-comment: 'on-failure'
             -   run: chmod +x gradlew
             -   name: Build
                 run: ./gradlew build
@@ -38,3 +36,15 @@ jobs:
                 with:
                     name: 1.21.10
                     path: build/libs/*-1.21.10.jar
+            -   uses: actions/upload-artifact@v4.0.0
+                with:
+                    name: 1.21.11
+                    path: build/libs/*-1.21.11.jar
+            -   uses: actions/upload-artifact@v4.0.0
+                with:
+                    name: All
+                    path: |
+                        build/libs/*-1.21.5.jar
+                        build/libs/*-1.21.8.jar
+                        build/libs/*-1.21.10.jar
+                        build/libs/*-1.21.11.jar

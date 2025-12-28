@@ -83,9 +83,13 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     color = PvColors.DARK_PURPLE
                 }
             }
+            val max = 52
             string("Enigma Souls: ") {
                 color = PvColors.DARK_GRAY
                 append("${rift.foundSouls.size}") {
+                    color = if (rift.foundSouls.size == max) PvColors.DARK_PURPLE else PvColors.LIGHT_PURPLE
+                }
+                append("/$max") {
                     color = PvColors.DARK_PURPLE
                 }
             }

@@ -3,8 +3,10 @@ package me.owdding.skyblockpv.api.data.profile
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CollectionAPI
+import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.data.InventoryData
 import me.owdding.skyblockpv.api.data.ProfileId
@@ -22,11 +24,13 @@ import me.owdding.skyblockpv.data.repo.MagicalPowerCodecs
 import me.owdding.skyblockpv.feature.networth.Networth
 import me.owdding.skyblockpv.feature.networth.NetworthCalculator
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.toDashlessString
+import me.owdding.skyblockpv.utils.Utils.toUuid
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
-import net.minecraft.Util
+import net.minecraft.util.Util
 import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvOpenedEvent
@@ -38,7 +42,6 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executors
 
 interface SkyBlockProfile {
     val selected: Boolean get() = backingProfile.selected
@@ -81,10 +84,12 @@ interface SkyBlockProfile {
     val dataFuture: CompletableFuture<Void> get() = backingProfile.dataFuture
 
     val netWorth: CompletableFuture<Networth>
-    val magicalPower: Pair<Int, Component>
+    val magicalPower: CompletableFuture<Pair<Int, Component>>
 
     val onStranded: Boolean get() = profileType == ProfileType.STRANDED
     val isOwnProfile get() = userId == McPlayer.uuid && selected
+
+    val coopMembers: Map<UUID, CompletableFuture<GameProfile?>> get() = backingProfile.coopMembers
 
     val isEmpty: Boolean
 
@@ -97,7 +102,7 @@ private fun <T> CompletableFuture<T>.getNowOrElse(defaultValue: T) = if (this.is
 
 data class CompletableSkyBlockProfile(override val backingProfile: BackingSkyBlockProfile) : SkyBlockProfile {
     override val netWorth: CompletableFuture<Networth> = NetworthCalculator.calculateNetworthAsync(this)
-    override val magicalPower: Pair<Int, Component> = MagicalPowerCodecs.calculateMagicalPower(this)
+    override val magicalPower: CompletableFuture<Pair<Int, Component>> = MagicalPowerCodecs.calculateMagicalPower(this)
     override val isEmpty: Boolean get() = false
 }
 
@@ -136,6 +141,7 @@ data class BackingSkyBlockProfile(
     val crimsonIsleData: CompletableFuture<CrimsonIsleData> = emptyFuture(),
     val minions: CompletableFuture<List<String>?> = emptyFuture(),
     val maxwell: CompletableFuture<Maxwell?> = emptyFuture(),
+    val coopMembers: Map<UUID, CompletableFuture<GameProfile?>> = mapOf(),
 ) {
     val dataFuture: CompletableFuture<Void> = CompletableFuture.allOf(
         profileType,
@@ -168,8 +174,6 @@ data class BackingSkyBlockProfile(
     )
 
     companion object {
-
-        private val executorPool = Executors.newFixedThreadPool(12)
 
         private fun <T> emptyFuture(): CompletableFuture<T> = CompletableFuture()
 
@@ -212,7 +216,12 @@ data class BackingSkyBlockProfile(
                         else -> ProfileType.NORMAL
                     }
                 },
-                inventory = future { member.getAs<JsonObject>("inventory")?.let { InventoryData.fromJson(it, member.getAsJsonObject("shared_inventory")) } },
+                inventory = (member.getAs<JsonObject>("inventory") ?: JsonObject()).let {
+                    InventoryData.fromJson(
+                        it,
+                        member.getAsJsonObject("shared_inventory"),
+                    )
+                },
                 currency = future { Currency.fromJson(member) },
                 bank = future { Bank.fromJson(json, member) },
                 firstJoin = profile.getAs<Long>("first_join", 0L),
@@ -222,7 +231,11 @@ data class BackingSkyBlockProfile(
 
                     experience / 100 to (experience % 100)
                 },
-                skill = playerData.getSkillData(),
+                skill = playerData.getSkillData(
+                    allMembers {
+                        it.getPathAs<Long>("player_data.experience." + SkillAPI.Skills.SOCIAL.skillApiId) ?: 0
+                    }.sum(),
+                ),
                 collections = future {
                     allMembers(::getCollectionData) { members ->
                         members.filterNotNull().flatten().groupBy { it.itemId }.values.mapNotNull { items ->
@@ -264,14 +277,18 @@ data class BackingSkyBlockProfile(
                     allMembers {
                         it.getPathAs<JsonArray>("player_data.crafted_generators")?.asStringList()
                             ?.filter { it.isNotBlank() }
-                            ?.sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
-                    }.mapNotNull { it }.flatten()
+                    }.filterNotNull().flatten().sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
                 },
                 maxwell = future { member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(member, it) } },
+                coopMembers = PlayerDbAPI.bulkFetch(
+                    json.getAs<JsonObject>("members")?.entrySet()?.mapNotNull { (k, entry) ->
+                        k.toUuid().takeUnless { entry.getPath("profile.deletion_notice") != null }
+                    }?.filter { it != user } ?: emptyList(),
+                ),
             )
         }
 
-        private fun JsonObject?.getSkillData(): CompletableFuture<Map<String, Long>> = future {
+        private fun JsonObject?.getSkillData(totalSocialXp: Long): CompletableFuture<Map<String, Long>> = future {
             val skills = this?.getAs<JsonElement>("experience").asMap { id, amount -> id to amount.asLong(0) }
                 .filterKeys { it != "SKILL_DUNGEONEERING" }
                 .toMutableMap()
@@ -279,6 +296,8 @@ data class BackingSkyBlockProfile(
             SkillAPI.Skills.entries.forEach { skill ->
                 skills.putIfAbsent(skill.skillApiId, 0)
             }
+
+            skills[SkillAPI.Skills.SOCIAL.skillApiId] = totalSocialXp
 
             skills.sortToSkillsOrder()
         }
@@ -340,6 +359,6 @@ data class BackingSkyBlockProfile(
             return perks
         }
 
-        fun <T> future(supplier: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(supplier, executorPool)
+        fun <T> future(supplier: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(supplier, Utils.executorPool)
     }
 }

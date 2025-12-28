@@ -42,6 +42,9 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
     NETHER_WART("NETHER_STALK"),
     CACTUS,
     MUSHROOM("MUSHROOM_COLLECTION", "RED_MUSHROOM"),
+    MOONFLOWER,
+    SUNFLOWER("DOUBLE_PLANT"),
+    WILD_ROSE,
     UNKNOWN;
 
     override fun getSerializedName() = internalName
