@@ -145,7 +145,13 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                 }
             }
         }
-        return Displays.item(item, customStackText = currentLevel, showTooltip = true)
+        return Displays.item(
+            item,
+            customStackText = Text.of(currentLevel.toString()) {
+                color = if (currentLevel == maxLevel) PvColors.GOLD else PvColors.WHITE
+            },
+            showTooltip = true,
+        )
     }
 
     private fun BestiaryIcon.getItem(name: String = ""): ItemStack = Either.unwrap(
