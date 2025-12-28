@@ -25,18 +25,22 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
         val crimsonIsleData = profile.crimsonIsleData
-        if (bg.width < 400) {
+        val dojoWidget = getDojoStats(crimsonIsleData.dojoStats)
+        val kuudraWidget = getKuudraStats(crimsonIsleData.kuudraStats)
+        val reputationWidget = getReputationWidget(crimsonIsleData)
+
+        if (bg.width < dojoWidget.width + kuudraWidget.width + reputationWidget.width + 35) {
             return PvLayouts.vertical(5) {
-                widget(getDojoStats(crimsonIsleData.dojoStats)) { alignHorizontallyCenter() }
-                widget(getKuudraStats(crimsonIsleData.kuudraStats)) { alignHorizontallyCenter() }
-                widget(getReputationWidget(crimsonIsleData)) { alignHorizontallyCenter() }
+                widget(dojoWidget) { alignHorizontallyCenter() }
+                widget(kuudraWidget) { alignHorizontallyCenter() }
+                widget(reputationWidget) { alignHorizontallyCenter() }
             }.asScrollable(bg.width, bg.height)
         }
 
         return PvLayouts.horizontal {
-            widget(getDojoStats(crimsonIsleData.dojoStats)) { alignVerticallyMiddle() }
-            widget(getKuudraStats(crimsonIsleData.kuudraStats)) { alignVerticallyMiddle() }
-            widget(getReputationWidget(crimsonIsleData)) { alignVerticallyMiddle() }
+            widget(dojoWidget) { alignVerticallyMiddle() }
+            widget(kuudraWidget) { alignVerticallyMiddle() }
+            widget(reputationWidget) { alignVerticallyMiddle() }
         }
     }
 
