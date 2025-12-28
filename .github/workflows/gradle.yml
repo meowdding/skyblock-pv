@@ -40,3 +40,11 @@ jobs:
                 with:
                     name: 1.21.11
                     path: build/libs/*-1.21.11.jar
+            -   uses: actions/upload-artifact@v4.0.0
+                with:
+                    name: All
+                    path: |
+                        build/libs/*-1.21.5.jar
+                        build/libs/*-1.21.8.jar
+                        build/libs/*-1.21.10.jar
+                        build/libs/*-1.21.11.jar
