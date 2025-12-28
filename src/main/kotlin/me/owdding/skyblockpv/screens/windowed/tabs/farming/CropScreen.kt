@@ -11,6 +11,7 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.StaticGardenData
+import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -30,6 +31,16 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
 
+    private fun List<Display>.toRowWrapped(padding: Int, maxWidth: Int): Display {
+        var currentWidth = 0
+
+        val perRow = this.takeWhile {
+            currentWidth += (it.getWidth() + padding)
+            currentWidth < maxWidth
+        }.size
+        return this.chunked(perRow).map { it.toRow(padding, alignment = Alignment.CENTER) }.toColumn(padding, alignment = Alignment.CENTER)
+    }
+
     override fun getLayout(bg: DisplayWidget): Layout {
         val resourcesDisplay = GardenResource.actualValues.map {
             ExtraDisplays.inventoryBackground(
@@ -43,6 +54,10 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     ),
                 ),
             )
+        }
+
+        if (resourcesDisplay.sumOf { it.getWidth() + 2 } > bg.width - 20) {
+            return resourcesDisplay.toRowWrapped(2, bg.width - 20).let { PvLayouts.frame { display(it) } }
         }
 
         return resourcesDisplay.toRow(2).let { PvLayouts.frame { display(it) } }
