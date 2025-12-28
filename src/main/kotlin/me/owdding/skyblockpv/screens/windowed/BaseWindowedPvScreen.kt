@@ -414,9 +414,10 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
     }
 
     private fun createSocialDropdown(): LayoutElement {
+        val source = "?utm_source=SkyBlockPv"
         val entries = listOf(
-            SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}"),
-            SocialEntry("EliteBot", "https://elitebot.dev/@${gameProfile.name}/${profile.id.name}"),
+            SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}$source"),
+            SocialEntry("EliteBot", "https://elitebot.dev/@${gameProfile.name}/${profile.id.name}$source"),
             *PlayerAPI.getCached(gameProfile.id)?.socials?.map { it.key.toEntry(it.value) }.orEmpty().toTypedArray(),
         )
 
