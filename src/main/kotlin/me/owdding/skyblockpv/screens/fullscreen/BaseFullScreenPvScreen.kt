@@ -31,10 +31,8 @@ import me.owdding.skyblockpv.widgets.PronounWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockapi.platform.id
-import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.text.Text.asComponent
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
@@ -68,7 +66,7 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
                 }.add {
                     alignVertically(0.4f)
                 }
-                val search = createSearch(leftSideWidthInnerWidth).withPadding(leftSidePadding)
+                val search = createSearch(0, uiHeight - leftSidePadding, leftSideWidthInnerWidth).withPadding(leftSidePadding)
                 widget(createProfileDropdown(leftSideWidthInnerWidth).withPadding(leftSidePadding)) {
                     alignVerticallyBottom()
                     paddingBottom(search.height)
@@ -143,8 +141,8 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
         }
     }
 
-    private fun button(icon: ResourceLocation, tooltip: String? = null, callback: () -> Unit) = button(icon, tooltip?.asComponent(), callback)
-    private fun button(icon: ResourceLocation, tooltip: Component? = null, callback: () -> Unit): AbstractWidget = Widgets.button {
+    private fun button(icon: Identifier, tooltip: String? = null, callback: () -> Unit) = button(icon, tooltip?.asComponent(), callback)
+    private fun button(icon: Identifier, tooltip: Component? = null, callback: () -> Unit): AbstractWidget = Widgets.button {
         it.withRenderer(
             WidgetRenderers.layered(
                 WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK),

@@ -5,16 +5,22 @@ import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
+import earth.terrarium.olympus.client.ui.UIIcons
 import earth.terrarium.olympus.client.utils.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.layouts.setPos
+import me.owdding.lib.platform.screens.MouseButtonEvent
+import me.owdding.lib.platform.screens.mouseClicked
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerAPI
 import me.owdding.skyblockpv.api.ProfileAPI
@@ -24,6 +30,8 @@ import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.screens.fullscreen.TestFullScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
@@ -31,10 +39,12 @@ import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.util.Util
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
@@ -44,6 +54,7 @@ import tech.thatgravyboat.skyblockapi.platform.id
 import tech.thatgravyboat.skyblockapi.platform.name
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
@@ -187,25 +198,135 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
         return dropdown
     }
 
-    protected fun createSearch(width: Int): LayoutElement {
-        val usernameState = State.of(gameProfile.name)
-        val username = Widgets.autocomplete<String>(usernameState) { box ->
-            box.withEnterCallback {
-                Utils.fetchGameProfile(box.value) { profile ->
-                    profile?.let {
-                        // TODO: MAKE BETTER
-                        //McClient.setScreenAsync { PvTab.MAIN.create(it) }
-                        McClient.setScreenAsync { TestFullScreen(it, null) }
-                    }
+    private var coopDropdownVisible = false
+    protected open fun createSearch(x: Int, y: Int, bgWidth: Int): LayoutElement {
+        var width = 100
+
+        return LayoutFactory.horizontal {
+            val coopDropdown = Button().apply {
+                withSize(12, 20)
+                withTexture(null)
+                withRenderer(
+                    WidgetRenderers.padded(
+                        4, 0, 4, 0,
+                        WidgetRenderers.icon<AbstractWidget>(UIIcons.CHEVRON_UP).withColor(MinecraftColors.WHITE),
+                    ),
+                )
+                withTooltip(+"widgets.coop_search_tooltip")
+                withCallback {
+                    coopDropdownVisible = !coopDropdownVisible
+                    safelyRebuild()
                 }
             }
-            box.withTexture(ExtraConstants.TEXTBOX)
-        }
-        username.withAlwaysShow(true)
-        username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
-        username.withPlaceholder((+"widgets.username_input").stripped)
-        username.withSize(width, 20)
-        return username
+
+            val usernameState = State.of(gameProfile.name)
+            val username = Widgets.autocomplete<String>(usernameState) { box ->
+                box.withEnterCallback {
+                    Utils.fetchGameProfile(box.value) { profile ->
+                        profile?.let {
+                            McClient.setScreenAsync { PvTab.MAIN.create(it) }
+                        }
+                    }
+                }
+                box.withTexture(ExtraConstants.TEXTBOX)
+            }
+            username.withAlwaysShow(true)
+            username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
+            username.withPlaceholder((+"widgets.username_input").stripped)
+            username.withSize(width, 20)
+
+
+            val coopMemberDropdownState = DropdownState(null, State.of(profile.userId), true)
+            val coopMemberDropdown = Widgets.dropdown(
+                coopMemberDropdownState,
+                profile.coopMembers.keys.toList(),
+                { _ -> CommonComponents.EMPTY },
+                { button ->
+                    button.withSize(width, 20)
+                    button.withRenderer(
+                        WidgetRenderers.text<Button>(
+                            Text.of {
+                                color = PvColors.WHITE
+                                append("◆ ")
+                                append(gameProfile.name)
+                            },
+                        ).withPadding(4, 6),
+                    )
+                },
+                { builder ->
+                    builder.withCallback { coopProfile ->
+                        val profile = profile.coopMembers[coopProfile]
+
+                        if (profile == null) {
+                            Text.of("Unknown member!") { color = TextColor.RED }.sendWithPrefix()
+                            return@withCallback
+                        }
+
+                        val gameProfile = profile.getNow(null)
+                        if (gameProfile != null) {
+                            Utils.preferedProfileId = this@BasePvScreen.profile.id.id
+                            McClient.setScreenAsync { PvTab.MAIN.create(gameProfile) }
+                        } else if (profile.isCompletedExceptionally) {
+                            Text.of("Failed to fetch username!").sendWithPrefix()
+                        } else {
+                            Text.of("Still fetching!").sendWithPrefix()
+                        }
+
+                    }
+
+                    val loadingRenderer = WidgetRenderers.text<Button>(Text.of("Loading...") { this.color = TextColor.RED })
+                        .withLeftAlignment()
+                        .withPadding(0, 4)
+                    val failedToLoad = WidgetRenderers.text<Button>(Text.of("Error!") { this.color = TextColor.RED })
+                        .withLeftAlignment()
+                        .withPadding(0, 4)
+                    builder.withEntryRenderer { id ->
+                        val future = profile.coopMembers[id] ?: return@withEntryRenderer WidgetRenderers.text<Button>(
+                            Text.of("Unknown!") {
+                                this.color = TextColor.DARK_RED
+                            },
+                        ).withLeftAlignment().withPadding(0, 4)
+                        val widgetRenderer = future.thenApply { profile ->
+                            if (profile == null) return@thenApply null
+
+                            WidgetRenderers.text<Button>(
+                                Text.of {
+                                    color = PvColors.WHITE
+                                    if (id == profile) {
+                                        underlined = true
+                                        append("◆ ")
+                                    } else {
+                                        append("◇ ")
+                                    }
+                                    append(profile.name.toString())
+                                },
+                            ).withLeftAlignment().withPadding(0, 4)
+                        }
+
+                        ExtraWidgetRenderers.supplied {
+                            widgetRenderer.getNow(loadingRenderer) ?: failedToLoad
+                        }
+                    }
+                    builder.withAlignment(OverlayAlignment.TOP_LEFT)
+                },
+            ).apply {
+                withTexture(ExtraConstants.BUTTON_DARK)
+            }
+
+            if (profile.coopMembers.isNotEmpty()) {
+                widget(coopDropdown)
+                spacer(5)
+                width += coopDropdown.width + 5
+            }
+            if (coopDropdownVisible) {
+                widget(coopMemberDropdown)
+                McClient.runNextTick {
+                    coopMemberDropdown.mouseClicked(MouseButtonEvent(coopMemberDropdown.x + 1.0, coopMemberDropdown.y + 1.0, 1), false)
+                }
+                coopDropdownVisible = false
+            } else widget(username)
+
+        }.setPos(x + bgWidth - width, y)
     }
 
     protected fun saveProfiles() {

@@ -19,7 +19,6 @@ import me.owdding.skyblockpv.screens.fullscreen.TestFullScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
-import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.util.Util
@@ -94,7 +93,7 @@ object Utils {
     fun openMainScreen(name: String) = fetchGameProfile(name) { profile ->
         validateGameProfile(profile) {
             //McClient.setScreenAsync { PvTab.MAIN.create(profile!!) }
-            McClient.setScreenAsync { TestFullScreen(profile, null) }
+            McClient.setScreenAsync { TestFullScreen(profile!!, null) }
         }
     }
 

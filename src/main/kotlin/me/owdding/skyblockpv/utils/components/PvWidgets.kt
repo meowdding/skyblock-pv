@@ -241,7 +241,7 @@ object PvWidgets {
 
     fun BasePvScreen.getPlayerWidget(width: Int): AbstractWidget {
         val height = (width * 1.1).toInt()
-        val armor = (if (isProfileInitialized()) profile.inventory?.armorItems?.inventory else null) ?: List(4) { ItemStack.EMPTY }
+        val armor = (if (isProfileInitialized()) profile.inventory?.armorItems else null) ?: List(4) { ItemStack.EMPTY }
         val name = if (isProfileInitialized()) {
             val skyblockLvl = profile.skyBlockLevel.first
             val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
