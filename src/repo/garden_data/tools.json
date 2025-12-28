@@ -56,7 +56,11 @@
     "INK_SACK:3": {
         "type": "axe",
         "displayname": "Coco Chopper",
-        "id": "COCO_CHOPPER"
+        "id": [
+            "COCO_CHOPPER",
+            "COCO_CHOPPER_2",
+            "COCO_CHOPPER_3"
+        ]
     },
     "NETHER_STALK": {
         "type": "hoe",
@@ -70,11 +74,46 @@
     "CACTUS": {
         "type": "hoe",
         "displayname": "Cactus Knife",
-        "id": "CACTUS_KNIFE"
+        "id": [
+            "CACTUS_KNIFE",
+            "CACTUS_KNIFE_2",
+            "CACTUS_KNIFE_3"
+        ]
     },
     "MUSHROOM_COLLECTION": {
         "type": "hoe",
         "displayname": "Fungi Cutter",
-        "id": "FUNGI_CUTTER"
+        "id": [
+            "FUNGI_CUTTER",
+            "FUNGI_CUTTER_2",
+            "FUNGI_CUTTER_3"
+        ]
+    },
+    "MOONFLOWER": {
+        "type": "hoe",
+        "displayname": "Eclipse Hoe",
+        "id": [
+            "THEORETICAL_HOE_SUNFLOWER_1",
+            "THEORETICAL_HOE_SUNFLOWER_2",
+            "THEORETICAL_HOE_SUNFLOWER_3"
+        ]
+    },
+    "DOUBLE_PLANT": {
+        "type": "hoe",
+        "displayname": "Eclipse Hoe",
+        "id": [
+            "THEORETICAL_HOE_SUNFLOWER_1",
+            "THEORETICAL_HOE_SUNFLOWER_2",
+            "THEORETICAL_HOE_SUNFLOWER_3"
+        ]
+    },
+    "WILD_ROSE": {
+        "type": "hoe",
+        "displayname": "Wild Rose Hoe",
+        "id": [
+            "THEORETICAL_HOE_WILD_ROSE_1",
+            "THEORETICAL_HOE_WILD_ROSE_2",
+            "THEORETICAL_HOE_WILD_ROSE_3"
+        ]
     }
 }

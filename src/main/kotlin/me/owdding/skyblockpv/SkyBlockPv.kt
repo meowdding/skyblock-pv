@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
+import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingUpdateChecker
 import me.owdding.lib.utils.isMeowddingDev
 import me.owdding.skyblockpv.api.PvAPI
@@ -50,7 +51,7 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 
 @Module
-object SkyBlockPv : ClientModInitializer, Logger by LoggerFactory.getLogger("SkyBlockPv") {
+object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.autoResolve() {
     const val MOD_ID: String = "skyblockpv"
     const val RESOURCE_PATH: String = "skyblock-pv"
     val mod: ModContainer = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow()

@@ -348,7 +348,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
         }.map { Displays.padding(2, it) }.chunked(5)
             .map { it.toColumn() }
-            .toRow().let { ExtraDisplays.inventoryBackground(2, 5, Displays.padding(2, it)) }.asWidget(),
+            .toRow().let { ExtraDisplays.inventoryBackground(3, 5, Displays.padding(2, it)) }.asWidget(),
     )
 }
 
