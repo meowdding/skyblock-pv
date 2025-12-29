@@ -48,6 +48,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.core.SectionPos.y
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.util.TriState
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -110,7 +111,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
 
         createTabs().applyLayout(bg.x + 20, bg.y - 22)
-        createSearch(bg.x, bg.y + bg.height, bg.width).applyLayout()
+        createSearch(bg).applyLayout()
         getProfileDropdown(bg).let {
             it.applyLayout()
 
@@ -233,6 +234,45 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             button.withTooltip(+"tab.${tab.name.lowercase()}")
             widget(button)
         }
+    }
+
+    private fun createSearch(bg: DisplayWidget): LayoutElement {
+        var width = 100
+
+        return LayoutFactory.horizontal {
+            val coopDropdown = createCoopDropdownTrigger()
+            val usernameState = State.of(gameProfile.name)
+            val username = Widgets.autocomplete<String>(usernameState) { box ->
+                box.withEnterCallback {
+                    Utils.fetchGameProfile(box.value) { profile ->
+                        profile?.let {
+                            McClient.setScreenAsync { PvTab.MAIN.create(it) }
+                        }
+                    }
+                }
+                box.withTexture(ExtraConstants.TEXTBOX)
+            }
+            username.withAlwaysShow(true)
+            username.withSuggestions { SkyBlockPlayerSuggestionProvider.getSuggestions(it) }
+            username.withPlaceholder((+"widgets.username_input").stripped)
+            username.withSize(width, 20)
+
+            val coopMemberDropdownState = DropdownState(null, State.of(profile.userId), true)
+            val coopMemberDropdown = createCoopDropdown(width, coopMemberDropdownState)
+
+            if (profile.coopMembers.isNotEmpty()) {
+                widget(coopDropdown)
+                spacer(5)
+                width += coopDropdown.width + 5
+            }
+            if (coopDropdownVisible) {
+                widget(coopMemberDropdown)
+                McClient.runNextTick {
+                    coopMemberDropdown.mouseClicked(MouseButtonEvent(coopMemberDropdown.x + 1.0, coopMemberDropdown.y + 1.0, 1), false)
+                }
+                coopDropdownVisible = false
+            } else widget(username)
+        }.setPos(bg.x + bg.width - width, bg.y + bg.height)
     }
 
     private fun getProfileDropdown(bg: DisplayWidget): LayoutElement = createProfileDropdown(100).apply {
