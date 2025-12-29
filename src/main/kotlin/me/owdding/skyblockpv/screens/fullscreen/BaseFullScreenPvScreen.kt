@@ -35,8 +35,10 @@ import me.owdding.skyblockpv.utils.components.PvWidgets.getStatusButton
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import me.owdding.skyblockpv.widgets.PronounWidget
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.client.gui.components.Renderable
+import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -44,12 +46,11 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text.asComponent
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
-abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, profile: SkyBlockProfile?) : BasePvScreen(name, gameProfile, profile) {
+class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?) : BasePvScreen("", gameProfile, profile) {
 
     override val uiWidth: Int get() = McClient.window.guiScaledWidth
     override val uiHeight: Int get() = McClient.window.guiScaledHeight
-
-    abstract fun create(x: Int, y: Int, width: Int, height: Int)
+    private var currentTab: FullScreenTab = TestFullScreen
 
     override fun init() {
         val leftSidePadding = 5
@@ -127,7 +128,9 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
         }.applyLayout()
 
         try {
-            create(backgroundWidget.x + 5, backgroundWidget.y + 5, backgroundWidget.width - 10, backgroundWidget.height - 10)
+            context(profile) {
+                currentTab.create(backgroundWidget.x + 5, backgroundWidget.y + 5, backgroundWidget.width - 10, backgroundWidget.height - 10)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
 
@@ -216,16 +219,17 @@ abstract class BaseFullScreenPvScreen(name: String, gameProfile: GameProfile, pr
         it.withCallback(callback)
         tooltip?.let { tooltip -> it.withTooltip(tooltip) }
     }
+
+    public override fun <T> addRenderableWidget(widget: T?): T? where T : GuiEventListener?, T : Renderable?, T : NarratableEntry? {
+        return super.addRenderableWidget(widget)
+    }
 }
 
-class TestFullScreen(gameProfile: GameProfile, profile: SkyBlockProfile?) : BaseFullScreenPvScreen("Test", gameProfile, profile) {
+object TestFullScreen : FullScreenTab {
+    context(screen: BaseFullScreenPvScreen, profile: SkyBlockProfile)
     override fun create(x: Int, y: Int, width: Int, height: Int) {
-        fun Layout.applyLayout() {
-            this.setPos(x, y).visitWidgets(this@TestFullScreen::addRenderableWidget)
-        }
-
         LayoutFactory.vertical {
             display(Displays.background(0x80000000u, Displays.empty(10, 10)))
-        }.applyLayout()
+        }.applyLayout(x, y)
     }
 }

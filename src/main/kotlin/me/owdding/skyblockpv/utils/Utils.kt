@@ -15,17 +15,16 @@ import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
-import me.owdding.skyblockpv.screens.fullscreen.TestFullScreen
+import me.owdding.skyblockpv.screens.fullscreen.BaseFullScreenPvScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
-import net.minecraft.util.Util
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
+import net.minecraft.util.Util
 import net.minecraft.world.item.ItemStack
 import org.joml.Matrix3x2f
 import org.joml.Matrix3x2fStack
@@ -93,7 +92,7 @@ object Utils {
     fun openMainScreen(name: String) = fetchGameProfile(name) { profile ->
         validateGameProfile(profile) {
             //McClient.setScreenAsync { PvTab.MAIN.create(profile!!) }
-            McClient.setScreenAsync { TestFullScreen(profile!!, null) }
+            McClient.setScreenAsync { BaseFullScreenPvScreen(profile!!, null) }
         }
     }
 
