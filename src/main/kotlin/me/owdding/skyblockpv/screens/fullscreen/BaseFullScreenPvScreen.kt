@@ -21,9 +21,12 @@ import me.owdding.skyblockpv.api.CachedApis
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
+import me.owdding.skyblockpv.config.DevConfig
 import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.screens.fullscreen.tabs.main.MainTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
+import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
@@ -50,22 +53,27 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     override val uiWidth: Int get() = McClient.window.guiScaledWidth
     override val uiHeight: Int get() = McClient.window.guiScaledHeight
-    private var currentTab: FullScreenTab = TestFullScreen
+    private var currentTab: FullScreenTab = MainTab
 
     override fun init() {
         val leftSidePadding = 5
         val leftSideWidth = (uiWidth * 0.2).toInt()
         val leftSideWidthInnerWidth = leftSideWidth - leftSidePadding * 2 - 2
-        val topBarHeight = 24
+        val rightSideWidth = 25
+        val topBarHeight = 20
 
         val backgroundWidget = Displays.background(
             ThemeSupport.texture(SkyBlockPv.backgroundTexture),
-            uiWidth - leftSideWidth - 2 - if (SkyBlockPv.isDevMode) topBarHeight - 2 else 0,
+            uiWidth - leftSideWidth - rightSideWidth,
             uiHeight - topBarHeight - 3,
         ).asWidget()
 
         LayoutFactory.horizontal {
             LayoutFactory.frame(leftSideWidthInnerWidth, uiHeight) {
+                widget(PvWidgets.text("SkyBlockPv v1").withPadding(15, 0, 0, 0)) {
+                    alignVerticallyTop()
+                    alignHorizontallyCenter()
+                }
                 LayoutFactory.vertical(3) {
                     widget(getPlayerWidget(leftSideWidthInnerWidth))
                     widget(getStatusButton(leftSideWidthInnerWidth))
@@ -87,44 +95,47 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             display(Displays.background(0xFF202020u, Displays.empty(2, uiHeight)))
 
             vertical {
-                LayoutFactory.frame(uiWidth - leftSideWidthInnerWidth - 13, topBarHeight) {
-                    widget(PvWidgets.text("SkyBlockPv v1")) {
-                        alignVerticallyMiddle()
-                        alignHorizontallyLeft()
-                    }
+                LayoutFactory.frame(uiWidth - leftSideWidth - rightSideWidth, topBarHeight) {
+
                     // TODO
                     //  categories
 
-                    LayoutFactory.horizontal(3) {
-                        button(UIIcons.COLOR_PICKER, "widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation)) {
-                            ThemeSupport.nextTheme()
-                            safelyRebuild()
-                            SkyBlockPv.config.save()
-                        }.add()
-                        button(UIIcons.PENCIL, +"widgets.open_settings") {
-                            Utils.openConfig(this@BaseFullScreenPvScreen)
-                        }.add()
-                    }.add {
-                        alignVerticallyMiddle()
-                        alignHorizontallyRight()
-                    }
                 }.add()
-                display(Displays.background(0xFF303030u, Displays.empty(uiWidth - leftSideWidthInnerWidth, 2)))
-                horizontal {
-                    widget(backgroundWidget)
-                    if (SkyBlockPv.isDevMode) {
-                        display(Displays.background(0xFF303030u, Displays.empty(2, uiHeight - topBarHeight)))
-                        vertical(3) {
-                            // screen size maybe?
-                            // networth debug
-                            spacer(height = 10)
-                            button(UIIcons.CHAIN, "Refresh Screen") { safelyRebuild() }.add() // better icon
-                            button(UIIcons.SAVE, "Save Profiles") { saveProfiles() }.add()
-                            button(UIIcons.USER_X, "Clear Cache", CachedApis::clearCaches).add() // probably better icon..?
-                        }
+                display(Displays.background(0xFF303030u, Displays.empty(uiWidth - leftSideWidth - rightSideWidth, 2)))
+                widget(backgroundWidget)
+            }
+
+
+            display(Displays.background(0xFF303030u, Displays.empty(2, uiHeight)))
+            PvLayouts.frame(height = uiHeight) {
+                // screen size maybe?
+                // networth debug
+                PvLayouts.vertical(3) {
+                    button(UIIcons.COLOR_PICKER, "widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation)) {
+                        ThemeSupport.nextTheme()
+                        safelyRebuild()
+                        SkyBlockPv.config.save()
+                    }.add()
+                    button(UIIcons.PENCIL, +"widgets.open_settings") {
+                        Utils.openConfig(this@BaseFullScreenPvScreen)
+                    }.add()
+                }.add {
+                    alignVerticallyTop()
+                }
+
+                if (DevConfig.devMode) {
+                    PvLayouts.vertical(3) {
+                        button(UIIcons.CHAIN, "Refresh Screen") { safelyRebuild() }.add() // better icon
+                        button(UIIcons.SAVE, "Save Profiles") { saveProfiles() }.add()
+                        button(UIIcons.USER_X, "Clear Cache", CachedApis::clearCaches).add() // probably better icon..?
+                        button(UIIcons.TAG, "Networth") {
+                            McClient.clipboard = NetworthDisplay.networthDebug(profile).joinToString("\n")
+                        }.add() // probably better icon..?
+                    }.add {
+                        alignVerticallyBottom()
                     }
                 }
-            }
+            }.add()
         }.applyLayout()
 
         try {
@@ -222,14 +233,5 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     public override fun <T> addRenderableWidget(widget: T?): T? where T : GuiEventListener?, T : Renderable?, T : NarratableEntry? {
         return super.addRenderableWidget(widget)
-    }
-}
-
-object TestFullScreen : FullScreenTab {
-    context(screen: BaseFullScreenPvScreen, profile: SkyBlockProfile)
-    override fun create(x: Int, y: Int, width: Int, height: Int) {
-        LayoutFactory.vertical {
-            display(Displays.background(0x80000000u, Displays.empty(10, 10)))
-        }.applyLayout(x, y)
     }
 }

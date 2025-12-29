@@ -101,6 +101,7 @@ loom {
     runConfigs["client"].apply {
         ideConfigGenerated(true)
         runDir = "../../run"
+        programArgs("--quickPlaySingleplayer=${stonecutter.current.version.replace(".", "_")}")
         vmArg("-Dfabric.modsFolder=" + '"' + rootProject.projectDir.resolve("run/${mcVersion}Mods").absolutePath + '"')
     }
 
