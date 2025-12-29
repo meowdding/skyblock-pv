@@ -32,6 +32,7 @@ repositories {
     )
     scopedMaven("https://maven.nucleoid.xyz/", "eu.pb4")
     mavenCentral()
+    mavenLocal()
 }
 
 configurations {
