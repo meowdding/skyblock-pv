@@ -135,7 +135,7 @@ compactingResources {
 }
 
 ksp {
-    arg("meowdding.project_name", "SkyBlockPV")
+    arg("meowdding.project_name", "SkyBlockPv")
     arg("meowdding.package", "me.owdding.skyblockpv.generated")
 }
 

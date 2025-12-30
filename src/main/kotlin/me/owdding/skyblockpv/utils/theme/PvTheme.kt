@@ -6,7 +6,7 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.FileToIdConverter
 import net.minecraft.resources.Identifier
@@ -37,7 +37,7 @@ data class PvTheme(
     val translation: Component = Component.translatable(name)
 
     companion object {
-        val CODEC = SkyBlockPVCodecs.PvThemeCodec
+        val CODEC = SkyBlockPvCodecs.PvThemeCodec
     }
 }
 

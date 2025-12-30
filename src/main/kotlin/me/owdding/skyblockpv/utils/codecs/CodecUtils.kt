@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec
 import eu.pb4.placeholders.api.ParserContext
 import eu.pb4.placeholders.api.parsers.TagParser
 import me.owdding.ktcodecs.IncludedCodec
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.core.ClientAsset
 import net.minecraft.core.component.DataComponents
@@ -32,14 +32,14 @@ object CodecUtils {
     /*::ClientAsset*/
 
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
-        Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
+        Codec.unboundedMap(SkyBlockPvCodecs.getCodec<K>(), SkyBlockPvCodecs.getCodec<V>())
 
     internal inline fun <reified K, reified V> mutableMap(): Codec<MutableMap<K, V>> =
-        Codec.unboundedMap(SkyBlockPVCodecs.getCodec<K>(), SkyBlockPVCodecs.getCodec<V>())
+        Codec.unboundedMap(SkyBlockPvCodecs.getCodec<K>(), SkyBlockPvCodecs.getCodec<V>())
             .xmap({ it.toMutableMap() }, { it })
 
     internal inline fun <reified T> list(): Codec<List<T>> {
-        return SkyBlockPVCodecs.getCodec<T>().listOf()
+        return SkyBlockPvCodecs.getCodec<T>().listOf()
     }
 
     @IncludedCodec

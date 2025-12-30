@@ -9,7 +9,7 @@ import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.ktcodecs.Unnamed
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.DispatchedCodec
 import me.owdding.skyblockpv.utils.codecs.ExtraData
@@ -46,7 +46,7 @@ object BestiaryCodecs : ExtraData {
     )
 
     private val SIMPLE_CATEGORY_CODEC: MapCodec<BestiaryCategoriesEntry> = MapCodec.assumeMapUnsafe(
-        SkyBlockPVCodecs.getCodec<BestiaryCategoryEntry>().xmap(
+        SkyBlockPvCodecs.getCodec<BestiaryCategoryEntry>().xmap(
             { Either.left(it) },
             { it.left().orElseThrow() },
         ),
@@ -58,7 +58,7 @@ object BestiaryCodecs : ExtraData {
             MapCodec.assumeMapUnsafe(
                 ReservedUnboundMapCodec(
                     Codec.STRING,
-                    SkyBlockPVCodecs.getCodec<BestiaryCategoryEntry>(),
+                    SkyBlockPvCodecs.getCodec<BestiaryCategoryEntry>(),
                     "name", "icon", "hasSubcategories",
                 ),
             ).forGetter(ComplexBestiaryCategoryEntry::subcategories),
