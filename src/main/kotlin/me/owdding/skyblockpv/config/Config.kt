@@ -61,10 +61,11 @@ object Config : ConfigKt("skyblockpv/config") {
 
     override val patches: Map<Int, UnaryOperator<JsonObject>> = mapOf(
         0 to UnaryOperator { json ->
-            val state = json.get("partyFinderMessage")?.asString
-                ?.uppercase()
-                ?.let { PartyFinderJoin.State.valueOf(it) }
-                ?: PartyFinderJoin.State.OFF // grab the STATE or default to OFF
+            val state = runCatching {
+                val raw = json.get("partyFinderMessage")?.asString?.uppercase() ?: ""
+
+                PartyFinderJoin.State.valueOf(raw)
+            }.getOrDefault(PartyFinderJoin.State.OFF)
 
             json.addProperty("partyFinderMessage", state.name)
             json
