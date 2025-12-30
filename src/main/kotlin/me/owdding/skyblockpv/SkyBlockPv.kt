@@ -1,9 +1,11 @@
 package me.owdding.skyblockpv
 
+import com.google.gson.JsonObject
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
+import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktmodules.Module
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingUpdateChecker
@@ -17,6 +19,7 @@ import me.owdding.skyblockpv.config.ThemeRenderer
 import me.owdding.skyblockpv.feature.PartyFinderJoin.getDungeonData
 import me.owdding.skyblockpv.generated.SkyBlockPVExtraData
 import me.owdding.skyblockpv.generated.SkyBlockPVModules
+import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
 import me.owdding.skyblockpv.screens.DisplayTest
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
@@ -40,6 +43,8 @@ import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
+import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -48,6 +53,8 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.url
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.io.path.readText
+import kotlin.time.Instant
 
 @Module
 object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.autoResolve() {
@@ -66,6 +73,10 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
     val isSuperUser by lazy { McPlayer.uuid.isMeowddingDev() }
 
     val backgroundTexture = id("buttons/normal")
+
+    val buildInfo: BuildInfo by lazy {
+        mod.findPath("skyblock-pv.json").get().readText().readJson<JsonObject>().toDataOrThrow(SkyBlockPVCodecs.getCodec())
+    }
 
     fun ifDevMode(action: () -> Unit) {
         if (isDevMode) action()
@@ -165,4 +176,14 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
 
     fun id(path: String): Identifier = Identifier.fromNamespaceAndPath(RESOURCE_PATH, path)
     fun olympusId(path: String): Identifier = Identifier.fromNamespaceAndPath("olympus", path)
+
+    @GenerateCodec
+    data class BuildInfo(
+        val ref: String,
+        val branch: String,
+        val timestamp: Instant,
+        val version: String,
+    ) {
+        val isStable = ref == "master"
+    }
 }

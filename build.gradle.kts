@@ -3,6 +3,7 @@
 import net.fabricmc.loom.task.ValidateAccessWidenerTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.ByteArrayOutputStream
 
 plugins {
     idea
@@ -194,7 +195,22 @@ idea {
     }
 }
 
+
+val gitRef = tasks.register<Exec>("gitRef") {
+    outputs.upToDateWhen { false }
+    standardOutput = ByteArrayOutputStream()
+    commandLine("git", "rev-parse", "HEAD")
+}
+
+val gitBranch = tasks.register<Exec>("getBranch") {
+    outputs.upToDateWhen { false }
+    standardOutput = ByteArrayOutputStream()
+    commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+}
+
 tasks.withType<ProcessResources>().configureEach {
+    dependsOn(gitRef, gitBranch)
+    mustRunAfter(gitRef, gitBranch)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
         filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
@@ -205,6 +221,15 @@ tasks.withType<ProcessResources>().configureEach {
     with(copySpec {
         from(accessWidenerFile)
     })
+
+    filesMatching("skyblock-pv.json") {
+        expand(
+            "branch" to gitBranch.map { it.standardOutput.toString().substringBefore("\n") }.get(),
+            "ref" to gitRef.map { it.standardOutput.toString().substringBefore("\n") }.get(),
+            "build_time" to provider { System.currentTimeMillis() }.get(),
+            "version" to version
+        )
+    }
 }
 
 val archiveName = "SkyBlockPv"

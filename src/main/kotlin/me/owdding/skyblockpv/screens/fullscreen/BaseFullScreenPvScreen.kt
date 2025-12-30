@@ -54,6 +54,10 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     override val uiWidth: Int get() = McClient.window.guiScaledWidth
     override val uiHeight: Int get() = McClient.window.guiScaledHeight
     private var currentTab: FullScreenTab = MainTab
+        set(value) {
+            field = value
+            safelyRebuild()
+        }
 
     override fun init() {
         val leftSidePadding = 5
@@ -70,7 +74,7 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
         LayoutFactory.horizontal {
             LayoutFactory.frame(leftSideWidthInnerWidth, uiHeight) {
-                widget(PvWidgets.text("SkyBlockPv v1").withPadding(15, 0, 0, 0)) {
+                widget(PvWidgets.text("SkyBlockPv v${SkyBlockPv.buildInfo.version}").withShadow().withPadding(15, 0, 0, 0)) {
                     alignVerticallyTop()
                     alignHorizontallyCenter()
                 }
