@@ -7,7 +7,7 @@ import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentSerialization
@@ -34,7 +34,7 @@ object RemindersAPI {
         if (!file.exists()) {
             file.parent.createDirectories()
         } else {
-            file.readText().readJson<JsonArray>().toData(SkyBlockPVCodecs.getCodec<Reminder>().listOf())?.let {
+            file.readText().readJson<JsonArray>().toData(SkyBlockPvCodecs.getCodec<Reminder>().listOf())?.let {
                 reminders.addAll(it)
                 reminders.sortBy(Reminder::timestamp)
             }
@@ -42,7 +42,7 @@ object RemindersAPI {
     }
 
     private fun save() {
-        reminders.toJson(SkyBlockPVCodecs.getCodec<Reminder>().listOf())?.let {
+        reminders.toJson(SkyBlockPvCodecs.getCodec<Reminder>().listOf())?.let {
             file.writeText(it.toString())
         }
     }

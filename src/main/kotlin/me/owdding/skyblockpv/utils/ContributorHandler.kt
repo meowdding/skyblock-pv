@@ -9,7 +9,7 @@ import me.owdding.lib.cosmetics.CosmeticManager
 import me.owdding.lib.events.CosmeticLoadEvent
 import me.owdding.lib.extensions.associateNotNull
 import me.owdding.lib.rendering.text.builtin.GradientTextShader
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
 import net.minecraft.world.entity.animal.parrot.Parrot
@@ -28,7 +28,7 @@ object ContributorHandler {
         val contributorData = CosmeticManager.playerList.associateNotNull(
             keySelector = { it.uuid },
             valueSelector = { playerEntry ->
-                playerEntry.data.toData(SkyBlockPVCodecs.getCodec<ContributorData>()).takeUnless { data -> data == ContributorData.EMPTY }
+                playerEntry.data.toData(SkyBlockPvCodecs.getCodec<ContributorData>()).takeUnless { data -> data == ContributorData.EMPTY }
             },
         )
         contributors.putAll(contributorData)

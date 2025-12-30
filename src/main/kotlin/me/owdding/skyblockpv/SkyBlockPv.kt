@@ -17,9 +17,9 @@ import me.owdding.skyblockpv.config.DevConfig
 import me.owdding.skyblockpv.config.THEME_RENDERER
 import me.owdding.skyblockpv.config.ThemeRenderer
 import me.owdding.skyblockpv.feature.PartyFinderJoin.getDungeonData
-import me.owdding.skyblockpv.generated.SkyBlockPVExtraData
-import me.owdding.skyblockpv.generated.SkyBlockPVModules
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvExtraData
+import me.owdding.skyblockpv.generated.SkyBlockPvModules
 import me.owdding.skyblockpv.screens.DisplayTest
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
@@ -35,8 +35,6 @@ import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
@@ -75,7 +73,7 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
     val backgroundTexture = id("buttons/normal")
 
     val buildInfo: BuildInfo by lazy {
-        mod.findPath("skyblock-pv.json").get().readText().readJson<JsonObject>().toDataOrThrow(SkyBlockPVCodecs.getCodec())
+        mod.findPath("skyblock-pv.json").get().readText().readJson<JsonObject>().toDataOrThrow(SkyBlockPvCodecs.getCodec())
     }
 
     fun ifDevMode(action: () -> Unit) {
@@ -86,9 +84,9 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
         config // used to instantiate the lazy :3
         ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
 
-        SkyBlockPVModules.init { SkyBlockAPI.eventBus.register(it) }
+        SkyBlockPvModules.init { SkyBlockAPI.eventBus.register(it) }
 
-        SkyBlockPVExtraData.collected.forEach {
+        SkyBlockPvExtraData.collected.forEach {
             CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
                 McClient.runNextTick {
                     throw throwable

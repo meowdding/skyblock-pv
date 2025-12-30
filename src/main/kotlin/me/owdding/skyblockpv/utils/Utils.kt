@@ -14,7 +14,7 @@ import me.owdding.lib.displays.toColumn
 import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.screens.fullscreen.BaseFullScreenPvScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -126,7 +126,7 @@ object Utils {
     }
 
     internal inline fun <reified T : Any, B : Any> loadRepoData(file: String, modifier: (Codec<T>) -> Codec<B>): B {
-        return loadFromRepo<JsonElement>(file).toDataOrThrow(SkyBlockPVCodecs.getCodec<T>().let(modifier))
+        return loadFromRepo<JsonElement>(file).toDataOrThrow(SkyBlockPvCodecs.getCodec<T>().let(modifier))
     }
 
     internal inline fun <B : Any> loadRepoData(file: String, supplier: () -> Codec<B>): B {

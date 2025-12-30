@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
-import me.owdding.skyblockpv.generated.SkyBlockPVCodecs
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 
 @GenerateCodec
 data class MuseumItem(
@@ -22,7 +22,7 @@ data class MuseumItem(
         @IncludedCodec(named = "museum§item")
         val MUSEUM_ITEM_CODEC: Codec<List<MuseumItem>> = Codec.either(
             COMPACT_MUSEUM_ITEM_CODEC,
-            SkyBlockPVCodecs.getCodec<MuseumItem>(),
+            SkyBlockPvCodecs.getCodec<MuseumItem>(),
         ).xmap(
             { Either.unwrap(it) },
             { if (it.parentId == null && it.mappedIds.isEmpty()) Either.left(it) else Either.right(it) },
