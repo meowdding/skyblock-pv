@@ -25,8 +25,14 @@ interface FullScreenTab {
     fun create(x: Int, y: Int, width: Int, height: Int)
 
     context(screen: BaseFullScreenPvScreen)
+    fun Layout.applyLayout() {
+        this.arrangeElements()
+        this.visitWidgets(screen::addRenderableWidget)
+    }
+
+    context(screen: BaseFullScreenPvScreen)
     fun Layout.applyLayout(x: Int, y: Int) {
-        this.setPos(x, y).visitWidgets(screen::addRenderableWidget)
+        this.setPos(x, y).applyLayout()
     }
 }
 
