@@ -1,6 +1,11 @@
 package me.owdding.skyblockpv.screens
 
-import com.google.gson.*
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.google.gson.JsonNull
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
@@ -11,27 +16,25 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
-import earth.terrarium.olympus.client.utils.State
-import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.asWidget
+import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
-import me.owdding.lib.platform.screens.MouseButtonEvent
-import me.owdding.lib.platform.screens.mouseClicked
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerAPI
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.fabricmc.loader.api.FabricLoader
@@ -39,6 +42,7 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.util.Util
@@ -49,12 +53,12 @@ import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
-import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
+import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.lang.reflect.Type
 import java.nio.file.Files
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, initProfile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
@@ -114,11 +118,42 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
     fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
 
-    protected fun addLoader() {
+
+    protected fun addNoProfiles(x: Int = 0, y: Int = 0, width: Int = this.width, height: Int = this.height) {
+        val errorWidget = PvLayouts.vertical(alignment = 0.5f) {
+            display("widgets.error.no_profiles".asTranslated(gameProfile.name).multiLineDisplay(Alignment.CENTER))
+        }
+
+        FrameLayout.centerInRectangle(errorWidget, x, y, width, height)
+        errorWidget.applyLayout()
+    }
+
+    protected fun addParsingError(throwable: Throwable, x: Int = 0, y: Int = 0, width: Int = this.width, height: Int = this.height) {
+        SkyBlockPv.error("Failed to parse profile!", throwable)
+
+        val errorWidget = PvLayouts.vertical {
+            val text = "widgets.error.parsing_error".asTranslated(
+                name,
+                gameProfile.name,
+                gameProfile.id,
+                throwable.javaClass.name,
+                throwable.message,
+                throwable.getStackTraceString(7),
+            )
+
+            text.splitLines().forEach {
+                widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
+            }
+        }
+        FrameLayout.centerInRectangle(errorWidget, x, y, width, height)
+        errorWidget.applyLayout()
+    }
+
+    protected fun addLoader(x: Int = 0, y: Int = 0, width: Int = this.width, height: Int = this.height) {
         if (isProfileInitialized()) return
 
         val loading = ExtraDisplays.loading().asWidget()
-        FrameLayout.centerInRectangle(loading, 0, 0, this.width, this.height)
+        FrameLayout.centerInRectangle(loading, x, y, width, height)
 
         if (starttime + 8000 > System.currentTimeMillis()) return loading.visitWidgets(this::addRenderableOnly)
 
@@ -140,7 +175,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
             )
         }
 
-        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
+        FrameLayout.centerInRectangle(errorWidget, x, y, width, height)
         errorWidget.applyLayout()
     }
 
@@ -239,7 +274,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
                 val gameProfile = profile.getNow(null)
                 if (gameProfile != null) {
                     Utils.preferedProfileId = this@BasePvScreen.profile.id.id
-                    McClient.setScreenAsync { PvTab.MAIN.create(gameProfile) }
+                    McClient.setScreenAsync { openPlayer(gameProfile) }
                 } else if (profile.isCompletedExceptionally) {
                     Text.of("Failed to fetch username!").sendWithPrefix()
                 } else {
@@ -286,6 +321,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
     ).apply {
         withTexture(ExtraConstants.BUTTON_DARK)
     }
+
+    abstract fun openPlayer(gameProfile: GameProfile): Screen
 
     protected fun saveProfiles() {
         val file = SkyBlockPv.configDir.resolve("profiles-${gameProfile.id}.json")

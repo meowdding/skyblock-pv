@@ -14,3 +14,33 @@ object MainTab : FullScreenTab {
         }.applyLayout(x, y)
     }
 }
+
+object MainTab1 : FullScreenTab {
+    val size = 20
+    context(screen: BaseFullScreenPvScreen, profile: SkyBlockProfile)
+    override fun create(x: Int, y: Int, width: Int, height: Int) {
+        LayoutFactory.vertical {
+            display(Displays.background(0x80000000u, Displays.empty(size, size)))
+        }.applyLayout(x, y)
+    }
+}
+
+object MainTab2 : FullScreenTab {
+    val size = 30
+    context(screen: BaseFullScreenPvScreen, profile: SkyBlockProfile)
+    override fun create(x: Int, y: Int, width: Int, height: Int) {
+        LayoutFactory.vertical {
+            display(Displays.background(0x80000000u, Displays.empty(size, size)))
+        }.applyLayout(x, y)
+    }
+}
+
+object MainTab3 : FullScreenTab {
+    val size = 40
+    context(screen: BaseFullScreenPvScreen, profile: SkyBlockProfile)
+    override fun create(x: Int, y: Int, width: Int, height: Int) {
+        LayoutFactory.vertical {
+            display(Displays.background(0x80000000u, Displays.empty(size, size)))
+        }.applyLayout(x, y)
+    }
+}

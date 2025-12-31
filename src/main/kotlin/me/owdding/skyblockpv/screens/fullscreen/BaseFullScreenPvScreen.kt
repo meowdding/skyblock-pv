@@ -8,9 +8,12 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.UIIcons
 import earth.terrarium.olympus.client.utils.State
+import me.owdding.lib.builder.FrameLayoutBuilder
 import me.owdding.lib.builder.LayoutFactory
+import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.withPadding
 import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
 import me.owdding.lib.layouts.withPadding
@@ -18,6 +21,7 @@ import me.owdding.lib.platform.screens.MouseButtonEvent
 import me.owdding.lib.platform.screens.mouseClicked
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
+import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
@@ -35,6 +39,7 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.components.PvWidgets.centerIn
 import me.owdding.skyblockpv.utils.components.PvWidgets.getPlayerWidget
 import me.owdding.skyblockpv.utils.components.PvWidgets.getStatusButton
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import me.owdding.skyblockpv.widgets.PronounWidget
 import net.minecraft.client.gui.components.AbstractWidget
@@ -42,9 +47,11 @@ import net.minecraft.client.gui.components.Renderable
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.narration.NarratableEntry
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.asComponent
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
@@ -69,12 +76,18 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val backgroundWidget = Displays.background(
             ThemeSupport.texture(SkyBlockPv.backgroundTexture),
             uiWidth - leftSideWidth - rightSideWidth,
-            uiHeight - topBarHeight - 3,
+            uiHeight - topBarHeight - 2,
         ).asWidget()
 
         LayoutFactory.horizontal {
             LayoutFactory.frame(leftSideWidthInnerWidth, uiHeight) {
-                widget(PvWidgets.text("SkyBlockPv v${SkyBlockPv.buildInfo.version}").withShadow().withPadding(15, 0, 0, 0)) {
+                widget(
+                    ExtraDisplays.wrappedText(
+                        Text.of("SkyBlockPv v${SkyBlockPv.buildInfo.version}"),
+                        textAlignment = Alignment.CENTER,
+                        maxWidth = leftSideWidthInnerWidth,
+                    ).withPadding(0, top = 15).asWidget(),
+                ) {
                     alignVerticallyTop()
                     alignHorizontallyCenter()
                 }
@@ -98,19 +111,55 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
             }.add()
             display(Displays.background(0xFF202020u, Displays.empty(2, uiHeight)))
 
-            vertical {
+            LayoutFactory.frame(height = uiHeight) {
+                widget(backgroundWidget) {
+                    alignVerticallyBottom()
+                }
+                LayoutFactory.vertical {
+                    spacer(height = topBarHeight)
+                    display(Displays.background(0xFF303030u, Displays.empty(uiWidth - leftSideWidth - rightSideWidth, 2)))
+                }.add {
+                    alignVerticallyTop()
+                }
                 LayoutFactory.frame(uiWidth - leftSideWidth - rightSideWidth, topBarHeight) {
 
-                    // TODO
-                    //  categories
+                    PvLayouts.horizontal {
+                        FullScreenTabs.entries.forEach {
+                            val selected = currentTab == it.tab
+                            val button = Button()
+                            button.setSize(20, 31)
+                            button.withTexture(null)
+                            if (!selected) {
+                                button.withCallback {
+                                    currentTab = it.tab
+                                }
+                            }
+                            button.withRenderer(
+                                WidgetRenderers.layered(
+                                    WidgetRenderers.sprite(if (selected) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP),
+                                    WidgetRenderers.padded(
+                                        4 - (1.takeIf { selected } ?: 0), 0, 9, 0,
+                                        WidgetRenderers.center(16, 16) { gr, ctx, _ ->
+                                            gr.renderItem(it.item, ctx.x, ctx.y)
+                                        },
+                                    ),
+                                ),
+                            )
+                            button.withTooltip(it.displayName)
+                            widget(button) {
+                                alignVerticallyTop()
+                            }
+                        }
+                    }.add {
+                        alignHorizontallyCenter()
+                    }
+                }.add {
+                    alignVerticallyTop()
+                }
+            }.add()
 
-                }.add()
-                display(Displays.background(0xFF303030u, Displays.empty(uiWidth - leftSideWidth - rightSideWidth, 2)))
-                widget(backgroundWidget)
-            }
 
-
-            display(Displays.background(0xFF303030u, Displays.empty(2, uiHeight)))
+            display(Displays.background(0xFF202020u, Displays.empty(2, uiHeight)))
             PvLayouts.frame(height = uiHeight) {
                 // screen size maybe?
                 // networth debug
@@ -143,9 +192,38 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         }.applyLayout()
 
         try {
-            context(profile) {
-                currentTab.create(backgroundWidget.x + 5, backgroundWidget.y + 5, backgroundWidget.width - 10, backgroundWidget.height - 10)
+            when (val profile = this.profile) {
+                is EmptySkyBlockProfile -> when (profile.reason) {
+                    EmptySkyBlockProfile.Reason.LOADING -> addLoader(
+                        backgroundWidget.x + 5,
+                        backgroundWidget.y + 5,
+                        backgroundWidget.width - 10,
+                        backgroundWidget.height - 10,
+                    )
+
+                    EmptySkyBlockProfile.Reason.NO_PROFILES -> addNoProfiles(
+                        backgroundWidget.x + 5,
+                        backgroundWidget.y + 5,
+                        backgroundWidget.width - 10,
+                        backgroundWidget.height - 10,
+                    )
+
+                    EmptySkyBlockProfile.Reason.ERROR -> addParsingError(
+                        profile.throwable!!,
+                        backgroundWidget.x + 5,
+                        backgroundWidget.y + 5,
+                        backgroundWidget.width - 10,
+                        backgroundWidget.height - 10,
+                    )
+                }
+
+                else -> {
+                    context(profile) {
+                        currentTab.create(backgroundWidget.x + 5, backgroundWidget.y + 5, backgroundWidget.width - 10, backgroundWidget.height - 10)
+                    }
+                }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
 
@@ -167,7 +245,6 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         }
 
     }
-
 
     var coopMemberDropdown: AbstractWidget? = null
     private fun createSearch(width: Int): LayoutElement {
@@ -219,6 +296,7 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     override fun tick() {
         super.tick()
         openDropdownIfNeeded()
+        if (currentTab.requiresRebuild()) safelyRebuild()
     }
 
     private fun button(icon: Identifier, tooltip: String? = null, callback: () -> Unit) = button(icon, tooltip?.asComponent(), callback)
@@ -237,5 +315,9 @@ class BaseFullScreenPvScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
 
     public override fun <T> addRenderableWidget(widget: T?): T? where T : GuiEventListener?, T : Renderable?, T : NarratableEntry? {
         return super.addRenderableWidget(widget)
+    }
+
+    override fun openPlayer(gameProfile: GameProfile): Screen {
+        return BaseFullScreenPvScreen(gameProfile, null)
     }
 }

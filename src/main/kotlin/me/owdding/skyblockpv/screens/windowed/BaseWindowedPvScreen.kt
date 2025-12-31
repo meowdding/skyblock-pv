@@ -11,7 +11,6 @@ import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutFactory
-import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
@@ -32,32 +31,24 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
-import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
-import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
-import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
-import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.util.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
-import net.minecraft.core.SectionPos.y
-import net.minecraft.network.chat.CommonComponents
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.util.TriState
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
 private const val ASPECT_RATIO = 16.0 / 9.0
@@ -125,37 +116,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             PvWidgets.text(this.tabTitle).withCenterAlignment().withSize(this.uiWidth, 20).withPosition(bg.x, bg.bottom + 2),
         )
     }
-
-    private fun addNoProfiles() {
-        val errorWidget = PvLayouts.vertical(alignment = 0.5f) {
-            display("widgets.error.no_profiles".asTranslated(gameProfile.name).multiLineDisplay(Alignment.CENTER))
-        }
-
-        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-        errorWidget.applyLayout()
-    }
-
-    private fun addParsingError(throwable: Throwable) {
-        SkyBlockPv.error("Failed to parse profile!", throwable)
-
-        val errorWidget = PvLayouts.vertical {
-            val text = "widgets.error.parsing_error".asTranslated(
-                name,
-                gameProfile.name,
-                gameProfile.id,
-                throwable.javaClass.name,
-                throwable.message,
-                throwable.getStackTraceString(7),
-            )
-
-            text.splitLines().forEach {
-                widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
-            }
-        }
-        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-        errorWidget.applyLayout()
-    }
-
     private fun createTopRow(bg: DisplayWidget) = PvLayouts.horizontal(5) {
         createUserRow()
         if (SkyBlockPv.isDevMode) createDevRow(bg)
@@ -321,5 +281,9 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         } else {
             this.renderTransparentBackground(guiGraphics)
         }
+    }
+
+    override fun openPlayer(gameProfile: GameProfile): Screen {
+        return PvTab.MAIN.create(gameProfile)
     }
 }
