@@ -145,7 +145,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             string("Grubber Stacks: ") {
                 color = PvColors.DARK_GRAY
                 append(rift.grubberStacks.toFormattedString()) {
-                    color = if (rift.grubberStacks == grubber) PvColors.DARK_PURPLE else PvColors.LIGHT_PURPLE
+                    color = if (rift.grubberStacks >= grubber) PvColors.DARK_PURPLE else PvColors.LIGHT_PURPLE
                 }
                 append("/$grubber")
                 {
