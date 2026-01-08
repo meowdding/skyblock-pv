@@ -4,6 +4,7 @@ import earth.terrarium.olympus.client.components.Widgets
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.screens.fullscreen.BaseFullScreenPvScreen
 import me.owdding.skyblockpv.screens.fullscreen.FullScreenTab
+import net.minecraft.client.gui.components.ChatComponent
 import net.minecraft.client.gui.layouts.GridLayout
 
 object MainTab : FullScreenTab {
