@@ -747,49 +747,49 @@
         "rarity": "LEGENDARY",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5Nzc4MDk0OTYzOCwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI1OWM0M2Q4ZGJjY2ZkN2VjNmU2Mzk0YjYzMDRiNzBkNGVkMzE1YWRkMDQ5NGVlNzdjNzMzZjQxODE4YzczYSIKICAgIH0KICB9Cn0=",
         "name": "Mayor Paul",
-        "id": "dungeons_candidate"
+        "id": "mayor_paul"
     },
     {
         "rarity": "LEGENDARY",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5Nzc4MTQxNjY5MiwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODA3ZmM5YmVlOGQzMzQ0ZTg0MGU0MDMxYTM3MjQ5YTRjM2M4N2ZjODBjZjE2NDMyY2M1YzIxNTNkMWY5YzUzZCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9",
         "name": "Mayor Marina",
-        "id": "fishing_candidate"
+        "id": "mayor_marina"
     },
     {
         "rarity": "LEGENDARY",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5Nzc4MTM1NTM0MywKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzQ4NWE3MTdmYTBmNTFkN2ZhZGM2NmE1ZDVlOTg1MzkwNWJlZjkxNGUzYjI4NDhhMmYxMjhlNjNkMmRiODciLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==",
         "name": "Mayor Foxy",
-        "id": "events_candidate"
+        "id": "mayor_foxy"
     },
     {
         "rarity": "LEGENDARY",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTY1NDIwMzAxNDc3MiwKICAicHJvZmlsZUlkIiA6ICI0NGNlMmMwZTFjNTM0ZDhmYmExNmNkNDhlYjkyYTUxZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ4WGlyYW56dThYeCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9lNzc0N2ZiZWU5ZmIzOWJlMzliMDBkM2Q0ODNlYjJmODhiNGJhZTgyNDE3YWI1Y2IxYjFhYTkzMGRkN2I2Njg5IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
         "name": "Mayor Finnegan",
-        "id": "farming_candidate"
+        "id": "mayor_finnegan"
     },
     {
         "rarity": "LEGENDARY",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5Nzc4MTU4MDMzNSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWNmNDczN2NkNDQ0YjU5MDU0NTczNGE2NDA4Y2JlMjNjMTgyZjQyODNmMTY3YTNlM2MwOTUzMmNjYmVmMTdmOSIKICAgIH0KICB9Cn0=",
         "name": "Mayor Diaz",
-        "id": "economist_candidate"
+        "id": "mayor_diaz"
     },
     {
         "rarity": "LEGENDARY",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5Nzk0MjU3NDIzMCwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODNjYzFjZjY3MmE0YjI1NDBiZTM0NmVhZDc5YWMyZDllZDE5ZDk1YjYwNzViZjk1YmUwYjZkMGRhNjEzNzdiZSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9",
         "name": "Mayor Diana",
-        "id": "pets_candidate"
+        "id": "mayor_diana"
     },
     {
         "rarity": "LEGENDARY",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5Nzc4MDkwNjkxMiwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MjJkZTA4ODQ4OTUyZDFjYmVhZDY2YmJiYWQ2ZjA3MTkxYmRjYzk1MmYzZDEwMzZhZWIwYzIyOTM4ZjM5YiIKICAgIH0KICB9Cn0=",
         "name": "Mayor Cole",
-        "id": "mining_candidate"
+        "id": "mayor_cole"
     },
     {
         "rarity": "LEGENDARY",
         "skin": "ewogICJ0aW1lc3RhbXAiIDogMTU5Nzc4MTIyNjczMywKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzFiZGY1MDViYjhjMGYxZjMzNjVhMDMwMzJkZTE5MzE2NjNmZjcxYzU3ZTAyMjU1OGRlMzEyYjhmMWI1YzQ0NSIKICAgIH0KICB9Cn0=",
         "name": "Mayor Aatrox",
-        "id": "slayer_candidate"
+        "id": "mayor_aatrox"
     },
     {
         "rarity": "LEGENDARY",
