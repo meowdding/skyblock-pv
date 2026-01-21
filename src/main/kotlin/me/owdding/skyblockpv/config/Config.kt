@@ -56,6 +56,7 @@ object Config : ConfigKt("skyblockpv/config") {
         { Identifier.tryParse(it) ?: id("normal") },
     )
     var socials by boolean(true) { this.translation = "skyblockpv.config.socials" }
+    var rememberLastTab by boolean(true) { this.translation = "skyblockpv.config.remember_last_tab" }
 
     val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
 

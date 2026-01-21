@@ -13,8 +13,11 @@ import me.owdding.lib.displays.toColumn
 import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -49,9 +52,11 @@ object Utils {
 
     val executorPool: ExecutorService = Executors.newFixedThreadPool(12)
 
-    fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(id)).defaultInstance
-
     val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
+
+    private var lastTab: PvTab? = null
+
+    fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(id)).defaultInstance
 
     fun <K, V> MutableMap<K, V>.removeIf(predicate: (Map.Entry<K, V>) -> Boolean): MutableMap<K, V> = also { entries.removeIf(predicate) }
 
@@ -87,10 +92,16 @@ object Utils {
         }
     }
 
-    fun openMainScreen(name: String) = fetchGameProfile(name) { profile ->
-        validateGameProfile(profile) {
-            McClient.setScreenAsync { PvTab.MAIN.create(profile!!) }
+    fun openPv(name: String) = fetchGameProfile(name) { openPv(it) }
+    fun openPv(gp: GameProfile?) {
+        validateGameProfile(gp) {
+            McClient.setScreenAsync { (lastTab?.takeIf { Config.rememberLastTab } ?: PvTab.MAIN).create(gp!!) }
         }
+    }
+
+    fun openTab(tab: PvTab, gp: GameProfile, profile: SkyBlockProfile) = McClient.setScreenAsync {
+        lastTab = tab
+        tab.create(gp, profile)
     }
 
     fun validateGameProfile(gameProfile: GameProfile?, onValid: () -> Unit) {

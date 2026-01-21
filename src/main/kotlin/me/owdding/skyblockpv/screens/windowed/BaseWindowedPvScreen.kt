@@ -219,7 +219,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             button.setSize(20, 31)
             button.withTexture(null)
             if (!tab.isSelected()) {
-                button.withCallback { McClient.setScreenAsync { tab.create(gameProfile, profile) } }
+                button.withCallback { Utils.openTab(tab, gameProfile, profile) }
             }
             button.withRenderer(
                 WidgetRenderers.layered(
@@ -261,9 +261,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             val username = Widgets.autocomplete<String>(usernameState) { box ->
                 box.withEnterCallback {
                     Utils.fetchGameProfile(box.value) { profile ->
-                        profile?.let {
-                            McClient.setScreenAsync { PvTab.MAIN.create(it) }
-                        }
+                        profile?.let { Utils.openPv(it) }
                     }
                 }
                 box.withTexture(ExtraConstants.TEXTBOX)
@@ -303,7 +301,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                         val gameProfile = profile.getNow(null)
                         if (gameProfile != null) {
                             Utils.preferedProfileId = this@BaseWindowedPvScreen.profile.id.id
-                            McClient.setScreenAsync { PvTab.MAIN.create(gameProfile) }
+                            Utils.openPv(gameProfile)
                         } else if (profile.isCompletedExceptionally) {
                             Text.of("Failed to fetch username!").sendWithPrefix()
                         } else {
