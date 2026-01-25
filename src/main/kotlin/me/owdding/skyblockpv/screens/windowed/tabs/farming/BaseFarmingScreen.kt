@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.api.GardenAPI
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
+import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedLoadingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import net.minecraft.client.gui.screens.Screen
@@ -17,6 +19,7 @@ import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     AbstractCategorizedLoadingScreen<GardenProfile>("FARMING", gameProfile, profile) {
+    override val tab: PvTab = PvTab.FARMING
 
     override val api get() = GardenAPI
     override val categories: List<Category> get() = FarmingCategory.entries
@@ -33,6 +36,6 @@ enum class FarmingCategory(val screen: KClass<out BaseFarmingScreen>, override v
     override val hover: String = hoverName ?: name.toTitleCase()
 
     override val isSelected: Boolean get() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
-    override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): Screen = screen.constructors.first().call(gameProfile, profile)
+    override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BaseWindowedPvScreen = screen.constructors.first().call(gameProfile, profile)
 
 }

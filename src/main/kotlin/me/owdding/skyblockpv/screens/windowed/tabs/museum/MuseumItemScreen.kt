@@ -6,6 +6,7 @@ import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.withTooltip
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.museum.*
+import me.owdding.skyblockpv.utils.CarouselPage
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -26,8 +27,9 @@ private const val COLUMNS = 10
 private const val SIZE = ROWS * COLUMNS
 
 class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
-    BaseMuseumScreen(gameProfile, profile) {
+    BaseMuseumScreen(gameProfile, profile), CarouselPage {
     private var carousel: CarouselWidget? = null
+    override var carouselStart: Int = 0
 
     fun getInventories(): List<Display> {
         return RepoMuseumData.museumCategoryMap.entries
@@ -97,12 +99,12 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         carousel = CarouselWidget(
             inventories,
-            carousel?.index ?: 0,
+            carousel?.index ?: carouselStart,
             246,
         )
 
         val map = mutableMapOf<RepoMuseumCategory, Int>()
-        val buttonContainer = carousel!!.getIcons(perRow = 12) {
+        val buttonContainer = carousel!!.getIcons(perRow = 12, page = toTabState()) {
             List(inventories.size) { index ->
                 val icon = icons[index]
                 val compute = map.compute(icon) { _, i -> i?.plus(1) ?: 0 }

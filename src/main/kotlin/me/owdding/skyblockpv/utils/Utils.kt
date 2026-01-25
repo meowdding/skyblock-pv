@@ -17,10 +17,13 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.screens.windowed.tabs.inventory.BasePagedInventoryScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.util.Util
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
@@ -54,7 +57,7 @@ object Utils {
 
     val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
 
-    private var lastTab: PvTab? = null
+    var lastTab: PvPageState? = null
 
     fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(id)).defaultInstance
 
@@ -99,7 +102,7 @@ object Utils {
         }
     }
 
-    fun openTab(tab: PvTab, gp: GameProfile, profile: SkyBlockProfile) = McClient.setScreenAsync {
+    fun openTab(tab: PvPageState, gp: GameProfile, profile: SkyBlockProfile? = null) = McClient.setScreenAsync {
         lastTab = tab
         tab.create(gp, profile)
     }
@@ -213,4 +216,27 @@ object Utils {
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
 
     fun Collection<ItemStack>.filterNotAir() = filterNot { it.isEmpty }
+}
+
+interface PvPageState {
+    fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): BaseWindowedPvScreen
+    fun canDisplay(profile: SkyBlockProfile? = null): Boolean = true
+}
+
+data class CarouselPageState(
+    val state: PvPageState,
+    val carouselPage: Int,
+) : PvPageState by state {
+    override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BaseWindowedPvScreen {
+        return state.create(gameProfile, profile).apply {
+            if (this is CarouselPage) {
+                this.carouselStart = carouselPage
+            }
+        }
+    }
+}
+
+
+interface CarouselPage {
+    var carouselStart: Int
 }
