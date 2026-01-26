@@ -25,4 +25,10 @@ object ChatUtils {
         Text.join(prefix, this).send()
     }
 
+    fun <T> Collection<T>.joinToComponent(separator: String, transform: (T) -> Component) = joinToComponent(Text.of(separator), transform)
+    fun <T> Collection<T>.joinToComponent(separator: Component, transform: (T) -> Component) = Text.join(this.map(transform), separator = separator.copy())
+    fun Collection<Component>.join(separator: String, transform: (Component) -> Component = { it }) = join(Text.of(separator), transform)
+    fun Collection<Component>.join(separator: Component, transform: (Component) -> Component = { it }) =
+        Text.join(this.map(transform), separator = separator.copy())
+
 }

@@ -2,10 +2,13 @@ package me.owdding.skyblockpv.feature
 
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.config.Config
+import me.owdding.skyblockpv.utils.ChatUtils.join
+import me.owdding.skyblockpv.utils.ChatUtils.joinToComponent
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.MutableComponent
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.base.predicates.OnlyOnSkyBlock
 import tech.thatgravyboat.skyblockapi.api.events.chat.ChatReceivedEvent
@@ -13,6 +16,7 @@ import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.command
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.hover
+import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
 @Module
 object ClickableChatMessages {
@@ -42,7 +46,7 @@ object ClickableChatMessages {
             }
             val nameComponent = component.copy()
             nameComponent.command = "/sbpv pv $username"
-            nameComponent.hover = "messages.click_to_open_pv".asTranslated(username)
+            nameComponent.appendHover(username)
 
             output = output.append(nameComponent)
             hasReplaced = true
@@ -67,8 +71,17 @@ object ClickableChatMessages {
         otherChatRegex.match(event.text, "username") { (username) ->
             event.component = event.component.copy().apply {
                 command = "/sbpv pv $username"
-                hover = "messages.click_to_open_pv".asTranslated(username)
+                appendHover(username)
             }
         }
+    }
+
+    private fun MutableComponent.appendHover(name: String): MutableComponent {
+        val pvHover = "messages.click_to_open_pv".asTranslated(name)
+        val lines = this.hover?.splitLines()?.dropLast(1)
+        val base = if (lines.isNullOrEmpty()) Component.empty() else lines.join("\n").append("\n")
+
+        this.hover = base.append(pvHover) ?: pvHover
+        return this
     }
 }
