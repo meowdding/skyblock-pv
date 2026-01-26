@@ -74,6 +74,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     private var cachedX = 0.0F
     private var cachedY = 0.0F
+    override val tab: PvTab = PvTab.MAIN
 
     override fun create(bg: DisplayWidget) {
         val middleColumnWidth = (uiWidth * 0.2).toInt()

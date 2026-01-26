@@ -13,6 +13,7 @@ import me.owdding.lib.extensions.withTooltip
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.*
+import me.owdding.skyblockpv.utils.CarouselPage
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils
@@ -30,10 +31,12 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
 
-class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile) {
+class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile), CarouselPage {
     private var carousel: CarouselWidget? = null
     private val MOBS_PER_ROW_SIMPLE = 5
     private val MOBS_PER_ROW_COMPLEX = 8
+
+    override var carouselStart: Int = 0
 
     override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical {
         val unknownBestiaryKills = profile.bestiaryData.map { it.mobId }
@@ -46,11 +49,11 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
         carousel = CarouselWidget(
             inventories,
-            carousel?.index ?: 0,
+            carousel?.index ?: carouselStart,
             246,
         )
 
-        val buttonContainer = carousel!!.getIcons { icons.map { Displays.item(it, showTooltip = true) } }
+        val buttonContainer = carousel!!.getIcons(page = toTabState()) { icons.map { Displays.item(it, showTooltip = true) } }
 
         widget(
             PvLayouts.vertical(5) {
