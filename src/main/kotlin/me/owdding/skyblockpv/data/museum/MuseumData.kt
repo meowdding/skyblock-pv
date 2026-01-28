@@ -35,12 +35,13 @@ data class MuseumData(val items: List<MuseumEntry>) {
                 .map { (id, items) -> MuseumEntry(id, items) }
     }
 
-    fun isParentDonated(entry: MuseumRepoEntry): String? {
+    fun isParentDonated(entry: MuseumRepoEntry, checkedIds: MutableSet<String> = mutableSetOf()): String? {
         val parentId = entry.parentId
         if (items.any { it.id == parentId }) {
             return parentId
-        } else if (parentId != null) {
-            return RepoMuseumData.getById(parentId)?.let { isParentDonated(it) }
+        } else if (parentId != null && !checkedIds.contains(parentId)) {
+            checkedIds.add(parentId)
+            return RepoMuseumData.getById(parentId)?.let { isParentDonated(it, checkedIds) }
         }
 
         return null

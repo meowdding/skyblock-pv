@@ -1,11 +1,22 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.museum
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.displays.*
+import earth.terrarium.olympus.client.components.Widgets
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.toColumn
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.withTooltip
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.data.museum.*
+import me.owdding.skyblockpv.data.museum.MuseumData
+import me.owdding.skyblockpv.data.museum.MuseumItem
+import me.owdding.skyblockpv.data.museum.MuseumRepoEntry
+import me.owdding.skyblockpv.data.museum.RepoMuseumCategory
+import me.owdding.skyblockpv.data.museum.RepoMuseumData
+import me.owdding.skyblockpv.utils.LayoutUtils.asWidget
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -16,7 +27,9 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.math.ceil
@@ -25,8 +38,7 @@ private const val ROWS = 5
 private const val COLUMNS = 10
 private const val SIZE = ROWS * COLUMNS
 
-class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
-    BaseMuseumScreen(gameProfile, profile) {
+class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMuseumScreen(gameProfile, profile) {
     private var carousel: CarouselWidget? = null
 
     fun getInventories(): List<Display> {
@@ -85,11 +97,10 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         )
     }
 
-    private fun getIcons(): List<RepoMuseumCategory> =
-        RepoMuseumData.museumCategoryMap.entries.flatMap { (category, entries) ->
-            val nextUp = ceil(entries.size / SIZE.toDouble()).toInt()
-            mutableListOf<RepoMuseumCategory>().rightPad(nextUp, category)
-        }
+    private fun getIcons(): List<RepoMuseumCategory> = RepoMuseumData.museumCategoryMap.entries.flatMap { (category, entries) ->
+        val nextUp = ceil(entries.size / SIZE.toDouble()).toInt()
+        mutableListOf<RepoMuseumCategory>().rightPad(nextUp, category)
+    }
 
     override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical {
         val inventories = getInventories()
@@ -118,5 +129,53 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         widget(buttonContainer.centerHorizontally(uiWidth))
         spacer(height = 10)
         widget(carousel!!.centerHorizontally(uiWidth))
+        spacer(height = 10)
+
+
+        widget(
+                loaded(
+                    whileLoading = Text.of("Total Donations: ") {
+                        this.color = PvColors.GRAY
+                        append("Loading...", PvColors.ORANGE)
+                    }.asWidget(),
+                    onError = Text.of("Total Donations: ") {
+                        this.color = PvColors.GRAY
+                        append("Error!", PvColors.RED)
+                    }.asWidget(),
+                ) {
+                    val items = RepoMuseumData.entries
+                    val ids = it.items.map { entry -> entry.id }.toSet()
+                    val donatedItems = items.filter { entry ->
+                        ids.contains(entry.id) || it.isParentDonated(entry) != null
+                    }.size
+
+                    Text.of("Total Donations: ") {
+                        this.color = PvColors.GRAY
+                        append(donatedItems.toFormattedString(), PvColors.GOLD)
+                        append("*")
+                    }.asWidget().withTooltip(Text.of("Actual value might be different!") {
+                        color = PvColors.YELLOW
+                    })
+                }.centerHorizontally(uiWidth),
+        )
+        widget(
+            Widgets.text(
+                loadingComponent(
+                    loadingMessage = Text.of("Total Items Donated: ") {
+                        this.color = PvColors.GRAY
+                        append("Loading...", PvColors.ORANGE)
+                    },
+                    errorMessage = Text.of("Total Items Donated: ") {
+                        this.color = PvColors.GRAY
+                        append("Error!", PvColors.RED)
+                    },
+                ) {
+                    Text.of("Total Items Donated: ") {
+                        this.color = PvColors.GRAY
+                        append(it.items.sumOf { items -> items.stacks.size }.toFormattedString(), PvColors.GOLD)
+                    }
+                },
+            ).centerHorizontally(uiWidth),
+        )
     }
 }
