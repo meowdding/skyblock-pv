@@ -23,12 +23,13 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import kotlin.time.Instant
 
 object CodecUtils {
     internal fun clientAssetConverter(): (Identifier) -> ClientAsset =
         //? if >= 1.21.9 {
         ClientAsset::ResourceTexture
-        //?} else
+    //?} else
     /*::ClientAsset*/
 
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
@@ -145,4 +146,8 @@ object CodecUtils {
 
     @IncludedCodec(named = "identifier_map")
     val RESOURCE_MAP: Codec<Map<Identifier, Identifier>> = Codec.unboundedMap(Identifier.CODEC, Identifier.CODEC)
+
+    @IncludedCodec
+    val instant: Codec<Instant> = Codec.LONG.xmap(Instant::fromEpochMilliseconds, Instant::toEpochMilliseconds)
+
 }

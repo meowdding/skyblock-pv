@@ -4,6 +4,7 @@ import com.google.gson.JsonElement
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
+import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -14,15 +15,16 @@ import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
-import me.owdding.skyblockpv.screens.PvTab
+import me.owdding.skyblockpv.screens.fullscreen.BaseFullScreenPvScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
-import net.minecraft.util.Util
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
+import net.minecraft.util.Util
 import net.minecraft.world.item.ItemStack
 import org.joml.Matrix3x2f
 import org.joml.Matrix3x2fStack
@@ -89,7 +91,8 @@ object Utils {
 
     fun openMainScreen(name: String) = fetchGameProfile(name) { profile ->
         validateGameProfile(profile) {
-            McClient.setScreenAsync { PvTab.MAIN.create(profile!!) }
+            //McClient.setScreenAsync { PvTab.MAIN.create(profile!!) }
+            McClient.setScreenAsync { BaseFullScreenPvScreen(profile!!, null) }
         }
     }
 
@@ -200,6 +203,8 @@ object Utils {
     fun <T : Any> JsonElement?.toDataOrThrow(codec: MapCodec<T>): T = this.toDataOrThrow(codec.codec())
 
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
+
+    fun openConfig(screen: Screen? = null) = McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(screen) }
 
     fun Collection<ItemStack>.filterNotAir() = filterNot { it.isEmpty }
 }

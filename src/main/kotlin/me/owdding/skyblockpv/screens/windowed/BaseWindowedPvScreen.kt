@@ -1,18 +1,16 @@
 package me.owdding.skyblockpv.screens.windowed
 
 import com.mojang.authlib.GameProfile
-import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.dropdown.DropdownState
+import earth.terrarium.olympus.client.utils.State
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
-import earth.terrarium.olympus.client.utils.State
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutFactory
-import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
@@ -33,32 +31,24 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
-import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
-import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
-import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
-import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.util.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
-import net.minecraft.network.chat.CommonComponents
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.util.TriState
-import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
 import tech.thatgravyboat.skyblockapi.utils.text.Text
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 
 private const val ASPECT_RATIO = 16.0 / 9.0
@@ -67,6 +57,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
     override val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
     override val uiHeight get() = (this.height * 0.65).toInt()
+
+    abstract fun create(bg: DisplayWidget)
 
     override fun init() {
         val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
@@ -111,7 +103,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
         createTabs().applyLayout(bg.x + 20, bg.y - 22)
         createSearch(bg).applyLayout()
-        createProfileDropdown(bg).let {
+        getProfileDropdown(bg).let {
             it.applyLayout()
 
             if (!Config.socials) return@let
@@ -124,37 +116,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             PvWidgets.text(this.tabTitle).withCenterAlignment().withSize(this.uiWidth, 20).withPosition(bg.x, bg.bottom + 2),
         )
     }
-
-    private fun addNoProfiles() {
-        val errorWidget = PvLayouts.vertical(alignment = 0.5f) {
-            display("widgets.error.no_profiles".asTranslated(gameProfile.name).multiLineDisplay(Alignment.CENTER))
-        }
-
-        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-        errorWidget.applyLayout()
-    }
-
-    private fun addParsingError(throwable: Throwable) {
-        SkyBlockPv.error("Failed to parse profile!", throwable)
-
-        val errorWidget = PvLayouts.vertical {
-            val text = "widgets.error.parsing_error".asTranslated(
-                name,
-                gameProfile.name,
-                gameProfile.id,
-                throwable.javaClass.name,
-                throwable.message,
-                throwable.getStackTraceString(7),
-            )
-
-            text.splitLines().forEach {
-                widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
-            }
-        }
-        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
-        errorWidget.applyLayout()
-    }
-
     private fun createTopRow(bg: DisplayWidget) = PvLayouts.horizontal(5) {
         createUserRow()
         if (SkyBlockPv.isDevMode) createDevRow(bg)
@@ -164,7 +125,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         val settingsButton =
             Button().withSize(20, 20).withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
                 .withTexture(null)
-                .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
+                .withCallback { Utils.openConfig(this@BaseWindowedPvScreen) }
                 .withTooltip(+"widgets.open_settings")
 
         val themeSwitcher =
@@ -235,28 +196,11 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
     }
 
-
-    private var coopDropdownVisible = false
     private fun createSearch(bg: DisplayWidget): LayoutElement {
         var width = 100
 
         return LayoutFactory.horizontal {
-            val coopDropdown = Button().apply {
-                withSize(12, 20)
-                withTexture(null)
-                withRenderer(
-                    WidgetRenderers.padded(
-                        4, 0, 4, 0,
-                        WidgetRenderers.icon<AbstractWidget>(UIIcons.CHEVRON_UP).withColor(MinecraftColors.WHITE),
-                    ),
-                )
-                withTooltip(+"widgets.coop_search_tooltip")
-                withCallback {
-                    coopDropdownVisible = !coopDropdownVisible
-                    safelyRebuild()
-                }
-            }
-
+            val coopDropdown = createCoopDropdownTrigger()
             val usernameState = State.of(gameProfile.name)
             val username = Widgets.autocomplete<String>(usernameState) { box ->
                 box.withEnterCallback {
@@ -273,84 +217,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             username.withPlaceholder((+"widgets.username_input").stripped)
             username.withSize(width, 20)
 
-
             val coopMemberDropdownState = DropdownState(null, State.of(profile.userId), true)
-            val coopMemberDropdown = Widgets.dropdown(
-                coopMemberDropdownState,
-                profile.coopMembers.keys.toList(),
-                { _ -> CommonComponents.EMPTY },
-                { button ->
-                    button.withSize(width, 20)
-                    button.withRenderer(
-                        WidgetRenderers.text<Button>(
-                            Text.of {
-                                color = PvColors.WHITE
-                                append("◆ ")
-                                append(gameProfile.name)
-                            },
-                        ).withPadding(4, 6),
-                    )
-                },
-                { builder ->
-                    builder.withCallback { coopProfile ->
-                        val profile = profile.coopMembers[coopProfile]
-
-                        if (profile == null) {
-                            Text.of("Unknown member!") { color = TextColor.RED }.sendWithPrefix()
-                            return@withCallback
-                        }
-
-                        val gameProfile = profile.getNow(null)
-                        if (gameProfile != null) {
-                            Utils.preferedProfileId = this@BaseWindowedPvScreen.profile.id.id
-                            McClient.setScreenAsync { PvTab.MAIN.create(gameProfile) }
-                        } else if (profile.isCompletedExceptionally) {
-                            Text.of("Failed to fetch username!").sendWithPrefix()
-                        } else {
-                            Text.of("Still fetching!").sendWithPrefix()
-                        }
-
-                    }
-
-                    val loadingRenderer = WidgetRenderers.text<Button>(Text.of("Loading...") { this.color = TextColor.RED })
-                        .withLeftAlignment()
-                        .withPadding(0, 4)
-                    val failedToLoad = WidgetRenderers.text<Button>(Text.of("Error!") { this.color = TextColor.RED })
-                        .withLeftAlignment()
-                        .withPadding(0, 4)
-                    builder.withEntryRenderer { id ->
-                        val future = profile.coopMembers[id] ?: return@withEntryRenderer WidgetRenderers.text<Button>(
-                            Text.of("Unknown!") {
-                                this.color = TextColor.DARK_RED
-                            },
-                        ).withLeftAlignment().withPadding(0, 4)
-                        val widgetRenderer = future.thenApply { profile ->
-                            if (profile == null) return@thenApply null
-
-                            WidgetRenderers.text<Button>(
-                                Text.of {
-                                    color = PvColors.WHITE
-                                    if (id == profile) {
-                                        underlined = true
-                                        append("◆ ")
-                                    } else {
-                                        append("◇ ")
-                                    }
-                                    append(profile.name.toString())
-                                },
-                            ).withLeftAlignment().withPadding(0, 4)
-                        }
-
-                        ExtraWidgetRenderers.supplied {
-                            widgetRenderer.getNow(loadingRenderer) ?: failedToLoad
-                        }
-                    }
-                    builder.withAlignment(OverlayAlignment.TOP_LEFT)
-                },
-            ).apply {
-                withTexture(ExtraConstants.BUTTON_DARK)
-                setPosition(bg.x, bg.y + bg.height)
-            }
+            val coopMemberDropdown = createCoopDropdown(width, coopMemberDropdownState)
 
             if (profile.coopMembers.isNotEmpty()) {
                 widget(coopDropdown)
@@ -364,53 +232,11 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                 }
                 coopDropdownVisible = false
             } else widget(username)
-
         }.setPos(bg.x + bg.width - width, bg.y + bg.height)
     }
 
-    private fun createProfileDropdown(bg: DisplayWidget): LayoutElement {
-        val width = 100
-
-        val dropdownState = DropdownState<SkyBlockProfile>.of(profile)
-        val dropdown = Widgets.dropdown(
-            dropdownState,
-            profiles,
-            { profile ->
-                Text.of {
-                    color = PvColors.WHITE
-                    if (profile.selected) {
-                        underlined = true
-                        append("◆ ")
-                    } else {
-                        append("◇ ")
-                    }
-                    append(profile.id.name)
-                    append(
-                        when (profile.profileType) {
-                            ProfileType.NORMAL -> ""
-                            ProfileType.BINGO -> " §9Ⓑ"
-                            ProfileType.IRONMAN -> " ♻"
-                            ProfileType.STRANDED -> " §a☀"
-                            ProfileType.UNKNOWN -> " §c§ka"
-                        },
-                    )
-                }
-            },
-            { button -> button.withSize(width, 20) },
-            { builder ->
-                builder.withCallback { profile ->
-                    this.profile = profile ?: return@withCallback
-                    this.onProfileSwitch(profile)
-                    this.safelyRebuild()
-                }
-                builder.withAlignment(OverlayAlignment.TOP_LEFT)
-            },
-        ).apply {
-            withTexture(ExtraConstants.BUTTON_DARK)
-            setPosition(bg.x, bg.y + bg.height)
-        }
-
-        return dropdown
+    private fun getProfileDropdown(bg: DisplayWidget): LayoutElement = createProfileDropdown(100).apply {
+        setPosition(bg.x, bg.y + bg.height)
     }
 
     private fun createSocialDropdown(): LayoutElement {
@@ -455,5 +281,9 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         } else {
             this.renderTransparentBackground(guiGraphics)
         }
+    }
+
+    override fun openPlayer(gameProfile: GameProfile): Screen {
+        return PvTab.MAIN.create(gameProfile)
     }
 }
