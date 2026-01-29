@@ -10,7 +10,7 @@ kotlin = "2.2.0"
 kotlin-symbol-processor = "2.2.0-2.0.2"
 
 # Dependencies
-skyblockapi = "4.0.1"
+skyblockapi = "4.0.2"
 repolib = "2.0.2"
 
 resourceful-configkt = "3.5.12"
