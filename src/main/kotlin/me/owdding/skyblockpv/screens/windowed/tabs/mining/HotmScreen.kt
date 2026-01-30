@@ -3,11 +3,24 @@ package me.owdding.skyblockpv.screens.windowed.tabs.mining
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.round
-import me.owdding.lib.repo.*
+import me.owdding.lib.repo.AbilityTreeNode
+import me.owdding.lib.repo.Context
+import me.owdding.lib.repo.CoreTreeNode
+import me.owdding.lib.repo.CostType
+import me.owdding.lib.repo.FreeCostType
+import me.owdding.lib.repo.LevelableTreeNode
+import me.owdding.lib.repo.SpacerNode
+import me.owdding.lib.repo.TierNode
+import me.owdding.lib.repo.TreeNode
+import me.owdding.lib.repo.TreeRepoData
+import me.owdding.skyblockpv.api.data.abstraction.HotmDataGetter
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.data.api.skills.MiningCore
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.withScrollToBottom
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -32,7 +45,8 @@ import kotlin.math.roundToInt
 class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val mining = profile.mining ?: return PvLayouts.empty()
+        val mining: HotmDataGetter =
+            HotmDataGetter.Layered(listOfNotNull(profile.mining, sharedProfile.hotm).takeUnless { it.isEmpty() } ?: return PvLayouts.empty())
         val gridLayout = GridLayout()
 
         // nodes that are unlocked but not in the repo:
@@ -94,7 +108,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
     }
 
-    private fun getNode(miningNode: TreeNode, level: Int, disabled: Boolean, miningCore: MiningCore): Display {
+    private fun getNode(miningNode: TreeNode, level: Int, disabled: Boolean, miningCore: HotmDataGetter): Display {
         val item = when (miningNode) {
             is TierNode -> when {
                 miningNode.isMaxed(level) -> Items.GREEN_STAINED_GLASS_PANE
@@ -128,7 +142,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         )
     }
 
-    private fun getTierNodeTooltip(node: TierNode, level: Int, miningCore: MiningCore) = buildList<Component> {
+    private fun getTierNodeTooltip(node: TierNode, level: Int, miningCore: HotmDataGetter) = buildList<Component> {
         val hasUnlocked = node.isMaxed(level)
         val isCurrentlyUnlocking = node.isMaxed(level + 1)
 
@@ -195,7 +209,7 @@ class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
     }
 
-    private fun getTooltip(miningNode: TreeNode, level: Int, disabled: Boolean, miningCore: MiningCore) = buildList {
+    private fun getTooltip(miningNode: TreeNode, level: Int, disabled: Boolean, miningCore: HotmDataGetter) = buildList {
         if (miningNode is TierNode) {
             addAll(getTierNodeTooltip(miningNode, level, miningCore))
             return@buildList

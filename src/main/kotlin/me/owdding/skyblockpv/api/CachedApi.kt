@@ -13,6 +13,7 @@ import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toPrettyString
 import java.nio.file.StandardOpenOption
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.io.path.createDirectories
@@ -135,5 +136,25 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
         val timestamp: Long = System.currentTimeMillis(),
     ) {
         fun isExpired() = System.currentTimeMillis() - timestamp >= TIMEOUT_TIME
+    }
+
+    fun <Other> joinWith(otherApi: CachedApi<D, Other, *>, data: D, intent: String? = null, handler: (Result<Pair<V, Other>>) -> Unit) {
+        val self = CompletableFuture<Result<V>>()
+        val other = CompletableFuture<Result<Other>>()
+
+        getDataAsync(data, intent, self::complete)
+        otherApi.getDataAsync(data, intent, other::complete)
+
+        CompletableFuture.allOf(self, other).whenComplete { _, throwable ->
+            val self = self.get()
+            val other = other.get()
+
+            val exception = throwable ?: self.exceptionOrNull() ?: other.exceptionOrNull()
+            if (exception != null) {
+                handler(Result.failure(exception))
+            }
+
+            handler(Result.success(self.getOrThrow() to other.getOrThrow()))
+        }
     }
 }

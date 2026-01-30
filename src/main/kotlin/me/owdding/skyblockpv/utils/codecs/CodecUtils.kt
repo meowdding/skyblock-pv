@@ -137,7 +137,7 @@ object CodecUtils {
     @IncludedCodec(named = "item")
     val ITEM: Codec<Item> = BuiltInRegistries.ITEM.byNameCodec()
 
-    @IncludedCodec
+    @IncludedCodec(keyable = true)
     val SKYBLOCK_ID: Codec<SkyBlockId> = SkyBlockId.UNKNOWN_CODEC
 
     @IncludedCodec(named = "compact_string_list")
