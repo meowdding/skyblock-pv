@@ -359,6 +359,6 @@ data class BackingSkyBlockProfile(
             return perks
         }
 
-        fun <T> future(supplier: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(supplier, Utils.executorPool)
+        private fun <T> future(supplier: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(supplier, Utils.executorPool)
     }
 }

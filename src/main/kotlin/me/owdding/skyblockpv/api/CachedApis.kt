@@ -6,6 +6,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.HypixelPlayer
 import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.api.data.shared.SharedProfileData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.utils.Utils.mapInParallel
@@ -19,6 +20,7 @@ object CachedApis {
         GardenAPI.clearCache()
         MuseumAPI.clearCache()
         PlayerAPI.clearCache()
+        SharedDataApi.clearCache()
     }
 }
 
@@ -50,13 +52,23 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
     override fun getKey(data: UUID) = data
 
     fun getProfiles(gameProfile: GameProfile, intent: String, handler: (List<SkyBlockProfile>) -> Unit) = getDataAsync(gameProfile.id, intent) { result ->
-        result
-            .onSuccess(handler)
+        result.onSuccess(handler)
             .onFailure {
                 SkyBlockPv.error("Failed to get profiles for: ${gameProfile.name} (${gameProfile.id})", it)
                 handler(listOf())
             }
     }
+}
+
+object SharedDataApi : CachedApi<UUID, List<SharedProfileData>, UUID>() {
+
+    override fun path(data: UUID) = "/shared_data/$data"
+    override fun decode(data: JsonObject, originalData: UUID) = data.entrySet().mapNotNull { (key, value) ->
+        SharedProfileData.fromJson(value.asJsonObject, UUID.fromString(key))
+    }
+
+    override fun getKey(data: UUID) = data
+
 }
 
 object PlayerAPI : CachedApi<UUID, HypixelPlayer, UUID>(Long.MAX_VALUE) {

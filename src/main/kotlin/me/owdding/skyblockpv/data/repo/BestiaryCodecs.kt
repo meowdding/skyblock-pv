@@ -7,8 +7,8 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
+import me.owdding.ktcodecs.Inline
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.ktcodecs.Unnamed
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.DispatchedCodec
@@ -97,7 +97,7 @@ object BestiaryCodecs : ExtraData {
 @GenerateCodec
 data class BestiaryRepoData(
     @NamedCodec("be§brackets") val brackets: Map<Int, List<Int>>,
-    @NamedCodec("be§categories") @Unnamed val categories: Map<String, BestiaryCategoriesEntry>,
+    @NamedCodec("be§categories") @Inline val categories: Map<String, BestiaryCategoriesEntry>,
 )
 
 
@@ -117,7 +117,7 @@ data class ComplexBestiaryCategoryEntry(
 @GenerateCodec
 data class BestiaryMobEntry(
     val name: String,
-    @NamedCodec("be§icon") @Unnamed val icon: BestiaryIcon,
+    @NamedCodec("be§icon") @Inline val icon: BestiaryIcon,
     val cap: Int,
     val mobs: List<String>,
     val bracket: Int,
