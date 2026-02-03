@@ -45,8 +45,14 @@ import kotlin.math.roundToInt
 class HotmScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val mining: HotmDataGetter =
-            HotmDataGetter.Layered(listOfNotNull(profile.mining, sharedProfile.hotm).takeUnless { it.isEmpty() } ?: return PvLayouts.empty())
+        val mining: HotmDataGetter = HotmDataGetter.Layered(
+            listOfNotNull(
+                profile.mining,
+                sharedProfile.hotm,
+            ).takeUnless {
+                it.isEmpty()
+            } ?: return PvLayouts.empty(),
+        )
         val gridLayout = GridLayout()
 
         // nodes that are unlocked but not in the repo:
