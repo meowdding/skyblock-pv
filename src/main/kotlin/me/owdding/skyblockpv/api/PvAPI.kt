@@ -1,10 +1,12 @@
 package me.owdding.skyblockpv.api
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.SkyBlockPvDevUtils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.minecraft.network.chat.Component
@@ -14,7 +16,6 @@ import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.api.events.time.TickEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.toLongValue
-import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockapi.utils.json.Json
 import tech.thatgravyboat.skyblockapi.utils.time.currentInstant
 import java.util.*
@@ -23,7 +24,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
-private const val API_URL = "https://skyblock-pv.thatgravyboat.tech%s"
+private const val API_URL = "https://skyblock-pv.thatgravyboat.tech"
 
 private const val AUTHENTICATION_FAILED_MESSAGE = "Failed to authenticate with PV API. Please restart the game and try again."
 
@@ -35,14 +36,22 @@ object PvAPI {
     private var scheduledSendMessage: Component? = null
     private var lastAuthTry = Instant.DISTANT_PAST
 
-    @Subscription
     @OnlyOnSkyBlock
-    fun onTick(event: TickEvent) {
+    @Subscription(TickEvent::class)
+    fun onTick() {
         scheduledSendMessage?.let {
             it.sendWithPrefix()
             scheduledSendMessage = null
         }
     }
+
+    private val apiUrl = SkyBlockPvDevUtils.getString("backend_url", API_URL).apply {
+        if (this != API_URL) {
+            SkyBlockPv.info("Using backend located at: $this")
+        }
+    }
+
+    private val allowHttp = SkyBlockPvDevUtils.getBoolean("allow_http")
 
     @Subscription
     fun onCommand(event: RegisterCommandsEvent) {
@@ -83,12 +92,13 @@ object PvAPI {
             McClient.sessionService.joinServer(user.profileId, user.accessToken, server)
 
             val response = Http.get(
-                url = API_URL.format("/authenticate"),
+                url = "$apiUrl/authenticate",
                 queries = if (bypassCaches) {
                     mapOf("bypassCache" to "true")
                 } else {
                     emptyMap()
                 },
+                allowHttp = allowHttp,
                 headers = mapOf(
                     "User-Agent" to "SkyBlockPV/${SkyBlockPv.version.friendlyString}/${McClient.version}",
                     "x-minecraft-username" to user.name,
@@ -114,12 +124,13 @@ object PvAPI {
         }
 
         val response = Http.get(
-            url = API_URL.format(endpoint),
+            url = apiUrl + endpoint,
             headers = mapOf(
                 "User-Agent" to "SkyBlockPV/${SkyBlockPv.version.friendlyString}/${McClient.version}",
                 "Authorization" to this.key!!,
                 "X-Intent" to (intent ?: "unknown"),
             ),
+            allowHttp = allowHttp,
             handler = { this },
         )
 
@@ -129,7 +140,7 @@ object PvAPI {
         } else if (response.statusCode == 401) {
             authenticate()
             if (this.key != null) {
-                return get(endpoint)
+                return get(endpoint, intent)
             } else {
                 failedToAuth = true
                 SkyBlockPv.error(AUTHENTICATION_FAILED_MESSAGE)
@@ -139,5 +150,39 @@ object PvAPI {
         }
 
         return null
+    }
+
+    suspend fun put(endpoint: String, intent: String? = null, element: JsonElement) {
+        if (this.key == null || failedToAuth) {
+            SkyBlockPv.error(AUTHENTICATION_FAILED_MESSAGE)
+            return
+        }
+
+        val response = Http.put(
+            url = apiUrl + endpoint,
+            headers = mapOf(
+                "User-Agent" to "SkyBlockPV/${SkyBlockPv.version.friendlyString}/${McClient.version}",
+                "Authorization" to this.key!!,
+                "X-Intent" to (intent ?: "unknown"),
+            ),
+            allowHttp = allowHttp,
+            handler = { this },
+            body = element
+        )
+
+        if (response.isOk) {
+            return
+        } else if (response.statusCode == 401) {
+            authenticate()
+            if (this.key != null) {
+                put(endpoint, intent, element)
+                return
+            } else {
+                failedToAuth = true
+                SkyBlockPv.error(AUTHENTICATION_FAILED_MESSAGE)
+            }
+        } else {
+            SkyBlockPv.error("Failed to put shared data: ${response.statusCode}")
+        }
     }
 }
