@@ -13,12 +13,15 @@ import tech.thatgravyboat.skyblockapi.api.events.base.predicates.OnlyOnSkyBlock
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
 import tech.thatgravyboat.skyblockapi.api.events.time.TickEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.utils.extentions.since
 import tech.thatgravyboat.skyblockapi.utils.extentions.toLongValue
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 import tech.thatgravyboat.skyblockapi.utils.json.Json
 import tech.thatgravyboat.skyblockapi.utils.time.currentInstant
+import java.lang.management.ManagementFactory
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
@@ -34,6 +37,8 @@ object PvAPI {
     private var failedToAuth: Boolean = false
     private var scheduledSendMessage: Component? = null
     private var lastAuthTry = Instant.DISTANT_PAST
+
+    private val startTime = currentInstant()
 
     @Subscription
     @OnlyOnSkyBlock
@@ -63,7 +68,9 @@ object PvAPI {
                         if (isAuthenticated()) {
                             (+"messages.api.auth_successful").sendWithPrefix()
                         } else {
-                            (+"messages.api.auth_failed").sendWithPrefix()
+                            val res = if (startTime.since() >= 1.days) +"messages.api.auth_uptime_limit"
+                            else +"messages.api.auth_failed"
+                            res.sendWithPrefix()
                         }
                     }
                 }
@@ -71,9 +78,7 @@ object PvAPI {
         }
     }
 
-    fun isAuthenticated(): Boolean {
-        return key != null && !failedToAuth
-    }
+    fun isAuthenticated(): Boolean = key != null && !failedToAuth
 
     suspend fun authenticate(bypassCaches: Boolean = false) {
         try {
