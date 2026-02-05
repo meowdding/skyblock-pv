@@ -62,7 +62,7 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val mainContent = PvLayouts.vertical {
             string("Class Average: ${dungeonData.classToLevel.map { it.value.first.coerceAtMost(50) }.toList().average()}")
             string("Secrets: ${dungeonData.secrets.toFormattedString()}")
-            string("Secrets/Run: ${(dungeonData.secrets / runCounts).round()}")
+            string("Secrets/Run: ${(dungeonData.secrets / runCounts.toDouble()).round()}")
         }
 
         return PvWidgets.label("Dungeon Info", mainContent, 20, icon = SkyBlockPv.id("icon/item/clipboard"))
