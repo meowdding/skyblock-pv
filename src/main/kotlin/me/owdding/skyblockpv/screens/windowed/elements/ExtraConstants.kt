@@ -13,6 +13,7 @@ object ExtraConstants {
     val BUTTON_PRIMARY_OPAQUE = ThemedWidgetSprites(id("opaque/buttons/primary/normal"), id("opaque/buttons/disabled"), id("opaque/buttons/primary/hovered"))
 
     var TAB_TOP = ThemedWidgetSprites(id("tabs/top/normal"), id("tabs/top/normal"), id("tabs/top/hovered"))
+    var TAB_TOP_OFFSET = ThemedWidgetSprites(id("tabs/top/normal_offset"), id("tabs/top/normal_offset"), id("tabs/top/hovered_offset"))
     var TAB_TOP_SELECTED = ThemedWidgetSprites(id("tabs/top/selected"), id("tabs/top/selected"), id("tabs/top/selected_hovered"))
 
     var TAB_RIGHT = ThemedWidgetSprites(id("tabs/right/normal"), id("tabs/right/normal"), id("tabs/right/hovered"))
