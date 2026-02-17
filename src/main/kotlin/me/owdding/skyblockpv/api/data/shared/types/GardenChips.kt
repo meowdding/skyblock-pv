@@ -1,7 +1,17 @@
 package me.owdding.skyblockpv.api.data.shared.types
 
+import com.mojang.serialization.Codec
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.skyblockpv.api.data.shared.SharedDataProvider
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
+
+object GardenChipsDataProvider : SharedDataProvider<GardenChipsData> {
+    override val endpoint: String = "garden_chips"
+    override val codec: Codec<GardenChipsData> = SkyBlockPvCodecs.GardenChipsDataCodec.codec()
+
+    override fun create(): GardenChipsData = TODO()
+}
 
 @GenerateCodec
 data class GardenChip(
@@ -10,7 +20,7 @@ data class GardenChip(
 )
 
 @GenerateCodec
-data class GardenChips(
+data class GardenChipsData(
     @FieldName("vermin_vaporizer") val verminVaporizer: GardenChip,
     val synthesis: GardenChip,
     val sowledge: GardenChip,

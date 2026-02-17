@@ -1,9 +1,21 @@
 package me.owdding.skyblockpv.api.data.shared.types
 
+import com.mojang.serialization.Codec
 import me.owdding.ktcodecs.FieldName
+import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.Lenient
+import me.owdding.skyblockpv.api.data.shared.SharedDataProvider
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import net.minecraft.world.item.ItemStack
 
+object MiscForagingDataProvider : SharedDataProvider<MiscForagingData> {
+    override val endpoint: String = "foraging"
+    override val codec: Codec<MiscForagingData> = SkyBlockPvCodecs.MiscForagingDataCodec.codec()
+
+    override fun create(): MiscForagingData = TODO()
+}
+
+@GenerateCodec
 data class MiscForagingData(
     @FieldName("hunting_exp") val huntingExp: String,
     @FieldName("hunting_axe_item") @Lenient val huntingAxeItem: ItemStack?,

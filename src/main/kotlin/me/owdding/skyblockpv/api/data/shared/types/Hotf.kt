@@ -5,12 +5,13 @@ import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.OptionalIfEmpty
 import me.owdding.lib.repo.TreeRepoData
 import me.owdding.skyblockpv.api.SharedData
+import me.owdding.skyblockpv.api.data.shared.SharedDataProvider
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import tech.thatgravyboat.skyblockapi.api.profile.hotf.HotfAPI
 import tech.thatgravyboat.skyblockapi.api.profile.hotf.WhispersAPI
 
 @SharedData
-object HotfDataProvider : me.owdding.skyblockpv.api.data.shared.SharedDataProvider<HotfData> {
+object HotfDataProvider : SharedDataProvider<HotfData> {
     override val endpoint: String = "hotf"
     override val codec: Codec<HotfData> = SkyBlockPvCodecs.HotfDataCodec.codec()
 

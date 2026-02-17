@@ -1,8 +1,20 @@
 package me.owdding.skyblockpv.api.data.shared.types
 
+import com.mojang.serialization.Codec
 import me.owdding.ktcodecs.FieldName
+import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.skyblockpv.api.data.shared.SharedDataProvider
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 
-data class Melody(
+object MelodyDataProvider : SharedDataProvider<MelodyData> {
+    override val endpoint: String = "melody"
+    override val codec: Codec<MelodyData> = SkyBlockPvCodecs.MelodyDataCodec.codec()
+
+    override fun create(): MelodyData = TODO()
+}
+
+@GenerateCodec
+data class MelodyData(
     @FieldName("hymn_to_the_joy") val hymnToTheJoy: Int,
     @FieldName("frere_jacques") val frereJacques: Int,
     @FieldName("amazing_grace") val amazingGrace: Int,
