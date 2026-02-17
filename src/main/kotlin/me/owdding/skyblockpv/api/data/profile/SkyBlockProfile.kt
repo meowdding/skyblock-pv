@@ -10,6 +10,7 @@ import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.data.InventoryData
 import me.owdding.skyblockpv.api.data.ProfileId
+import me.owdding.skyblockpv.api.data.profile.BackingSkyBlockProfile.Companion.emptyFuture
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
@@ -64,6 +65,7 @@ interface SkyBlockProfile {
     val slayer: Map<String, SlayerTypeData> get() = backingProfile.slayer.getNowOrElse(emptyMap())
     val dungeonData: DungeonData? get() = backingProfile.dungeonData.getNowOrElse(null)
     val mining: MiningCore? get() = backingProfile.mining.getNowOrElse(null)
+    val skillTrees: SkillTrees? get() = backingProfile.skillTrees.getNowOrElse(null)
     val forge: Forge? get() = backingProfile.forge.getNowOrElse(null)
     val glacite: GlaciteData? get() = backingProfile.glacite.getNowOrElse(null)
     val tamingLevelPetsDonated: List<String> get() = backingProfile.tamingLevelPetsDonated.getNowOrElse(emptyList())
@@ -126,6 +128,7 @@ data class BackingSkyBlockProfile(
     val slayer: CompletableFuture<Map<String, SlayerTypeData>> = emptyFuture(),
     val dungeonData: CompletableFuture<DungeonData?> = emptyFuture(),
     val mining: CompletableFuture<MiningCore?> = emptyFuture(),
+    val skillTrees: CompletableFuture<SkillTrees?> = emptyFuture(),
     val forge: CompletableFuture<Forge?> = emptyFuture(),
     val glacite: CompletableFuture<GlaciteData?> = emptyFuture(),
     val tamingLevelPetsDonated: CompletableFuture<List<String>> = emptyFuture(),
@@ -171,6 +174,7 @@ data class BackingSkyBlockProfile(
         crimsonIsleData,
         minions,
         maxwell,
+        skillTrees
     )
 
     companion object {
@@ -285,6 +289,7 @@ data class BackingSkyBlockProfile(
                         k.toUuid().takeUnless { entry.getPath("profile.deletion_notice") != null }
                     }?.filter { it != user } ?: emptyList(),
                 ),
+                skillTrees = SkillTrees.fromJson(member)
             )
         }
 
