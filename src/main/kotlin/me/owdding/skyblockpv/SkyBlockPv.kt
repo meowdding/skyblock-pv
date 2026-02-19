@@ -6,9 +6,11 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
+import me.owdding.lib.events.FinishRepoLoadingEvent
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingUpdateChecker
 import me.owdding.lib.utils.isMeowddingDev
+import me.owdding.repo.RemoteRepo
 import me.owdding.skyblockpv.api.PvAPI
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
@@ -76,14 +78,6 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
 
         SkyBlockPvModules.init { SkyBlockAPI.eventBus.register(it) }
 
-        SkyBlockPvExtraData.collected.forEach {
-            CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
-                McClient.runNextTick {
-                    throw throwable
-                }
-            }
-        }
-
         MeowddingUpdateChecker("8yqXwFLl", mod) { link, current, new ->
             fun MutableComponent.withLink() = this.apply {
                 this.url = link
@@ -106,6 +100,20 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
             if (!Config.isDisabled) {
                 dispatcher.root.children.removeIf { it.name == "pv" }
                 onRegisterCommands(RegisterCommandsEvent(dispatcher))
+            }
+        }
+
+        if (RemoteRepo.isInitialized()) remoteRepo()
+    }
+
+
+    @Subscription(FinishRepoLoadingEvent::class)
+    fun remoteRepo() {
+        SkyBlockPvExtraData.collected.forEach {
+            CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
+                McClient.runNextTick {
+                    throw throwable
+                }
             }
         }
     }

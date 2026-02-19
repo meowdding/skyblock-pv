@@ -37,6 +37,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.nio.file.Files
 import java.security.MessageDigest
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
@@ -202,4 +203,7 @@ object Utils {
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
 
     fun Collection<ItemStack>.filterNotAir() = filterNot { it.isEmpty }
+
+    private val format = SimpleDateFormat("yyyy.MM.dd HH:mm")
+    fun Long.toDateTime(): String = format.format(this)
 }

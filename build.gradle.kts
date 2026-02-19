@@ -71,12 +71,14 @@ dependencies {
         capabilities { requireCapability("me.owdding.meowdding-lib:meowdding-lib-${stonecutter.current.version}-remapped") }
     }
 
+
     includeImplementation(libs.meowdding.remote.repo)
     includeImplementation(versionedCatalog["placeholders"])
     modImplementation(libs.fabric.loader)
-    modImplementation(libs.fabric.language.kotlin)
     modImplementation(versionedCatalog["fabric.api"])
     modImplementation(libs.mixinconstraints)
+    modRuntimeOnly(libs.fabric.language.kotlin)
+    implementation(libs.fabric.language.kotlin)
     modRuntimeOnly(libs.hypixelapi)
     includeImplementation(versionedCatalog["resourceful.lib"])
     includeImplementation(versionedCatalog["resourceful.config"])

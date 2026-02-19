@@ -54,7 +54,7 @@ enum class PvTab(
     COLLECTION(BaseCollectionScreen::class, CollectionCategories::createScreen, Items.ITEM_FRAME.defaultInstance),
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
-    FORAGING(BaseForagingScreen::class, ::ForagingSkillTreeScreen, Items.STRIPPED_OAK_LOG.defaultInstance),
+    FORAGING(BaseForagingScreen::class, ::ForagingSkillTreeScreen, Items.OAK_LOG.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
     MUSEUM(BaseMuseumScreen::class, ::MuseumItemScreen, Items.GOLD_BLOCK.defaultInstance, true),

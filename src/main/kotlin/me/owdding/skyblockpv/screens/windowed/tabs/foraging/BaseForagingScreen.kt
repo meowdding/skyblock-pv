@@ -5,9 +5,10 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
-import me.owdding.skyblockpv.screens.windowed.tabs.mining.MiningSkillTreeScreen
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.api.remote.api.RepoAttributeAPI
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 
@@ -24,9 +25,9 @@ enum class ForagingCategory(
     hoverName: String? = null,
     override val hideOnStranded: Boolean = false,
 ) : Category {
-    // contests and stuff probably on main page?
-    HOTF(::ForagingSkillTreeScreen, SkullTextures.HOTM.skull, "HotF Tree", true),
-    //ATTRIBUTES
+    MAIN(::MainForagingScreen, Items.OAK_LOG.defaultInstance),
+    HOTF(::ForagingSkillTreeScreen, SkullTextures.HOTF.skull, "HotF Tree", true),
+    ATTRIBUTES(::AttributeScreen, RepoAttributeAPI.getAttributeByIdOrNull("r43") ?: Items.BARRIER.defaultInstance, "Attributes", true),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()

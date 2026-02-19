@@ -12,6 +12,7 @@ enum class SkullTextures(var texture: String = "") {
     PERSONAL_VAULT,
     DUNGEONS,
     HOTM,
+    HOTF,
     CHOCOLATE_FACTORY,
     COACH_JACKRABBIT,
     RIFT,
