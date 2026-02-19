@@ -3,6 +3,7 @@ package me.owdding.skyblockpv.data.api.skills.combat
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.data.repo.CatacombsCodecs
+import me.owdding.skyblockpv.utils.ParseHelper
 import me.owdding.skyblockpv.utils.json.getAs
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap

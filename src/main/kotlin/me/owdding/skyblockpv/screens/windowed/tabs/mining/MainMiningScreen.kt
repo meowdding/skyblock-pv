@@ -193,7 +193,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             val width = uiWidth / 3
 
             val convertedElements = crystals.map { id ->
-                val (name, crystal) = id to (mining.crystals[id] ?: Crystal("NOT_FOUND", 0, 0))
+                val (name, crystal) = id to (mining.crystals[id] ?: Crystal.EMPTY)
                 val icon = RepoItemsAPI.getItem(name.uppercase()).let { Displays.item(it) }
                 val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))

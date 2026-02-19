@@ -227,8 +227,8 @@ data class BackingSkyBlockProfile(
                         member.getAsJsonObject("shared_inventory"),
                     )
                 },
-                currency = future { Currency.fromJson(member) },
-                bank = future { Bank.fromJson(json, member) },
+                currency = future { Currency(member) },
+                bank = future { Bank(json, member) },
                 firstJoin = profile.getAs<Long>("first_join", 0L),
                 fairySouls = member.getPathAs<Int>("fairy_soul.total_collected", 0),
                 skyBlockLevel = future {
@@ -253,9 +253,9 @@ data class BackingSkyBlockProfile(
                 bestiaryData = future { member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList() },
                 slayer = future { member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap() },
                 dungeonData = future { member.getAs<JsonObject>("dungeons")?.let { DungeonData.fromJson(it) } },
-                mining = future { member.getAs<JsonObject>("mining_core")?.let { MiningCore.fromJson(it) } },
-                forge = future { member.getAs<JsonObject>("forge")?.let { Forge.fromJson(it) } },
-                glacite = future { member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData.fromJson(it) } },
+                mining = future { member.getAs<JsonObject>("mining_core")?.let { MiningCore(it) } },
+                forge = future { member.getAs<JsonObject>("forge")?.let { Forge(it) } },
+                glacite = future { member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData(it) } },
                 tamingLevelPetsDonated = future { member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() } },
                 pets = future { member.getPathAs<JsonArray>("pets_data.pets").asList { Pet.fromJson(it.asJsonObject) } },
                 trophyFish = future { TrophyFishData.fromJson(member) },

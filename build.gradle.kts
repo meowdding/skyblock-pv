@@ -89,6 +89,9 @@ dependencies {
     compileOnly(libs.meowdding.ktcodecs)
     ksp(libs.meowdding.ktmodules)
     ksp(libs.meowdding.ktcodecs)
+
+    modRuntimeOnly(libs.fabric.language.kotlin)
+    implementation(libs.fabric.language.kotlin)
 }
 
 fun DependencyHandler.includeImplementation(dep: Any) {
