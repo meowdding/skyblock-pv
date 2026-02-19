@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.utils.ListenableState
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
@@ -62,29 +63,27 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         fun update() {
             frame.withContents {
                 it.children.clear()
-                map
-                    .groupBy { runCatching { SkyBlockRarity.valueOf(it.first?.rarity!!) }.getOrNull() }
-                    .toSortedMap { o1, o2 ->
+                val display = map.filter { (repo, api) ->
+                    matchesSearch(repo) && when (filter) {
+                        Filter.ALL -> true
+                        Filter.MAXED -> (repo?.let(::getMax) ?: 0) <= (api?.syphoned ?: 0)
+                        Filter.UNLOCKED -> api != null
+                        Filter.LOCKED -> api == null
+                    }
+                }.takeUnless { it.isEmpty() }?.groupBy { runCatching { SkyBlockRarity.valueOf(it.first?.rarity!!) }.getOrNull() }
+                    ?.toSortedMap { o1, o2 ->
                         when {
                             o1 == null && o2 == null -> 0
                             o1 == null -> 1
                             o2 == null -> -1
                             else -> o1.ordinal - o2.ordinal
                         }
-                    }
-                    .map { (rarity, attributes) ->
+                    }?.map { (rarity, attributes) ->
                         attributes.sortedWith(
                             Comparator.comparingInt { (repo, _) ->
                                 repo?.attributeId?.filter { c -> c.isDigit() }?.toIntOrNull() ?: 1000
                             },
-                        ).filter { (repo, api) ->
-                            when (filter) {
-                                Filter.ALL -> true
-                                Filter.MAXED -> (repo?.let(::getMax) ?: 0) <= (api?.syphoned ?: 0)
-                                Filter.UNLOCKED -> api != null
-                                Filter.LOCKED -> api == null
-                            }
-                        }.chunked(uiWidth / 24).map {
+                        ).chunked(uiWidth / 24).map {
                             it.map { (repo, api) ->
                                 ExtraDisplays.inventorySlot(
                                     Displays.padding(2, toDisplay(rarity, repo, api)),
@@ -92,10 +91,21 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                                 )
                             }.toRow(0, Alignment.CENTER)
                         }.toColumn(0, Alignment.CENTER)
-                    }.toColumn(4, Alignment.CENTER)
-                    .let { display ->
+                    }?.toColumn(4, Alignment.CENTER)
+                    ?.let { display ->
                         PvLayouts.frame { display(display) }.asScrollable(uiWidth, uiHeight - 50)
-                    }.let(it::addChild)
+                    }
+
+                if (display != null) {
+                    display.let(it::addChild)
+                } else {
+                    it.addChild(PvLayouts.frame(uiWidth, uiHeight - 50) {
+                        widget(Widgets.text("No attributes match the input!").withColor(MinecraftColors.RED)) {
+                            alignHorizontallyCenter()
+                            alignVerticallyMiddle()
+                        }
+                    })
+                }
             }
         }
 
@@ -163,25 +173,22 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         else -> repo.max
     }
 
+    fun matchesSearch(repo: AttributesAPI.Attribute?): Boolean {
+        val query = query
+        if (query == null || repo == null) return true
+        return buildList {
+            add(repo.name)
+            add(repo.shardId)
+            add(repo.id)
+            add(repo.shardName)
+            add(repo.attributeId)
+            add(repo.rarity)
+            addAll(repo.lore)
+        }.map { it.stripColor() }.any { it.contains(query, ignoreCase = true) }
+    }
+
     fun getColor(rarity: SkyBlockRarity?, repo: AttributesAPI.Attribute?, api: Attribute?): Int {
         val baseColor = rarity?.color ?: -1
-
-        val query = query
-        if (repo != null && query != null) {
-            return if (buildList {
-                    add(repo.name)
-                    add(repo.shardId)
-                    add(repo.id)
-                    add(repo.shardName)
-                    add(repo.attributeId)
-                    add(repo.rarity)
-                    addAll(repo.lore)
-                }.map { it.stripColor() }.any { it.contains(query, ignoreCase = true) }) {
-                baseColor
-            } else {
-                ARGB.scaleRGB(baseColor, 0.5f)
-            }
-        }
 
         if (api == null) return ARGB.scaleRGB(baseColor, 0.65f)
 
