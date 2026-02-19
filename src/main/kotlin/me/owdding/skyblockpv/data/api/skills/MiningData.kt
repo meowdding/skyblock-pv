@@ -18,15 +18,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 
 data class MiningCore(override val json: JsonObject) : ParseHelper {
-    val nodes: Map<String, Int> by map("nodes") { id, amount -> id to amount.asInt(0) }.map { it.filterKeys { !it.startsWith("toggle_") } }
-    val toggledNodes: List<String> by lazy {
-        json.getAs<JsonObject>("nodes")?.entrySet()?.filter { it.key.startsWith("toggle") }
-            ?.map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
-            ?.filterNot { it.second }
-            ?.map { it.first } ?: emptyList()
-    }
     val crystals: Map<String, Crystal> by map("crystals") { id, data -> id to Crystal(data.asJsonObject) }
-    val experience: Long by long()
     val powderMithril: Int by int("powder_mithril")
     val powderSpentMithril: Int by int("powder_spent_mithril")
     val powderGemstone: Int by int("powder_gemstone")
