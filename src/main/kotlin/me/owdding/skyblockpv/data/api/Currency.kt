@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.data.api
 
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToEssenceOrder
+import me.owdding.skyblockpv.utils.ParseHelper
 import me.owdding.skyblockpv.utils.json.getPathAs
 import tech.thatgravyboat.skyblockapi.utils.extentions.asList
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
@@ -9,55 +10,22 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 
-data class Currency(
-    val purse: Long,
-    val motes: Long,
-    val cookieBuffActive: Boolean,
-    val essence: Map<String, Long>,
-) {
-    companion object {
-        fun fromJson(member: JsonObject): Currency {
-            val currency = member.getPathAs<JsonObject>("currencies") ?: JsonObject()
-            return Currency(
-                purse = currency["coin_purse"].asLong(0),
-                motes = currency["motes_purse"].asLong(0),
-                cookieBuffActive = member.getPathAs<Boolean>("profile.cookie_buff_active", false),
-                // todo: add missing essences if not unlocked
-                essence = currency["essence"].asMap { id, obj -> id to obj.asJsonObject["current"].asLong(0) }.sortToEssenceOrder(),
-            )
-        }
-    }
+data class Currency(override val json: JsonObject) : ParseHelper {
+    val purse: Long by long("currencies.coin_purse")
+    val motes: Long by long("currencies.motes_purse")
+    val cookieBuffActive: Boolean by boolean("profile.cookie_buff_active")
+    val essence: Map<String, Long> by map("currencies.essence") { id, obj -> id to obj.asJsonObject["current"].asLong(0) }.map { it.sortToEssenceOrder() }
 }
 
-data class Bank(
-    val profileBank: Long,
-    val soloBank: Long,
-    val history: List<Transaction>,
-) {
-    companion object {
-        fun fromJson(json: JsonObject, member: JsonObject): Bank? {
-            if (!json.has("banking")) return null
-            return Bank(
-                profileBank = json.getPath("banking.balance").asLong(0),
-                soloBank = member.getPath("profile.bank_account").asLong(0),
-                history = json.getPath("banking.transactions").asList { Transaction.fromJson(it.asJsonObject) }.sortedByDescending { it.timestamp }.take(7),
-            )
-        }
-    }
+data class Bank(override val json: JsonObject, val member: JsonObject) : ParseHelper {
+    val profileBank: Long by long("banking.balance")
+    val soloBank: Long = member.getPath("profile.bank_account").asLong(0)
+    val history: List<Transaction> by list("banking.transactions") { Transaction(it.asJsonObject) }.map { it.sortedByDescending { it.timestamp }.take(7) }
 }
 
-data class Transaction(
-    val amount: Long,
-    val timestamp: Long,
-    val action: String,
-    val initiator: String,
-) {
-    companion object {
-        fun fromJson(json: JsonObject) = Transaction(
-            amount = json["amount"].asLong(0),
-            timestamp = json["timestamp"].asLong(0),
-            action = json["action"].asString(""),
-            initiator = json["initiator_name"].asString(""),
-        )
-    }
+data class Transaction(override val json: JsonObject) : ParseHelper {
+    val amount: Long by long()
+    val timestamp: Long by long()
+    val action: String by string()
+    val initiator: String by string("initiator_name")
 }
