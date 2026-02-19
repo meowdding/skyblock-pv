@@ -33,30 +33,6 @@ data class MiningCore(override val json: JsonObject) : ParseHelper {
     val powderSpentGemstone: Int by int("powder_spent_gemstone")
     val powderGlacite: Int by int("powder_glacite")
     val powderSpentGlacite: Int by int("powder_spent_glacite")
-    val miningAbility: String by string("selected_pickaxe_ability")
-
-
-    val levelToExp = mapOf(
-        1 to 0,
-        2 to 3_000,
-        3 to 12_000,
-        4 to 37_000,
-        5 to 97_000,
-        6 to 197_000,
-        7 to 347_000,
-        8 to 557_000,
-        9 to 847_000,
-        10 to 1_247_000,
-    )
-
-    fun getHotmLevel(): Int = levelToExp.entries.findLast { it.value <= experience }?.key ?: 0
-    fun getXpToNextLevel() = experience - (levelToExp[getHotmLevel()] ?: 0)
-    fun getXpRequiredForNextLevel(): Int {
-        val level = (getHotmLevel() + 1).coerceAtMost(10)
-        return (levelToExp[level] ?: 0) - (levelToExp[level - 1] ?: 0)
-    }
-
-    fun getAbilityLevel() = 1.takeIf { (nodes["special_0"] ?: 0) < 1 } ?: 2
 }
 
 data class Crystal(override val json: JsonObject) : ParseHelper {
