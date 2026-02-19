@@ -1,6 +1,10 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.foraging
 
 import com.mojang.authlib.GameProfile
+import com.mojang.blaze3d.platform.InputConstants
+import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.utils.ListenableState
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
@@ -9,14 +13,18 @@ import me.owdding.lib.displays.toColumn
 import me.owdding.lib.displays.toRow
 import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.ListMerger
+import me.owdding.lib.layouts.withPadding
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.Attribute
 import me.owdding.skyblockpv.data.repo.AttributesData
+import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.toDateTime
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.util.ARGB
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.repolib.api.AttributesAPI
@@ -25,15 +33,20 @@ import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.api.RepoAttributeAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import kotlin.math.absoluteValue
 import kotlin.math.min
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseForagingScreen(gameProfile, profile) {
     override val type: ForagingCategory = ForagingCategory.ATTRIBUTES
+    private var query: String? = null
+    private var filter: Filter = Filter.ALL
 
     override fun getLayout(bg: DisplayWidget): Layout {
         val attributes = profile.attributeData.data.associateBy { it.id.lowercase() }
@@ -45,32 +58,104 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             addAll(attributes.filterNot { (key) -> repoData.containsKey(key.lowercase()) }.map { (_, value) -> null to value })
         }
 
-        return map
-            .groupBy { runCatching { SkyBlockRarity.valueOf(it.first?.rarity!!) }.getOrNull() }
-            .toSortedMap { o1, o2 ->
-                when {
-                    o1 == null && o2 == null -> 0
-                    o1 == null -> 1
-                    o2 == null -> -1
-                    else -> o1.ordinal - o2.ordinal
-                }
+        val frame = Widgets.frame().withSize(uiWidth, uiHeight - 50)
+        fun update() {
+            frame.withContents {
+                it.children.clear()
+                map
+                    .groupBy { runCatching { SkyBlockRarity.valueOf(it.first?.rarity!!) }.getOrNull() }
+                    .toSortedMap { o1, o2 ->
+                        when {
+                            o1 == null && o2 == null -> 0
+                            o1 == null -> 1
+                            o2 == null -> -1
+                            else -> o1.ordinal - o2.ordinal
+                        }
+                    }
+                    .map { (rarity, attributes) ->
+                        attributes.sortedWith(
+                            Comparator.comparingInt { (repo, _) ->
+                                repo?.attributeId?.filter { c -> c.isDigit() }?.toIntOrNull() ?: 1000
+                            },
+                        ).filter { (repo, api) ->
+                            when (filter) {
+                                Filter.ALL -> true
+                                Filter.MAXED -> (repo?.let(::getMax) ?: 0) <= (api?.syphoned ?: 0)
+                                Filter.UNLOCKED -> api != null
+                                Filter.LOCKED -> api == null
+                            }
+                        }.chunked(uiWidth / 24).map {
+                            it.map { (repo, api) ->
+                                ExtraDisplays.inventorySlot(
+                                    Displays.padding(2, toDisplay(rarity, repo, api)),
+                                    getColor(rarity, repo, api),
+                                )
+                            }.toRow(0, Alignment.CENTER)
+                        }.toColumn(0, Alignment.CENTER)
+                    }.toColumn(4, Alignment.CENTER)
+                    .let { display ->
+                        PvLayouts.frame { display(display) }.asScrollable(uiWidth, uiHeight - 50)
+                    }.let(it::addChild)
             }
-            .map { (rarity, attributes) ->
-                attributes.sortedWith(
-                    Comparator.comparingInt { (repo, _) ->
-                        repo?.attributeId?.filter { c -> c.isDigit() }?.toIntOrNull() ?: 1000
-                    },
-                ).chunked(uiWidth / 24).map {
-                    it.map { (repo, api) ->
-                        ExtraDisplays.inventorySlot(
-                            Displays.padding(2, toDisplay(rarity, repo, api)),
-                            getColor(rarity, repo, api),
-                        )
-                    }.toRow(0, Alignment.CENTER)
-                }.toColumn(0, Alignment.CENTER)
-            }.toColumn(4, Alignment.CENTER)
-            .let { PvLayouts.frame { display(it) }.asScrollable(uiWidth, uiHeight) }
+        }
 
+        update()
+
+        return PvLayouts.frame(uiWidth, uiHeight) {
+            PvLayouts.horizontal(spacing = 5) {
+                val input = Widgets.textInput(ListenableState.of("")) { box ->
+                    box.withChangeCallback {
+                        query = it.takeUnless(String::isEmpty)
+                        update()
+                    }
+                }
+                input.withPlaceholder("Search")
+                input.withSize(100, 20)
+                input.withTexture(ExtraConstants.TEXTBOX)
+                widget(input)
+
+                button {
+
+                    fun updateTooltip() {
+                        withTooltip(
+                            Text.multiline(
+                                Text.of("Click to cycle through the filters!", TextColor.GRAY),
+                                Text.of("Left Click / Right Click", TextColor.DARK_GRAY),
+                                CommonComponents.EMPTY,
+                                Filter.entries.map {
+                                    Text.of(it.display, if (filter == it) TextColor.GREEN else TextColor.RED)
+                                },
+                            ),
+                        )
+                    }
+
+                    fun advance(amount: Int): () -> Unit = {
+                        val max = Filter.entries.size
+                        filter = Filter.entries[(filter.ordinal + max + amount) % max]
+                        updateTooltip()
+                        update()
+                    }
+                    updateTooltip()
+                    setTooltipDelay((-1).seconds.toJavaDuration())
+                    withTexture(ExtraConstants.BUTTON_DARK)
+                    withRenderer(WidgetRenderers.text(Text.of("Filter", PvColors.WHITE)))
+
+                    withCallback(InputConstants.MOUSE_BUTTON_LEFT, advance(1))
+                    withCallback(InputConstants.MOUSE_BUTTON_RIGHT, advance(-1))
+                    width = 100
+                    height = 20
+                }
+            }.withPadding(paddingTop = 20, 0, 0, 0).add {
+                alignVerticallyTop()
+                alignHorizontallyCenter()
+            }
+
+            widget(frame) {
+                alignVerticallyBottom()
+                alignHorizontallyCenter()
+                paddingBottom(5)
+            }
+        }
     }
 
     fun getMax(repo: AttributesAPI.Attribute) = when (repo.id.lowercase()) {
@@ -80,6 +165,23 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     fun getColor(rarity: SkyBlockRarity?, repo: AttributesAPI.Attribute?, api: Attribute?): Int {
         val baseColor = rarity?.color ?: -1
+
+        val query = query
+        if (repo != null && query != null) {
+            return if (buildList {
+                    add(repo.name)
+                    add(repo.shardId)
+                    add(repo.id)
+                    add(repo.shardName)
+                    add(repo.attributeId)
+                    add(repo.rarity)
+                    addAll(repo.lore)
+                }.map { it.stripColor() }.any { it.contains(query, ignoreCase = true) }) {
+                baseColor
+            } else {
+                ARGB.scaleRGB(baseColor, 0.5f)
+            }
+        }
 
         if (api == null) return ARGB.scaleRGB(baseColor, 0.65f)
 
@@ -96,7 +198,7 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         val item = repo?.id()?.let { RepoAttributeAPI.getAttributeByIdOrNull(it) }
         return Displays.item(
             when {
-                repo?.let(::getMax) != 0 && (api == null || api.syphoned <= 0) -> Items.GRAY_DYE.defaultInstance
+                repo?.let(::getMax) != 0 && (api == null || api.syphoned <= 0) && filter != Filter.LOCKED -> Items.GRAY_DYE.defaultInstance
                 else -> item ?: Items.BARRIER.defaultInstance
             },
         ).withTooltip {
@@ -161,22 +263,28 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     add {
                         color = TextColor.GRAY
                         append("Syphoned: ")
-                        append(syphoned.toString(), when (syphoned) {
-                            0 -> TextColor.RED
-                            max -> TextColor.GREEN
-                            else -> TextColor.YELLOW
-                        })
+                        append(
+                            syphoned.toString(),
+                            when (syphoned) {
+                                0 -> TextColor.RED
+                                max -> TextColor.GREEN
+                                else -> TextColor.YELLOW
+                            },
+                        )
                         append("/")
                         append(max.toString(), TextColor.GREEN)
                     }
                     add {
                         color = TextColor.GRAY
                         append("Level: ")
-                        append(level.toString(), when (level) {
-                            0 -> TextColor.RED
-                            10 -> TextColor.GREEN
-                            else -> TextColor.YELLOW
-                        })
+                        append(
+                            level.toString(),
+                            when (level) {
+                                0 -> TextColor.RED
+                                10 -> TextColor.GREEN
+                                else -> TextColor.YELLOW
+                            },
+                        )
                         append("/")
                         append("10", TextColor.GREEN)
                     }
@@ -201,4 +309,12 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     private fun SkyBlockRarity.getLevel(syphoned: Int) = AttributesData[this].indexOfLast { it <= syphoned }
     private fun SkyBlockRarity.getMax() = AttributesData[this].max()
+
+    private enum class Filter(val display: String) {
+        ALL("All"),
+        UNLOCKED("Unlocked"),
+        LOCKED("Locked"),
+        MAXED("Maxed"),
+        ;
+    }
 }
