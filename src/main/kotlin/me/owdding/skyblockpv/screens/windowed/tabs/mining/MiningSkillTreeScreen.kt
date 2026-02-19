@@ -13,7 +13,7 @@ import net.minecraft.client.gui.layouts.Layout
 class MiningSkillTreeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : SkillTreeScreen, BaseMiningScreen(gameProfile, profile) {
     override val treeType: String = "hotm"
     override val coreNode: String = "center_of_the_forest"
-    override val items: SkillTreeItems = SkillTreeItems.FORAGING
+    override val items: SkillTreeItems = SkillTreeItems.MINING
 
     override fun skillTree(): SkillTree? = profile.skillTrees?.mining
     override fun nodes(): List<TreeNode> = TreeRepoData.hotm

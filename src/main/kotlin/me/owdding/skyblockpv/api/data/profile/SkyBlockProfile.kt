@@ -290,7 +290,7 @@ data class BackingSkyBlockProfile(
                         k.toUuid().takeUnless { entry.getPath("profile.deletion_notice") != null }
                     }?.filter { it != user } ?: emptyList(),
                 ),
-                skillTrees = SkillTrees.fromJson(member),
+                skillTrees = future { SkillTrees(member) },
                 attributeData = AttributesData.fromJson(member)
             )
         }

@@ -10,6 +10,7 @@ import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asWidget
 import me.owdding.lib.displays.toColumn
 import me.owdding.lib.displays.toRow
 import me.owdding.lib.displays.withTooltip
@@ -93,11 +94,16 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         }.toColumn(0, Alignment.CENTER)
                     }?.toColumn(4, Alignment.CENTER)
                     ?.let { display ->
-                        PvLayouts.frame { display(display) }.asScrollable(uiWidth, uiHeight - 50)
+                        PvLayouts.frame(uiWidth, 0) {
+                            widget(display.asWidget()) {
+                                alignHorizontallyCenter()
+                                alignVerticallyMiddle()
+                            }
+                        }.asScrollable(uiWidth, uiHeight - 50)
                     }
 
                 if (display != null) {
-                    display.let(it::addChild)
+                    it.addChild(display)
                 } else {
                     it.addChild(PvLayouts.frame(uiWidth, uiHeight - 50) {
                         widget(Widgets.text("No attributes match the input!").withColor(MinecraftColors.RED)) {

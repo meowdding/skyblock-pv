@@ -1,25 +1,31 @@
 package me.owdding.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
-import me.owdding.skyblockpv.api.data.profile.BackingSkyBlockProfile.Companion.future
-import me.owdding.skyblockpv.data.api.skills.SkillTree.Companion.parse
-import me.owdding.skyblockpv.utils.debugToggle
+import me.owdding.skyblockpv.utils.ParseHelper
 import me.owdding.skyblockpv.utils.json.getAs
-import me.owdding.skyblockpv.utils.json.getPathAs
 import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
-import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
-import java.util.concurrent.CompletableFuture
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 
-data class SkillTree(
-    val nodes: Map<String, Int>,
-    val disabled: Set<String>,
-    val selectedAbility: String?,
-    val tokensSpent: Int,
-    val experience: Long,
-    val lastReset: Long,
-) {
+class SkillTree(override val json: JsonObject, skillType: String, treeType: String) : ParseHelper {
 
+    constructor(json: JsonObject, treeType: SkillTreeType) : this(json, treeType.skillType, treeType.treeType)
+
+    val nodes: Map<String, Int> by map("nodes.$skillType") { id, amount -> id to amount.asInt(0) }.map { it.filterKeys { !it.startsWith("toggle_") } }
+    val disabled: List<String> by lazy {
+        json.getAs<JsonObject>("nodes.$skillType")?.entrySet()?.asSequence()
+            ?.filter { it.key.startsWith("toggle") }
+            ?.map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
+            ?.filterNot { it.second }
+            ?.map { it.first }
+            ?.toList() ?: emptyList()
+    }
+    val selectedAbility: String? by parse("selected_ability.$skillType") { it.asString() }
+    val tokensSpent: Int by int("selected_ability.$treeType")
+    val experience: Long by long("experience.$skillType")
+    val lastReset: Long by long("last_reset.$skillType")
+
+    // todo repo, low prio
     val levelToExp = mapOf(
         1 to 0,
         2 to 3_000,
@@ -42,57 +48,16 @@ data class SkillTree(
 
     fun getAbilityLevel(coreNode: String) = 1.takeIf { (nodes[coreNode] ?: 0) < 1 } ?: 2
 
-
-    companion object {
-        fun JsonObject.parse(type: SkillTreeType) : SkillTree {
-            val (skillType, treeType) = type
-
-            val nodes = getPathAs<JsonObject>("nodes.$skillType").asMap { id, amount -> id to amount.asInt(0) }.filterKeys { !it.startsWith("toggle_") }
-            val disabled = getPathAs<JsonObject>("nodes.$skillType")?.entrySet()
-                ?.asSequence()
-                ?.filter { it.key.startsWith("toggle") }
-                ?.map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
-                ?.filterNot { it.second }
-                ?.map { it.first }
-                ?.toSet() ?: emptySet()
-
-            return SkillTree(
-                nodes,
-                disabled,
-                getPathAs<String>("selected_ability.$skillType"),
-                getPathAs<Int>("selected_ability.$treeType", 0),
-                getPathAs<Long>("experience.$skillType", 0),
-                getPathAs<Long>("last_reset.$skillType", 0),
-            )
-        }
-    }
 }
 
 enum class SkillTreeType(val skillType: String, val treeType: String) {
     MINING("mining", "mountain"),
     FORAGING("foraging", "forest"),
     ;
-
-    operator fun component1() = skillType
-    operator fun component2() = treeType
 }
 
-data class SkillTrees(
-    val mining: SkillTree,
-    val foraging: SkillTree,
-    val refundAbilityFree: Boolean,
-) {
-
-    companion object {
-        fun fromJson(member: JsonObject): CompletableFuture<SkillTrees?> = future {
-            val skillTrees = member.getAs<JsonObject>("skill_tree") ?: return@future null
-
-            SkillTrees(
-                skillTrees.parse(SkillTreeType.MINING),
-                skillTrees.parse(SkillTreeType.FORAGING),
-                skillTrees.getAs<Boolean>("refund_ability_free", false)
-            )
-        }
-    }
-
+data class SkillTrees(override val json: JsonObject) : ParseHelper {
+    val mining: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), SkillTreeType.MINING) }
+    val foraging: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), SkillTreeType.FORAGING) }
+    val refundAbilityFree: Boolean by boolean("skill_tree.refund_ability_free")
 }

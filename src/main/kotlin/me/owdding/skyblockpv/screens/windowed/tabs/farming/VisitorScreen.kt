@@ -1,7 +1,14 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.farming
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.Alignment
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.toColumn
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.Commission
 import me.owdding.skyblockpv.data.repo.StaticGardenData
@@ -16,10 +23,8 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.BlockItemStateProperties
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.api.profile.PetsAPI.rarity
 import tech.thatgravyboat.skyblockapi.utils.builders.ItemBuilder
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import kotlin.math.PI
 
 class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
@@ -52,7 +57,14 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     }.toRow(0, Alignment.CENTER)
                 }.toColumn(0, Alignment.CENTER)
             }.toColumn(4, Alignment.CENTER)
-            .let { PvLayouts.frame { display(it) }.asScrollable(uiWidth, uiHeight) }
+            .let {
+                PvLayouts.frame(uiWidth, 0) {
+                    widget(it.asWidget()) {
+                        alignHorizontallyCenter()
+                        alignVerticallyMiddle()
+                    }
+                }.asScrollable(uiWidth, uiHeight)
+            }
     }
 
     private fun getRarity(rarity: SkyBlockRarity?, commission: Commission?): Int {
