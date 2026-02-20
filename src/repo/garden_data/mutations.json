@@ -6,7 +6,6 @@
     { "name": "Devourer", "id": "DEVOURER", "rarity": "LEGENDARY" },
     { "name": "Glasscorn", "id": "GLASSCORN", "rarity": "LEGENDARY" },
     { "name": "All-in Aloe", "id": "ALL_IN_ALOE", "rarity": "LEGENDARY" },
-    { "name": "Condensed Helianthus", "id": "CONDENSED_HELIANTHUS", "rarity": "LEGENDARY" },
     { "name": "Zombud", "id": "ZOMBUD", "rarity": "EPIC" },
     { "name": "Thunderling", "id": "THUNDERLING", "rarity": "EPIC" },
     { "name": "Turtlellini", "id": "TURTLELLINI", "rarity": "EPIC" },
@@ -16,8 +15,6 @@
     { "name": "Shellfruit", "id": "SHELLFRUIT", "rarity": "EPIC" },
     { "name": "Chorus Fruit", "id": "CHORUS_FRUIT", "rarity": "EPIC" },
     { "name": "PlantBoy Advance", "id": "PLANTBOY_ADVANCE", "rarity": "EPIC" },
-    { "name": "Fermento", "id": "FERMENTO", "rarity": "EPIC" },
-    { "name": "Fertilized Jerryseed", "id": "FERTILIZED_JERRYSEED", "rarity": "EPIC" },
     { "name": "Snoozling", "id": "SNOOZLING", "rarity": "RARE" },
     { "name": "Soggybud", "id": "SOGGYBUD", "rarity": "RARE" },
     { "name": "Magic Jellybean", "id": "MAGIC_JELLYBEAN", "rarity": "RARE" },
@@ -42,5 +39,5 @@
     { "name": "Gloomgourd", "id": "GLOOMGOURD", "rarity": "COMMON" },
     { "name": "Ashwreath", "id": "ASHWREATH", "rarity": "COMMON" },
     { "name": "Choconut", "id": "CHOCONUT", "rarity": "COMMON" },
-    { "name": "Deadplant", "id": "DEAD_PLANT", "rarity": "UNCOMMON" }
+    { "name": "Deadplant", "id": "DEAD_PLANT", "rarity": "UNCOMMON", "analyzable": false }
 ]

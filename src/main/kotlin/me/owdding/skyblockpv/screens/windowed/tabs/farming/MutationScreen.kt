@@ -68,7 +68,7 @@ class MutationScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         return all.map { id ->
             val data = StaticGardenData.mutations.find { it.id.lowercase() == id }
 
-            MutationEntry(data, analyzed.contains(id), discovered.contains(id), id)
+            MutationEntry(data, analyzed.contains(id) || data?.analyzable == false, discovered.contains(id), id)
         }
     }
 
@@ -111,15 +111,23 @@ class MutationScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         ).withTooltip {
             add(baseItem?.hoverName ?: Text.of(id))
             space()
-            fun append(type: String, value: Boolean) = add("$type: ") {
+            fun append(type: String, value: Boolean, notApplicable: Boolean = false) = add("$type: ") {
                 color = TextColor.GRAY
-                append(if (value) "Yes" else "No") {
-                    color = if (value) TextColor.GREEN else TextColor.RED
+                append(when {
+                        notApplicable -> "N/A"
+                        value -> "Yes"
+                        else -> "No"
+                    }) {
+                    color = when {
+                        notApplicable -> TextColor.ORANGE
+                        value -> TextColor.GREEN
+                        else -> TextColor.RED
+                    }
                 }
             }
 
             append("Discovered", discovered)
-            append("Analyzed", analyzed)
+            append("Analyzed", analyzed, data?.analyzable == false)
         }
     }
 

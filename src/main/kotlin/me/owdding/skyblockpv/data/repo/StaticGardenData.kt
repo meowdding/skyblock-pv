@@ -191,6 +191,7 @@ data class MutationData(
     val id: String,
     val name: String,
     val rarity: SkyBlockRarity,
+    val analyzable: Boolean = true,
 )
 
 @GenerateCodec
