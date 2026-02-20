@@ -74,7 +74,6 @@ dependencies {
     includeImplementation(libs.meowdding.remote.repo)
     includeImplementation(versionedCatalog["placeholders"])
     modImplementation(libs.fabric.loader)
-    modImplementation(libs.fabric.language.kotlin)
     modImplementation(versionedCatalog["fabric.api"])
     modImplementation(libs.mixinconstraints)
     modRuntimeOnly(libs.hypixelapi)
@@ -87,6 +86,9 @@ dependencies {
     compileOnly(libs.meowdding.ktcodecs)
     ksp(libs.meowdding.ktmodules)
     ksp(libs.meowdding.ktcodecs)
+
+    modRuntimeOnly(libs.fabric.language.kotlin)
+    implementation(libs.fabric.language.kotlin)
 }
 
 fun DependencyHandler.includeImplementation(dep: Any) {
