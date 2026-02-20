@@ -13,6 +13,7 @@ import me.owdding.ktcodecs.NamedCodec
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
@@ -31,6 +32,12 @@ import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+
+enum class GreenhouseUpgrade {
+    GROWTH_SPEED,
+    YIELD,
+    PLOT_LIMIT,
+}
 
 enum class GardenResource(internalName: String? = null, itemId: String? = null) : StringRepresentable {
     WHEAT,
@@ -80,6 +87,34 @@ object GardenCodecs {
         ).xmap({ Either.unwrap(it) }, { if (it.bundle) Either.right(it) else Either.left(it) })
 }
 
+@GenerateCodec
+data class GreenhouseUpgradeData(
+    @FieldName("reward_formula") val rewardFormula: String,
+    val format: CompostNumberFormat,
+    @NamedCodec("component_tag") val name: Component,
+    val tooltip: String,
+    @NamedCodec("cum_string_int_map") @FieldName("upgrades") val upgrade: List<Map<String, Int>>,
+) {
+    fun getRewardForLevel(level: Int): Int {
+        return rewardFormula.keval {
+            includeDefault()
+            function {
+                name = "clamp"
+                arity = 3
+                implementation = { (value, min, max) -> Math.clamp(value, min, max) }
+            }
+            constant {
+                name = "level"
+                value = level.toDouble()
+            }
+        }.toInt()
+    }
+
+    fun getTooltipForLevel(level: Int): Component {
+        return TagParser.QUICK_TEXT_SAFE.parseText(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
+    }
+}
+
 @LoadData
 data object StaticGardenData : ExtraData {
     lateinit var barnSkins: Map<String, DefaultBarnSkin>
@@ -101,6 +136,10 @@ data object StaticGardenData : ExtraData {
     lateinit var mutations: List<MutationData>
         private set
     lateinit var tools: Map<GardenResource, StaticToolInfo>
+        private set
+    lateinit var greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData>
+        private set
+
     val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO")
     const val COPPER = "copper"
 
@@ -119,8 +158,8 @@ data object StaticGardenData : ExtraData {
         val plots: List<StaticPlotData>,
         val visitors: List<StaticVisitorData>,
         val tools: Map<GardenResource, StaticToolInfo>,
+        @FieldName("greenhouse_upgrades") val greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData>,
     )
-
 
     override suspend fun load() {
         init(Utils.loadRepoData<GardenData>("garden_data"))
@@ -137,6 +176,7 @@ data object StaticGardenData : ExtraData {
         tools = data.tools
         chips = data.chips
         mutations = data.mutations
+        greenhouseUpgrades = data.greenhouseUpgrades
     }
 }
 
