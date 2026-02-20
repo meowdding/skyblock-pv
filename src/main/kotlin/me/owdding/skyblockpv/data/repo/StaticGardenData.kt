@@ -96,6 +96,8 @@ data object StaticGardenData : ExtraData {
         private set
     lateinit var visitors: List<StaticVisitorData>
         private set
+    lateinit var chips: List<Int>
+        private set
     lateinit var tools: Map<GardenResource, StaticToolInfo>
     val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO")
     const val COPPER = "copper"
@@ -109,6 +111,7 @@ data object StaticGardenData : ExtraData {
         @FieldName("composter_data") val composterData: Map<ComposterUpgrade, StaticComposterData>,
         @NamedCodec("garden§crop_milestones") @FieldName("crop_milestones") val cropMilestones: Map<GardenResource, List<Int>>,
         @FieldName("misc") val miscData: StaticMiscData,
+        @NamedCodec("cum_int_list") val chips: List<Int>,
         @FieldName("plot_cost") val plotCost: Map<String, List<StaticPlotCost>>,
         val plots: List<StaticPlotData>,
         val visitors: List<StaticVisitorData>,
@@ -129,6 +132,7 @@ data object StaticGardenData : ExtraData {
         plots = data.plots
         visitors = data.visitors
         tools = data.tools
+        chips = data.chips
     }
 }
 
@@ -255,7 +259,9 @@ enum class FarmingGear {
     NECKLACES,
     GLOVES,
     VACUUM,
-    PETS;
+    WATERING_CAN,
+    PETS,
+    ;
 
     var list: List<String> = emptyList()
         private set
@@ -273,6 +279,7 @@ enum class FarmingGear {
         val belts = BELTS.list
         val armor = ARMOR.list
         val vacuum = VACUUM.list
+        val watering_can = WATERING_CAN.list
         val pets = PETS.list
     }
 }

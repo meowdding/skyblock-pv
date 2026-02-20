@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.toColumn
+import me.owdding.lib.extensions.ListMerger
 import me.owdding.lib.rendering.text.TextShader
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
@@ -206,4 +207,8 @@ object Utils {
 
     private val format = SimpleDateFormat("yyyy.MM.dd HH:mm")
     fun Long.toDateTime(): String = format.format(this)
+
+    fun <Type> ListMerger<Type>.skipUntil(predicate: (Type) -> Boolean) {
+        while (index + 1 < original.size && !predicate(peek())) read()
+    }
 }

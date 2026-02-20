@@ -10,6 +10,7 @@ import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.data.InventoryData
 import me.owdding.skyblockpv.api.data.ProfileId
+import me.owdding.skyblockpv.api.data.profile.BackingSkyBlockProfile.Companion.emptyFuture
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
@@ -17,6 +18,7 @@ import me.owdding.skyblockpv.data.api.*
 import me.owdding.skyblockpv.data.api.Currency
 import me.owdding.skyblockpv.data.api.skills.*
 import me.owdding.skyblockpv.data.api.skills.combat.*
+import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
@@ -30,8 +32,8 @@ import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import me.owdding.skyblockpv.utils.Utils.toUuid
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
-import net.minecraft.util.Util
 import net.minecraft.network.chat.Component
+import net.minecraft.util.Util
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvOpenedEvent
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
@@ -75,6 +77,7 @@ interface SkyBlockProfile {
     val miscFishData: FishData get() = backingProfile.miscFishData.getNowOrElse(FishData.EMPTY)
     val essenceUpgrades: Map<String, Int> get() = backingProfile.essenceUpgrades.getNowOrElse(emptyMap())
     val gardenData: GardenData get() = backingProfile.gardenData.getNowOrElse(GardenData.EMPTY)
+    val gardenChips: ChipsData get() = backingProfile.gardenChips.getNowOrElse(ChipsData.EMPTY)
     val farmingData: FarmingData get() = backingProfile.farmingData.getNowOrElse(FarmingData.EMPTY)
     val chocolateFactoryData: CfData? get() = backingProfile.chocolateFactoryData.getNowOrElse(null)
     val rift: RiftData? get() = backingProfile.rift.getNowOrElse(null)
@@ -140,6 +143,7 @@ data class BackingSkyBlockProfile(
     val essenceUpgrades: CompletableFuture<Map<String, Int>> = emptyFuture(),
     val gardenData: CompletableFuture<GardenData> = emptyFuture(),
     val farmingData: CompletableFuture<FarmingData> = emptyFuture(),
+    val gardenChips: CompletableFuture<ChipsData> = emptyFuture(),
     val chocolateFactoryData: CompletableFuture<CfData?> = emptyFuture(),
     val rift: CompletableFuture<RiftData?> = emptyFuture(),
     val crimsonIsleData: CompletableFuture<CrimsonIsleData> = emptyFuture(),
@@ -175,7 +179,7 @@ data class BackingSkyBlockProfile(
         crimsonIsleData,
         minions,
         maxwell,
-        skillTrees
+        skillTrees,
     )
 
     companion object {
@@ -263,15 +267,18 @@ data class BackingSkyBlockProfile(
                 essenceUpgrades = future { playerData?.getAs<JsonObject>("perks").parseEssencePerks() },
                 petMilestones = future { playerStats?.getPath("pets.milestone").asMap { id, amount -> id to amount.asInt(0) } },
                 gardenData = future {
-                    val data = member.getAs<JsonObject>("garden_player_data") ?: return@future GardenData(0, 0, 0)
+                    val data = member.getAs<JsonObject>("garden_player_data") ?: return@future GardenData.EMPTY
 
                     GardenData(
                         data.getAs<Int>("copper", 0),
                         data.getAs<Int>("larva_consumed", 0),
                         playerStats.getAs<Int>("glowing_mushrooms_broken", 0),
+                        data.getAs<JsonArray>("analyzed_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
+                        data.getAs<JsonArray>("discovered_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
                     )
                 },
                 farmingData = future { FarmingData.fromJson(member.getAs("jacobs_contest")) },
+                gardenChips = future { ChipsData(playerData?.getAsJsonObject("garden_chips") ?: JsonObject()) },
                 chocolateFactoryData = future { member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) } },
                 rift = future {
                     playerStats?.getAs<JsonObject>("rift")
@@ -291,7 +298,7 @@ data class BackingSkyBlockProfile(
                     }?.filter { it != user } ?: emptyList(),
                 ),
                 skillTrees = future { SkillTrees(member) },
-                attributeData = AttributesData.fromJson(member)
+                attributeData = AttributesData.fromJson(member),
             )
         }
 

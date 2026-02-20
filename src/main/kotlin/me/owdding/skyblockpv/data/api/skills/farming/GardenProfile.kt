@@ -17,9 +17,11 @@ data class GardenData(
     val copper: Int,
     val larvaConsumed: Int,
     val glowingMushroomBroken: Int,
+    val analyzedCrops: Set<String>,
+    val discoveredCrops: Set<String>,
 ) {
     companion object {
-        val EMPTY = GardenData(0, 0, 0)
+        val EMPTY = GardenData(0, 0, 0, emptySet(), emptySet())
     }
 }
 
