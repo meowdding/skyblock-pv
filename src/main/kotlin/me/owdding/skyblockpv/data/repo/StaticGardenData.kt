@@ -98,6 +98,8 @@ data object StaticGardenData : ExtraData {
         private set
     lateinit var chips: List<Int>
         private set
+    lateinit var mutations: List<MutationData>
+        private set
     lateinit var tools: Map<GardenResource, StaticToolInfo>
     val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO")
     const val COPPER = "copper"
@@ -113,6 +115,7 @@ data object StaticGardenData : ExtraData {
         @FieldName("misc") val miscData: StaticMiscData,
         @NamedCodec("cum_int_list") val chips: List<Int>,
         @FieldName("plot_cost") val plotCost: Map<String, List<StaticPlotCost>>,
+        val mutations: List<MutationData>,
         val plots: List<StaticPlotData>,
         val visitors: List<StaticVisitorData>,
         val tools: Map<GardenResource, StaticToolInfo>,
@@ -133,6 +136,7 @@ data object StaticGardenData : ExtraData {
         visitors = data.visitors
         tools = data.tools
         chips = data.chips
+        mutations = data.mutations
     }
 }
 
@@ -181,6 +185,13 @@ data class StaticComposterData(
         return TagParser.QUICK_TEXT_SAFE.parseText(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }
+
+@GenerateCodec
+data class MutationData(
+    val id: String,
+    val name: String,
+    val rarity: SkyBlockRarity,
+)
 
 @GenerateCodec
 data class StaticMiscData(
