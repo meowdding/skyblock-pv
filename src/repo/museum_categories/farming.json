@@ -2,7 +2,8 @@
     "name": "Farming items",
     "display": "skyblock:infini_vacuum_hooverius",
     "categories": [
-        "vacuum"
+        "vacuum",
+        "watering_can"
     ],
     "items": [
         "ZORROS_CAPE",
@@ -21,8 +22,14 @@
         "PESTHUNTERS_NECKLACE",
         "PESTHUNTERS_BELT",
         "CACTUS_KNIFE",
+        "CACTUS_KNIFE_2",
+        "CACTUS_KNIFE_3",
         "COCO_CHOPPER",
+        "COCO_CHOPPER_2",
+        "COCO_CHOPPER_3",
         "FUNGI_CUTTER",
+        "FUNGI_CUTTER_2",
+        "FUNGI_CUTTER_3",
         "PUMPKIN_DICER",
         "PUMPKIN_DICER_2",
         "PUMPKIN_DICER_3",
@@ -45,7 +52,16 @@
         "THEORETICAL_HOE_WARTS_3",
         "THEORETICAL_HOE_CANE_1",
         "THEORETICAL_HOE_CANE_2",
-        "THEORETICAL_HOE_CANE_3"
+        "THEORETICAL_HOE_CANE_3",
+        "THEORETICAL_HOE_SUNFLOWER_1",
+        "THEORETICAL_HOE_SUNFLOWER_2",
+        "THEORETICAL_HOE_SUNFLOWER_3",
+        "THEORETICAL_HOE_WILD_ROSE_1",
+        "THEORETICAL_HOE_WILD_ROSE_2",
+        "THEORETICAL_HOE_WILD_ROSE_3",
+        "HOE_OF_GREAT_TILLING",
+        "HOE_OF_GREATER_TILLING",
+        "HOE_OF_GREATEST_TILLING"
     ],
     "priority": -600
 }

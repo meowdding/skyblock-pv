@@ -1,7 +1,7 @@
 package me.owdding.skyblockpv.data.api.skills
 
-
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.utils.ParseHelper
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
@@ -11,22 +11,30 @@ import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.api.remote.RepoPetsAPI
-import tech.thatgravyboat.skyblockapi.utils.extentions.*
-import tech.thatgravyboat.skyblockapi.utils.json.getPath
+import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 
-data class MiningCore(
-    val nodes: Map<String, Int>,
-    val crystals: Map<String, Crystal>,
-    val experience: Long,
-    val powderMithril: Int,
-    val powderSpentMithril: Int,
-    val powderGemstone: Int,
-    val powderSpentGemstone: Int,
-    val powderGlacite: Int,
-    val powderSpentGlacite: Int,
-    val toggledNodes: List<String>,
-    val miningAbility: String,
-) {
+data class MiningCore(override val json: JsonObject) : ParseHelper {
+    val nodes: Map<String, Int> by map("nodes") { id, amount -> id to amount.asInt(0) }.map { it.filterKeys { !it.startsWith("toggle_") } }
+    val toggledNodes: List<String> by lazy {
+        json.getAs<JsonObject>("nodes")?.entrySet()?.filter { it.key.startsWith("toggle") }
+            ?.map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
+            ?.filterNot { it.second }
+            ?.map { it.first } ?: emptyList()
+    }
+    val crystals: Map<String, Crystal> by map("crystals") { id, data -> id to Crystal(data.asJsonObject) }
+    val experience: Long by long()
+    val powderMithril: Int by int("powder_mithril")
+    val powderSpentMithril: Int by int("powder_spent_mithril")
+    val powderGemstone: Int by int("powder_gemstone")
+    val powderSpentGemstone: Int by int("powder_spent_gemstone")
+    val powderGlacite: Int by int("powder_glacite")
+    val powderSpentGlacite: Int by int("powder_spent_glacite")
+    val miningAbility: String by string("selected_pickaxe_ability")
+
+
     val levelToExp = mapOf(
         1 to 0,
         2 to 3_000,
@@ -48,74 +56,28 @@ data class MiningCore(
     }
 
     fun getAbilityLevel() = 1.takeIf { (nodes["special_0"] ?: 0) < 1 } ?: 2
+}
+
+data class Crystal(override val json: JsonObject) : ParseHelper {
+    val state: String by string(default = "NOT_FOUND")
+    val totalPlaced: Int by int("total_placed")
+    val totalFound: Int by int("total_found")
 
     companion object {
-        fun fromJson(json: JsonObject): MiningCore {
-            val nodes = json.getAs<JsonObject>("nodes").asMap { id, amount -> id to amount.asInt(0) }.filterKeys { !it.startsWith("toggle_") }
-            val toggledNodes = json.getAs<JsonObject>("nodes")?.entrySet()?.filter { it.key.startsWith("toggle") }
-                ?.map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
-                ?.filterNot { it.second }
-                ?.map { it.first } ?: emptyList()
-            val crystals = json.getAs<JsonObject>("crystals").asMap { id, data ->
-                val obj = data.asJsonObject
-                id to Crystal(
-                    state = obj["state"].asString(""),
-                    totalPlaced = obj["total_placed"].asInt(0),
-                    totalFound = obj["total_found"].asInt(0),
-                )
-            }
-
-            return MiningCore(
-                nodes = nodes,
-                toggledNodes = toggledNodes,
-                crystals = crystals,
-                experience = json["experience"].asLong(0),
-                powderMithril = json["powder_mithril"].asInt(0),
-                powderSpentMithril = json["powder_spent_mithril"].asInt(0),
-                powderGemstone = json["powder_gemstone"].asInt(0),
-                powderSpentGemstone = json["powder_spent_gemstone"].asInt(0),
-                powderGlacite = json["powder_glacite"].asInt(0),
-                powderSpentGlacite = json["powder_spent_glacite"].asInt(0),
-                miningAbility = json["selected_pickaxe_ability"].asString(""),
-            )
-        }
+        val EMPTY = Crystal(JsonObject())
     }
 }
 
-data class Crystal(
-    val state: String,
-    val totalPlaced: Int,
-    val totalFound: Int,
-)
-
-data class Forge(
-    val slots: Map<Int, ForgeSlot>,
-) {
-    companion object {
-        fun fromJson(json: JsonObject): Forge {
-            val forge = json.getPath("forge_processes.forge_1") ?: JsonObject()
-
-            return forge.asMap { key, value ->
-                val obj = value.asJsonObject
-                val slot = ForgeSlot(
-                    type = obj["type"].asString(""),
-                    id = obj["id"].asString(""),
-                    startTime = obj["startTime"].asLong(0),
-                    notified = obj["notified"].asBoolean(false),
-                )
-
-                key.toInt() to slot
-            }.let { Forge(it) }
-        }
-    }
+data class Forge(override val json: JsonObject) : ParseHelper {
+    val slots: Map<Int, ForgeSlot> by map("forge_processes.forge_1") { key, value -> key.toInt() to ForgeSlot(value.asJsonObject) }
 }
 
-data class ForgeSlot(
-    val type: String,
-    val id: String,
-    val startTime: Long,
-    val notified: Boolean,
-) {
+data class ForgeSlot(override val json: JsonObject) : ParseHelper {
+    val type: String by string()
+    val id: String by string()
+    val startTime: Long by long()
+    val notified: Boolean by boolean()
+
     val itemStack by lazy {
         if (type == "PETS") {
             RepoPetsAPI.getPetAsItem(PetQuery(id, SkyBlockRarity.LEGENDARY, 100))
@@ -125,22 +87,11 @@ data class ForgeSlot(
     }
 }
 
-data class GlaciteData(
-    val fossilsDonated: List<String>,
-    val fossilDust: Int,
-    val corpsesLooted: Map<String, Int>,
-    val mineshaftsEntered: Int,
-) {
-    companion object {
-        fun fromJson(json: JsonObject): GlaciteData {
-            return GlaciteData(
-                fossilsDonated = json["fossils_donated"].asList { it.asString("") },
-                fossilDust = json["fossil_dust"].asInt(0),
-                corpsesLooted = json.getAs<JsonObject>("corpses_looted").asMap { id, amount -> id to amount.asInt(0) },
-                mineshaftsEntered = json["mineshafts_entered"].asInt(0),
-            )
-        }
-    }
+data class GlaciteData(override val json: JsonObject) : ParseHelper {
+    val fossilsDonated: List<String> by stringList("fossils_donated")
+    val fossilDust: Int by int("fossil_dust")
+    val corpsesLooted: Map<String, Int> by stringIntMap("corpses_looted")
+    val mineshaftsEntered: Int by int("mineshafts_entered")
 }
 
 enum class MiningGear {

@@ -22,8 +22,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
-class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
-    BaseMuseumScreen(gameProfile, profile) {
+class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMuseumScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
         return PvLayouts.frame {
@@ -99,14 +98,14 @@ class MuseumArmorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
     fun sortAmor(itemStack: ItemStack): Int {
         val skyBlockCategory = itemStack.getData(DataTypes.CATEGORY) ?: return -1
         return when (skyBlockCategory.name) {
-            "helmet", "hat", "mask" -> return 8
-            "chestplate" -> return 7
-            "leggings" -> return 6
-            "boots" -> return 5
-            "necklace" -> return 4
-            "cloak" -> return 3
+            "helmet", "hat", "mask" -> 8
+            "chestplate" -> 7
+            "leggings" -> 6
+            "boots" -> 5
+            "necklace" -> 4
+            "cloak" -> 3
             "belt" -> 2
-            "bracelet", "gloves" -> return 1
+            "bracelet", "gloves" -> 1
             else -> -1
         }
     }

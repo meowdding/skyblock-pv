@@ -1,0 +1,16 @@
+{
+    "name": "Foraging/Hunting items",
+    "display": "skyblock:treecapitator_axe",
+    "categories": [
+        "axe",
+        "lasso",
+        "fishing_net"
+    ],
+    "items": [
+        "HUNTING_TOOLKIT",
+        "TINY_SCAFFOLDING",
+        "MEDIUM_SCAFFOLDING",
+        "LARGE_SCAFFOLDING"
+    ],
+    "priority": -650
+}

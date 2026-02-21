@@ -66,7 +66,8 @@ object RepoMuseumData {
         )
     }
 
-    fun getById(id: String): MuseumRepoEntry? = listOf(armor, rarities, weapons).flatten().firstOrNull { it.id == id }
+    val entries = listOf(armor, rarities, weapons).flatten().toSet()
+    fun getById(id: String): MuseumRepoEntry? = entries.firstOrNull { it.id == id }
 
 }
 

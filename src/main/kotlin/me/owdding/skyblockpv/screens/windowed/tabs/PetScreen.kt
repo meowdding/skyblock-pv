@@ -40,7 +40,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
 
     override fun create(bg: DisplayWidget) {
         val pets = profile.pets
-        val sortedPets = pets.sortedWith(compareBy<Pet> { SortedEntry.RARITY.list.indexOf(it.tier) }.thenByDescending { it.exp })
+        val sortedPets = pets.sortedWith(compareBy<Pet> { SortedEntry.RARITY.list.indexOf(it.tier) }.thenByDescending { it.level }.thenByDescending { it.exp })
         val leftColumnWidth = ((bg.width - 10) * 0.65).toInt()
         val rightColumnWidth = (bg.width - 10 - leftColumnWidth)
 

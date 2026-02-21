@@ -10,6 +10,7 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.displays.withTranslatedTooltip
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -48,10 +49,15 @@ class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         )
         display(Displays.supplied { display.getNow(loadingDisplay) })
 
-        string("Highest Magical Power: ${maxwell.highestMp.toFormattedString()}") {
-            color = PvColors.DARK_GRAY
-            shadowColor = null
-        }
+        display(
+            Displays.component(
+                Text.of("Highest Magical Power: ${maxwell.highestMp.toFormattedString()}") {
+                    color = PvColors.DARK_GRAY
+                    shadowColor = null
+                }
+            ).withTranslatedTooltip("skyblockpv.screens.inventory.accessory.highest_magical_power"),
+        )
+
         string("Selected Power: ${maxwell.selectedPower.toTitleCase()}") {
             color = PvColors.DARK_GRAY
             shadowColor = null

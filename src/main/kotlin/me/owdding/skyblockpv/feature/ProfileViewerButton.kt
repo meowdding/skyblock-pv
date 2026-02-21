@@ -17,7 +17,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 @Module
 object ProfileViewerButton {
 
-    private val titleRegex = "(?<name>.*)'s Profile(?: \\[GUEST])?".toRegex()
+    private val titleRegex = "(?<name>.*)'s? Profile(?: \\[GUEST])?".toRegex()
 
     @Subscription
     fun onInventoryChange(event: InventoryChangeEvent) {

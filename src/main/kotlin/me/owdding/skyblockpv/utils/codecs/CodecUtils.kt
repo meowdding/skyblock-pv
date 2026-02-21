@@ -91,15 +91,13 @@ object CodecUtils {
     val CUMULATIVE_STRING_INT_MAP: Codec<List<Map<String, Int>>> = Codec.unboundedMap(Codec.STRING, Codec.INT).listOf().xmap(
         {
             it.runningFold(
-                mutableMapOf(),
-            ) { acc: MutableMap<String, Int>, mutableMap: MutableMap<String, Int>? ->
-                LinkedHashMap(
-                    acc.also {
-                        mutableMap?.forEach {
-                            acc[it.key] = it.value + (acc[it.key] ?: 0)
-                        }
-                    },
-                )
+                mapOf(),
+            ) { acc: Map<String, Int>, mutableMap: MutableMap<String, Int>? ->
+                val acc = LinkedHashMap(acc)
+                mutableMap?.forEach {
+                    acc[it.key] = it.value + (acc[it.key] ?: 0)
+                }
+                acc
             }.drop(1)
         },
         { it },
