@@ -124,6 +124,7 @@ compactingResources {
     configureTask(tasks.named<AbstractCopyTask>("processResources").get())
 
     compactToObject("garden_data")
+    compactToObject("foraging")
     compactToObject("chocolate_factory")
     compactToObject("rift")
     compactToArray("museum_categories")

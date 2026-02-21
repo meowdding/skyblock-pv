@@ -1,0 +1,9 @@
+{
+    "mangrove_reward_formula": "level * 4",
+    "mangrove_personal_best": 100000,
+    "mangrove_fortune": 50,
+    "fig_reward_formula": "level * 4",
+    "fig_personal_best": 100000,
+    "fig_fortune": 50,
+    "agatha_power": 5
+}

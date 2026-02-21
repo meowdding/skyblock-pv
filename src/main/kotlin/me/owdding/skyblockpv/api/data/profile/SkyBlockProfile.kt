@@ -10,14 +10,30 @@ import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.api.SkillAPI
 import me.owdding.skyblockpv.api.data.InventoryData
 import me.owdding.skyblockpv.api.data.ProfileId
-import me.owdding.skyblockpv.api.data.profile.BackingSkyBlockProfile.Companion.emptyFuture
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
-import me.owdding.skyblockpv.data.api.*
+import me.owdding.skyblockpv.data.api.AttributesData
+import me.owdding.skyblockpv.data.api.Bank
+import me.owdding.skyblockpv.data.api.CfData
+import me.owdding.skyblockpv.data.api.CollectionItem
 import me.owdding.skyblockpv.data.api.Currency
-import me.owdding.skyblockpv.data.api.skills.*
-import me.owdding.skyblockpv.data.api.skills.combat.*
+import me.owdding.skyblockpv.data.api.Maxwell
+import me.owdding.skyblockpv.data.api.RiftData
+import me.owdding.skyblockpv.data.api.skills.FishData
+import me.owdding.skyblockpv.data.api.skills.ForagingCore
+import me.owdding.skyblockpv.data.api.skills.ForagingData
+import me.owdding.skyblockpv.data.api.skills.Forge
+import me.owdding.skyblockpv.data.api.skills.GlaciteData
+import me.owdding.skyblockpv.data.api.skills.MiningCore
+import me.owdding.skyblockpv.data.api.skills.Pet
+import me.owdding.skyblockpv.data.api.skills.SkillTrees
+import me.owdding.skyblockpv.data.api.skills.TrophyFishData
+import me.owdding.skyblockpv.data.api.skills.combat.BestiaryMobData
+import me.owdding.skyblockpv.data.api.skills.combat.CrimsonIsleData
+import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
+import me.owdding.skyblockpv.data.api.skills.combat.MobData
+import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
@@ -40,7 +56,12 @@ import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asList
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
+import tech.thatgravyboat.skyblockapi.utils.extentions.asStringList
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -66,6 +87,8 @@ interface SkyBlockProfile {
     val slayer: Map<String, SlayerTypeData> get() = backingProfile.slayer.getNowOrElse(emptyMap())
     val dungeonData: DungeonData? get() = backingProfile.dungeonData.getNowOrElse(null)
     val mining: MiningCore? get() = backingProfile.mining.getNowOrElse(null)
+    val foragingCore: ForagingCore? get() = backingProfile.foragingCore.getNowOrElse(null)
+    val foraging: ForagingData? get() = backingProfile.foraging.getNowOrElse(null)
     val skillTrees: SkillTrees? get() = backingProfile.skillTrees.getNowOrElse(null)
     val attributeData: AttributesData get() = backingProfile.attributeData.getNowOrElse(AttributesData.EMPTY)
     val forge: Forge? get() = backingProfile.forge.getNowOrElse(null)
@@ -131,6 +154,8 @@ data class BackingSkyBlockProfile(
     val slayer: CompletableFuture<Map<String, SlayerTypeData>> = emptyFuture(),
     val dungeonData: CompletableFuture<DungeonData?> = emptyFuture(),
     val mining: CompletableFuture<MiningCore?> = emptyFuture(),
+    val foragingCore: CompletableFuture<ForagingCore?> = emptyFuture(),
+    val foraging: CompletableFuture<ForagingData?> = emptyFuture(),
     val skillTrees: CompletableFuture<SkillTrees?> = emptyFuture(),
     val attributeData: CompletableFuture<AttributesData> = emptyFuture(),
     val forge: CompletableFuture<Forge?> = emptyFuture(),
@@ -180,6 +205,10 @@ data class BackingSkyBlockProfile(
         minions,
         maxwell,
         skillTrees,
+        gardenChips,
+        attributeData,
+        foragingCore,
+        foraging,
     )
 
     companion object {
@@ -258,6 +287,8 @@ data class BackingSkyBlockProfile(
                 slayer = future { member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap() },
                 dungeonData = future { member.getAs<JsonObject>("dungeons")?.let { DungeonData.fromJson(it) } },
                 mining = future { member.getAs<JsonObject>("mining_core")?.let { MiningCore(it) } },
+                foragingCore = future { member.getAs<JsonObject>("foraging_core")?.let { ForagingCore(it) } },
+                foraging = future { ForagingData(member.getAs<JsonObject>("foraging") ?: JsonObject()) },
                 forge = future { member.getAs<JsonObject>("forge")?.let { Forge(it) } },
                 glacite = future { member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData(it) } },
                 tamingLevelPetsDonated = future { member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() } },
