@@ -2,23 +2,30 @@ package me.owdding.skyblockpv.screens.windowed.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asTable
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.toReadableString
 import me.owdding.lib.extensions.transpose
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
+import me.owdding.skyblockpv.data.repo.GreenhouseUpgrade
 import me.owdding.skyblockpv.data.repo.StaticComposterData
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.network.chat.CommonComponents
+import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
@@ -27,8 +34,12 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.hover
 import java.time.Instant
 
 class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
@@ -92,6 +103,43 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     },
                 )
             }
+            string("Greenhouse spaces: ") {
+                append(
+                    loadingComponent {
+                        Text.of((it.greenhouseSlots.size + 12).toString())
+                    },
+                )
+                append("/100")
+            }
+
+            fun createEntry(key: GreenhouseUpgrade) = display(
+                loaded(
+                    Displays.text(loadingMessage),
+                    Displays.text(errorMessage),
+                ) {
+                    val level = it.greenhouseUpgrades[key] ?: 0
+                    val data = StaticGardenData.greenhouseUpgrades[key]!!
+                    Displays.text(Text.of {
+                        append(data.name.stripped)
+                        this.color = PvColors.GRAY
+                        append(": ")
+                        append(level)
+                        append("/")
+                        append(data.upgrade.size)
+                    }).withTooltip {
+                        add(data.name)
+                        space()
+                        add(data.getTooltipForLevel(level))
+                        space()
+                        val map = getProgressMap(level, data.upgrade)
+                        map.values.forEach { entry ->
+                            add(entry)
+                        }
+                    }
+                },
+            )
+
+            GreenhouseUpgrade.entries.forEach(::createEntry)
         },
     )
 
@@ -139,7 +187,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             }
             space()
 
-            val map = getProgressMap(level, data)
+            val map = getProgressMap(level, data.upgrade)
             val rareCrops = map.filter { (key, _) -> StaticGardenData.RARE_CROPS.contains(key) }
             val copper = map["copper"] ?: Text.of(":(")
             val remaining = map.filterNot { rareCrops.containsKey(it.key) || it.key.equals(StaticGardenData.COPPER, ignoreCase = true) }
@@ -160,9 +208,9 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         }
     }
 
-    fun getProgressMap(level: Int, data: StaticComposterData): MutableMap<String, MutableComponent> {
-        val current = if (level != 0) data.upgrade[level - 1] else emptyMap()
-        val neededForMax = data.upgrade.last()
+    fun getProgressMap(level: Int, data: List<Map<String, Int>>): MutableMap<String, MutableComponent> {
+        val current = if (level != 0) data[level - 1] else emptyMap()
+        val neededForMax = data.last()
 
         val map = mutableMapOf<String, MutableComponent>()
         neededForMax.forEach { (key, neededMax) ->

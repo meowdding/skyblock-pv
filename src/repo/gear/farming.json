@@ -32,6 +32,10 @@
         "FERMENTO_CHESTPLATE",
         "FERMENTO_LEGGINGS",
         "FERMENTO_BOOTS",
+        "HELIANTHUS_HELMET",
+        "HELIANTHUS_CHESTPLATE",
+        "HELIANTHUS_LEGGINGS",
+        "HELIANTHUS_BOOTS",
         "BIOHAZARD_HELMET",
         "BIOHAZARD_CHESTPLATE",
         "BIOHAZARD_LEGGINGS",
@@ -41,20 +45,24 @@
     ],
     "belts": [
         "LOTUS_BELT",
+        "BLOSSOM_BELT",
         "PESTHUNTERS_BELT"
     ],
     "cloaks": [
         "LOTUS_CLOAK",
+        "BLOSSOM_CLOAK",
         "ZORROS_CAPE",
         "PESTHUNTERS_CLOAK",
         "PEST_VEST"
     ],
     "necklaces": [
         "LOTUS_NECKLACE",
+        "BLOSSOM_NECKLACE",
         "PESTHUNTERS_NECKLACE"
     ],
     "gloves": [
         "LOTUS_BRACELET",
+        "BLOSSOM_BRACELET",
         "PESTHUNTERS_GLOVES"
     ],
     "vacuum": [
@@ -64,12 +72,20 @@
         "INFINI_VACUUM",
         "INFINI_VACUUM_HOOVERIUS"
     ],
+    "watering_can": [
+        "HYDRO_CAN_1000",
+        "HYDRO_CAN_TURBO_2000",
+        "HYDRO_CAN_ULTRA_3000",
+        "AQUAMASTER_X",
+        "AQUAMASTER_HYDROMAX"
+    ],
     "pets": [
         "HEDGEHOG",
         "MOOSHROOM_COW",
         "SLUG",
         "ELEPHANT",
         "CHICKEN",
-        "MOSQUITO"
+        "MOSQUITO",
+        "ROSE_DRAGON"
     ]
 }

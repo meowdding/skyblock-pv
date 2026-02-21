@@ -25,7 +25,7 @@ enum class MiningCategory(
 ) : Category {
     MAIN(MainMiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
     GEAR(MiningGearScreen::class, Items.PRISMARINE_SHARD.defaultInstance, "Mining Gear"),
-    HOTM(HotmScreen::class, SkullTextures.HOTM.skull, "HotM Tree", true),
+    HOTM(MiningSkillTreeScreen::class, SkullTextures.HOTM.skull, "HotM Tree", true),
     GLACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance, "Glacite Tunnels", true),
     ;
 

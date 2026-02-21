@@ -108,7 +108,7 @@ class MonoInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
             .textures(
                 TextureSetup.singleTexture(
                     McClient.self.textureManager.getTexture(ThemeSupport.texture(MONO_TEXTURE)).textureView,
-                    RenderSystem.getSamplerCache().getRepeat(FilterMode.LINEAR),
+                    RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
                 ),
             )
             .color(state.color)
@@ -148,7 +148,7 @@ class PolyInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
             .textures(
                 TextureSetup.singleTexture(
                     McClient.self.textureManager.getTexture(ThemeSupport.texture(POLY_TEXTURE)).textureView,
-                    RenderSystem.getSamplerCache().getRepeat(FilterMode.LINEAR),
+                    RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
                 ),
             )
             .color(state.color)
