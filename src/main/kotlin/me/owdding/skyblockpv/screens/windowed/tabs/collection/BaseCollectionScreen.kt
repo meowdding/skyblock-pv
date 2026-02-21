@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.screens.windowed.tabs.collection
 
 import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
@@ -15,6 +16,7 @@ import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     AbstractCategorizedScreen("COLLECTION", gameProfile, profile) {
+    override val tab: PvTab = PvTab.COLLECTION
     override val categories: List<Category> get() = Category.getCategories<CollectionCategories>(profile)
 }
 

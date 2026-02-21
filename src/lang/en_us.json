@@ -141,6 +141,10 @@
         "socials": {
             "@value": "Linked Socials Dropdown",
             "desc": "Show a dropdown with all linked socials of the player and SkyCrypt."
+        },
+        "remember_last_tab": {
+            "@value": "Remember Last Tab",
+            "desc": "Remembers the last opened tab and opens it when reopening the profile viewer."
         }
     },
     "dev": {

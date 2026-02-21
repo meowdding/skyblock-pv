@@ -8,8 +8,10 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.FossilTypes
 import me.owdding.skyblockpv.data.api.skills.GlaciteData
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk
+import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -26,7 +28,10 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        val glacite = profile.glacite ?: return PvLayouts.empty()
+        val glacite = profile.glacite ?: run {
+            Utils.openTab(PvTab.MINING, gameProfile, profile)
+            return PvLayouts.empty()
+        }
         val normalLayout = PvLayouts.horizontal(5) {
             spacer(height = uiHeight)
             vertical(5, alignment = MIDDLE) {

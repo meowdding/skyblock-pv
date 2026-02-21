@@ -16,6 +16,7 @@ import me.owdding.skyblockpv.data.museum.MuseumItem
 import me.owdding.skyblockpv.data.museum.MuseumRepoEntry
 import me.owdding.skyblockpv.data.museum.RepoMuseumCategory
 import me.owdding.skyblockpv.data.museum.RepoMuseumData
+import me.owdding.skyblockpv.utils.CarouselPage
 import me.owdding.skyblockpv.utils.LayoutUtils.asWidget
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
@@ -38,8 +39,9 @@ private const val ROWS = 5
 private const val COLUMNS = 10
 private const val SIZE = ROWS * COLUMNS
 
-class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMuseumScreen(gameProfile, profile) {
+class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMuseumScreen(gameProfile, profile), CarouselPage {
     private var carousel: CarouselWidget? = null
+    override var carouselStart: Int = 0
 
     fun getInventories(): List<Display> {
         return RepoMuseumData.museumCategoryMap.entries
@@ -108,12 +110,12 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
         carousel = CarouselWidget(
             inventories,
-            carousel?.index ?: 0,
+            carousel?.index ?: carouselStart,
             246,
         )
 
         val map = mutableMapOf<RepoMuseumCategory, Int>()
-        val buttonContainer = carousel!!.getIcons(perRow = 12) {
+        val buttonContainer = carousel!!.getIcons(perRow = 12, page = toTabState()) {
             List(inventories.size) { index ->
                 val icon = icons[index]
                 val compute = map.compute(icon) { _, i -> i?.plus(1) ?: 0 }
@@ -133,30 +135,28 @@ class MuseumItemScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
 
         widget(
-                loaded(
-                    whileLoading = Text.of("Total Donations: ") {
-                        this.color = PvColors.GRAY
-                        append("Loading...", PvColors.ORANGE)
-                    }.asWidget(),
-                    onError = Text.of("Total Donations: ") {
-                        this.color = PvColors.GRAY
-                        append("Error!", PvColors.RED)
-                    }.asWidget(),
-                ) {
-                    val items = RepoMuseumData.entries
-                    val ids = it.items.map { entry -> entry.id }.toSet()
-                    val donatedItems = items.filter { entry ->
-                        ids.contains(entry.id) || it.isParentDonated(entry) != null
-                    }.size
+            loaded(
+                whileLoading = Text.of("Total Donations: ") {
+                    this.color = PvColors.GRAY
+                    append("Loading...", PvColors.ORANGE)
+                }.asWidget(),
+                onError = Text.of("Total Donations: ") {
+                    this.color = PvColors.GRAY
+                    append("Error!", PvColors.RED)
+                }.asWidget(),
+            ) {
+                val items = RepoMuseumData.entries
+                val ids = it.items.map { entry -> entry.id }.toSet()
+                val donatedItems = items.filter { entry ->
+                    ids.contains(entry.id) || it.isParentDonated(entry) != null
+                }.size
 
-                    Text.of("Total Donations: ") {
-                        this.color = PvColors.GRAY
-                        append(donatedItems.toFormattedString(), PvColors.GOLD)
-                        append("*")
-                    }.asWidget().withTooltip(Text.of("Actual value might be different!") {
-                        color = PvColors.YELLOW
-                    })
-                }.centerHorizontally(uiWidth),
+                Text.of("Total Donations: ") {
+                    this.color = PvColors.GRAY
+                    append(donatedItems.toFormattedString(), PvColors.GOLD)
+                    append("*")
+                }.asWidget().withTooltip(Text.of("Actual value might be different!", PvColors.YELLOW))
+            }.centerHorizontally(uiWidth),
         )
         widget(
             Widgets.text(

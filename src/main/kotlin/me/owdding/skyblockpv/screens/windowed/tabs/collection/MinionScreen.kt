@@ -5,6 +5,7 @@ import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.rightPad
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.MinionCodecs
+import me.owdding.skyblockpv.utils.CarouselPage
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -17,8 +18,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
-class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCollectionScreen(gameProfile, profile) {
+class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCollectionScreen(gameProfile, profile), CarouselPage {
     private var carousel: CarouselWidget? = null
+    override var carouselStart: Int = 0
 
     data class MinionContext(val type: String, val maxObtainedLevel: Int)
 
@@ -83,11 +85,11 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
         carousel = CarouselWidget(
             inventories,
-            carousel?.index ?: 0,
+            carousel?.index ?: carouselStart,
             246,
         )
 
-        val buttonContainer = carousel!!.getIcons {
+        val buttonContainer = carousel!!.getIcons(page = toTabState()) {
             List(inventories.size) { index ->
                 val icon = icons[index]
 
