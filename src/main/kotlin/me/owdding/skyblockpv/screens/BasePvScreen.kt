@@ -1,37 +1,64 @@
 package me.owdding.skyblockpv.screens
 
-import com.google.gson.*
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.google.gson.JsonNull
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.buttons.Button
+import earth.terrarium.olympus.client.components.dropdown.DropdownState
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.constants.MinecraftColors
+import earth.terrarium.olympus.client.ui.OverlayAlignment
+import earth.terrarium.olympus.client.ui.UIIcons
 import me.owdding.lib.displays.Alignment
-import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.asWidget
+import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerAPI
 import me.owdding.skyblockpv.api.ProfileAPI
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.ChatUtils
+import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
+import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.util.Util
+import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
+import net.minecraft.util.Util
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
+import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.lang.reflect.Type
 import java.nio.file.Files
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, initProfile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
@@ -81,8 +108,6 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
     fun isProfileInitialized() = profile !is EmptySkyBlockProfile
     fun isProfileOfUser() = gameProfile.id == McPlayer.uuid
 
-    abstract fun create(bg: DisplayWidget)
-
     protected fun safelyRebuild() {
         if (this.minecraft == null) return
         if (isProfileInitialized()) onProfileSwitch(profile)
@@ -93,11 +118,42 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
     fun LayoutElement.applyLayout() = this.visitWidgets(::addRenderableWidget)
     fun Layout.applyLayout(x: Int, y: Int) = this.setPos(x, y).applyLayout()
 
-    protected fun addLoader() {
+
+    protected fun addNoProfiles(x: Int = 0, y: Int = 0, width: Int = this.width, height: Int = this.height) {
+        val errorWidget = PvLayouts.vertical(alignment = 0.5f) {
+            display("widgets.error.no_profiles".asTranslated(gameProfile.name).multiLineDisplay(Alignment.CENTER))
+        }
+
+        FrameLayout.centerInRectangle(errorWidget, x, y, width, height)
+        errorWidget.applyLayout()
+    }
+
+    protected fun addParsingError(throwable: Throwable, x: Int = 0, y: Int = 0, width: Int = this.width, height: Int = this.height) {
+        SkyBlockPv.error("Failed to parse profile!", throwable)
+
+        val errorWidget = PvLayouts.vertical {
+            val text = "widgets.error.parsing_error".asTranslated(
+                name,
+                gameProfile.name,
+                gameProfile.id,
+                throwable.javaClass.name,
+                throwable.message,
+                throwable.getStackTraceString(7),
+            )
+
+            text.splitLines().forEach {
+                widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
+            }
+        }
+        FrameLayout.centerInRectangle(errorWidget, x, y, width, height)
+        errorWidget.applyLayout()
+    }
+
+    protected fun addLoader(x: Int = 0, y: Int = 0, width: Int = this.width, height: Int = this.height) {
         if (isProfileInitialized()) return
 
         val loading = ExtraDisplays.loading().asWidget()
-        FrameLayout.centerInRectangle(loading, 0, 0, this.width, this.height)
+        FrameLayout.centerInRectangle(loading, x, y, width, height)
 
         if (starttime + 8000 > System.currentTimeMillis()) return loading.visitWidgets(this::addRenderableOnly)
 
@@ -119,9 +175,154 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
             )
         }
 
-        FrameLayout.centerInRectangle(errorWidget, 0, 0, this.width, this.height)
+        FrameLayout.centerInRectangle(errorWidget, x, y, width, height)
         errorWidget.applyLayout()
     }
+
+    protected fun createProfileDropdown(width: Int): LayoutElement {
+        if (!isProfileInitialized()) {
+            return Widgets.button()
+                .withTexture(ExtraConstants.BUTTON_DARK)
+                .withRenderer(WidgetRenderers.text(+"widgets.profile.loading"))
+                .withSize(width, 20)
+        }
+
+        val dropdownState = DropdownState<SkyBlockProfile>.of(profile)
+        val dropdown = Widgets.dropdown(
+            dropdownState,
+            profiles,
+            { profile ->
+                Text.of {
+                    color = PvColors.WHITE
+                    if (profile.selected) {
+                        underlined = true
+                        append("◆ ")
+                    } else {
+                        append("◇ ")
+                    }
+                    append(profile.id.name)
+                    append(
+                        when (profile.profileType) {
+                            ProfileType.NORMAL -> ""
+                            ProfileType.BINGO -> " §9Ⓑ"
+                            ProfileType.IRONMAN -> " ♻"
+                            ProfileType.STRANDED -> " §a☀"
+                            ProfileType.UNKNOWN -> " §c§ka"
+                        },
+                    )
+                }
+            },
+            { button -> button.withSize(width, 20) },
+            { builder ->
+                builder.withCallback { profile ->
+                    this.profile = profile ?: return@withCallback
+                    this.onProfileSwitch(profile)
+                    this.safelyRebuild()
+                }
+                builder.withAlignment(OverlayAlignment.TOP_LEFT)
+            },
+        ).apply {
+            withTexture(ExtraConstants.BUTTON_DARK)
+        }
+
+        return dropdown
+    }
+
+    protected var coopDropdownVisible = false
+
+    fun createCoopDropdownTrigger() = Button().apply {
+        withSize(12, 20)
+        withTexture(null)
+        withRenderer(
+            WidgetRenderers.padded(
+                4, 0, 4, 0,
+                WidgetRenderers.icon<AbstractWidget>(UIIcons.CHEVRON_UP).withColor(MinecraftColors.WHITE),
+            ),
+        )
+        withTooltip(+"widgets.coop_search_tooltip")
+        withCallback {
+            coopDropdownVisible = !coopDropdownVisible
+            safelyRebuild()
+        }
+    }
+
+    fun createCoopDropdown(width: Int, coopMemberDropdownState: DropdownState<UUID>): Button = Widgets.dropdown(
+        coopMemberDropdownState,
+        profile.coopMembers.keys.toList(),
+        { _ -> CommonComponents.EMPTY },
+        { button ->
+            button.withSize(width, 20)
+            button.withRenderer(
+                WidgetRenderers.text<Button>(
+                    Text.of {
+                        color = PvColors.WHITE
+                        append("◆ ")
+                        append(gameProfile.name)
+                    },
+                ).withPadding(4, 6),
+            )
+        },
+        { builder ->
+            builder.withCallback { coopProfile ->
+                val profile = profile.coopMembers[coopProfile]
+
+                if (profile == null) {
+                    Text.of("Unknown member!") { color = TextColor.RED }.sendWithPrefix()
+                    return@withCallback
+                }
+
+                val gameProfile = profile.getNow(null)
+                if (gameProfile != null) {
+                    Utils.preferedProfileId = this@BasePvScreen.profile.id.id
+                    McClient.setScreenAsync { openPlayer(gameProfile) }
+                } else if (profile.isCompletedExceptionally) {
+                    Text.of("Failed to fetch username!").sendWithPrefix()
+                } else {
+                    Text.of("Still fetching!").sendWithPrefix()
+                }
+
+            }
+
+            val loadingRenderer = WidgetRenderers.text<Button>(Text.of("Loading...") { this.color = TextColor.RED })
+                .withLeftAlignment()
+                .withPadding(0, 4)
+            val failedToLoad = WidgetRenderers.text<Button>(Text.of("Error!") { this.color = TextColor.RED })
+                .withLeftAlignment()
+                .withPadding(0, 4)
+            builder.withEntryRenderer { id ->
+                val future = profile.coopMembers[id] ?: return@withEntryRenderer WidgetRenderers.text<Button>(
+                    Text.of("Unknown!") {
+                        this.color = TextColor.DARK_RED
+                    },
+                ).withLeftAlignment().withPadding(0, 4)
+                val widgetRenderer = future.thenApply { profile ->
+                    if (profile == null) return@thenApply null
+
+                    WidgetRenderers.text<Button>(
+                        Text.of {
+                            color = PvColors.WHITE
+                            if (id == profile) {
+                                underlined = true
+                                append("◆ ")
+                            } else {
+                                append("◇ ")
+                            }
+                            append(profile.name.toString())
+                        },
+                    ).withLeftAlignment().withPadding(0, 4)
+                }
+
+                ExtraWidgetRenderers.supplied {
+                    widgetRenderer.getNow(loadingRenderer) ?: failedToLoad
+                }
+            }
+            builder.withAlignment(OverlayAlignment.TOP_LEFT)
+        },
+    ).apply {
+        withTexture(ExtraConstants.BUTTON_DARK)
+    }
+
+    abstract fun openPlayer(gameProfile: GameProfile): Screen
 
     protected fun saveProfiles() {
         val file = SkyBlockPv.configDir.resolve("profiles-${gameProfile.id}.json")

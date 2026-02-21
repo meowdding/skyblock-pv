@@ -3,6 +3,7 @@
 import net.fabricmc.loom.task.ValidateAccessWidenerTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.ByteArrayOutputStream
 
 plugins {
     idea
@@ -32,6 +33,7 @@ repositories {
     )
     scopedMaven("https://maven.nucleoid.xyz/", "eu.pb4")
     mavenCentral()
+    mavenLocal()
 }
 
 configurations {
@@ -102,6 +104,7 @@ loom {
     runConfigs["client"].apply {
         ideConfigGenerated(true)
         runDir = "../../run"
+        programArgs("--quickPlaySingleplayer=${stonecutter.current.version.replace(".", "_")}")
         vmArg("-Dfabric.modsFolder=" + '"' + rootProject.projectDir.resolve("run/${mcVersion}Mods").absolutePath + '"')
     }
 
@@ -154,8 +157,9 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
     compilerOptions.optIn.add("kotlin.time.ExperimentalTime")
-    compilerOptions.freeCompilerArgs.add(
-        "-Xnullability-annotations=@org.jspecify.annotations:warn"
+    compilerOptions.freeCompilerArgs.addAll(
+        "-Xnullability-annotations=@org.jspecify.annotations:warn",
+        "-Xcontext-parameters"
     )
 }
 
@@ -193,7 +197,22 @@ idea {
     }
 }
 
+
+val gitRef = tasks.register<Exec>("gitRef") {
+    outputs.upToDateWhen { false }
+    standardOutput = ByteArrayOutputStream()
+    commandLine("git", "rev-parse", "HEAD")
+}
+
+val gitBranch = tasks.register<Exec>("getBranch") {
+    outputs.upToDateWhen { false }
+    standardOutput = ByteArrayOutputStream()
+    commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+}
+
 tasks.withType<ProcessResources>().configureEach {
+    dependsOn(gitRef, gitBranch)
+    mustRunAfter(gitRef, gitBranch)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
         filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
@@ -204,6 +223,15 @@ tasks.withType<ProcessResources>().configureEach {
     with(copySpec {
         from(accessWidenerFile)
     })
+
+    filesMatching("skyblock-pv.json") {
+        expand(
+            "branch" to gitBranch.map { it.standardOutput.toString().substringBefore("\n") }.get(),
+            "ref" to gitRef.map { it.standardOutput.toString().substringBefore("\n") }.get(),
+            "build_time" to provider { System.currentTimeMillis() }.get(),
+            "version" to version
+        )
+    }
 }
 
 val archiveName = "SkyBlockPv"

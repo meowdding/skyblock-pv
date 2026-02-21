@@ -1,19 +1,36 @@
 package me.owdding.skyblockpv.utils.components
 
+import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.Widgets
+import earth.terrarium.olympus.client.components.base.renderer.WidgetRenderer
+import earth.terrarium.olympus.client.components.buttons.Button
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.components.string.TextWidget
 import earth.terrarium.olympus.client.utils.Orientation
+import kotlinx.coroutines.runBlocking
 import me.owdding.lib.displays.*
+import me.owdding.lib.extensions.floor
 import me.owdding.lib.extensions.rightPad
+import me.owdding.lib.utils.keys
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.api.StatusAPI
+import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
+import me.owdding.skyblockpv.screens.BasePvScreen
+import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
+import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
+import me.owdding.skyblockpv.utils.Utils.plus
+import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays.asTable
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
+import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.layouts.FrameLayout
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
@@ -22,6 +39,10 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
+import tech.thatgravyboat.skyblockapi.platform.id
+import tech.thatgravyboat.skyblockapi.platform.name
+import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 object PvWidgets {
@@ -211,4 +232,77 @@ object PvWidgets {
             Displays.padding(2, itemDisplays.asTable()),
         )
     }
+
+    private val rightClick = keys {
+        withButton(InputConstants.MOUSE_BUTTON_RIGHT)
+    }
+    private var cachedX = 0.0F
+    private var cachedY = 0.0F
+
+    fun BasePvScreen.getPlayerWidget(width: Int): AbstractWidget {
+        val height = (width * 1.1).toInt()
+        val armor = (if (isProfileInitialized()) profile.inventory?.armorItems else null) ?: List(4) { ItemStack.EMPTY }
+        val name = if (isProfileInitialized()) {
+            val skyblockLvl = profile.skyBlockLevel.first
+            val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
+            Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
+        } else Text.of(gameProfile.name)
+        val fakePlayer = FakePlayer(gameProfile, name, armor)
+        val nakedFakePlayer = FakePlayer(gameProfile, name)
+        return Displays.background(ThemeSupport.texture(SkyBlockPv.id("buttons/disabled")), width, height).asWidget().withRenderer { gr, ctx, _ ->
+            val isHovered = ctx.mouseX in ctx.x..(ctx.x + width) && ctx.mouseY in ctx.y..(ctx.y + height)
+            val eyesX = (ctx.mouseX - ctx.x).toFloat().takeIf { ctx.mouseX >= 0 }?.also { cachedX = it } ?: cachedX
+            val eyesY = (ctx.mouseY - ctx.y).toFloat().takeIf { ctx.mouseY >= 0 }?.also { cachedY = it } ?: cachedY
+            gr.pushPop {
+                Displays.entity(
+                    if (rightClick.isDown() && isHovered) {
+                        nakedFakePlayer
+                    } else {
+                        fakePlayer
+                    },
+                    width,
+                    height,
+                    (width / 3f).floor(),
+                    eyesX, eyesY,
+                ).render(gr, ctx.x, ctx.y + height / 10)
+            }
+        }
+    }
+
+    fun BasePvScreen.getStatusButton(width: Int): Button {
+        val status = StatusAPI.getCached(gameProfile.id)
+
+        fun getStatusDisplay(status: PlayerStatus): WidgetRenderer<Button> {
+            val statusText = +"screens.main.status.${status.status.name.lowercase()}"
+            val location = SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location
+            val locationText = location?.let { Text.of(it).withColor(PvColors.GREEN) } ?: +"screens.main.status.unknown"
+            return WidgetRenderers.text(statusText + locationText)
+        }
+
+        return Button().also { button ->
+            button.withTexture(ExtraConstants.BUTTON_DARK)
+            button.withRenderer(WidgetRenderers.text(+"screens.main.status.load"))
+            button.withCallback {
+                button.withRenderer(WidgetRenderers.text(+"screens.main.status.loading"))
+                runBlocking {
+                    val status = StatusAPI.getData(gameProfile.id).getOrNull()
+                    if (status == null) {
+                        button.withRenderer(WidgetRenderers.text(+"screens.main.status.error"))
+                    } else {
+                        button.withRenderer(getStatusDisplay(status))
+                        button.asDisabled()
+                    }
+                }
+            }
+            button.withSize(width, 20)
+
+            if (status != null) {
+                button.withRenderer(getStatusDisplay(status))
+                button.asDisabled()
+            }
+        }
+    }
+
+    fun Layout.centerIn(x: Int, y: Int, width: Int, height: Int) = apply { FrameLayout.centerInRectangle(this, x, y, width, height) }
+    fun Layout.centerIn(layout: LayoutElement) = centerIn(layout.x, layout.y, layout.width, layout.height)
 }
