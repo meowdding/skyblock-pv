@@ -179,6 +179,7 @@
         "combat": "Combat",
         "collection": "Collections",
         "mining": "Mining",
+        "foraging": "Foraging",
         "inventory": "Inventory",
         "fishing": "Fishing",
         "pets": "Pets",
@@ -389,6 +390,17 @@
                 "skill_avg": "Skill Avg: <0>",
                 "fairy_souls": "Fairy Souls: <0>",
                 "kd": "K/D: <0>/<1> (<2>)"
+            }
+        },
+        "inventory": {
+            "accessory": {
+                "highest_magical_power": [
+                    "This is the highest amount of magical power",
+                    "the player ever had on this profile. This",
+                    "number is straight from Hypixel, so it should",
+                    "always be accurate, but it may not reflect the",
+                    "current state of the player's accessory bag."
+                ]
             }
         }
     },

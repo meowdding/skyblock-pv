@@ -13,6 +13,7 @@ import me.owdding.ktcodecs.NamedCodec
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
+import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.ExtraData

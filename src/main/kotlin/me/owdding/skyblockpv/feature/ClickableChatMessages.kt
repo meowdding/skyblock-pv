@@ -28,7 +28,10 @@ object ClickableChatMessages {
     fun onAllChat(event: ChatReceivedEvent.Post) {
         if (!Config.profileChatClick) return
 
-        var output = Component.empty()
+        // Copy the Component to not skip the main text
+        val output = event.component.copy()
+        output.siblings.clear()
+
         var hasReplaced = false
 
         for (component in event.component.siblings) {
@@ -41,14 +44,14 @@ object ClickableChatMessages {
 
             val username = getUsername(command, hoverText)
             if (username == null) {
-                output = output.append(component)
+                output.append(component)
                 continue
             }
             val nameComponent = component.copy()
             nameComponent.command = "/sbpv pv $username"
             nameComponent.appendHover(username)
 
-            output = output.append(nameComponent)
+            output.append(nameComponent)
             hasReplaced = true
         }
 
