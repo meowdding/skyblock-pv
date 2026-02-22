@@ -1,7 +1,7 @@
 [versions]
 
-fabric-loader = "0.17.3"
-fabric-language-kotlin = "1.13.4+kotlin.2.2.0"
+fabric-loader = "0.18.4"
+fabric-language-kotlin = "1.13.6+kotlin.2.2.20"
 fabric-api = "0.133.4"
 
 keval = "1.1.1"
@@ -10,7 +10,7 @@ kotlin = "2.2.0"
 kotlin-symbol-processor = "2.2.0-2.0.2"
 
 # Dependencies
-skyblockapi = "4.0.1"
+skyblockapi = "4.0.8"
 repolib = "2.0.2"
 
 resourceful-configkt = "3.5.12"
@@ -18,7 +18,7 @@ resourceful-configkt = "3.5.12"
 hypixelapi = "1.0.1+build.1+mc1.21"
 mixinconstraints = "1.0.7"
 
-meowdding-lib = "4.0.4"
+meowdding-lib = "4.0.6"
 meowdding-ktmodules = "1.0.5"
 meowdding-ktcodecs = "1.0.28"
 meowdding-resources = "1.0.17"

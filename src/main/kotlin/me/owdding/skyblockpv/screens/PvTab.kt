@@ -17,6 +17,8 @@ import me.owdding.skyblockpv.screens.windowed.tabs.combat.BestiaryScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.combat.DungeonScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.farming.BaseFarmingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.farming.FarmingScreen
+import me.owdding.skyblockpv.screens.windowed.tabs.foraging.BaseForagingScreen
+import me.owdding.skyblockpv.screens.windowed.tabs.foraging.MainForagingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.inventory.BaseInventoryScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.inventory.InventoryScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.mining.BaseMiningScreen
@@ -52,6 +54,7 @@ enum class PvTab(
     COLLECTION(BaseCollectionScreen::class, CollectionCategories::createScreen, Items.ITEM_FRAME.defaultInstance),
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.defaultInstance),
     FISHING(FishingScreen::class, Items.FISHING_ROD.defaultInstance),
+    FORAGING(BaseForagingScreen::class, ::MainForagingScreen, Items.OAK_WOOD.defaultInstance),
     PETS(PetScreen::class, Items.BONE.defaultInstance),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.defaultInstance),
     MUSEUM(BaseMuseumScreen::class, ::MuseumItemScreen, Items.GOLD_BLOCK.defaultInstance, true),

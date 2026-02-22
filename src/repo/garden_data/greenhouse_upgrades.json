@@ -1,0 +1,106 @@
+{
+    "GROWTH_SPEED": {
+        "name": "<aqua>Greenhouse Growth Speed",
+        "reward_formula": "5 * level + clamp(level - 8, 0, 1) * 5",
+        "format": "PERCENTAGE",
+        "tooltip": "<gray>Growth Speed: <aqua>%reward%%",
+        "upgrades": [
+            {
+                "copper": 50,
+                "COMPOST": 5
+            },
+            {
+                "copper": 100,
+                "COMPOST": 5
+            },
+            {
+                "copper": 250,
+                "COMPOST": 5
+            },
+            {
+                "copper": 500,
+                "COMPOST": 5
+            },
+            {
+                "copper": 1000,
+                "ENCHANTED_COMPOST": 1
+            },
+            {
+                "copper": 2000,
+                "ENCHANTED_COMPOST": 2
+            },
+            {
+                "copper": 3000,
+                "ENCHANTED_COMPOST": 3
+            },
+            {
+                "copper": 4000,
+                "ENCHANTED_COMPOST": 4
+            },
+            {
+                "copper": 5000,
+                "ENCHANTED_COMPOST": 5
+            }
+        ]
+    },
+    "YIELD": {
+        "name": "<yellow>Greenhouse Crop Yield",
+        "reward_formula": "2 * level + clamp(level - 8, 0, 1) * 2",
+        "format": "PERCENTAGE",
+        "tooltip": "<gray>Crop Yield: <yellow>%reward%%",
+        "upgrades": [
+            {
+                "copper": 50,
+                "COMPOST": 5
+            },
+            {
+                "copper": 100,
+                "COMPOST": 5
+            },
+            {
+                "copper": 250,
+                "COMPOST": 5
+            },
+            {
+                "copper": 500,
+                "COMPOST": 5
+            },
+            {
+                "copper": 1000,
+                "ENCHANTED_COMPOST": 1
+            },
+            {
+                "copper": 2000,
+                "ENCHANTED_COMPOST": 2
+            },
+            {
+                "copper": 3000,
+                "ENCHANTED_COMPOST": 3
+            },
+            {
+                "copper": 4000,
+                "ENCHANTED_COMPOST": 4
+            },
+            {
+                "copper": 5000,
+                "ENCHANTED_COMPOST": 5
+            }
+        ]
+    },
+    "PLOT_LIMIT": {
+        "name": "<green>Greenhouse Plot Limit",
+        "reward_formula": "level",
+        "format": "INTEGER",
+        "tooltip": "<gray>Plot Limit: <green>+%reward%",
+        "upgrades": [
+            {
+                "ENCHANTED_COMPOST": 10,
+                "ETHEREAL_VINE": 100
+            },
+            {
+                "ENCHANTED_COMPOST": 20,
+                "ETHEREAL_VINE": 150
+            }
+        ]
+    }
+}

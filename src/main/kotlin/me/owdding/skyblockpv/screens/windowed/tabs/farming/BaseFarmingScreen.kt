@@ -26,7 +26,8 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
 enum class FarmingCategory(val screen: KClass<out BaseFarmingScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
     MAIN(FarmingScreen::class, Items.WHEAT.defaultInstance),
     VISITORS(VisitorScreen::class, Items.VILLAGER_SPAWN_EGG.defaultInstance),
-    CROP(CropScreen::class, Items.CARROT.defaultInstance),
+    CROP(CropScreen::class, Items.CARROT.defaultInstance), // todo mutation screen (same as visitor and attributes)
+    MUTATIONS(MutationScreen::class, RepoItemsAPI.getItem("LONELILY")),
     COMPOSTER(ComposterScreen::class, RepoItemsAPI.getItem("COMPOST")),
     ;
 
