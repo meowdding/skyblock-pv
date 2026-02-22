@@ -6,6 +6,7 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedLoadingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -23,8 +24,8 @@ abstract class BaseMuseumScreen(gameProfile: GameProfile, profile: SkyBlockProfi
 }
 
 enum class MuseumCategory(val screen: KClass<out BaseMuseumScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
-    WEAPONS(MuseumItemScreen::class, Items.EMERALD.defaultInstance),
-    ARMOR(MuseumArmorScreen::class, Items.NETHERITE_HELMET.defaultInstance)
+    WEAPONS(MuseumItemScreen::class, Items.EMERALD.withCatharsisId("tab/museum/weapons")),
+    ARMOR(MuseumArmorScreen::class, Items.NETHERITE_HELMET.withCatharsisId("tab/museum/armor"))
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()

@@ -5,6 +5,7 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -23,10 +24,10 @@ enum class CombatCategory(
     hoverName: String? = null,
     override val hideOnStranded: Boolean = false,
 ) : Category {
-    DUNGEONS(DungeonScreen::class, SkullTextures.DUNGEONS.skull, "Dungeons", true),
-    BESTIARY(BestiaryScreen::class, Items.WRITABLE_BOOK.defaultInstance, "Bestiary"),
-    ISLE(CrimsonIsleScreen::class, Items.NETHERRACK.defaultInstance, "Crimson Isle", true),
-    MOBS(MobScreen::class, Items.ZOMBIE_HEAD.defaultInstance, "Kills and Deaths"),
+    DUNGEONS(DungeonScreen::class, SkullTextures.DUNGEONS.skull.withCatharsisId("tab/combat/dungeons"), "Dungeons", true),
+    BESTIARY(BestiaryScreen::class, Items.WRITABLE_BOOK.withCatharsisId("tab/combat/bestiary"), "Bestiary"),
+    ISLE(CrimsonIsleScreen::class, Items.NETHERRACK.withCatharsisId("tab/combat/crimson_isle"), "Crimson Isle", true),
+    MOBS(MobScreen::class, Items.ZOMBIE_HEAD.withCatharsisId("tab/combat/mobs"), "Kills and Deaths"),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()

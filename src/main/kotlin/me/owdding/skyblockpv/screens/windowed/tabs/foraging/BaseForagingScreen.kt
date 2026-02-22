@@ -5,6 +5,7 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -19,15 +20,20 @@ abstract class BaseForagingScreen(gameProfile: GameProfile, profile: SkyBlockPro
     override val categories: List<Category> get() = Category.getCategories<ForagingCategory>(profile)
 }
 
+private val attributesItem: ItemStack by lazy {
+    (RepoAttributeAPI.getAttributeByIdOrNull("r43") ?: Items.BARRIER.defaultInstance)
+        .withCatharsisId("tab/foraging/attributes")
+}
+
 enum class ForagingCategory(
     val screen: (GameProfile, SkyBlockProfile?) -> BaseForagingScreen,
     override val icon: ItemStack,
     hoverName: String? = null,
     override val hideOnStranded: Boolean = false,
 ) : Category {
-    MAIN(::MainForagingScreen, Items.OAK_WOOD.defaultInstance),
-    HOTF(::ForagingSkillTreeScreen, SkullTextures.HOTF.skull, "HotF Tree", true),
-    ATTRIBUTES(::AttributeScreen, RepoAttributeAPI.getAttributeByIdOrNull("r43") ?: Items.BARRIER.defaultInstance, "Attributes", true),
+    MAIN(::MainForagingScreen, Items.OAK_WOOD.withCatharsisId("tab/foraging/main")),
+    HOTF(::ForagingSkillTreeScreen, SkullTextures.HOTF.skull.withCatharsisId("tab/foraging/hotf"), "HotF Tree", true),
+    ATTRIBUTES(::AttributeScreen, attributesItem, "Attributes", true),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()

@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -17,9 +18,9 @@ abstract class BaseRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile
 }
 
 enum class RiftCategory(val screen: KClass<out BaseRiftScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
-    MAIN(MainRiftScreen::class, Items.LILAC.defaultInstance),
-    INVENTORY(RiftInventoryScreen::class, Items.CHEST.defaultInstance),
-    ENDER_CHEST(RiftEnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
+    MAIN(MainRiftScreen::class, Items.LILAC.withCatharsisId("tab/rift/main")),
+    INVENTORY(RiftInventoryScreen::class, Items.CHEST.withCatharsisId("tab/rift/inventory")),
+    ENDER_CHEST(RiftEnderChestScreen::class, Items.ENDER_CHEST.withCatharsisId("tab/rift/ender_chest"))
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()
