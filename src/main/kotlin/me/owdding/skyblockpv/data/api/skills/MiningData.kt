@@ -4,16 +4,13 @@ package me.owdding.skyblockpv.data.api.skills
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.utils.ParseHelper
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
-import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.ChatFormatting
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.api.remote.RepoPetsAPI
-import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
-import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 
@@ -117,7 +114,7 @@ enum class PowderType(val formatting: ChatFormatting) {
 }
 
 @LoadData
-object FossilTypes : ExtraData {
+object FossilTypes : DefaultedData {
 
     data class Fossil(
         val id: String,
@@ -129,7 +126,7 @@ object FossilTypes : ExtraData {
         private set
 
     override suspend fun load() {
-        Utils.loadFromRepo<JsonObject>("fossils")?.asMap { id, data ->
+        Utils.loadFromRemoteRepo<JsonObject>("pv/fossils")?.asMap { id, data ->
             val obj = data.asJsonObject
             id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))
         }?.map { it.value }?.let { fossils = it }

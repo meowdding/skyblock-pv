@@ -2,6 +2,9 @@ package me.owdding.skyblockpv.data.api.skills
 
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
+import me.owdding.lib.utils.MeowddingLogger
+import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.data.repo.PetCodecs
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
@@ -32,15 +35,18 @@ data class Pet(
         lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1
     }
 
-    val progressToNextLevel: Float = run {
-        if (level == data.levelCap) return@run 1f
+    val progressToNextLevel: Float = runCatching {
+        if (level == data.levelCap) return@runCatching 1f
 
         val currXp = cumulativeLevels[(level - 1).coerceAtLeast(0)]
         ((exp.toFloat() - currXp) / (cumulativeLevels[level] - currXp))
+    }.getOrElse {
+        warn("Failed to resolve progress to next level!", it)
+        0f
     }
     val progressToMax: Float = (exp.toFloat() / cumulativeLevels.last()).coerceAtMost(1f)
 
-    companion object {
+    companion object : MeowddingLogger by SkyBlockPv.featureLogger() {
         fun fromJson(obj: JsonObject) = Pet(
             uuid = obj["uuid"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },
             uniqueId = obj["uniqueId"]?.takeIf { it !is JsonNull }?.asString?.let { UUID.fromString(it) },

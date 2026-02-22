@@ -29,18 +29,18 @@ import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
-import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
+import tech.thatgravyboat.skyblockapi.api.events.misc.RepoStatusEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -54,6 +54,10 @@ import java.util.concurrent.CompletableFuture
 
 @Module
 object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.autoResolve() {
+
+    private var meowddingRepo: Boolean = false
+    private var apiRepo: Boolean = false
+
     const val MOD_ID: String = "skyblockpv"
     const val RESOURCE_PATH: String = "skyblock-pv"
     const val DISCORD: String = "https://meowdd.ing/discord"
@@ -105,13 +109,33 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
             }
         }
 
-        if (RemoteRepo.isInitialized()) remoteRepo()
+
+        apiRepo = RepoAPI.isInitialized()
+        meowddingRepo = RemoteRepo.isInitialized()
+
+        onRepoReady()
     }
 
-    @Subscription(FinishRepoLoadingEvent::class)
-    fun remoteRepo() {
+    @Subscription
+    private fun RepoStatusEvent.repoReady() {
+        apiRepo = true
+        onRepoReady()
+    }
+
+    @Subscription
+    private fun FinishRepoLoadingEvent.repoReady() {
+        meowddingRepo = true
+        onRepoReady()
+    }
+
+    fun onRepoReady() {
+        if (!apiRepo || !meowddingRepo) return
         SkyBlockPvExtraData.collected.forEach {
-            CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
+            CompletableFuture.supplyAsync {
+                runBlocking { it.load() }
+            }.exceptionally { throwable ->
+                it.loadFallback()
+                debug("Loading fallback for ${it.javaClass.name}")
                 McClient.runNextTick {
                     throw throwable
                 }

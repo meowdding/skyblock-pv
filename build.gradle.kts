@@ -101,7 +101,11 @@ fun DependencyHandler.includeImplementation(dep: Any) {
 
 val mcVersion = stonecutter.current.version.replace(".", "")
 val accessWidenerFile = rootProject.file("src/skyblockpv.accesswidener")
+
 loom {
+    log4jConfigs.removeAll { true }
+    log4jConfigs.from(rootProject.layout.projectDirectory.file("gradle/log4j.config.xml"))
+
     runConfigs["client"].apply {
         ideConfigGenerated(true)
         runDir = "../../run"
@@ -122,22 +126,6 @@ compactingResources {
     pathDirectory = "../../src"
 
     configureTask(tasks.named<AbstractCopyTask>("processResources").get())
-
-    compactToObject("garden_data")
-    compactToObject("foraging")
-    compactToObject("chocolate_factory")
-    compactToObject("rift")
-    compactToArray("museum_categories")
-    substituteFromDifferentFile("slayer", "slayers")
-    compactToObject("pets/overwrites")
-    compactToObject("pets")
-    compactToObject("crimson_isle/dojo")
-    compactToObject("crimson_isle/kuudra")
-    compactToObject("crimson_isle")
-    compactToArray("minions/categories")
-    compactToObject("minions")
-    downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/bestiary.json", "bestiary.json")
-    downloadResource("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/refs/heads/master/constants/misc.json", "neu_misc.json")
 }
 
 ksp {

@@ -1,16 +1,15 @@
 package me.owdding.skyblockpv.data.repo
 
 import com.mojang.serialization.Codec
-import me.owdding.repo.RemoteRepo
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
 
 @LoadData
-data object AttributesData : ExtraData {
+data object AttributesData : DefaultedData {
     val common = mutableListOf<Int>()
     val uncommon = mutableListOf<Int>()
     val rare = mutableListOf<Int>()
@@ -41,7 +40,8 @@ data object AttributesData : ExtraData {
     }
 
     override suspend fun load() {
-        RemoteRepo.getFileContentAsJson("pv/attributes.json").toDataOrThrow(
+        Utils.loadRemoteRepoData(
+            "pv/attributes",
             Codec.unboundedMap(
                 SkyBlockPvCodecs.getCodec<SkyBlockRarity>(),
                 CodecUtils.CUMULATIVE_INT_LIST,
