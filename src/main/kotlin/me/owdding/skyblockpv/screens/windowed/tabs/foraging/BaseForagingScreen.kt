@@ -12,7 +12,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.RepoAttributeAPI
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 
-abstract class BaseForagingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("MINING", gameProfile, profile) {
+abstract class BaseForagingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("FORAGING", gameProfile, profile) {
 
     abstract val type: ForagingCategory
 
@@ -25,7 +25,7 @@ enum class ForagingCategory(
     hoverName: String? = null,
     override val hideOnStranded: Boolean = false,
 ) : Category {
-    MAIN(::MainForagingScreen, Items.OAK_LOG.defaultInstance),
+    MAIN(::MainForagingScreen, Items.OAK_WOOD.defaultInstance),
     HOTF(::ForagingSkillTreeScreen, SkullTextures.HOTF.skull, "HotF Tree", true),
     ATTRIBUTES(::AttributeScreen, RepoAttributeAPI.getAttributeByIdOrNull("r43") ?: Items.BARRIER.defaultInstance, "Attributes", true),
     ;

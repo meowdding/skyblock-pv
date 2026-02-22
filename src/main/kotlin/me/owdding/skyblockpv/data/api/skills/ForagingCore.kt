@@ -31,6 +31,6 @@ data class TreeGifts(override val json: JsonObject) : ParseHelper {
 
 data class ForagingData(override val json: JsonObject) : ParseHelper {
     val personalBests by obj("starlyn.personal_bests", ::PersonalBests)
-    val fishFamily: Set<String> by stringSet()
-    val treeGifts by obj(transform = ::TreeGifts)
+    val fishFamily: Set<String> by stringSet("fish_family")
+    val treeGifts by obj("tree_gifts", transform = ::TreeGifts)
 }

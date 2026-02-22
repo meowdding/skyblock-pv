@@ -9,8 +9,8 @@ import me.owdding.skyblockpv.utils.codecs.LoadData
 
 @GenerateCodec
 data class TreeGifts(
-    @NamedCodec("cum_int_list") val fig: List<Int>,
-    @NamedCodec("cum_int_list") val mangrove: List<Int>,
+    @NamedCodec("cum_int_list_alt") val fig: List<Int>,
+    @NamedCodec("cum_int_list_alt") val mangrove: List<Int>,
 )
 
 @GenerateCodec

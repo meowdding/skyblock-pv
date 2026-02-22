@@ -61,8 +61,8 @@ interface ParseHelper {
     val json: JsonObject
 
     fun <T> parse(@Language("JSONPath") key: String? = null, transform: (JsonElement?) -> T): JsonDelegate<T> = JsonDelegate(json, key.orEmpty(), transform)
-    fun <T> nullableObj(@Language("JSONPath") key: String? = null, transform: (JsonObject?) -> T): DelegateProvider<T> = parse { transform(it as? JsonObject) }
-    fun <T> obj(@Language("JSONPath") key: String? = null, transform: (JsonObject) -> T): DelegateProvider<T> = parse { transform(it as? JsonObject ?: JsonObject()) }
+    fun <T> nullableObj(@Language("JSONPath") key: String? = null, transform: (JsonObject?) -> T): DelegateProvider<T> = parse(key) { transform(it as? JsonObject) }
+    fun <T> obj(@Language("JSONPath") key: String? = null, transform: (JsonObject) -> T): DelegateProvider<T> = parse(key) { transform(it as? JsonObject ?: JsonObject()) }
 
     fun int(@Language("JSONPath") key: String? = null, default: Int = 0): JsonDelegate<Int> = parse(key) { it.asInt(default) }
     fun long(@Language("JSONPath") key: String? = null, default: Long = 0L): JsonDelegate<Long> = parse(key) { it.asLong(default) }
