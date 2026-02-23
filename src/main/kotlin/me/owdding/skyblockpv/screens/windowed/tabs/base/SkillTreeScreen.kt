@@ -25,7 +25,6 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.GridLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.SpacerElement
-import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Item
@@ -231,10 +230,12 @@ interface SkillTreeScreen {
         val tooltip = getTooltip(treeNode, level, disabled, tree)
         return Displays.item(item.defaultInstance, customStackText = if (level > 1 && treeNode !is TierNode) "$level" else "").withTooltip(
             Text.multiline(
-                tooltip,
-                if (enableDebugOrdering) Text.of {
-                    append("x: ${treeNode.location.x}, y: ${treeNode.location.y}")
-                } else null,
+                listOfNotNull(
+                    tooltip,
+                    if (enableDebugOrdering) Text.of {
+                        append("x: ${treeNode.location.x}, y: ${treeNode.location.y}")
+                    } else null,
+                ),
             ),
         )
     }
