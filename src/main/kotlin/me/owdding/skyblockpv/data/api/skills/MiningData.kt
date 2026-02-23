@@ -76,7 +76,7 @@ enum class MiningGear {
 
     companion object {
         init {
-            Utils.loadFromRepo<Map<String, List<String>>>("gear/mining")?.forEach { (key, value) ->
+            Utils.loadFromRemoteRepo<Map<String, List<String>>>("gear/mining")?.forEach { (key, value) ->
                 runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }

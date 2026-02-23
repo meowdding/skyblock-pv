@@ -345,7 +345,7 @@ enum class FarmingGear {
 
     companion object {
         init {
-            Utils.loadFromRepo<Map<String, List<String>>>("gear/farming")?.forEach { (key, value) ->
+            Utils.loadFromRemoteRepo<Map<String, List<String>>>("gear/farming")?.forEach { (key, value) ->
                 runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }
