@@ -139,7 +139,6 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
         if (!apiRepo || !meowddingRepo) return
         SkyBlockPvExtraData.collected.forEach {
             CompletableFuture.supplyAsync {
-                throw UnsupportedOperationException()
                 runBlocking { it.load() }
             }.exceptionally { throwable ->
                 it.loadFallback()

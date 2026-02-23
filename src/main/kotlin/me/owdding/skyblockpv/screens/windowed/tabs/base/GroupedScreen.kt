@@ -13,9 +13,11 @@ import me.owdding.lib.displays.asWidget
 import me.owdding.lib.displays.toColumn
 import me.owdding.lib.displays.toRow
 import me.owdding.lib.layouts.withPadding
-import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
+import me.owdding.skyblockpv.utils.GroupedPageState
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.PvPageState
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -45,6 +47,8 @@ interface GroupedScreen<FilterType : Any, GroupType : Any, DataType : Any> {
 
     fun getColor(group: GroupType?, data: DataType): Int
     fun toDisplay(group: GroupType?, data: DataType): Display
+
+    fun toTabState(): PvPageState
 
     fun createLayout(bg: DisplayWidget): Layout {
         val uiWidth = bg.width
@@ -96,13 +100,18 @@ interface GroupedScreen<FilterType : Any, GroupType : Any, DataType : Any> {
                     })
                 }
             }
+            Utils.lastTab = GroupedPageState(
+                toTabState(),
+                filter,
+                query
+            )
         }
 
         update()
 
         return PvLayouts.frame(uiWidth, uiHeight) {
             PvLayouts.horizontal(spacing = 5) {
-                val input = Widgets.textInput(ListenableState.of("")) { box ->
+                val input = Widgets.textInput(ListenableState.of(query ?: "")) { box ->
                     box.withChangeCallback {
                         query = it.takeUnless(String::isEmpty)
                         update()
