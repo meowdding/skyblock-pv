@@ -25,7 +25,17 @@ object CfCodecs : ExtraData {
     )
 
     override suspend fun load() {
-        data = Utils.loadRepoData<CfRepoData>("chocolate_factory")
+        data = Utils.loadRemoteRepoData<CfRepoData>("pv/chocolate_factory")
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        data = CfRepoData(
+            emptyList(),
+            emptyList(),
+            emptyMap(),
+            CfMiscRepo(emptyMap()),
+            emptyList()
+        )
     }
 
     @GenerateCodec

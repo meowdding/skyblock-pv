@@ -6,9 +6,11 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
 import me.owdding.ktmodules.Module
+import me.owdding.lib.events.FinishRepoLoadingEvent
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingUpdateChecker
 import me.owdding.lib.utils.isMeowddingDev
+import me.owdding.repo.RemoteRepo
 import me.owdding.skyblockpv.api.PvAPI
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
 import me.owdding.skyblockpv.config.Config
@@ -25,18 +27,24 @@ import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fetchGameProfile
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
+import me.owdding.skyblockpv.utils.components.PvToast
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
+import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
+import tech.thatgravyboat.skyblockapi.api.events.misc.RepoStatusEvent
+import tech.thatgravyboat.skyblockapi.api.events.screen.ScreenInitializedEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -50,6 +58,13 @@ import java.util.concurrent.CompletableFuture
 
 @Module
 object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.autoResolve() {
+
+    private var meowddingRepo: Boolean = false
+    private var apiRepo: Boolean = false
+
+    var dataFailed: Boolean = false
+    var hasNotifiedAboutFailure: Boolean = false
+
     const val MOD_ID: String = "skyblockpv"
     const val RESOURCE_PATH: String = "skyblock-pv"
     const val DISCORD: String = "https://meowdd.ing/discord"
@@ -76,14 +91,6 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
 
         SkyBlockPvModules.init { SkyBlockAPI.eventBus.register(it) }
 
-        SkyBlockPvExtraData.collected.forEach {
-            CompletableFuture.supplyAsync { runBlocking { it.load() } }.exceptionally { throwable ->
-                McClient.runNextTick {
-                    throw throwable
-                }
-            }
-        }
-
         MeowddingUpdateChecker("8yqXwFLl", mod) { link, current, new ->
             fun MutableComponent.withLink() = this.apply {
                 this.url = link
@@ -108,6 +115,48 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
                 onRegisterCommands(RegisterCommandsEvent(dispatcher))
             }
         }
+
+
+        apiRepo = RepoAPI.isInitialized()
+        meowddingRepo = RemoteRepo.isInitialized()
+
+        onRepoReady()
+    }
+
+    @Subscription
+    private fun RepoStatusEvent.repoReady() {
+        apiRepo = true
+        onRepoReady()
+    }
+
+    @Subscription
+    private fun FinishRepoLoadingEvent.repoReady() {
+        meowddingRepo = true
+        onRepoReady()
+    }
+
+    fun onRepoReady() {
+        if (!apiRepo || !meowddingRepo) return
+        SkyBlockPvExtraData.collected.forEach {
+            CompletableFuture.supplyAsync {
+                throw UnsupportedOperationException()
+                runBlocking { it.load() }
+            }.exceptionally { throwable ->
+                it.loadFallback()
+                dataFailed = true
+                warn("Loading fallback for ${it.javaClass.name}")
+                McClient.runNextTick {
+                    throw throwable
+                }
+            }
+        }
+    }
+
+    @Subscription
+    fun screenEvent(event: ScreenInitializedEvent) {
+        if (!dataFailed || hasNotifiedAboutFailure) return
+        PvToast.addFailedToLoadDataToast()
+        hasNotifiedAboutFailure = true
     }
 
     @Subscription

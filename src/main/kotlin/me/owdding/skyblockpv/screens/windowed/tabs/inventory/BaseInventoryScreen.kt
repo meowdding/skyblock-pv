@@ -14,6 +14,7 @@ import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScree
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import me.owdding.skyblockpv.utils.CarouselPage
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import net.minecraft.world.item.ItemStack
@@ -24,13 +25,13 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 enum class InventoryCategory(val screen: KClass<out BaseWindowedPvScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
-    INVENTORY(InventoryScreen::class, Items.CHEST.defaultInstance),
-    ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.defaultInstance),
-    BACKPACK(BackpackScreen::class, SkullTextures.BACKPACK.skull),
-    WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.defaultInstance),
-    ACCESSORY(AccessoryScreen::class, SkullTextures.ACCESSORY_BAG.skull),
-    SACKS(SacksScreen::class, SkullTextures.SACKS.skull),
-    MISC_BAGS(MiscBagScreen::class, Items.BUNDLE.defaultInstance),
+    INVENTORY(InventoryScreen::class, Items.CHEST.withCatharsisId("tab/inventory/inventory")),
+    ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.withCatharsisId("tab/inventory/ender_chest")),
+    BACKPACK(BackpackScreen::class, SkullTextures.BACKPACK.skull.withCatharsisId("tab/inventory/backpack")),
+    WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.withCatharsisId("tab/inventory/wardrobe")),
+    ACCESSORY(AccessoryScreen::class, SkullTextures.ACCESSORY_BAG.skull.withCatharsisId("tab/inventory/accessory_bag")),
+    SACKS(SacksScreen::class, SkullTextures.SACKS.skull.withCatharsisId("tab/inventory/sacks")),
+    MISC_BAGS(MiscBagScreen::class, Items.BUNDLE.withCatharsisId("tab/inventory/misc_bag")),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()

@@ -13,7 +13,11 @@ object SlayerCodecs : ExtraData {
         private set
 
     override suspend fun load() {
-        data = Utils.loadRepoData("slayer", CodecUtils.map())
+        data = Utils.loadRemoteRepoData("pv/slayer", CodecUtils.map())
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        data = emptyMap()
     }
 
     @GenerateCodec

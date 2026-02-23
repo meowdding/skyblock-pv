@@ -1,61 +1,27 @@
 package me.owdding.skyblockpv.data.api.skills
 
+
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.utils.ParseHelper
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
-import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.ChatFormatting
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.api.remote.RepoPetsAPI
-import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
-import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 
 data class MiningCore(override val json: JsonObject) : ParseHelper {
-    val nodes: Map<String, Int> by map("nodes") { id, amount -> id to amount.asInt(0) }.map { it.filterKeys { !it.startsWith("toggle_") } }
-    val toggledNodes: List<String> by lazy {
-        json.getAs<JsonObject>("nodes")?.entrySet()?.filter { it.key.startsWith("toggle") }
-            ?.map { it.key.removePrefix("toggle_") to it.value.asBoolean(true) }
-            ?.filterNot { it.second }
-            ?.map { it.first } ?: emptyList()
-    }
     val crystals: Map<String, Crystal> by map("crystals") { id, data -> id to Crystal(data.asJsonObject) }
-    val experience: Long by long()
     val powderMithril: Int by int("powder_mithril")
     val powderSpentMithril: Int by int("powder_spent_mithril")
     val powderGemstone: Int by int("powder_gemstone")
     val powderSpentGemstone: Int by int("powder_spent_gemstone")
     val powderGlacite: Int by int("powder_glacite")
     val powderSpentGlacite: Int by int("powder_spent_glacite")
-    val miningAbility: String by string("selected_pickaxe_ability")
-
-
-    val levelToExp = mapOf(
-        1 to 0,
-        2 to 3_000,
-        3 to 12_000,
-        4 to 37_000,
-        5 to 97_000,
-        6 to 197_000,
-        7 to 347_000,
-        8 to 557_000,
-        9 to 847_000,
-        10 to 1_247_000,
-    )
-
-    fun getHotmLevel(): Int = levelToExp.entries.findLast { it.value <= experience }?.key ?: 0
-    fun getXpToNextLevel() = experience - (levelToExp[getHotmLevel()] ?: 0)
-    fun getXpRequiredForNextLevel(): Int {
-        val level = (getHotmLevel() + 1).coerceAtMost(10)
-        return (levelToExp[level] ?: 0) - (levelToExp[level - 1] ?: 0)
-    }
-
-    fun getAbilityLevel() = 1.takeIf { (nodes["special_0"] ?: 0) < 1 } ?: 2
 }
 
 data class Crystal(override val json: JsonObject) : ParseHelper {
@@ -148,7 +114,7 @@ enum class PowderType(val formatting: ChatFormatting) {
 }
 
 @LoadData
-object FossilTypes : ExtraData {
+object FossilTypes : DefaultedData {
 
     data class Fossil(
         val id: String,
@@ -160,7 +126,7 @@ object FossilTypes : ExtraData {
         private set
 
     override suspend fun load() {
-        Utils.loadFromRepo<JsonObject>("fossils")?.asMap { id, data ->
+        Utils.loadFromRemoteRepo<JsonObject>("pv/fossils")?.asMap { id, data ->
             val obj = data.asJsonObject
             id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))
         }?.map { it.value }?.let { fossils = it }

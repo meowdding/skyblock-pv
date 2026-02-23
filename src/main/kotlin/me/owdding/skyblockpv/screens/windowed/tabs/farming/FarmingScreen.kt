@@ -2,7 +2,14 @@ package me.owdding.skyblockpv.screens.windowed.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.toColumn
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
+import me.owdding.lib.extensions.ListMerger
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -11,6 +18,7 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.api.skills.Pet
+import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.MedalType
 import me.owdding.skyblockpv.data.repo.FarmingGear
@@ -18,7 +26,7 @@ import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
-import me.owdding.skyblockpv.utils.Utils.append
+import me.owdding.skyblockpv.utils.Utils.skipUntil
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -26,12 +34,16 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.api.area.farming.garden.GardenChip
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -42,6 +54,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             horizontal {
                 widget(getGear(profile))
                 widget(getContests(profile.farmingData))
+                widget(getChips(profile.gardenChips))
                 widget(getInfoWidget(profile))
             }
         }
@@ -56,7 +69,10 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 widget(getGear(profile))
                 widget(getContests(profile.farmingData))
             }
-            widget(getInfoWidget(profile))
+            horizontal(5, alignment = 0.5f) {
+                widget(getChips(profile.gardenChips))
+                widget(getInfoWidget(profile))
+            }
         }.asScrollable(bg.width - 10, bg.height)
     }
 
@@ -237,7 +253,10 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             spacer(width = 5)
             display(getPets(profile))
             spacer(width = 5)
-            widget(ExtraDisplays.inventorySlot(getVacuum(profile)).asWidget()) { alignVerticallyMiddle() }
+            PvLayouts.vertical(5) {
+                display(ExtraDisplays.inventorySlot(getVacuum(profile)))
+                display(ExtraDisplays.inventorySlot(getWateringCan(profile)))
+            }.add { alignVerticallyMiddle() }
         },
     )
 
@@ -246,6 +265,15 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
         val vacuum = vacuums.sortedBy { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }.reversed().firstOrNull()
             ?: return Displays.padding(4, Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/minecart")), Displays.empty(16, 16)))
+
+        return Displays.padding(4, Displays.item(vacuum, showTooltip = true))
+    }
+
+    private fun getWateringCan(profile: SkyBlockProfile): Display {
+        val wateringCans = ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(FarmingGear.watering_can)) ?: emptyList()
+
+        val vacuum = wateringCans.sortedBy { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }.reversed().firstOrNull()
+            ?: return Displays.padding(4, Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/watering_can")), Displays.empty(16, 16)))
 
         return Displays.padding(4, Displays.item(vacuum, showTooltip = true))
     }
@@ -349,6 +377,71 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }.map { Displays.padding(2, it) }.chunked(5)
             .map { it.toColumn() }
             .toRow().let { ExtraDisplays.inventoryBackground(3, 5, Displays.padding(2, it)) }.asWidget(),
+    )
+
+    private fun getChips(data: ChipsData) = PvWidgets.label(
+        "Chips",
+        GardenChip.entries.map { entry ->
+            val level = when (entry) {
+                GardenChip.CROPSHOT -> data.cropshot
+                GardenChip.EVERGREEN -> data.evergreen
+                GardenChip.HYPERCHARGE -> data.hypercharge
+                GardenChip.MECHAMIND -> data.mechamind
+                GardenChip.OVERDRIVE -> data.overdrive
+                GardenChip.QUICKDRAW -> data.quickdraw
+                GardenChip.RAREFINDER -> data.rarefinder
+                GardenChip.SOWLEDGE -> data.sowledge
+                GardenChip.SYNTHESIS -> data.synthesis
+                GardenChip.VERMIN_VAPORIZER -> data.verminVaporizer
+            }
+
+            val levelColor = when (level) {
+                0 -> TextColor.RED
+                else if level <= 10 -> TextColor.BLUE
+                else if level <= 15 -> TextColor.DARK_PURPLE
+                else -> TextColor.ORANGE
+            }
+            val itemStack = entry.itemStack
+            Displays.item(itemStack, customStackText = Text.of(level.toString(), levelColor)).withTooltip {
+                add(itemStack.hoverName.copy().stripped, levelColor)
+                space()
+                ListMerger(itemStack.getLore()).apply {
+                    skipUntil { it.stripped.startsWith("Ability: ") }
+                    read()
+                    addUntil { it.stripped.isEmpty() }
+                }.destination.forEach(::add)
+                space()
+
+                val sowdustSpent = StaticGardenData.chips[(level - 1).coerceIn(0, 20)]
+                val maxSowdust = StaticGardenData.chips.max()
+                add {
+                    append("Sowdust: ")
+                    append(
+                        sowdustSpent.toFormattedString(),
+                        when (sowdustSpent) {
+                            0 -> TextColor.RED
+                            maxSowdust -> TextColor.DARK_GREEN
+                            else -> TextColor.GREEN
+                        },
+                    )
+                    append("/")
+                    append(maxSowdust.shorten(3), TextColor.DARK_GREEN)
+                    color = TextColor.GRAY
+
+                    append(" (")
+                    append((sowdustSpent / maxSowdust.toFloat() * 100).round()) {
+                        append("%")
+                        color = TextColor.DARK_AQUA
+                    }
+                    append(")")
+                }
+            }
+        }.map {
+            Displays.padding(2, it)
+        }.chunked(5)
+            .map { it.toColumn() }.toRow()
+            .let { ExtraDisplays.inventoryBackground(2, 5, Displays.padding(2, it)) }
+            .asWidget(),
     )
 }
 

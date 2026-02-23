@@ -3,13 +3,16 @@ package me.owdding.skyblockpv.data.repo
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
+import me.owdding.lib.utils.MeowddingLogger
+import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 
 @LoadData
-object PetCodecs : ExtraData {
+object PetCodecs : DefaultedData, MeowddingLogger by SkyBlockPv.featureLogger() {
     private val rarityOffsets: MutableList<Int> = mutableListOf()
     private val xpCurve: MutableList<Int> = mutableListOf()
     private val overwrites: MutableMap<String, Data> = mutableMapOf()
@@ -17,7 +20,7 @@ object PetCodecs : ExtraData {
 
 
     override suspend fun load() {
-        Utils.loadRepoData<PetData>("pets").let {
+        Utils.loadRemoteRepoData<PetData>("pv/pets").let {
             this.rarityOffsets.addAll(it.rarityOffsets)
             this.xpCurve.addAll(it.xpCurve)
             this.overwrites.putAll(it.overwrites.mapKeys { (key, _) -> key.uppercase() })
@@ -42,9 +45,12 @@ object PetCodecs : ExtraData {
         @FieldName("rarity_offsets") val rarityOffsets: List<Int> = PetCodecs.rarityOffsets,
         @FieldName("level_cap") val levelCap: Int = 100,
     ) {
-        fun getOffset(rarity: SkyBlockRarity): Int {
+        fun getOffset(rarity: SkyBlockRarity): Int = runCatching {
             val ordinal = rarity.ordinal.coerceIn(0, rarityOffsets.size - 1)
-            return rarityOffsets[ordinal]
+            rarityOffsets[ordinal]
+        }.getOrElse {
+            warn("Failed to get offset for $this", it)
+            0
         }
 
         fun getCurveForRarity(rarity: SkyBlockRarity): List<Int> {

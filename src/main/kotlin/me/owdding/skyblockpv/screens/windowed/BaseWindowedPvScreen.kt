@@ -102,6 +102,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                     e.getStackTraceString(7),
                 )
 
+                SkyBlockPv.error("Failed to build screen ${this.javaClass.simpleName}! ($name - $gameProfile)", e)
 
                 text.splitLines().forEach {
                     widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))

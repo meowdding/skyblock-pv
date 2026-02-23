@@ -32,6 +32,12 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
+enum class GreenhouseUpgrade {
+    GROWTH_SPEED,
+    YIELD,
+    PLOT_LIMIT,
+}
+
 enum class GardenResource(internalName: String? = null, itemId: String? = null) : StringRepresentable {
     WHEAT,
     PUMPKIN,
@@ -80,6 +86,34 @@ object GardenCodecs {
         ).xmap({ Either.unwrap(it) }, { if (it.bundle) Either.right(it) else Either.left(it) })
 }
 
+@GenerateCodec
+data class GreenhouseUpgradeData(
+    @FieldName("reward_formula") val rewardFormula: String,
+    val format: CompostNumberFormat,
+    @NamedCodec("component_tag") val name: Component,
+    val tooltip: String,
+    @NamedCodec("cum_string_int_map") @FieldName("upgrades") val upgrade: List<Map<String, Int>>,
+) {
+    fun getRewardForLevel(level: Int): Int {
+        return rewardFormula.keval {
+            includeDefault()
+            function {
+                name = "clamp"
+                arity = 3
+                implementation = { (value, min, max) -> Math.clamp(value, min, max) }
+            }
+            constant {
+                name = "level"
+                value = level.toDouble()
+            }
+        }.toInt()
+    }
+
+    fun getTooltipForLevel(level: Int): Component {
+        return TagParser.QUICK_TEXT_SAFE.parseText(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
+    }
+}
+
 @LoadData
 data object StaticGardenData : ExtraData {
     lateinit var barnSkins: Map<String, DefaultBarnSkin>
@@ -96,7 +130,15 @@ data object StaticGardenData : ExtraData {
         private set
     lateinit var visitors: List<StaticVisitorData>
         private set
+    lateinit var chips: List<Int>
+        private set
+    lateinit var mutations: List<MutationData>
+        private set
     lateinit var tools: Map<GardenResource, StaticToolInfo>
+        private set
+    lateinit var greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData>
+        private set
+
     val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO")
     const val COPPER = "copper"
 
@@ -109,15 +151,43 @@ data object StaticGardenData : ExtraData {
         @FieldName("composter_data") val composterData: Map<ComposterUpgrade, StaticComposterData>,
         @NamedCodec("garden§crop_milestones") @FieldName("crop_milestones") val cropMilestones: Map<GardenResource, List<Int>>,
         @FieldName("misc") val miscData: StaticMiscData,
+        @NamedCodec("cum_int_list") val chips: List<Int>,
         @FieldName("plot_cost") val plotCost: Map<String, List<StaticPlotCost>>,
+        val mutations: List<MutationData>,
         val plots: List<StaticPlotData>,
         val visitors: List<StaticVisitorData>,
         val tools: Map<GardenResource, StaticToolInfo>,
+        @FieldName("greenhouse_upgrades") val greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData>,
     )
 
-
     override suspend fun load() {
-        init(Utils.loadRepoData<GardenData>("garden_data"))
+        init(Utils.loadRemoteRepoData<GardenData>("pv/garden_data"))
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        barnSkins = emptyMap()
+        composterData = emptyMap()
+        cropMilestones = emptyMap()
+        miscData = StaticMiscData(
+            emptyList(),
+            emptyList(),
+            "level",
+            emptyMap(),
+            emptyList(),
+            emptyList(),
+            "level",
+            5,
+            emptyMap(),
+            emptyList(),
+            emptyList(),
+        )
+        chips = emptyList()
+        plotCost = emptyMap()
+        mutations = emptyList()
+        plots = emptyList()
+        visitors = emptyList()
+        tools = emptyMap()
+        greenhouseUpgrades = emptyMap()
     }
 
     fun init(data: GardenData) {
@@ -129,6 +199,9 @@ data object StaticGardenData : ExtraData {
         plots = data.plots
         visitors = data.visitors
         tools = data.tools
+        chips = data.chips
+        mutations = data.mutations
+        greenhouseUpgrades = data.greenhouseUpgrades
     }
 }
 
@@ -177,6 +250,14 @@ data class StaticComposterData(
         return TagParser.QUICK_TEXT_SAFE.parseText(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }
+
+@GenerateCodec
+data class MutationData(
+    val id: String,
+    val name: String,
+    val rarity: SkyBlockRarity,
+    val analyzable: Boolean = true,
+)
 
 @GenerateCodec
 data class StaticMiscData(
@@ -255,7 +336,9 @@ enum class FarmingGear {
     NECKLACES,
     GLOVES,
     VACUUM,
-    PETS;
+    WATERING_CAN,
+    PETS,
+    ;
 
     var list: List<String> = emptyList()
         private set
@@ -273,6 +356,7 @@ enum class FarmingGear {
         val belts = BELTS.list
         val armor = ARMOR.list
         val vacuum = VACUUM.list
+        val watering_can = WATERING_CAN.list
         val pets = PETS.list
     }
 }

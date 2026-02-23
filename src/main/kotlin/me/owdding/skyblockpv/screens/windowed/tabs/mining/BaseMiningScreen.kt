@@ -7,6 +7,7 @@ import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -26,10 +27,10 @@ enum class MiningCategory(
     hoverName: String? = null,
     override val hideOnStranded: Boolean = false,
 ) : Category {
-    MAIN(MainMiningScreen::class, Items.DIAMOND_PICKAXE.defaultInstance),
-    GEAR(MiningGearScreen::class, Items.PRISMARINE_SHARD.defaultInstance, "Mining Gear"),
-    HOTM(HotmScreen::class, SkullTextures.HOTM.skull, "HotM Tree", true),
-    GLACITE(GlaciteScreen::class, Items.BLUE_ICE.defaultInstance, "Glacite Tunnels", true),
+    MAIN(MainMiningScreen::class, Items.DIAMOND_PICKAXE.withCatharsisId("tab/mining/main")),
+    GEAR(MiningGearScreen::class, Items.PRISMARINE_SHARD.withCatharsisId("tab/mining/gear"), "Mining Gear"),
+    HOTM(MiningSkillTreeScreen::class, SkullTextures.HOTM.skull.withCatharsisId("tab/mining/hotm"), "HotM Tree", true),
+    GLACITE(GlaciteScreen::class, Items.BLUE_ICE.withCatharsisId("tab/mining/glacite"), "Glacite Tunnels", true),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()

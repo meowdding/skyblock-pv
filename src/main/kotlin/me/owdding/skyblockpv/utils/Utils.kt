@@ -10,7 +10,9 @@ import kotlinx.coroutines.runBlocking
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.toColumn
+import me.owdding.lib.extensions.ListMerger
 import me.owdding.lib.rendering.text.TextShader
+import me.owdding.repo.RemoteRepo
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PlayerDbAPI
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
@@ -43,6 +45,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
 import java.nio.file.Files
 import java.security.MessageDigest
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
@@ -125,9 +128,19 @@ object Utils {
 
     inline fun <reified T : Any> loadFromRepo(file: String) = runBlocking {
         try {
+            SkyBlockPv.debug("Loading repo/$file.json from repo")
             SkyBlockPv.mod.findPath("repo/$file.json").orElseThrow()?.let(Files::readString)?.readJson<T>() ?: return@runBlocking null
         } catch (e: Exception) {
             SkyBlockPv.error("Failed to load $file from repo", e)
+            null
+        }
+    }
+    inline fun <reified T : Any> loadFromRemoteRepo(file: String) = runBlocking {
+        try {
+            SkyBlockPv.debug("Loading $file.json from remote repo")
+            RemoteRepo.getFileContent("$file.json")?.readJson<T>() ?: return@runBlocking null
+        } catch (e: Exception) {
+            SkyBlockPv.error("Failed to load $file from femote repo", e)
             null
         }
     }
@@ -146,6 +159,22 @@ object Utils {
 
     internal fun <B : Any> loadRepoData(file: String, codec: Codec<B>): B {
         return loadFromRepo<JsonElement>(file).toDataOrThrow(codec)
+    }
+
+    internal inline fun <reified T : Any> loadRemoteRepoData(file: String): T {
+        return loadRemoteRepoData<T, T>(file) { it }
+    }
+
+    internal inline fun <reified T : Any, B : Any> loadRemoteRepoData(file: String, modifier: (Codec<T>) -> Codec<B>): B {
+        return loadFromRemoteRepo<JsonElement>(file).toDataOrThrow(SkyBlockPvCodecs.getCodec<T>().let(modifier))
+    }
+
+    internal inline fun <B : Any> loadRemoteRepoData(file: String, supplier: () -> Codec<B>): B {
+        return loadFromRemoteRepo<JsonElement>(file).toDataOrThrow(supplier())
+    }
+
+    internal fun <B : Any> loadRemoteRepoData(file: String, codec: Codec<B>): B {
+        return loadFromRemoteRepo<JsonElement>(file).toDataOrThrow(codec)
     }
 
     fun text(
@@ -216,6 +245,13 @@ object Utils {
     fun Matrix3x2fStack.copy() = Matrix3x2f(this)
 
     fun Collection<ItemStack>.filterNotAir() = filterNot { it.isEmpty }
+
+    private val format = SimpleDateFormat("yyyy.MM.dd HH:mm")
+    fun Long.toDateTime(): String = format.format(this)
+
+    fun <Type> ListMerger<Type>.skipUntil(predicate: (Type) -> Boolean) {
+        while (index + 1 < original.size && !predicate(peek())) read()
+    }
 }
 
 interface PvPageState {

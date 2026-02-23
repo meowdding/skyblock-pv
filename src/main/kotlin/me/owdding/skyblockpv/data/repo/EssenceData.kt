@@ -41,7 +41,7 @@ object EssenceData : ExtraData {
 
         val display = ExtraDisplays.text(
             Text.join(
-                perk?.name,
+                perk?.name ?: "Unknown",
                 ": ",
                 Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) PvColors.GREEN else PvColors.RED },
                 "/$maxLevel",
@@ -53,7 +53,11 @@ object EssenceData : ExtraData {
     }
 
     override suspend fun load() {
-        allPerks = Utils.loadRepoData("essence_perks", Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>()))
+        allPerks = Utils.loadRemoteRepoData("pv/essence_perks", Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>()))
             .flatMap { it.value.entries }.associateBy({ it.key }, { it.value })
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        allPerks = emptyMap()
     }
 }
