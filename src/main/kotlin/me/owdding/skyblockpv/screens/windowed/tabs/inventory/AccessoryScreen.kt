@@ -20,12 +20,12 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor
 
-class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
-    private val accessories get() = profile.inventory?.talismans ?: emptyList()
+class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen<List<List<ItemStack>>>(gameProfile, profile) {
 
-    override fun getInventories(): List<Display> = accessories.map { PvWidgets.createInventory(it) }
+    override fun getRawInventory() = profile.inventory?.talismans
+    override fun List<List<ItemStack>>.getInventories(): List<Display> = map { PvWidgets.createInventory(it) }
 
-    override fun getIcons(): List<ItemStack> = List(accessories.size) { SkullTextures.ACCESSORY_BAG.skull.copy() }
+    override fun List<List<ItemStack>>.getIcons(): List<ItemStack> = List(size) { SkullTextures.ACCESSORY_BAG.skull.copy() }
 
     override fun getExtraLine() = DisplayFactory.vertical(alignment = Alignment.CENTER) {
         val maxwell = profile.maxwell ?: return@vertical

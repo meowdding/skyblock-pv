@@ -30,6 +30,7 @@ import me.owdding.skyblockpv.screens.windowed.tabs.rift.BaseRiftScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.rift.MainRiftScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.rift.RiftCategory
 import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
+import me.owdding.skyblockpv.utils.PvPageState
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -42,7 +43,7 @@ enum class PvTab(
     private val constructor: (GameProfile, SkyBlockProfile?) -> BaseWindowedPvScreen,
     private val icon: (GameProfile?) -> ItemStack,
     private val hideOnStranded: Boolean = false,
-) {
+) : PvPageState {
     MAIN(MainScreen::class, ::MainScreen, { it?.let(::createSkull) ?: Items.PLAYER_HEAD.withCatharsisId("tab/main") }),
     COMBAT(
         BaseCombatScreen::class,
@@ -100,7 +101,7 @@ enum class PvTab(
         else -> TriState.TRUE
     }
 
-    fun create(gameProfile: GameProfile, profile: SkyBlockProfile? = null): BaseWindowedPvScreen {
+    override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BaseWindowedPvScreen {
         return constructor.invoke(gameProfile, profile)
     }
 
@@ -108,5 +109,5 @@ enum class PvTab(
         return icon(gameProfile)
     }
 
-    fun canDisplay(profile: SkyBlockProfile?): Boolean = !this.hideOnStranded || profile?.onStranded != true
+    override fun canDisplay(profile: SkyBlockProfile?): Boolean = !this.hideOnStranded || profile?.onStranded != true
 }

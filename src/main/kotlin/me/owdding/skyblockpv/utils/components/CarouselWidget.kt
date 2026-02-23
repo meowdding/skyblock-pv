@@ -9,7 +9,10 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.platform.screens.BaseWidget
 import me.owdding.lib.platform.screens.MouseButtonEvent
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
+import me.owdding.skyblockpv.utils.CarouselPageState
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
+import me.owdding.skyblockpv.utils.PvPageState
+import me.owdding.skyblockpv.utils.Utils
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutSettings
@@ -19,6 +22,7 @@ import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.platform.scale
 import tech.thatgravyboat.skyblockapi.platform.translate
 import tech.thatgravyboat.skyblockapi.utils.extentions.scissor
+import kotlin.collections.mapIndexed
 
 
 class CarouselWidget(
@@ -139,8 +143,8 @@ class CarouselWidget(
 
     override fun getCursor(): CursorScreen.Cursor = cursor
 
-    fun getIcons(perRow: Int = 9, displays: () -> List<Display>): Layout {
-        val buttons = displays.invoke().mapIndexed { index, it ->
+    fun getIcons(perRow: Int = 9, page: PvPageState, displays: () -> List<Display>): Layout {
+        val buttons = displays.invoke().mapIndexed { index, display ->
             Button()
                 .withSize(20, 20)
                 .withTexture(null)
@@ -150,16 +154,17 @@ class CarouselWidget(
                             WidgetRenderers.sprite(ExtraConstants.BUTTON_PRIMARY_OPAQUE),
                             WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK_OPAQUE),
                         ) { this.index == index },
-                        WidgetRenderers.center(20, 20, WidgetRenderers.padded(1, 2, 3, 2, DisplayWidget.displayRenderer(it))),
+                        WidgetRenderers.center(20, 20, WidgetRenderers.padded(1, 2, 3, 2, DisplayWidget.displayRenderer(display))),
                     ),
                 ).withCallback {
                     this.index = index
+                    Utils.lastTab = CarouselPageState(page, index)
                 }
         }
 
         val rows = buttons.chunked(perRow).map { PvLayouts.horizontal(1) { widget(it) } }
         return PvLayouts.vertical(1) {
-            rows.forEach { it ->
+            rows.forEach {
                 widget(it, LayoutSettings::alignHorizontallyCenter)
             }
         }

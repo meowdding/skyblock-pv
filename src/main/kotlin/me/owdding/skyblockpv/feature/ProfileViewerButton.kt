@@ -47,7 +47,7 @@ object ProfileViewerButton {
                 }
                 onClick {
                     event.screen.onClose()
-                    Utils.openMainScreen(name)
+                    Utils.openPv(name)
                 }
             }
         }

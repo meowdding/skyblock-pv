@@ -35,6 +35,7 @@ import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
+import me.owdding.skyblockpv.utils.PvPageState
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
@@ -67,6 +68,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
     override val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
     override val uiHeight get() = (this.height * 0.65).toInt()
+    abstract val tab: PvTab
 
     override fun init() {
         val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
@@ -220,7 +222,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             button.setSize(20, 31)
             button.withTexture(null)
             if (!tab.isSelected()) {
-                button.withCallback { McClient.setScreenAsync { tab.create(gameProfile, profile) } }
+                button.withCallback { Utils.openTab(tab, gameProfile, profile) }
             }
             button.withRenderer(
                 WidgetRenderers.layered(
@@ -262,9 +264,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             val username = Widgets.autocomplete<String>(usernameState) { box ->
                 box.withEnterCallback {
                     Utils.fetchGameProfile(box.value) { profile ->
-                        profile?.let {
-                            McClient.setScreenAsync { PvTab.MAIN.create(it) }
-                        }
+                        profile?.let { Utils.openPv(it) }
                     }
                 }
                 box.withTexture(ExtraConstants.TEXTBOX)
@@ -304,7 +304,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                         val gameProfile = profile.getNow(null)
                         if (gameProfile != null) {
                             Utils.preferedProfileId = this@BaseWindowedPvScreen.profile.id.id
-                            McClient.setScreenAsync { PvTab.MAIN.create(gameProfile) }
+                            Utils.openPv(gameProfile)
                         } else if (profile.isCompletedExceptionally) {
                             Text.of("Failed to fetch username!").sendWithPrefix()
                         } else {
@@ -457,4 +457,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             this.renderTransparentBackground(guiGraphics)
         }
     }
+
+    open fun toTabState(): PvPageState = this.tab
 }

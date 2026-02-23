@@ -8,9 +8,12 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
+import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.utils.CarouselPage
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -38,31 +41,38 @@ enum class InventoryCategory(val screen: KClass<out BaseWindowedPvScreen>, overr
 }
 
 abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("INVENTORY", gameProfile, profile) {
+    override val tab: PvTab = PvTab.INVENTORY
     override val categories get() = InventoryCategory.entries
     protected fun List<ItemStack>?.orEmpty(size: Int) = this ?: List(size) { ItemStack.EMPTY }
 }
 
-abstract class BasePagedInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
-
+abstract class BasePagedInventoryScreen<T>(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile),
+    CarouselPage {
+    override var carouselStart: Int = 0
     protected var carousel: CarouselWidget? = null
 
-    abstract fun getInventories(): List<Display>
-    abstract fun getIcons(): List<ItemStack>
+    abstract fun getRawInventory(): T?
+    abstract fun T.getInventories(): List<Display>
+    abstract fun T.getIcons(): List<ItemStack>
     open fun getExtraLine(): Display? = null
 
     open val itemStackSize = true
 
     override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical(5, MIDDLE) {
-        val inventories = getInventories()
-        val icons = getIcons()
+        val rawData = getRawInventory() ?: run {
+            Utils.openTab(PvTab.INVENTORY, gameProfile, profile)
+            return@vertical
+        }
+        val inventories = rawData.getInventories()
+        val icons = rawData.getIcons()
 
         carousel = CarouselWidget(
             inventories,
-            carousel?.index ?: 0,
+            carousel?.index ?: carouselStart,
             246,
         )
 
-        val buttonContainer = carousel!!.getIcons {
+        val buttonContainer = carousel!!.getIcons(page = toTabState()) {
             List(inventories.size) { index ->
                 val icon = icons[index]
                 if (itemStackSize) icon.count = index + 1

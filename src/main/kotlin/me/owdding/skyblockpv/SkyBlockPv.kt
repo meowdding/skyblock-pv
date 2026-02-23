@@ -139,7 +139,6 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
         if (!apiRepo || !meowddingRepo) return
         SkyBlockPvExtraData.collected.forEach {
             CompletableFuture.supplyAsync {
-                throw UnsupportedOperationException()
                 runBlocking { it.load() }
             }.exceptionally { throwable ->
                 it.loadFallback()
@@ -167,7 +166,7 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
                     (+"messages.api.not_authenticated").sendWithPrefix()
                     return@callback
                 }
-                McClient.setScreenAsync { PvTab.MAIN.create(McClient.self.gameProfile) }
+                Utils.openPv(McClient.self.gameProfile)
             }
             then("player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 callback {
@@ -175,7 +174,7 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
                         (+"messages.api.not_authenticated").sendWithPrefix()
                         return@callback
                     }
-                    Utils.openMainScreen(this.getArgument("player", String::class.java))
+                    Utils.openPv(this.getArgument("player", String::class.java))
                 }
             }
         }
