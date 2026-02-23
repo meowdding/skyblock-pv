@@ -17,6 +17,7 @@ import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastManager
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 
 data class PvToast(
     private val display: Display,
@@ -43,6 +44,24 @@ data class PvToast(
         private const val RESEND_TIME = 10 * 60 * 1000L
 
         private val failedToLoadForUsers = mutableMapOf<ProfileId, Long>()
+
+        fun addFailedToLoadDataToast() {
+            val display = Displays.background(
+                ThemeSupport.texture(SkyBlockPv.id("buttons/normal")),
+                Displays.padding(
+                    5,
+                    Displays.column(
+                        Displays.text("§lFailed to load SbPv repo data!", color = { TextColor.RED.toUInt() }, shadow = false),
+                        Displays.text("This might cause unexpected behaviour,", color = { TextColor.RED.toUInt() }, shadow = false),
+                        Displays.text("try restarting your game.", color = { TextColor.RED.toUInt() }, shadow = false),
+                        Displays.empty(height = 2),
+                        Displays.text("In case the issue persists please", color = { TextColor.RED.toUInt() }, shadow = false),
+                        Displays.text("report it on the discord.", color = { TextColor.RED.toUInt() }, shadow = false),
+                    ),
+                ),
+            )
+            McClient.toasts.addToast(PvToast(display, 15000))
+        }
 
         fun addFailedToLoadForUsers(
             profile: SkyBlockProfile,

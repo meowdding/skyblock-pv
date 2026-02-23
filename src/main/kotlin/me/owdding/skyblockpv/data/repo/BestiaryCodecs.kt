@@ -90,7 +90,14 @@ object BestiaryCodecs : ExtraData {
     )
 
     override suspend fun load() {
-        data = Utils.loadRepoData<BestiaryRepoData>("bestiary")
+        data = Utils.loadRemoteRepoData<BestiaryRepoData>("neu/bestiary")
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        data = BestiaryRepoData(
+            emptyMap(),
+            emptyMap(),
+        )
     }
 }
 

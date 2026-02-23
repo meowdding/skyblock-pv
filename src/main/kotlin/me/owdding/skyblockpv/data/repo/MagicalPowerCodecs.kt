@@ -38,7 +38,14 @@ object MagicalPowerCodecs : ExtraData {
     private val RIFT_PRISM = SkyBlockId.item("rift_prism")
 
     override suspend fun load() {
-        data = Utils.loadRepoData<MagicalPowerRepoData>("magical_power")
+        data = Utils.loadRemoteRepoData<MagicalPowerRepoData>("pv/magical_power")
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        data = MagicalPowerRepoData(
+            mapOf(),
+            mapOf()
+        )
     }
 
     fun calculateMagicalPower(profile: SkyBlockProfile): CompletableFuture<Pair<Int, Component>> = profile.dataFuture.thenApplyAsync(

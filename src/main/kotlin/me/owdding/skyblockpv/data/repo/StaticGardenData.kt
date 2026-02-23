@@ -13,7 +13,6 @@ import me.owdding.ktcodecs.NamedCodec
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
-import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.ExtraData
@@ -162,7 +161,33 @@ data object StaticGardenData : ExtraData {
     )
 
     override suspend fun load() {
-        init(Utils.loadRepoData<GardenData>("garden_data"))
+        init(Utils.loadRemoteRepoData<GardenData>("pv/garden_data"))
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        barnSkins = emptyMap()
+        composterData = emptyMap()
+        cropMilestones = emptyMap()
+        miscData = StaticMiscData(
+            emptyList(),
+            emptyList(),
+            "level",
+            emptyMap(),
+            emptyList(),
+            emptyList(),
+            "level",
+            5,
+            emptyMap(),
+            emptyList(),
+            emptyList(),
+        )
+        chips = emptyList()
+        plotCost = emptyMap()
+        mutations = emptyList()
+        plots = emptyList()
+        visitors = emptyList()
+        tools = emptyMap()
+        greenhouseUpgrades = emptyMap()
     }
 
     fun init(data: GardenData) {

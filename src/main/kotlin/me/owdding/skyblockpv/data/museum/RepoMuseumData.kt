@@ -37,7 +37,7 @@ object RepoMuseumData {
             this.special = it.special
         }
 
-        this.museumCategories = Utils.loadRepoData("museum_categories", CodecUtils.list())
+        this.museumCategories = Utils.loadRemoteRepoData("pv/museum_categories", CodecUtils.list())
 
         evaluateItemCategoryMap()
     }

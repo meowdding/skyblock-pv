@@ -34,11 +34,27 @@ data object StaticForagingData : ExtraData {
     @GenerateCodec
     data class ForagingData(
         @FieldName("tree_gifts") val treeGifts: TreeGifts,
-        val misc: MiscForagingData
+        val misc: MiscForagingData,
     )
 
     override suspend fun load() {
-        init(Utils.loadRepoData<ForagingData>("foraging"))
+        init(Utils.loadRemoteRepoData<ForagingData>("pv/foraging"))
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        treeGifts = TreeGifts(
+            emptyList(),
+            emptyList(),
+        )
+        misc = MiscForagingData(
+            "level",
+            100000,
+            50,
+            "level",
+            100000,
+            50,
+            5,
+        )
     }
 
     fun init(data: ForagingData) {

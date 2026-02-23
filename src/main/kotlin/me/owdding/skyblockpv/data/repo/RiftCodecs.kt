@@ -12,7 +12,15 @@ object RiftCodecs : ExtraData {
         private set
 
     override suspend fun load() {
-        data = Utils.loadRepoData("rift")
+        data = Utils.loadRemoteRepoData("pv/rift")
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        data = RiftRepoData(
+            emptyList(),
+            emptyList(),
+            emptyList(),
+        )
     }
 
     @GenerateCodec

@@ -13,7 +13,13 @@ object NeuMiscCodecs : ExtraData {
         private set
 
     override suspend fun load() {
-        data = Utils.loadRepoData<NeuMiscRepoData>("neu_misc")
+        data = Utils.loadRemoteRepoData<NeuMiscRepoData>("neu/misc")
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        data = NeuMiscRepoData(
+            emptyMap()
+        )
     }
 
     @GenerateCodec
