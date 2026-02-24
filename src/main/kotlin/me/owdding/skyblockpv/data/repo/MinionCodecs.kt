@@ -15,10 +15,14 @@ object MinionCodecs : ExtraData {
     val categories: MutableList<MinionCategory> = mutableListOf()
 
     override suspend fun load() {
-        Utils.loadRepoData<Data>("minions").let { data ->
+        Utils.loadRemoteRepoData<Data>("pv/minions").let { data ->
             this.miscData = data.miscData
             this.categories.addAll(data.categories)
         }
+    }
+
+    override fun loadFallback(): Result<Unit> = runCatching {
+        miscData = MiscData(11, emptyMap())
     }
 
     @GenerateCodec

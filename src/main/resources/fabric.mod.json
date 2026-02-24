@@ -16,6 +16,9 @@
                 "value": "me.owdding.skyblockpv.SkyBlockPv",
                 "adapter": "kotlin"
             }
+        ],
+        "catharsis:imc/item_id": [
+            "me.owdding.skyblockpv.utils.CatharsisSupport::register"
         ]
     },
     "depends": {

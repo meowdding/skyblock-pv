@@ -7,19 +7,32 @@ import me.owdding.lib.utils.FeatureName
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.data.repo.*
+import me.owdding.skyblockpv.data.repo.DefaultBarnSkin
+import me.owdding.skyblockpv.data.repo.GardenResource
+import me.owdding.skyblockpv.data.repo.GreenhouseUpgrade
+import me.owdding.skyblockpv.data.repo.StaticGardenData
+import me.owdding.skyblockpv.data.repo.StaticPlotData
+import me.owdding.skyblockpv.data.repo.StaticVisitorData
 import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.world.item.ItemStack
+import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.extentions.asDouble
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asShort
+import tech.thatgravyboat.skyblockapi.utils.extentions.filterKeysNotNull
 
 data class GardenData(
     val copper: Int,
     val larvaConsumed: Int,
     val glowingMushroomBroken: Int,
+    val analyzedCrops: Set<String>,
+    val discoveredCrops: Set<String>,
 ) {
     companion object {
-        val EMPTY = GardenData(0, 0, 0)
+        val EMPTY = GardenData(0, 0, 0, emptySet(), emptySet())
     }
 }
 
@@ -32,6 +45,8 @@ data class GardenProfile(
     val composterData: ComposterData,
     val resourcesCollected: Map<GardenResource, Long>,
     val cropUpgradeLevels: Map<GardenResource, Short>,
+    val greenhouseSlots: List<Vector2i>,
+    val greenhouseUpgrades: Map<GreenhouseUpgrade, Int>
 ) {
     @FeatureName("GardenProfileParser")
     companion object : MeowddingLogger by SkyBlockPv.featureLogger() {
@@ -53,6 +68,12 @@ data class GardenProfile(
                 composterData = result.getAs<JsonObject>("composter_data").toComposterData(),
                 resourcesCollected = result.getAs<JsonObject>("resources_collected").asGardenResourceMap { it.asLong(0) },
                 cropUpgradeLevels = result.getAs<JsonObject>("crop_upgrade_levels").asGardenResourceMap { it.asShort(0) },
+                greenhouseSlots = result.getAs<JsonArray>("greenhouse_slots")?.filterIsInstance<JsonObject>()?.map {
+                    Vector2i(it.get("x").asInt(0), it.get("z").asInt(0))
+                } ?: emptyList(),
+                greenhouseUpgrades = result.getAs<JsonObject>("garden_upgrades").asMap { string, element ->
+                    runCatching { GreenhouseUpgrade.valueOf(string) }.getOrNull() to element.asInt(0)
+                }.filterKeysNotNull()
             )
         }
 

@@ -51,7 +51,8 @@
             "authenticating": "<gray>Authenticating with PV API...</gray>",
             "auth_successful": "<green>Successfully authenticated with PV API!</green>",
             "auth_failed": "<run_cmd '/sbpv discord'><red>Failed to authenticate with PV API. Please try again later or ask in the <blue>Discord</blue>!.</red></run_cmd>",
-            "not_authenticated": "<run_cmd '/sbpv refreshauth'>Not authenticated with PV API. Click to try and authenticate.</run_cmd>"
+            "not_authenticated": "<run_cmd '/sbpv refreshauth'>Not authenticated with PV API. Click to try and authenticate.</run_cmd>",
+            "auth_uptime_limit": "<red>Minecraft has been open for longer than 24hours, please restart to refresh auth.</red>"
         },
         "unknown_essence_perks": "<0> unknown essence perks.",
         "player_not_found": "<red>Player could not be found</red>",
@@ -144,6 +145,9 @@
         "show_level_in_other_chat": {
             "@value": "Show SkyBlock Level in Party/Guild/Co-op",
             "desc": "Display the player's SkyBlock level next to their name in Party, Guild, Officer and Co-op chat. Note: this value is cached and only updates when you open that player's profile (e.g. with /pv <name> or by clicking to open their PV)."
+        "remember_last_tab": {
+            "@value": "Remember Last Tab",
+            "desc": "Remembers the last opened tab and opens it when reopening the profile viewer."
         }
     },
     "dev": {
@@ -182,6 +186,7 @@
         "combat": "Combat",
         "collection": "Collections",
         "mining": "Mining",
+        "foraging": "Foraging",
         "inventory": "Inventory",
         "fishing": "Fishing",
         "pets": "Pets",
@@ -392,6 +397,17 @@
                 "skill_avg": "Skill Avg: <0>",
                 "fairy_souls": "Fairy Souls: <0>",
                 "kd": "K/D: <0>/<1> (<2>)"
+            }
+        },
+        "inventory": {
+            "accessory": {
+                "highest_magical_power": [
+                    "This is the highest amount of magical power",
+                    "the player ever had on this profile. This",
+                    "number is straight from Hypixel, so it should",
+                    "always be accurate, but it may not reflect the",
+                    "current state of the player's accessory bag."
+                ]
             }
         }
     },

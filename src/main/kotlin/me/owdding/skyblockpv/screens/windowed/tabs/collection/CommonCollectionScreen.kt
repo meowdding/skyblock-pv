@@ -9,7 +9,9 @@ import me.owdding.skyblockpv.api.CollectionAPI.getProgressToMax
 import me.owdding.skyblockpv.api.CollectionAPI.getProgressToNextLevel
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.CollectionItem
+import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.client.gui.layouts.Layout
@@ -22,7 +24,10 @@ class CommonCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
         val width = uiWidth - 20
 
         val profile = profile
-        val filteredCollections = profile.collections?.filter { it.category == category } ?: return PvLayouts.empty()
+        val filteredCollections = profile.collections?.filter { it.category == category } ?: run {
+            Utils.openTab(PvTab.COLLECTION, gameProfile, profile)
+            return PvLayouts.empty()
+        }
         return PvLayouts.frame {
             display(
                 buildList {

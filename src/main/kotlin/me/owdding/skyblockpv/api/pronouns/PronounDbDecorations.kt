@@ -4,12 +4,12 @@ import com.mojang.serialization.Codec
 import me.owdding.lib.rendering.text.TextShader
 import me.owdding.lib.rendering.text.builtin.GradientTextShader
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.TextColor
 
 @LoadData
-object PronounDbDecorations : ExtraData {
+object PronounDbDecorations : DefaultedData {
 
     private val CODEC: Codec<Map<String, DecorationDefinition>> = Codec.unboundedMap(
         Codec.STRING,
@@ -19,9 +19,7 @@ object PronounDbDecorations : ExtraData {
     private var decorations: Map<String, DecorationDefinition> = emptyMap()
 
     override suspend fun load() {
-        runCatching {
-            decorations = Utils.loadRepoData("pronoun_decorations", CODEC)
-        }
+        decorations = Utils.loadRemoteRepoData("pv/pronoun_decorations", CODEC)
     }
 
     fun getShader(id: String): TextShader? = decorations[id]?.shader

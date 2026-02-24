@@ -10,6 +10,7 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.displays.withTranslatedTooltip
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -19,12 +20,12 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor
 
-class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
-    private val accessories get() = profile.inventory?.talismans ?: emptyList()
+class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen<List<List<ItemStack>>>(gameProfile, profile) {
 
-    override fun getInventories(): List<Display> = accessories.map { PvWidgets.createInventory(it) }
+    override fun getRawInventory() = profile.inventory?.talismans
+    override fun List<List<ItemStack>>.getInventories(): List<Display> = map { PvWidgets.createInventory(it) }
 
-    override fun getIcons(): List<ItemStack> = List(accessories.size) { SkullTextures.ACCESSORY_BAG.skull.copy() }
+    override fun List<List<ItemStack>>.getIcons(): List<ItemStack> = List(size) { SkullTextures.ACCESSORY_BAG.skull.copy() }
 
     override fun getExtraLine() = DisplayFactory.vertical(alignment = Alignment.CENTER) {
         val maxwell = profile.maxwell ?: return@vertical
@@ -48,10 +49,15 @@ class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         )
         display(Displays.supplied { display.getNow(loadingDisplay) })
 
-        string("Highest Magical Power: ${maxwell.highestMp.toFormattedString()}") {
-            color = PvColors.DARK_GRAY
-            shadowColor = null
-        }
+        display(
+            Displays.component(
+                Text.of("Highest Magical Power: ${maxwell.highestMp.toFormattedString()}") {
+                    color = PvColors.DARK_GRAY
+                    shadowColor = null
+                }
+            ).withTranslatedTooltip("skyblockpv.screens.inventory.accessory.highest_magical_power"),
+        )
+
         string("Selected Power: ${maxwell.selectedPower.toTitleCase()}") {
             color = PvColors.DARK_GRAY
             shadowColor = null

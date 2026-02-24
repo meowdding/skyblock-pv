@@ -1,13 +1,11 @@
 package me.owdding.skyblockpv.data.repo
 
-import me.owdding.ktmodules.Module
 import tech.thatgravyboat.skyblockapi.api.data.Perk
 import tech.thatgravyboat.skyblockapi.api.remote.RepoRecipeAPI
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-@Module
 object ForgeTimeData {
     private val quickForgeMultiplier = mapOf(
         1 to 0.895,
