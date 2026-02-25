@@ -4,20 +4,17 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 
 @LoadData
-object SlayerCodecs : ExtraData {
-    lateinit var data: Map<String, Slayer>
-        private set
+object SlayerCodecs : DefaultedData {
+    private var _data: Map<String, Slayer>? = null
+    val data: Map<String, Slayer> get() = _data ?: emptyMap()
 
     override suspend fun load() {
-        data = Utils.loadRemoteRepoData("pv/slayer", CodecUtils.map())
-    }
-
-    override fun loadFallback(): Result<Unit> = runCatching {
-        data = emptyMap()
+        _data = Utils.loadRemoteRepoData("pv/slayer", CodecUtils.map())
     }
 
     @GenerateCodec

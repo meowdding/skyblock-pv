@@ -7,6 +7,7 @@ import me.owdding.skyblockpv.generated.DispatchHelper
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.removeIf
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
@@ -25,9 +26,13 @@ import kotlin.math.roundToInt
 import kotlin.reflect.KClass
 
 @LoadData
-object MagicalPowerCodecs : ExtraData {
-    lateinit var data: MagicalPowerRepoData
-        private set
+object MagicalPowerCodecs : DefaultedData {
+    private val defaultData = MagicalPowerRepoData(
+        mapOf(),
+        mapOf()
+    )
+    private var _data: MagicalPowerRepoData? = null
+    val data: MagicalPowerRepoData get() = _data ?: defaultData
 
     private val anniversaryIds = setOf(
         "party_hat_crab",
@@ -38,14 +43,7 @@ object MagicalPowerCodecs : ExtraData {
     private val RIFT_PRISM = SkyBlockId.item("rift_prism")
 
     override suspend fun load() {
-        data = Utils.loadRemoteRepoData<MagicalPowerRepoData>("pv/magical_power")
-    }
-
-    override fun loadFallback(): Result<Unit> = runCatching {
-        data = MagicalPowerRepoData(
-            mapOf(),
-            mapOf()
-        )
+        _data = Utils.loadRemoteRepoData<MagicalPowerRepoData>("pv/magical_power")
     }
 
     fun calculateMagicalPower(profile: SkyBlockProfile): CompletableFuture<Pair<Int, Component>> = profile.dataFuture.thenApplyAsync(

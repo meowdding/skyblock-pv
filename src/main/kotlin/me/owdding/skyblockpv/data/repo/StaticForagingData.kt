@@ -4,6 +4,7 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 
@@ -25,11 +26,27 @@ data class MiscForagingData(
 )
 
 @LoadData
-data object StaticForagingData : ExtraData {
-    lateinit var treeGifts: TreeGifts
-        private set
-    lateinit var misc: MiscForagingData
-        private set
+data object StaticForagingData : DefaultedData {
+    val treeDataDefault = TreeGifts(
+        emptyList(),
+        emptyList(),
+    )
+
+    val miscDataDefault = MiscForagingData(
+        "level",
+        100000,
+        50,
+        "level",
+        100000,
+        50,
+        5,
+    )
+
+    private var treeData: TreeGifts? = null
+    private var miscData: MiscForagingData? = null
+
+    val treeGifts: TreeGifts get() = treeData ?: treeDataDefault
+    val misc: MiscForagingData get() = miscData ?: miscDataDefault
 
     @GenerateCodec
     data class ForagingData(
@@ -41,24 +58,8 @@ data object StaticForagingData : ExtraData {
         init(Utils.loadRemoteRepoData<ForagingData>("pv/foraging"))
     }
 
-    override fun loadFallback(): Result<Unit> = runCatching {
-        treeGifts = TreeGifts(
-            emptyList(),
-            emptyList(),
-        )
-        misc = MiscForagingData(
-            "level",
-            100000,
-            50,
-            "level",
-            100000,
-            50,
-            5,
-        )
-    }
-
     fun init(data: ForagingData) {
-        treeGifts = data.treeGifts
-        misc = data.misc
+        treeData = data.treeGifts
+        miscData = data.misc
     }
 }

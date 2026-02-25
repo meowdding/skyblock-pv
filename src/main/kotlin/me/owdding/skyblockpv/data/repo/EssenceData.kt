@@ -7,6 +7,7 @@ import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -22,9 +23,8 @@ data class RepoEssencePerk(
 )
 
 @LoadData
-object EssenceData : ExtraData {
-    lateinit var allPerks: Map<String, RepoEssencePerk>
-        private set
+object EssenceData : DefaultedData {
+    val allPerks: MutableMap<String, RepoEssencePerk> = mutableMapOf()
 
     fun LayoutBuilder.addFishingPerk(profile: SkyBlockProfile, id: String) {
         addPerk(profile, id, "fishing")
@@ -53,11 +53,7 @@ object EssenceData : ExtraData {
     }
 
     override suspend fun load() {
-        allPerks = Utils.loadRemoteRepoData("pv/essence_perks", Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>()))
-            .flatMap { it.value.entries }.associateBy({ it.key }, { it.value })
-    }
-
-    override fun loadFallback(): Result<Unit> = runCatching {
-        allPerks = emptyMap()
+        allPerks.putAll(Utils.loadRemoteRepoData("pv/essence_perks", Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>()))
+            .flatMap { it.value.entries }.associateBy({ it.key }, { it.value }))
     }
 }

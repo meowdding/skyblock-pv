@@ -3,23 +3,21 @@ package me.owdding.skyblockpv.data.repo
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 
 @LoadData
-object NeuMiscCodecs : ExtraData {
-    lateinit var data: NeuMiscRepoData
-        private set
+object NeuMiscCodecs : DefaultedData {
+    private val defaultData = NeuMiscRepoData(
+        emptyMap()
+    )
+    private var _data: NeuMiscRepoData? = null
+    val data: NeuMiscRepoData get() = _data ?: defaultData
 
     override suspend fun load() {
-        data = Utils.loadRemoteRepoData<NeuMiscRepoData>("neu/misc")
-    }
-
-    override fun loadFallback(): Result<Unit> = runCatching {
-        data = NeuMiscRepoData(
-            emptyMap()
-        )
+        _data = Utils.loadRemoteRepoData<NeuMiscRepoData>("neu/misc")
     }
 
     @GenerateCodec

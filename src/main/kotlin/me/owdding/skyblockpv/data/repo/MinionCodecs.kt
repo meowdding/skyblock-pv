@@ -4,25 +4,24 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
 @LoadData
-object MinionCodecs : ExtraData {
-    lateinit var miscData: MiscData
+object MinionCodecs : DefaultedData {
+    private val defaultMiscData = MiscData(11, emptyMap())
+    private var _miscData: MiscData? = null
+    val miscData: MiscData get() = _miscData ?: defaultMiscData
     val categories: MutableList<MinionCategory> = mutableListOf()
 
     override suspend fun load() {
         Utils.loadRemoteRepoData<Data>("pv/minions").let { data ->
-            this.miscData = data.miscData
+            this._miscData = data.miscData
             this.categories.addAll(data.categories)
         }
-    }
-
-    override fun loadFallback(): Result<Unit> = runCatching {
-        miscData = MiscData(11, emptyMap())
     }
 
     @GenerateCodec

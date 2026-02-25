@@ -2,25 +2,23 @@ package me.owdding.skyblockpv.data.repo
 
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
 @LoadData
-object RiftCodecs : ExtraData {
-    lateinit var data: RiftRepoData
-        private set
+object RiftCodecs : DefaultedData {
+    private val defaultData = RiftRepoData(
+    emptyList(),
+    emptyList(),
+    emptyList(),
+    )
+    private var _data: RiftRepoData? = null
+    val data: RiftRepoData get() = _data ?: defaultData
 
     override suspend fun load() {
-        data = Utils.loadRemoteRepoData("pv/rift")
-    }
-
-    override fun loadFallback(): Result<Unit> = runCatching {
-        data = RiftRepoData(
-            emptyList(),
-            emptyList(),
-            emptyList(),
-        )
+        _data = Utils.loadRemoteRepoData("pv/rift")
     }
 
     @GenerateCodec

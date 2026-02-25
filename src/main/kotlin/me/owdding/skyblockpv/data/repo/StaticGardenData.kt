@@ -15,6 +15,7 @@ import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -115,29 +116,20 @@ data class GreenhouseUpgradeData(
 }
 
 @LoadData
-data object StaticGardenData : ExtraData {
-    lateinit var barnSkins: Map<String, DefaultBarnSkin>
-        private set
-    lateinit var composterData: Map<ComposterUpgrade, StaticComposterData>
-        private set
-    lateinit var cropMilestones: Map<GardenResource, List<Int>>
-        private set
-    lateinit var miscData: StaticMiscData
-        private set
-    lateinit var plotCost: Map<String, List<StaticPlotCost>>
-        private set
-    lateinit var plots: List<StaticPlotData>
-        private set
-    lateinit var visitors: List<StaticVisitorData>
-        private set
-    lateinit var chips: List<Int>
-        private set
-    lateinit var mutations: List<MutationData>
-        private set
-    lateinit var tools: Map<GardenResource, StaticToolInfo>
-        private set
-    lateinit var greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData>
-        private set
+data object StaticGardenData : DefaultedData {
+    private var data: GardenData? = null
+
+    val barnSkins: Map<String, DefaultBarnSkin> get() = data?.barnSkins ?: emptyMap()
+    val composterData: Map<ComposterUpgrade, StaticComposterData> get() = data?.composterData ?: emptyMap()
+    val cropMilestones: Map<GardenResource, List<Int>> get() = data?.cropMilestones ?: emptyMap()
+    val miscData: StaticMiscData get() = data?.miscData ?: StaticMiscData.DEFAULT
+    val plotCost: Map<String, List<StaticPlotCost>> get() = data?.plotCost ?: emptyMap()
+    val plots: List<StaticPlotData> get() = data?.plots ?: emptyList()
+    val visitors: List<StaticVisitorData> get() = data?.visitors ?: emptyList()
+    val chips: List<Int> get() = data?.chips ?: emptyList()
+    val mutations: List<MutationData> get() = data?.mutations ?: emptyList()
+    val tools: Map<GardenResource, StaticToolInfo> get() = data?.tools ?: emptyMap()
+    val greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData> get() = data?.greenhouseUpgrades ?: emptyMap()
 
     val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO")
     const val COPPER = "copper"
@@ -164,44 +156,8 @@ data object StaticGardenData : ExtraData {
         init(Utils.loadRemoteRepoData<GardenData>("pv/garden_data"))
     }
 
-    override fun loadFallback(): Result<Unit> = runCatching {
-        barnSkins = emptyMap()
-        composterData = emptyMap()
-        cropMilestones = emptyMap()
-        miscData = StaticMiscData(
-            emptyList(),
-            emptyList(),
-            "level",
-            emptyMap(),
-            emptyList(),
-            emptyList(),
-            "level",
-            5,
-            emptyMap(),
-            emptyList(),
-            emptyList(),
-        )
-        chips = emptyList()
-        plotCost = emptyMap()
-        mutations = emptyList()
-        plots = emptyList()
-        visitors = emptyList()
-        tools = emptyMap()
-        greenhouseUpgrades = emptyMap()
-    }
-
     fun init(data: GardenData) {
-        barnSkins = data.barnSkins
-        composterData = data.composterData
-        cropMilestones = data.cropMilestones
-        miscData = data.miscData
-        plotCost = data.plotCost
-        plots = data.plots
-        visitors = data.visitors
-        tools = data.tools
-        chips = data.chips
-        mutations = data.mutations
-        greenhouseUpgrades = data.greenhouseUpgrades
+        this.data = data
     }
 }
 
@@ -273,6 +229,22 @@ data class StaticMiscData(
     @NamedCodec("cum_string_int_map") @FieldName("farming_level_cap") val farmingLevelCap: List<Map<String, Int>>,
     @NamedCodec("cum_string_int_map") @FieldName("extra_farming_fortune") val bonusDrops: List<Map<String, Int>>,
 ) {
+    companion object {
+        val DEFAULT = StaticMiscData(
+            emptyList(),
+            emptyList(),
+            "level",
+            emptyMap(),
+            emptyList(),
+            emptyList(),
+            "level",
+            5,
+            emptyMap(),
+            emptyList(),
+            emptyList(),
+        )
+    }
+
     fun getXpRequired(gardenLevel: Int): Int {
         if (gardenLevel >= gardenLevelBrackets.size - 1) {
             return 0

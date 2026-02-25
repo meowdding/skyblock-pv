@@ -11,6 +11,7 @@ import me.owdding.ktcodecs.NamedCodec
 import me.owdding.ktcodecs.Unnamed
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.DispatchedCodec
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
@@ -21,10 +22,14 @@ typealias BestiaryIcon = Either<String, Pair<String, String>>
 typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, ComplexBestiaryCategoryEntry>
 
 @LoadData
-object BestiaryCodecs : ExtraData {
+object BestiaryCodecs : DefaultedData {
 
-    lateinit var data: BestiaryRepoData
-        private set
+    private val defaultData: BestiaryRepoData = BestiaryRepoData(
+        emptyMap(),
+        emptyMap(),
+    )
+    private var _data: BestiaryRepoData? = null
+    val data: BestiaryRepoData get() = _data ?: defaultData
 
     val allMobs: List<String> by lazy {
         data.categories.values.flatMap { categoryEntry ->
@@ -90,14 +95,7 @@ object BestiaryCodecs : ExtraData {
     )
 
     override suspend fun load() {
-        data = Utils.loadRemoteRepoData<BestiaryRepoData>("neu/bestiary")
-    }
-
-    override fun loadFallback(): Result<Unit> = runCatching {
-        data = BestiaryRepoData(
-            emptyMap(),
-            emptyMap(),
-        )
+        _data = Utils.loadRemoteRepoData<BestiaryRepoData>("neu/bestiary")
     }
 }
 

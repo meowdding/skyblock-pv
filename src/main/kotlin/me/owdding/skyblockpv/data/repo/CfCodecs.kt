@@ -9,14 +9,22 @@ import me.owdding.ktcodecs.NamedCodec
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 
 @LoadData
-object CfCodecs : ExtraData {
-    lateinit var data: CfRepoData
-        private set
+object CfCodecs : DefaultedData {
+    private val defaultData = CfRepoData(
+        emptyList(),
+        emptyList(),
+        emptyMap(),
+        CfMiscRepo(emptyMap()),
+        emptyList()
+    )
+    private var _data: CfRepoData? = null
+    val data: CfRepoData get() = _data ?: defaultData
 
     @IncludedCodec(named = "cf§texture_list")
     val CF_TEXTURE_CODEC: Codec<List<CfTextureRepo>> = CodecUtils.map<String, String>().xmap(
@@ -25,18 +33,9 @@ object CfCodecs : ExtraData {
     )
 
     override suspend fun load() {
-        data = Utils.loadRemoteRepoData<CfRepoData>("pv/chocolate_factory")
+        _data = Utils.loadRemoteRepoData<CfRepoData>("pv/chocolate_factory")
     }
 
-    override fun loadFallback(): Result<Unit> = runCatching {
-        data = CfRepoData(
-            emptyList(),
-            emptyList(),
-            emptyMap(),
-            CfMiscRepo(emptyMap()),
-            emptyList()
-        )
-    }
 
     @GenerateCodec
     data class CfRepoData(

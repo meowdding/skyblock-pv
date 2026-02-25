@@ -6,20 +6,18 @@ import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 
 @LoadData
-object CatacombsCodecs : ExtraData, MeowddingLogger by SkyBlockPv.featureLogger() {
-    lateinit var data: CatacombsRepoData
-        private set
+object CatacombsCodecs : DefaultedData, MeowddingLogger by SkyBlockPv.featureLogger() {
+    private val defaultData = CatacombsRepoData(emptyList(), Long.MAX_VALUE)
+    private var _data: CatacombsRepoData? = null
+    val data: CatacombsRepoData get() = _data ?: defaultData
 
     override suspend fun load() {
-        data = Utils.loadRemoteRepoData<CatacombsRepoData>("pv/catacombs")
-    }
-
-    override fun loadFallback(): Result<Unit> = runCatching {
-        data = CatacombsRepoData(emptyList(), Long.MAX_VALUE)
+        _data = Utils.loadRemoteRepoData<CatacombsRepoData>("pv/catacombs")
     }
 
     @GenerateCodec
