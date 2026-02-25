@@ -11,6 +11,7 @@ enum class SkullTextures(var texture: String = "") {
     SACKS,
     PERSONAL_VAULT,
     DUNGEONS,
+    MORT,
     HOTM,
     HOTF,
     CHOCOLATE_FACTORY,
@@ -23,8 +24,10 @@ enum class SkullTextures(var texture: String = "") {
     @LoadData
     companion object : DefaultedData {
         override suspend fun load() {
-            val textures = Utils.loadFromRemoteRepo<Map<String, String>>("pv/skull_textures") ?: emptyMap()
-            textures.entries.forEach { (key, texture) -> valueOf(key.uppercase()).texture = texture }
+            val textures = Utils.loadFromRemoteRepo<Map<String, String>>("pv/skull_textures")?.mapKeys { (key) -> key.lowercase() } ?: emptyMap()
+            entries.forEach {
+                it.texture = textures[it.name.lowercase()] ?: ""
+            }
         }
     }
 }

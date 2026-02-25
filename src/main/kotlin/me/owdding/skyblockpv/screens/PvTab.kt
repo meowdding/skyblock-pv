@@ -25,7 +25,8 @@ import me.owdding.skyblockpv.screens.windowed.tabs.mining.BaseMiningScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.mining.MainMiningScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.mining.MiningCategory
 import me.owdding.skyblockpv.screens.windowed.tabs.museum.BaseMuseumScreen
-import me.owdding.skyblockpv.screens.windowed.tabs.museum.MuseumItemScreen
+import me.owdding.skyblockpv.screens.windowed.tabs.museum.MiscMuseumCategory
+import me.owdding.skyblockpv.screens.windowed.tabs.museum.MuseumCategory
 import me.owdding.skyblockpv.screens.windowed.tabs.rift.BaseRiftScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.rift.MainRiftScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.rift.RiftCategory
@@ -63,7 +64,14 @@ enum class PvTab(
     FORAGING(BaseForagingScreen::class, ::MainForagingScreen, Items.OAK_WOOD.withCatharsisId("tab/foraging/icon")),
     PETS(PetScreen::class, Items.BONE.withCatharsisId("tab/pets/icon")),
     FARMING(BaseFarmingScreen::class, ::FarmingScreen, Items.WHEAT.withCatharsisId("tab/farming/icon")),
-    MUSEUM(BaseMuseumScreen::class, ::MuseumItemScreen, Items.GOLD_BLOCK.withCatharsisId("tab/museum/icon"), true),
+    MUSEUM(
+        BaseMuseumScreen::class,
+        { gameProfile, profile ->
+            (MuseumCategory.entries.firstOrNull() ?: MiscMuseumCategory).create(gameProfile, profile)
+        },
+        Items.GOLD_BLOCK.withCatharsisId("tab/museum/icon"),
+        true,
+    ),
     CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.skull.withCatharsisId("tab/chocolate_factory/icon")),
     RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.skull.withCatharsisId("tab/rift/icon"), true),
     ;
@@ -76,7 +84,7 @@ enum class PvTab(
         screen,
         screen.java.getConstructor(GameProfile::class.java, SkyBlockProfile::class.java)::newInstance,
         { icon },
-        hideOnStranded
+        hideOnStranded,
     )
 
     constructor(
@@ -88,7 +96,7 @@ enum class PvTab(
         screen,
         constructor,
         { icon },
-        hideOnStranded
+        hideOnStranded,
     )
 
     fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
