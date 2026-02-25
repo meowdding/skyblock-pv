@@ -14,7 +14,7 @@ import me.owdding.lib.displays.toColumn
 import me.owdding.lib.displays.toRow
 import me.owdding.lib.layouts.withPadding
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
-import me.owdding.skyblockpv.utils.GroupedPageState
+import me.owdding.skyblockpv.utils.FilterScreenState
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.PvPageState
 import me.owdding.skyblockpv.utils.Utils
@@ -29,24 +29,14 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
-interface GroupedScreen<FilterType : Any, GroupType : Any, DataType : Any> {
-
+interface FilterScreen<FilterType : Any> {
     var query: String?
     var filter: FilterType
-    val noMatchFoundText: String
 
-    fun FilterType.doesDisplay(data: DataType): Boolean
     fun filterEntries(): Collection<FilterType>
     fun FilterType.display(): String
 
-    fun matchesSearch(data: DataType): Boolean
-    val DataType.group: GroupType?
-    fun GroupType.compareTo(other: GroupType): Int
-    fun getData(): List<DataType>
-    val comparator: Comparator<DataType> get() = Comparator { _, _ -> 0 }
-
-    fun getColor(group: GroupType?, data: DataType): Int
-    fun toDisplay(group: GroupType?, data: DataType): Display
+    fun createLayout(width: Int, height: Int): Layout
 
     fun toTabState(): PvPageState
 
@@ -54,57 +44,24 @@ interface GroupedScreen<FilterType : Any, GroupType : Any, DataType : Any> {
         val uiWidth = bg.width
         val uiHeight = bg.height
 
-        val map = getData()
 
         val frame = Widgets.frame().withSize(uiWidth, uiHeight - 50)
         fun update() {
             frame.withContents {
+                it.setMinWidth(uiWidth)
+                it.setMinHeight(uiHeight - 50)
                 it.children.clear()
-                val display = map.filter { data ->
-                    matchesSearch(data) && filter.doesDisplay(data)
-                }.takeUnless { it.isEmpty() }?.groupBy { runCatching { it.group }.getOrNull() }
-                    ?.toSortedMap { o1, o2 ->
-                        when {
-                            o1 == null && o2 == null -> 0
-                            o1 == null -> 1
-                            o2 == null -> -1
-                            else -> o1.compareTo(o2)
-                        }
-                    }?.map { (group, attributes) ->
-                        attributes.sortedWith(comparator).chunked(uiWidth / 24).map {
-                            it.map { data ->
-                                ExtraDisplays.inventorySlot(
-                                    Displays.padding(2, toDisplay(group, data)),
-                                    getColor(group, data),
-                                )
-                            }.toRow(0, Alignment.CENTER)
-                        }.toColumn(0, Alignment.CENTER)
-                    }?.toColumn(4, Alignment.CENTER)
-                    ?.let { display ->
-                        PvLayouts.frame(uiWidth, 0) {
-                            widget(display.asWidget()) {
-                                alignHorizontallyCenter()
-                                alignVerticallyMiddle()
-                            }
-                        }.asScrollable(uiWidth, uiHeight - 50)
-                    }
-
-                if (display != null) {
-                    it.addChild(display)
-                } else {
-                    it.addChild(PvLayouts.frame(uiWidth, uiHeight - 50) {
-                        widget(Widgets.text(noMatchFoundText).withColor(MinecraftColors.RED)) {
-                            alignHorizontallyCenter()
-                            alignVerticallyMiddle()
-                        }
-                    })
+                it.addChild(createLayout(uiWidth, uiHeight - 50).asScrollable(uiWidth, uiHeight - 50)) {
+                    it.alignHorizontallyCenter()
+                    it.alignVerticallyMiddle()
                 }
+
+                Utils.lastTab = FilterScreenState(
+                    toTabState(),
+                    filter,
+                    query,
+                )
             }
-            Utils.lastTab = GroupedPageState(
-                toTabState(),
-                filter,
-                query
-            )
         }
 
         update()
@@ -171,6 +128,60 @@ interface GroupedScreen<FilterType : Any, GroupType : Any, DataType : Any> {
                 alignVerticallyBottom()
                 alignHorizontallyCenter()
                 paddingBottom(5)
+            }
+        }
+    }
+}
+
+interface GroupedScreen<FilterType : Any, GroupType : Any, DataType : Any> : FilterScreen<FilterType> {
+    val noMatchFoundText: String
+
+    fun FilterType.doesDisplay(data: DataType): Boolean
+
+    fun matchesSearch(data: DataType): Boolean
+    val DataType.group: GroupType?
+    fun GroupType.compareTo(other: GroupType): Int
+    fun getData(): List<DataType>
+    val comparator: Comparator<DataType> get() = Comparator { _, _ -> 0 }
+
+    fun getColor(group: GroupType?, data: DataType): Int
+    fun toDisplay(group: GroupType?, data: DataType): Display
+
+    override fun createLayout(width: Int, height: Int): Layout {
+        val map = getData()
+        val display = map.filter { data ->
+            matchesSearch(data) && filter.doesDisplay(data)
+        }.takeUnless { it.isEmpty() }?.groupBy { runCatching { it.group }.getOrNull() }
+            ?.toSortedMap { o1, o2 ->
+                when {
+                    o1 == null && o2 == null -> 0
+                    o1 == null -> 1
+                    o2 == null -> -1
+                    else -> o1.compareTo(o2)
+                }
+            }?.map { (group, attributes) ->
+                attributes.sortedWith(comparator).chunked(width / 24).map {
+                    it.map { data ->
+                        ExtraDisplays.inventorySlot(
+                            Displays.padding(2, toDisplay(group, data)),
+                            getColor(group, data),
+                        )
+                    }.toRow(0, Alignment.CENTER)
+                }.toColumn(0, Alignment.CENTER)
+            }?.toColumn(4, Alignment.CENTER)
+            ?.let { display ->
+                PvLayouts.frame(width, 0) {
+                    widget(display.asWidget()) {
+                        alignHorizontallyCenter()
+                        alignVerticallyMiddle()
+                    }
+                }.asScrollable(width, height)
+            }
+
+        return display ?: PvLayouts.frame(width, height) {
+            widget(Widgets.text(noMatchFoundText).withColor(MinecraftColors.RED)) {
+                alignHorizontallyCenter()
+                alignVerticallyMiddle()
             }
         }
     }

@@ -3,70 +3,32 @@ package me.owdding.skyblockpv.data.museum
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.CodecUtils
-import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.data.SkyBlockCategory
-import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
-import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 
 object RepoMuseumData {
 
-    val armor: List<MuseumArmor>
-    val weapons: List<MuseumItem>
-    val rarities: List<MuseumItem>
-    val special: List<String>
-
-    val museumCategories: List<RepoMuseumCategory>
-    val museumCategoryMap: MutableMap<RepoMuseumCategory, List<MuseumItem>> = mutableMapOf()
-
+    @NamedCodec("museum_data")
     @GenerateCodec
-    @NamedCodec("MuseumData")
     data class Data(
-        val armor: List<MuseumArmor>,
-        @NamedCodec("museum§item") val weapons: List<MuseumItem>,
-        @NamedCodec("museum§item") val rarities: List<MuseumItem>,
         val special: List<String>,
+        val categories: Map<String, MuseumCategory>
     )
 
+    @GenerateCodec
+    data class MuseumCategory(
+        @NamedCodec("museum§item") val items: List<MuseumItem>,
+        val armors: List<MuseumArmor>
+    )
+
+    val categories: MutableMap<String, MuseumCategory> = mutableMapOf()
+    val special: MutableList<String> = mutableListOf()
+
     init {
-        Utils.loadRepoData<Data>("museum_data").let {
-            this.armor = it.armor
-            this.weapons = it.weapons
-            this.rarities = it.rarities
-            this.special = it.special
-        }
-
-        this.museumCategories = Utils.loadRemoteRepoData("pv/museum_categories", CodecUtils.list())
-
-        evaluateItemCategoryMap()
+        val (special, categories) = Utils.loadRepoData<Data>("museum_data")
+        this.categories.putAll(categories)
+        this.special.addAll(special)
     }
 
-    private fun convertToId(data: SkyBlockCategory?) = data?.toString()?.lowercase()?.replace(" ", "_")
-
-    private fun evaluateItemCategoryMap() {
-        val ids = listOf(rarities, weapons).flatten()
-
-        val sortedBy = museumCategories.sortedByDescending { it.priority }
-        museumCategoryMap.putAll(
-            ids.groupBy { museumItem ->
-                val item = RepoItemsAPI.getItem(museumItem.id)
-                val data = convertToId(item.getData(DataTypes.CATEGORY)) ?: return@groupBy null
-
-                sortedBy.find { it.categories.contains(data) || it.items.contains(museumItem.id) || it.categories.contains("*") }
-            }.mapKeys {
-                it.key ?: RepoMuseumCategory(
-                    "unknown",
-                    lazy { Items.BARRIER.defaultInstance },
-                    emptyList(),
-                    emptyList(),
-                    0,
-                )
-            }.toSortedMap(Comparator.comparingInt<RepoMuseumCategory> { it.priority }.reversed()),
-        )
-    }
-
-    val entries = listOf(armor, rarities, weapons).flatten().toSet()
+    val entries = categories.values.flatMap { (items, armor) -> listOf(items, armor).flatten() }
     fun getById(id: String): MuseumRepoEntry? = entries.firstOrNull { it.id == id }
 
 }

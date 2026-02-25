@@ -20,6 +20,7 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
+import me.owdding.skyblockpv.screens.windowed.tabs.base.FilterScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.GroupedScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -270,14 +271,14 @@ data class CarouselPageState(
     }
 }
 
-data class GroupedPageState<Filter : Any>(
+data class FilterScreenState<Filter : Any>(
     val state: PvPageState,
     val filter: Filter,
     val query: String?,
 ) : PvPageState by state {
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BaseWindowedPvScreen {
         return state.create(gameProfile, profile).also {
-            if (it is GroupedScreen<*, *, *>) {
+            if (it is FilterScreen<*>) {
                 it.query = query
                 @Suppress("UNCHECKED_CAST")
                 (it as GroupedScreen<Filter, *, *>).filter = filter
