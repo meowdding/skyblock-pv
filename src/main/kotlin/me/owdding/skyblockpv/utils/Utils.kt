@@ -281,7 +281,7 @@ data class FilterScreenState<Filter : Any>(
             if (it is FilterScreen<*>) {
                 it.query = query
                 @Suppress("UNCHECKED_CAST")
-                (it as GroupedScreen<Filter, *, *>).filter = filter
+                (it as? FilterScreen<Filter>)?.filter = filter
             }
         }
     }
