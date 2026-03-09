@@ -32,7 +32,7 @@ class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
         val display = profile.magicalPower.thenApply { (magicalPower, breakdown) ->
             Displays.text(
-                Text.of("Magical Power: $magicalPower") {
+                Text.of("Magical Power: ${magicalPower.toFormattedString()}") {
                     color = PvColors.DARK_GRAY
                     shadowColor = null
                 },
