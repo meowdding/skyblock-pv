@@ -142,6 +142,9 @@
             "@value": "Linked Socials Dropdown",
             "desc": "Show a dropdown with all linked socials of the player and SkyCrypt."
         },
+        "show_level_in_other_chat": {
+            "@value": "Show SkyBlock Level in Party/Guild/Co-op",
+            "desc": "Display the player's SkyBlock level next to their name in Party, Guild, Officer and Co-op chat. Note: this value is cached and only updates when you open that player's profile (e.g. with /pv <name> or by clicking to open their PV)."
         "remember_last_tab": {
             "@value": "Remember Last Tab",
             "desc": "Remembers the last opened tab and opens it when reopening the profile viewer."
