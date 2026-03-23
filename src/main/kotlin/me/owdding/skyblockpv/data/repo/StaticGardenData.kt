@@ -16,7 +16,6 @@ import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.core.component.DataComponents
@@ -111,7 +110,8 @@ data class GreenhouseUpgradeData(
     }
 
     fun getTooltipForLevel(level: Int): Component {
-        return TagParser.QUICK_TEXT_SAFE.parseText(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
+        //~ if >= 26.1 'parseText' -> 'parseComponent'
+        return TagParser.QUICK_TEXT_SAFE.parseComponent(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }
 
@@ -203,7 +203,8 @@ data class StaticComposterData(
     }
 
     fun getTooltipForLevel(level: Int): Component {
-        return TagParser.QUICK_TEXT_SAFE.parseText(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
+        //~ if >= 26.1 'parseText' -> 'parseComponent'
+        return TagParser.QUICK_TEXT_SAFE.parseComponent(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }
 

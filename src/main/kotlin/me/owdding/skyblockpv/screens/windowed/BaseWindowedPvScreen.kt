@@ -46,7 +46,7 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.util.Util
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -229,7 +229,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                     WidgetRenderers.sprite(if (tab.isSelected()) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP),
                     WidgetRenderers.padded(
                         4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
-                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
+                        //~ if >= 26.1 'renderItem(' -> 'item('
+                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(tab.getIcon(gameProfile), ctx.x, ctx.y) },
                     ),
                 ),
             )
@@ -449,14 +450,16 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         return button
     }
 
-    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    //~ if >= 26.1 'render' -> 'extract' {
+    override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (ThemeSupport.currentTheme.backgroundBlur) {
             guiGraphics.applyBackgroundBlur()
-            this.renderTransparentBackground(guiGraphics)
+            this.extractTransparentBackground(guiGraphics)
         } else {
-            this.renderTransparentBackground(guiGraphics)
+            this.extractTransparentBackground(guiGraphics)
         }
     }
+    //~ }
 
     open fun toTabState(): PvPageState = this.tab
 }

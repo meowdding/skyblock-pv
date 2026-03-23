@@ -1,6 +1,6 @@
 package me.owdding.skyblockpv.data.repo
 
-import tech.thatgravyboat.skyblockapi.api.data.Perk
+import tech.thatgravyboat.skyblockapi.api.data.MayorPerks
 import tech.thatgravyboat.skyblockapi.api.remote.RepoRecipeAPI
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -30,7 +30,7 @@ object ForgeTimeData {
         20 to 0.7,
     )
 
-    private fun coleActive() = Perk.MOLTEN_FORGE.active
+    private fun coleActive() = MayorPerks.MOLTEN_FORGE.active
 
     fun getForgeTime(id: String, quickForgeLevel: Int = 0): Duration {
         val rawTime = RepoRecipeAPI.getForgeRecipe(id)?.time()?.times(1000) ?: 0

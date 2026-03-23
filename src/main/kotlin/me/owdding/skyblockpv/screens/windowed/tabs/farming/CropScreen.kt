@@ -2,7 +2,13 @@ package me.owdding.skyblockpv.screens.windowed.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.Alignment
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.toColumn
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.skyblockpv.SkyBlockPv
@@ -11,7 +17,6 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.StaticGardenData
-import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -190,6 +195,6 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     private fun evaluateToolScore(stack: ItemStack): Long {
-        return stack.getData(DataTypes.CROPS_BROKEN) ?: stack.getData(DataTypes.RARITY)?.ordinal?.toLong() ?: -1L
+        return stack.getData(DataTypes.TOOL_LEVEL)?.toLong() ?: stack.getData(DataTypes.RARITY)?.ordinal?.toLong()?.times(3) ?: -1L
     }
 }

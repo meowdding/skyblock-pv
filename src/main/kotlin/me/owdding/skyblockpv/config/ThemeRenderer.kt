@@ -14,7 +14,7 @@ import me.owdding.lib.platform.screens.Overlay
 import me.owdding.skyblockpv.SkyBlockPv.id
 import me.owdding.skyblockpv.utils.theme.ThemeHelper
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.network.chat.Component
@@ -56,7 +56,8 @@ class ThemeWidget(
     val setter: Consumer<String>,
 ) : BaseWidget(WIDTH, 16) {
 
-    override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTicks: Float) {
+    //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
+    override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
 
         graphics.drawSprite(
             ModSprites.ofButton(this.isHovered()),
@@ -66,7 +67,7 @@ class ThemeWidget(
             getHeight(),
         )
         //? > 1.21.10 {
-        graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
+        graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
             Text.translatable(
                 ThemeHelper.themes.entries.firstOrNull { (key) ->
                     key.toString() == this.getter.get()
@@ -126,7 +127,8 @@ class ThemeWidget(
     }
 
     class DropdownList(x: Int, y: Int, height: Int) : ListWidget(x + 1, y, WIDTH - 2, height) {
-        override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
+        override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
             graphics.drawSprite(
                 ModSprites.ACCENT,
                 x - 1,
@@ -141,7 +143,8 @@ class ThemeWidget(
                 getWidth(),
                 getHeight(),
             )
-            super.renderWidget(graphics, mouseX, mouseY, partialTicks)
+            //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
+            super.extractWidgetRenderState(graphics, mouseX, mouseY, partialTicks)
         }
 
         companion object {
@@ -159,7 +162,8 @@ class ThemeWidget(
 
     private class DropdownItem(private val option: String, private val translationKey: String, private val setter: Consumer<String>) : BaseWidget(WIDTH, 12),
         ListWidget.Item {
-        override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
+        override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
             graphics.drawSprite(
                 ModSprites.ofButton(this.isHovered()),
                 x + 1,
@@ -169,7 +173,7 @@ class ThemeWidget(
             )
             val color = if (this.isHovered()) UIConstants.TEXT_TITLE else UIConstants.TEXT_PARAGRAPH
             //? > 1.21.10 {
-            graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
+            graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
                 Text.translatable(translationKey).withColor(color),
                 x + 4, x + getWidth() - 4,
                 y + 1, y + getHeight() - 1,

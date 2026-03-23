@@ -10,7 +10,7 @@ import me.owdding.skyblockpv.utils.render.RenderUtils.withTextShader
 import me.owdding.skyblockpv.utils.render.dropdown.createDropdownDisplay
 import me.owdding.skyblockpv.utils.render.dropdown.createDropdownOverlay
 import me.owdding.skyblockpv.utils.theme.PvColors
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.resources.Identifier
@@ -34,9 +34,9 @@ object ExtraDisplays {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
 
-            override fun render(graphics: GuiGraphics) {
+            override fun extract(graphics: GuiGraphicsExtractor) {
                 SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), size, orientation, color)
-                display.render(graphics)
+                display.extract(graphics)
             }
         }
     }
@@ -53,9 +53,9 @@ object ExtraDisplays {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
 
-            override fun render(graphics: GuiGraphics) {
+            override fun extract(graphics: GuiGraphicsExtractor) {
                 SbPvRenderUtils.drawInventory(graphics, 0, 0, display.getWidth(), display.getHeight(), columns, rows, color)
-                display.render(graphics)
+                display.extract(graphics)
             }
         }
     }
@@ -89,7 +89,7 @@ object ExtraDisplays {
             override fun getWidth() = width
             override fun getHeight() = height
 
-            override fun render(graphics: GuiGraphics) {
+            override fun extract(graphics: GuiGraphicsExtractor) {
                 val progressWidth = (width * progress).toInt()
                 graphics.drawSprite(background, 0, 0, width, height)
 
@@ -109,7 +109,7 @@ object ExtraDisplays {
             override fun getWidth(): Int = width
             override fun getHeight(): Int = height
 
-            override fun render(graphics: GuiGraphics) {
+            override fun extract(graphics: GuiGraphicsExtractor) {
                 frames++
 
                 graphics.pushPop {
@@ -163,8 +163,8 @@ object ExtraDisplays {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
 
-            override fun render(graphics: GuiGraphics) {
-                display.render(graphics)
+            override fun extract(graphics: GuiGraphicsExtractor) {
+                display.extract(graphics)
             }
         }
     }
@@ -174,9 +174,9 @@ object ExtraDisplays {
             override fun getWidth() = display.getWidth()
             override fun getHeight() = display.getHeight()
 
-            override fun render(graphics: GuiGraphics) {
+            override fun extract(graphics: GuiGraphicsExtractor) {
                 graphics.withTextShader(shader) {
-                    display.render(graphics)
+                    display.extract(graphics)
                 }
             }
         }

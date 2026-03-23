@@ -80,7 +80,8 @@ object CodecUtils {
 
     @IncludedCodec(named = "component_tag")
     val COMPONENT_TAG: Codec<Component> = Codec.STRING.xmap(
-        { TagParser.QUICK_TEXT_SAFE.parseText(it, ParserContext.of()) },
+        //~ if >= 26.1 'parseText' -> 'parseComponent'
+        { TagParser.QUICK_TEXT_SAFE.parseComponent(it, ParserContext.of()) },
         { it.string },
     )
 

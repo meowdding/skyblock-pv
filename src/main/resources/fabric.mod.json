@@ -23,7 +23,7 @@
     },
     "depends": {
         "fabricloader": ">=0.16.10",
-        "minecraft": ">=${minecraft_range}",
+        "minecraft": "${minecraft_range}",
         "fabric": "*",
         "fabric-language-kotlin": ">=${fabric_lang_kotlin}",
         "resourcefullib": ">=${rlib}",

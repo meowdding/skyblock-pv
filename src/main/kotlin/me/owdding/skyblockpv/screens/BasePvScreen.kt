@@ -3,7 +3,6 @@ package me.owdding.skyblockpv.screens
 import com.google.gson.*
 import com.mojang.authlib.GameProfile
 import com.mojang.serialization.JsonOps
-import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import me.owdding.lib.displays.Alignment
@@ -26,6 +25,7 @@ import net.minecraft.util.Util
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -34,7 +34,7 @@ import java.lang.reflect.Type
 import java.nio.file.Files
 import java.util.concurrent.CompletableFuture
 
-abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, initProfile: SkyBlockProfile?) : BaseCursorScreen(CommonText.EMPTY) {
+abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, initProfile: SkyBlockProfile?) : Screen(CommonText.EMPTY) {
 
     val starttime = System.currentTimeMillis()
     var profiles: List<SkyBlockProfile> = emptyList()

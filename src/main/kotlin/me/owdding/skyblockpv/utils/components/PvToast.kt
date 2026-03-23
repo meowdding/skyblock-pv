@@ -12,7 +12,7 @@ import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastManager
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -31,12 +31,13 @@ data class PvToast(
     override fun getToken(): Any = Toast.NO_TOKEN
     override fun getWantedVisibility() = if (this.removalTime <= System.currentTimeMillis()) Toast.Visibility.HIDE else Toast.Visibility.SHOW
     override fun update(toastManager: ToastManager, visibilityTime: Long) {}
-    override fun render(graphics: GuiGraphics, ignore1: Font, ignore2: Long) {
+    //~ if >= 26.1 'render' -> 'extractRenderState'
+    override fun extractRenderState(graphics: GuiGraphicsExtractor, ignore1: Font, ignore2: Long) {
         if (removalTime == -1L) {
             removalTime = System.currentTimeMillis() + this.time
         }
 
-        this.display.render(graphics)
+        this.display.extract(graphics)
     }
 
     companion object {

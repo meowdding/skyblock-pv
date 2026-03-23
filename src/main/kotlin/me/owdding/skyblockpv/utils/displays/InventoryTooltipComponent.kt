@@ -5,7 +5,7 @@ import me.owdding.lib.displays.toColumn
 import me.owdding.lib.displays.toRow
 import me.owdding.lib.displays.withPadding
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.world.item.ItemStack
 import kotlin.math.min
@@ -29,7 +29,8 @@ class InventoryTooltipComponent(
     override fun getHeight(font: Font) = height
     override fun getWidth(font: Font) = width
 
-    override fun renderImage(font: Font, x: Int, y: Int, width: Int, height: Int, guiGraphics: GuiGraphics) {
-        display.render(guiGraphics, x + 5, y + 5)
+    //~ if >= 26.1 'renderImage' -> 'extractImage'
+    override fun extractImage(font: Font, x: Int, y: Int, width: Int, height: Int, guiGraphics: GuiGraphicsExtractor) {
+        display.extract(guiGraphics, x + 5, y + 5)
     }
 }
