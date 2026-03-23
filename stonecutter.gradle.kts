@@ -1,6 +1,7 @@
 plugins {
     id("dev.kikugie.stonecutter")
-    id("fabric-loom") version "1.15-SNAPSHOT" apply false
+    id("net.fabricmc.fabric-loom-remap") apply false
+    id("net.fabricmc.fabric-loom") apply false
 }
 
 stonecutter active "1.21.11"
@@ -11,26 +12,23 @@ stonecutter parameters {
 
     Replacements.read(project).replacements.forEach { (name, replacement) ->
         when (replacement) {
-            is StringReplacement if replacement.named -> replacements.string(name) {
-                direction = eval(current.version, replacement.condition)
-                replace(replacement.from, replacement.to)
-            }
-
-            is RegexReplacement if replacement.named -> replacements.regex(name) {
-                direction = eval(current.version, replacement.condition)
-                replace(replacement.regex, replacement.to)
-                reverse(replacement.reverseRegex, replacement.reverse)
-            }
-
             is StringReplacement -> replacements.string {
+                if (replacement.named) {
+                    id = name
+                }
                 direction = eval(current.version, replacement.condition)
                 replace(replacement.from, replacement.to)
             }
 
             is RegexReplacement -> replacements.regex {
+                if (replacement.named) {
+                    id = name
+                }
                 direction = eval(current.version, replacement.condition)
-                replace(replacement.regex, replacement.to)
-                reverse(replacement.reverseRegex, replacement.reverse)
+                replace(
+                    replacement.regex to replacement.to,
+                    replacement.reverseRegex to replacement.reverse
+                )
             }
         }
     }
