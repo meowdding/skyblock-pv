@@ -24,27 +24,11 @@ jobs:
             -   name: Build
                 run: ./gradlew build
             -   name: Upload Artifact
-                uses: actions/upload-artifact@v4.0.0
+                uses: actions/upload-artifact@v7.0.0
                 with:
-                    name: 1.21.5
-                    path: build/libs/*-1.21.5.jar
-            -   uses: actions/upload-artifact@v4.0.0
-                with:
-                    name: 1.21.8
-                    path: build/libs/*-1.21.8.jar
-            -   uses: actions/upload-artifact@v4.0.0
-                with:
-                    name: 1.21.10
+                    archive: false
                     path: build/libs/*-1.21.10.jar
-            -   uses: actions/upload-artifact@v4.0.0
+            -   uses: actions/upload-artifact@v7.0.0
                 with:
-                    name: 1.21.11
+                    archive: false
                     path: build/libs/*-1.21.11.jar
-            -   uses: actions/upload-artifact@v4.0.0
-                with:
-                    name: All
-                    path: |
-                        build/libs/*-1.21.5.jar
-                        build/libs/*-1.21.8.jar
-                        build/libs/*-1.21.10.jar
-                        build/libs/*-1.21.11.jar
