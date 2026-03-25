@@ -24,8 +24,6 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
-import net.minecraft.network.chat.CommonComponents
-import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
@@ -35,11 +33,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.hover
 import java.time.Instant
 
 class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
@@ -119,14 +115,17 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 ) {
                     val level = it.greenhouseUpgrades[key] ?: 0
                     val data = StaticGardenData.greenhouseUpgrades[key]!!
-                    Displays.text(Text.of {
-                        append(data.name.stripped)
-                        this.color = PvColors.GRAY
-                        append(": ")
-                        append(level)
-                        append("/")
-                        append(data.upgrade.size)
-                    }).withTooltip {
+                    Displays.text(
+                        Text.of {
+                            append(data.name.stripped)
+                            this.color = PvColors.GRAY
+                            append(": ")
+                            append(level)
+                            append("/")
+                            append(data.upgrade.size)
+                        },
+                        shadow = false,
+                    ).withTooltip {
                         add(data.name)
                         space()
                         add(data.getTooltipForLevel(level))
