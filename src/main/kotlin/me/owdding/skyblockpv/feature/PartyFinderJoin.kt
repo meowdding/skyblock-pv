@@ -184,7 +184,7 @@ object PartyFinderJoin {
                 val hoverEvent = HoverEvent.ShowItem(ItemStackTemplate.fromNonEmptyStack(item))
                 itemComponentMap[item] = InventoryTooltipComponent(reorderedItems, 9)
                 //? } else {
-                /*val hoverEvent = HoverEvent.ShowItem(ItemStackTemplate.fromNonEmptyStack(item))
+                /*val hoverEvent = HoverEvent.ShowItem(item)
                 itemComponentMap[hoverEvent.item()] = InventoryTooltipComponent(reorderedItems, 9)
                 *///? }
 

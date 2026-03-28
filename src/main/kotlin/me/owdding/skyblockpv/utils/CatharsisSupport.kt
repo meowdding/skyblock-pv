@@ -8,18 +8,29 @@ import java.util.function.BiConsumer
 
 object CatharsisSupport {
 
-    private var consumer: BiConsumer<ItemStack, Identifier> = BiConsumer { _, _ -> }
+    private var idConsumer: BiConsumer<ItemStack, Identifier> = BiConsumer { _, _ -> }
+    private var disabledConsumer: BiConsumer<ItemStack, Boolean> = BiConsumer { _, _ -> }
 
     @JvmStatic
-    fun register(consumer: BiConsumer<ItemStack, Identifier>) {
-        this.consumer = consumer
+    fun id(consumer: BiConsumer<ItemStack, Identifier>) {
+        this.idConsumer = consumer
+    }
+
+    @JvmStatic
+    fun disabled(consumer: BiConsumer<ItemStack, Boolean>) {
+        this.disabledConsumer = consumer
+    }
+
+    fun ItemStack.disableCatharsisModifications() = apply {
+        disabledConsumer.accept(this, true)
     }
 
     fun ItemStack.withCatharsisId(path: String): ItemStack = apply {
-        consumer.accept(this, SkyBlockPv.id(path))
+        idConsumer.accept(this, SkyBlockPv.id(path))
     }
 
     fun Item.withCatharsisId(path: String): ItemStack = defaultInstance.apply {
-        consumer.accept(this, SkyBlockPv.id(path))
+        idConsumer.accept(this, SkyBlockPv.id(path))
     }
 }
+
