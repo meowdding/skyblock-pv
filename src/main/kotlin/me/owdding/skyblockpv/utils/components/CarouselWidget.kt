@@ -67,7 +67,7 @@ class CarouselWidget(
         graphics.scissor(x..left, lastY..lastBottom) {
 
             Displays.disableTooltips {
-                last?.render(graphics, x, lastY)
+                last?.extract(graphics, x, lastY)
             }
 
             graphics.renderCarouselOverlay {
@@ -90,7 +90,7 @@ class CarouselWidget(
 
         graphics.scissor(right..(x + width), nextY..nextBottom) {
             Displays.disableTooltips {
-                next?.render(graphics, x + width, nextY, alignmentX = 1f)
+                next?.extract(graphics, x + width, nextY, alignmentX = 1f)
             }
 
             graphics.renderCarouselOverlay {
@@ -107,7 +107,7 @@ class CarouselWidget(
             }
         }
 
-        curr.render(graphics, x + width / 2, y, alignmentX = 0.5f, alignmentY = 0f)
+        curr.extract(graphics, x + width / 2, y, alignmentX = 0.5f, alignmentY = 0f)
     }
 
     override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {

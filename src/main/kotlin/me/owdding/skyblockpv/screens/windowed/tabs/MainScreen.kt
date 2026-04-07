@@ -242,7 +242,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     height,
                     (width / 3f).floor(),
                     eyesX, eyesY,
-                ).render(gr, ctx.x, ctx.y + height / 10)
+                ).extract(gr, ctx.x, ctx.y + height / 10)
             }
         }
 
