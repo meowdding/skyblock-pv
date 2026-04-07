@@ -11,8 +11,8 @@ fun createDropdownOverlay(original: Display, color: Int, context: DropdownContex
 class DropdownOverlay(val original: Display, val color: Int, val context: DropdownContext) : Display {
     override fun getWidth() = original.getWidth()
     override fun getHeight() = original.getHeight()
-    override fun render(graphics: GuiGraphics) {
-        original.render(graphics)
+    override fun extract(graphics: GuiGraphics) {
+        original.extract(graphics)
         graphics.pushPop {
             val difference = System.currentTimeMillis() - context.lastUpdated
             if (context.currentDropdown != null) {

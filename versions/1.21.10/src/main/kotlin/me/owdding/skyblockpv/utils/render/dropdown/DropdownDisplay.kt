@@ -14,19 +14,19 @@ class DropdownDisplay(val original: Display, val dropdown: Display, val context:
     override fun getWidth() = original.getWidth()
     override fun getHeight() = original.getHeight()
     var isOpen = false
-    override fun render(graphics: GuiGraphics) {
-        original.render(graphics)
+    override fun extract(graphics: GuiGraphics) {
+        original.extract(graphics)
 
         graphics.withExclusiveScissor(-0, 0, McClient.window.width, McClient.window.height) {
             if (context.isCurrentDropdown(this) && (isMouseOver(original, graphics) || (isOpen && isMouseOver(dropdown, graphics)))) {
                 isOpen = true
                 context.currentDropdown = this
                 val copy = graphics.pose().copy()
-                dropdown.render(graphics)
+                dropdown.extract(graphics)
                 context.dorpdownDisplay = {
                     val previous = graphics.pose().copy()
                     graphics.pose().set(copy)
-                    dropdown.render(graphics)
+                    dropdown.extract(graphics)
                     graphics.pose().set(previous)
                 }
             } else {

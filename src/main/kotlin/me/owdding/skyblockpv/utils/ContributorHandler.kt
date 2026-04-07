@@ -43,14 +43,14 @@ data class ContributorData(
     @NamedCodec("component_tag") @FieldName("pv:title") val title: Component?,
     @FieldName("pv:parrot") val parrot: ParrotOnShoulder?,
     @NamedCodec("cosmetic_url") @FieldName("pv:cat_texture") val cat: URI?,
-    @FieldName("pv:is_baby_cat") val isBabyCat: Boolean = false,
+    @NamedCodec("cosmetic_url") @FieldName("pv:baby_cat_texture") val babyCat: URI?,
     @FieldName("pv:shaking") val shaking: Boolean = false,
     @FieldName("pv:title_colors") val tileColors: List<TextColor>?,
 ) {
     val titleShader = tileColors?.let { GradientTextShader(*it.toTypedArray()) }
 
     companion object {
-        val EMPTY = ContributorData(null, null, null, tileColors = null)
+        val EMPTY = ContributorData(null, null, null, null, tileColors = null)
     }
 }
 

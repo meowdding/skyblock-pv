@@ -58,6 +58,7 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
 
     override fun shouldShowName() = true
 
+
     fun setupRenderState(renderState: AvatarRenderState, partialTick: Float) {
         renderState.nameTag = customDisplayName
         renderState.scoreText = null
@@ -72,9 +73,16 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
                     renderState.parrotOnRightShoulder = parrot.variant
                 }
             }
+
             it.cat?.let { cat ->
-                (renderState as PlayerRenderStateAccessor).`skyblockpv$catOnShoulder` = cat
-                renderState.`skyblockpv$isCatBaby` = it.isBabyCat
+                renderState.`skyblockpv$catOnShoulder` = cat
+            }
+            it.babyCat?.let { cat ->
+                //? if < 26.1
+                //return
+
+                renderState.`skyblockpv$catOnShoulder` = cat
+                renderState.`skyblockpv$isCatBaby` = true
             }
             renderState.isFullyFrozen = it.shaking
             renderState.ageInTicks = (Minecraft.getInstance().player?.tickCount?.toFloat() ?: 0.0f).plus(partialTick)
