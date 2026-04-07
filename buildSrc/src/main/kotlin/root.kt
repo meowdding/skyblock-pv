@@ -15,8 +15,10 @@ data class ForwardingVersionCatalog(
 ) {
     constructor(vararg catalogs: VersionCatalog) : this(listOf(*catalogs))
 
-    private fun <T> first(name: String, lookup: VersionCatalog.(String) -> Optional<T>): T {
+    private fun <T> first(name: String, lookup: VersionCatalog.(String) -> Optional<T>): T = runCatching {
         return catalogs.firstNotNullOf { it.lookup(name).orElse(null) }
+    }.getOrElse {
+        throw RuntimeException("Failed to find any entry for $name", it)
     }
 
     val libraries: ForwardingProperty<Provider<MinimalExternalModuleDependency>> = ForwardingProperty(this, VersionCatalog::findLibrary)
@@ -36,6 +38,7 @@ data class ForwardingVersionCatalog(
         val lookup: VersionCatalog.(String) -> Optional<T>,
     ) {
         operator fun get(name: String): T = parent.first(name, lookup)
+        fun has(name: String): Boolean = runCatching { get(name) }.map { true }.getOrDefault(false)
         fun getOrFallback(
             name: String,
             fallbackName: String,

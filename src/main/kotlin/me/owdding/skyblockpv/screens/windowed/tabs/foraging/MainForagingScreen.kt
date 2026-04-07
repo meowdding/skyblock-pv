@@ -58,11 +58,13 @@ class MainForagingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = n
             )
 
             spacer(height = 1)
-            string("Forest Whispers (Total/Spent)")
+            string("Forest Whispers (Current/Total)")
             string("") {
-                append((profile.foragingCore?.forestsWhispers ?: 0).toFormattedString(), TextColor.DARK_AQUA)
+                val whispers = profile.foragingCore?.forestsWhispers ?: 0
+                val spentWhispers = profile.foragingCore?.forestsSpentWhispers ?: 0
+                append((whispers - spentWhispers).toFormattedString(), TextColor.DARK_AQUA)
                 append("/")
-                append((profile.foragingCore?.forestsSpentWhispers ?: 0).toFormattedString(), TextColor.DARK_AQUA)
+                append(whispers.toFormattedString(), TextColor.DARK_AQUA)
             }
             profile.foragingCore
         },

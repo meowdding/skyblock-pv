@@ -4,7 +4,7 @@ import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.rendering.text.TextShader
 import me.owdding.lib.rendering.text.TextShaders
 import me.owdding.skyblockpv.utils.render.inventory.InventoryTextureRender
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 
 object RenderUtils {
 
@@ -15,7 +15,7 @@ object RenderUtils {
         }
 
     fun drawInventory(
-        graphics: GuiGraphics,
+        graphics: GuiGraphicsExtractor,
         x: Int,
         y: Int,
         width: Int,
@@ -26,7 +26,7 @@ object RenderUtils {
     ) = InventoryTextureRender.drawInventory(graphics, x, y, width, height, size, orientation, color)
 
     @Suppress("UnusedReceiverParameter")
-    fun GuiGraphics.withTextShader(shader: TextShader?, action: () -> Unit) = pushPopTextShader(shader) {
+    fun GuiGraphicsExtractor.withTextShader(shader: TextShader?, action: () -> Unit) = pushPopTextShader(shader) {
         action()
     }
 
@@ -38,7 +38,7 @@ object RenderUtils {
     }
 
     fun drawInventory(
-        graphics: GuiGraphics,
+        graphics: GuiGraphicsExtractor,
         x: Int,
         y: Int,
         width: Int,

@@ -10,7 +10,6 @@ import me.owdding.lib.layouts.Scalable
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
-import me.owdding.skyblockpv.data.repo.MinionCodecs.categories
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.PvPageState
@@ -18,10 +17,8 @@ import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
-import net.minecraft.client.gui.screens.Screen
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.Text.asComponent
 import kotlin.math.min
 
@@ -71,7 +68,8 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
                         WidgetRenderers.sprite(if (category.isSelected) ExtraConstants.TAB_LEFT_SELECTED else ExtraConstants.TAB_LEFT),
                         WidgetRenderers.padded(
                             0, 9, 0, 4,
-                            WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
+                            //~ if >= 26.1 'renderItem(' -> 'item('
+                            WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(category.icon, ctx.x, ctx.y) },
                         ),
                     ),
                 )
@@ -82,7 +80,8 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
                         WidgetRenderers.sprite(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT),
                         WidgetRenderers.padded(
                             0, 4, 0, 9,
-                            WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(category.icon, ctx.x, ctx.y) },
+                            //~ if >= 26.1 'renderItem(' -> 'item('
+                            WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(category.icon, ctx.x, ctx.y) },
                         ),
                     ),
                 )

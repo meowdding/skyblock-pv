@@ -1,23 +1,23 @@
 package me.owdding.skyblockpv.utils.accessors
 
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-interface GuiGraphicsAccessor {
+interface GuiGraphicsExtractorAccessor {
 
     fun `skyblockpv$popScissor`(): ScreenRectangle?
     fun `skyblockpv$pushScissor`(rectangle: ScreenRectangle)
 
 }
 
-fun GuiGraphics.popExclusiveScissor(): ScreenRectangle? = (this as? GuiGraphicsAccessor)?.`skyblockpv$popScissor`()
-fun GuiGraphics.pushExclusiveScissor(scissor: ScreenRectangle) = (this as? GuiGraphicsAccessor)?.`skyblockpv$pushScissor`(scissor)
+fun GuiGraphicsExtractor.popExclusiveScissor(): ScreenRectangle? = (this as? GuiGraphicsExtractorAccessor)?.`skyblockpv$popScissor`()
+fun GuiGraphicsExtractor.pushExclusiveScissor(scissor: ScreenRectangle) = (this as? GuiGraphicsExtractorAccessor)?.`skyblockpv$pushScissor`(scissor)
 
 @OptIn(ExperimentalContracts::class)
-fun GuiGraphics.withExclusiveScissor(x: Int = 0, y: Int = 0, width: Int = 0, height: Int = 0, action: () -> Unit) {
+fun GuiGraphicsExtractor.withExclusiveScissor(x: Int = 0, y: Int = 0, width: Int = 0, height: Int = 0, action: () -> Unit) {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }

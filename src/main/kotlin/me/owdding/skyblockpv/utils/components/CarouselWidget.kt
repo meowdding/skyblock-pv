@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.utils.components
 
-import com.teamresourceful.resourcefullib.client.screens.CursorScreen
+import com.mojang.blaze3d.platform.cursor.CursorType
+import com.mojang.blaze3d.platform.cursor.CursorTypes
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import me.owdding.lib.displays.Display
@@ -13,7 +14,7 @@ import me.owdding.skyblockpv.utils.CarouselPageState
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.PvPageState
 import me.owdding.skyblockpv.utils.Utils
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutSettings
 import tech.thatgravyboat.skyblockapi.helpers.McFont
@@ -31,7 +32,6 @@ class CarouselWidget(
     width: Int,
 ) : BaseWidget() {
 
-    private var cursor = CursorScreen.Cursor.DEFAULT
     val leftWidth = McFont.self.width("<")
     val rightWidth = McFont.self.width(">")
 
@@ -40,16 +40,15 @@ class CarouselWidget(
         this.width = width
     }
 
-    private fun GuiGraphics.renderCarouselOverlay(block: GuiGraphics.() -> Unit) {
+    private fun GuiGraphicsExtractor.renderCarouselOverlay(block: GuiGraphicsExtractor.() -> Unit) {
         this.pushPop {
-            //? if = 1.21.5
-            /*this.pose().translate(0f, 0f, 300f)*/
             block()
         }
     }
 
-    override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTicks: Float) {
-        cursor = CursorScreen.Cursor.DEFAULT
+    //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
+    override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        graphics.requestCursor(CursorType.DEFAULT)
 
         val curr = displays.getOrNull(index) ?: return
         val last = displays.getOrNull((index - 1 + displays.size) % displays.size)
@@ -80,7 +79,7 @@ class CarouselWidget(
                         graphics.scale(2f, 2f)
                         graphics.drawString("<", -leftWidth / 2, 0, 0xFFFFFF)
                     }
-                    cursor = CursorScreen.Cursor.POINTER
+                    graphics.requestCursor(CursorTypes.POINTING_HAND)
                 }
             }
         }
@@ -103,7 +102,7 @@ class CarouselWidget(
                         graphics.scale(2f, 2f)
                         graphics.drawString(">", -rightWidth / 2, 0, 0xFFFFFF)
                     }
-                    cursor = CursorScreen.Cursor.POINTER
+                    graphics.requestCursor(CursorTypes.POINTING_HAND)
                 }
             }
         }
@@ -140,8 +139,6 @@ class CarouselWidget(
             index = (index + 1) % displays.size
         }
     }
-
-    override fun getCursor(): CursorScreen.Cursor = cursor
 
     fun getIcons(perRow: Int = 9, page: PvPageState, displays: () -> List<Display>): Layout {
         val buttons = displays.invoke().mapIndexed { index, display ->
