@@ -18,7 +18,10 @@
             }
         ],
         "catharsis:imc/item_id": [
-            "me.owdding.skyblockpv.utils.CatharsisSupport::register"
+            "me.owdding.skyblockpv.utils.CatharsisSupport::id"
+        ],
+        "catharsis:imc/disabled": [
+            "me.owdding.skyblockpv.utils.CatharsisSupport::disabled"
         ]
     },
     "depends": {
