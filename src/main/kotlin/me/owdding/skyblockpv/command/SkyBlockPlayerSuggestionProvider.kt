@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import me.owdding.skyblockpv.config.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.commands.SharedSuggestionProvider
 import tech.thatgravyboat.skyblockapi.api.profile.friends.FriendsAPI
@@ -16,7 +17,7 @@ object SkyBlockPlayerSuggestionProvider : SuggestionProvider<FabricClientCommand
         collectAllNames(SuggestionTypes.PARTY, SuggestionTypes.FRIENDS).filter { input.isBlank() || canSuggest(it, input.lowercase()) }
 
     override fun getSuggestions(context: CommandContext<FabricClientCommandSource?>, builder: SuggestionsBuilder): CompletableFuture<Suggestions?>? {
-        collectAllNames().filter { canSuggest(it, builder.remaining.lowercase()) }.forEach(builder::suggest)
+        collectAllNames(sources = Config.autocompleteSources).filter { canSuggest(it, builder.remaining.lowercase()) }.forEach(builder::suggest)
         return builder.buildFuture()
     }
 
@@ -25,6 +26,7 @@ object SkyBlockPlayerSuggestionProvider : SuggestionProvider<FabricClientCommand
 
     private fun canSuggest(name: String, input: String): Boolean = SharedSuggestionProvider.matchesSubStr(input, name.lowercase())
 
+    // TODO: When GuildAPI 🥺🥺
     enum class SuggestionTypes(val supplier: () -> List<String>) {
         PARTY({ PartyAPI.members.mapNotNull { it.name } }),
         FRIENDS({ FriendsAPI.friends.map { it.name } }),

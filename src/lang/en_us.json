@@ -145,6 +145,10 @@
         "remember_last_tab": {
             "@value": "Remember Last Tab",
             "desc": "Remembers the last opened tab and opens it when reopening the profile viewer."
+        },
+        "autocomplete_sources": {
+            "@value": "Autocomplete Sources",
+            "desc": "The sources to use for the username autocomplete in the /pv command."
         }
     },
     "dev": {

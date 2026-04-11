@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.SkyBlockPv.id
+import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider.SuggestionTypes
 import me.owdding.skyblockpv.feature.PartyFinderJoin
 import me.owdding.skyblockpv.utils.Utils
 import net.minecraft.resources.Identifier
@@ -57,6 +58,7 @@ object Config : ConfigKt("skyblockpv/config") {
     )
     var socials by boolean(true) { this.translation = "skyblockpv.config.socials" }
     var rememberLastTab by boolean(true) { this.translation = "skyblockpv.config.remember_last_tab" }
+    var autocompleteSources by enums(value = SuggestionTypes.entries.toTypedArray()) { this.translation = "skyblockpv.config.autocomplete_sources" }
 
     val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
 
