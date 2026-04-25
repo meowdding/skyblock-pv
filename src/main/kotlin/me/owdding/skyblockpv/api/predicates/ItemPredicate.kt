@@ -19,7 +19,7 @@ object ItemPredicates {
     }
 
     fun AnySkyblockID(ids: List<String>): ItemPredicate {
-        return ids.map { SkyblockID(it) }.reduce(ItemPredicate::or)
+        return ids.map { SkyblockID(it) }.reduceOrNull(ItemPredicate::or) ?: of { false }
     }
 
 }
