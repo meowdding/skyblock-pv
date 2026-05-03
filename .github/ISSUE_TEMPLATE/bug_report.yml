@@ -6,7 +6,7 @@ body:
         id: what-issue
         attributes:
             label: What's your Issue?
-            description: Please describe the issue you are having. Provide the username of the person you are viewing.
+            description: Please describe the issue you are having.
             placeholder: Describe the issue here
         validations:
             required: true
@@ -14,7 +14,10 @@ body:
         id: logs
         attributes:
             label: Logs
-            description: Please provide your latest.log from .minecraft/logs/ if this issue happened in your current session. If you have rebooted by now, send the log with the fitting timestamp.
+            description: |
+                If you **didn't crash** or had an issue ***parsing Hypixel data/creating a page**, leave this blank.
+                Please provide your latest.log from .minecraft/logs/ if this issue happened in your current session. 
+                If you have rebooted by now, send the log with the fitting timestamp.
             placeholder: Paste your logs here
         validations:
             required: false
@@ -24,5 +27,13 @@ body:
             label: SkyBlockPv Version
             description: The version of SkyBlockPv you are using.
             placeholder: e.g., "1.6.2-1.21.10"
+        validations:
+            required: true
+    -   type: input
+        id: player-username
+        attributes:
+            label: Player Name/UUID
+            description: The name or UUID of the player you are viewing when this issue happens.
+            placeholder: e.g., Mayaqq or 'a1732122-e22e-4edf-883c-09673eb55de8'
         validations:
             required: true
