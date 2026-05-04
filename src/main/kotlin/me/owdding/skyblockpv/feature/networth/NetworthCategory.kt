@@ -4,10 +4,12 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils.filterNotAir
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.LowestBinAPI
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.Pricing
 import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 
 enum class NetworthCategory(val source: NetworthSource, formatted: String? = null) {
     CURRENCY(CurrencySource, "Purse/Bank"),
@@ -18,7 +20,7 @@ enum class NetworthCategory(val source: NetworthSource, formatted: String? = nul
     SACKS(SacksSource),
     PETS(PetsSource),
     WARDROBE(WardrobeSource),
-    EQUIPMENT(Equipmentource),
+    EQUIPMENT(EquipmentSource),
     TALISMAN_BAG(TalismanBagSource),
     FISHING_BAG(FishingBagSource),
     QUIVER_BAG(QuiverBagSource),
@@ -75,7 +77,14 @@ object BackpacksSource : ItemListNetworthSource {
 }
 
 object SacksSource : NetworthSource {
-    override fun getItemValues(profile: SkyBlockProfile) = profile.inventory?.sacks ?: emptyMap()
+    override fun getItemValues(profile: SkyBlockProfile): Map<String, Long> = buildMap {
+        profile.inventory?.sacks?.forEach { (id, amount) ->
+            val unitPrice = Pricing.getPrice(id)
+            if (unitPrice > 0) {
+                this[RepoItemsAPI.getItemName(id).stripped] = unitPrice * amount
+            }
+        }
+    }
 }
 
 object PetsSource : NetworthSource {
@@ -93,7 +102,7 @@ object WardrobeSource : ItemListNetworthSource {
     override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.wardrobe
 }
 
-object Equipmentource : ItemListNetworthSource {
+object EquipmentSource : ItemListNetworthSource {
     override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.equipmentItems
 }
 
