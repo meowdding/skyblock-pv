@@ -16,7 +16,8 @@ import me.owdding.skyblockpv.data.repo.StaticVisitorData
 import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.world.item.ItemStack
 import org.joml.Vector2i
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.LazyItemStack
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.asDouble
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
@@ -61,10 +62,10 @@ data class GardenProfile(
                 unlockedPlots = result.getAs<JsonArray>("unlocked_plots_ids")?.mapNotNull {
                     StaticGardenData.plots.find { plot -> it.asString == plot.id }
                 } ?: emptyList(),
-                selectedBarnSkin = result.get("selected_barn_skin").toBarnSkin(),
+                selectedBarnSkin = result.get("selected_barn_skin").toBarnSkin().create(),
                 commissionData = result.getAs<JsonObject>("commission_data").toCommissionData(),
                 gardenExperience = result.get("garden_experience").asLong(0),
-                unlockedBarnSkins = result.getAs<JsonArray>("unlocked_barn_skins")?.map { it.toBarnSkin() } ?: emptyList(),
+                unlockedBarnSkins = result.getAs<JsonArray>("unlocked_barn_skins")?.map { it.toBarnSkin().create() } ?: emptyList(),
                 composterData = result.getAs<JsonObject>("composter_data").toComposterData(),
                 resourcesCollected = result.getAs<JsonObject>("resources_collected").asGardenResourceMap { it.asLong(0) },
                 cropUpgradeLevels = result.getAs<JsonObject>("crop_upgrade_levels").asGardenResourceMap { it.asShort(0) },
@@ -96,9 +97,9 @@ data class GardenProfile(
             )
         }
 
-        private fun JsonElement?.toBarnSkin(): ItemStack {
+        private fun JsonElement?.toBarnSkin(): LazyItemStack {
             val string = this?.asString ?: return DefaultBarnSkin.UNKNOWN.getItem()
-            return StaticGardenData.barnSkins[string]?.getItem() ?: RepoItemsAPI.getItemOrNull("${string}_BARN_SKIN") ?: DefaultBarnSkin.UNKNOWN.getItem()
+            return StaticGardenData.barnSkins[string]?.getItem() ?: SkyBlockItemsRepo.getLazyItemStack("${string}_BARN_SKIN") ?: DefaultBarnSkin.UNKNOWN.getItem()
         }
 
         private fun JsonObject?.toCommissionData(): CommissionData {

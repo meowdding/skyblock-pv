@@ -7,8 +7,7 @@ import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.data.repo.PetCodecs
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
-import tech.thatgravyboat.skyblockapi.api.remote.RepoPetsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockPetsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
@@ -29,7 +28,15 @@ data class Pet(
     val data = PetCodecs.getData(type)
     val cumulativeLevels = data.getCurveForRarity(rarity).toMutableList().also { it.addFirst(0) }.runningFold(0, Int::plus).drop(1)
 
-    val itemStack by lazy { RepoPetsAPI.getPetAsItem(PetQuery(type, rarity, level, skin, heldItem)) }
+    val itemStack by lazy {
+        SkyBlockPetsRepo.getItemStackOrDefault {
+            this.id = type
+            this.rarity = this@Pet.rarity
+            this.level = this@Pet.level
+            this.skin = this@Pet.skin
+            this.heldItem = this@Pet.heldItem
+        }
+    }
 
     val level = cumulativeLevels.let { lvls ->
         lvls.findLast { it <= exp }?.let { lvls.indexOf(it) }?.plus(1) ?: 1

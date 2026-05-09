@@ -27,7 +27,8 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.LazyItemStack
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -59,12 +60,12 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
     val internalName: String = internalName ?: name
     val itemId: String = itemId ?: this.internalName
 
-    fun getItem() = RepoItemsAPI.getItem(itemId.replace(":", "-"))
+    fun getItem() = SkyBlockItemsRepo.getItemStackOrDefault(itemId.replace(":", "-"))
 
     companion object {
         fun getByApiId(s: String) = entries.find { it.internalName == s } ?: UNKNOWN
 
-        val actualValues = GardenResource.entries.filterNot { it == UNKNOWN }
+        val actualValues = entries.filterNot { it == UNKNOWN }
 
         @IncludedCodec(keyable = true)
         val CODEC: Codec<GardenResource> = StringRepresentable.fromEnum { entries.toTypedArray() }
@@ -166,8 +167,10 @@ data class DefaultBarnSkin(
     @NamedCodec("component_tag") @FieldName("displayname") val displayName: Component,
     val item: String,
 ) {
-    fun getItem(): ItemStack = RepoItemsAPI.getItem(item).copy().apply {
-        set(DataComponents.CUSTOM_NAME, this@DefaultBarnSkin.displayName)
+    fun getItem(): LazyItemStack = SkyBlockItemsRepo.getLazyItemStack(item)?.withComponents {
+        this.set(DataComponents.CUSTOM_NAME, this@DefaultBarnSkin.displayName)
+    } ?: LazyItemStack(Items.BARRIER, 1) {
+        this[DataComponents.ITEM_NAME] = Text.of("Could not find item for key '$item' in items")
     }
 
     companion object {
@@ -265,7 +268,7 @@ data class StaticPlotCost(
     val amount: Int,
     val bundle: Boolean,
 ) {
-    fun getDisplay() = RepoItemsAPI.getItemName("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")
+    fun getDisplay(): Component = (SkyBlockItemsRepo.getItemStackOrDefault("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")).hoverName
 }
 
 @GenerateCodec
@@ -291,9 +294,10 @@ data class StaticVisitorData(
     val skin: String?,
 ) {
 
-    val itemStack: ItemStack by lazy {
-        skin?.let { createSkull(it) } ?: RepoItemsAPI.getItem(item).takeUnless { it.item == Items.BARRIER } ?: Utils.getMinecraftItem(item)
-    }
+    val itemStack: ItemStack get()= skin?.let {
+        createSkull(it)
+    } ?: SkyBlockItemsRepo.getItemStack(item) ?: Utils.getMinecraftItem(item)
+
 }
 
 enum class ToolType(val id: String) {

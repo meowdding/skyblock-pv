@@ -8,9 +8,8 @@ import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.ChatFormatting
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.api.remote.PetQuery
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
-import tech.thatgravyboat.skyblockapi.api.remote.RepoPetsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockPetsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 
@@ -46,9 +45,13 @@ data class ForgeSlot(override val json: JsonObject) : ParseHelper {
 
     val itemStack by lazy {
         if (type == "PETS") {
-            RepoPetsAPI.getPetAsItem(PetQuery(id, SkyBlockRarity.LEGENDARY, 100))
+            SkyBlockPetsRepo.getItemStackOrDefault {
+                this.id = this@ForgeSlot.id
+                this.rarity = SkyBlockRarity.LEGENDARY
+                this.level = 100
+            }
         } else {
-            RepoItemsAPI.getItem(id)
+            SkyBlockItemsRepo.getItemStackOrDefault(id)
         }
     }
 }
