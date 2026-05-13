@@ -22,7 +22,7 @@ The Profile Viewer can be opened with ``/pv`` for your own Profile, or ``/pv <us
 ## Features
 
 - **Profile Spying**: Adds a button into the Hypixel Profile Viewer to open this Profile Viewer.
-- **PronounDB**: Integrates with [PronounDB](https://pronoundb.org/) to display pronouns of the player.
+- **PronounDB**: Integrates with [PronounDB](https://pronoundb.org/) to display the player's pronouns.
 - **Party Finder**: Sends a message to open the Profile Viewer for the player that just joined a party finder party.
 - **Replace Social Options**: Replaces Hypixel's "Click to open social options" with "Click to open Profile Viewer" on chat messages.
 - **Scaling** (_Experimental_): Automatically scales up some elements based on the player's screen size, to make it more readable on larger screens.
@@ -53,9 +53,9 @@ You can also create your own theme, here's a guide:
 <details>
 <summary>Creating your own Theme</summary>
 
-This needs to be done in a Texturepack.
-In the Folder ``assets/skyblock-pv/themes/`` create a new file called ``<theme_name>.json``.
-The json should have this layout:
+This needs to be done in a texture pack.
+In the folder ``assets/skyblock-pv/themes/`` create a new file called ``<theme_name>.json``.
+The JSON should have this layout:
 
 ```json
 {
@@ -85,7 +85,7 @@ E.g., this replaces the normal button texture with a custom one:
 ```
 
 Some colors might look weird, as they look too similar to the background.
-By default, it uses the minecraft colors.
+By default, it uses the Minecraft colors.
 The colors can either be in hex format or in decimal format.
 
 ```json
@@ -105,12 +105,12 @@ The colors can either be in hex format or in decimal format.
 
 <img src="./.github/images/home.png" width="720" alt="" title="Home">
 Designed to be simple and to show off the main aspects of the player's profile.
-<br/>Designed with a purpose to be screenshot-able and shareable.
+<br/>Designed with a purpose to be easy to screenshot and shareable.
 
 #### 📦 Inventory Tab
 
 <img src="./.github/images/backpack.png" width="720" alt="" title="Backpacks">
-Switch between EnderChest, Backpack, ... pages using the custom build Carousel or the buttons up top.
+Switch between EnderChest, Backpack, ... pages using the custom-built carousel or the buttons up top.
 
 #### 📚 Collections Tab
 
