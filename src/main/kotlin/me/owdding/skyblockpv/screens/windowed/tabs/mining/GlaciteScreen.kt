@@ -18,7 +18,7 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -68,6 +68,12 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 .let { display(it) }
 
             addMiningPerk(profile, "frozen_skin")
+            addMiningPerk(profile, "prehistorian")
+            addMiningPerk(profile, "resourceful")
+            addMiningPerk(profile, "dwarven_expertise")
+            addMiningPerk(profile, "chilled_to_the_bone")
+            addMiningPerk(profile, "cut_loose")
+            addMiningPerk(profile, "sleight_of_hand")
         },
         icon = SkyBlockPv.id("icon/item/clipboard"),
     )
@@ -78,7 +84,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             val unlocked = glacite.fossilsDonated.contains(it.id.split("_").first())
             val inPetMenu = profile.pets.any { pet -> pet.type == it.pet }
 
-            val item = if (unlocked) RepoItemsAPI.getItem(it.id)
+            val item = if (unlocked) SkyBlockItemsRepo.getItemStackOrDefault(it.id)
             else Items.GRAY_DYE.defaultInstance
 
             val hover = Text.multiline(

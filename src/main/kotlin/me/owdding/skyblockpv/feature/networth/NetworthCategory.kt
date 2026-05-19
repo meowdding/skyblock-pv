@@ -4,11 +4,12 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils.filterNotAir
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.LowestBinAPI
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.Pricing
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 
 enum class NetworthCategory(val source: NetworthSource, formatted: String? = null) {
@@ -81,7 +82,8 @@ object SacksSource : NetworthSource {
         profile.inventory?.sacks?.forEach { (id, amount) ->
             val unitPrice = Pricing.getPrice(id)
             if (unitPrice > 0) {
-                this[RepoItemsAPI.getItemName(id).stripped] = unitPrice * amount
+                val displayName = SkyBlockItemsRepo.getLazyItemStack(id)?.getDisplayName() ?: Text.of("Unknown Item")
+                this[displayName.stripped] = unitPrice * amount
             }
         }
     }

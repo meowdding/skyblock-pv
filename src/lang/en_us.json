@@ -29,6 +29,11 @@
                 "<white>Can be upgraded at the <light_purple>Forest Essence Shop</light_purple></white>",
                 "<white>in the <gray>Murkwater Outpost</gray> on <dark_green>Galatea</dark_green></white>",
                 ""
+            ],
+            "fossil_essence_shop": [
+                "<white>Can be upgraded at the <light_purple>Fossil Essence Shop</light_purple></white>",
+                "<white>in the <dark_aqua>Dwarven Base Camp</dark_aqua> in the Glacite Tunnels</white>",
+                ""
             ]
         },
         "prefix": "skyblockpv"
@@ -274,6 +279,42 @@
                     "@id": "diamond_essence_shop"
                 },
                 "<white>Increases the chances of a <aqua>Diamond Goblin</aqua> spawning</white>"
+            ],
+            "prehistorian": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Increases the chance of the <gold>Fossil Dye</gold> spawning in the <gold>Fossil Excavator</gold></white>"
+            ],
+            "resourceful": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Grants a chance to not consume a <gray>Corpse Key</gray> when opening <gray>Corpses</gray> in a <aqua>Glacite Mineshaft</aqua></white>"
+            ],
+            "dwarven_expertise": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Increases your <gold>☘ Dwarven Metal Fortune</gold> while on <aqua>Mining Islands</aqua></white>"
+            ],
+            "chilled_to_the_bone": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Increases your chances of fishing up <purple>Skeleton Fish</purple> in the <red>Crimson Isle</red></white>"
+            ],
+            "cut_loose": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Killing a <aqua>❆ Glacial Mob</aqua> while inside a <aqua>Glacial Mineshaft</aqua> grants bonus <aqua>❄ Cold Resistance</aqua></white>"
+            ],
+            "sleight_of_hand": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Start the <gold>Fossil Excavator</gold> with <green>1</green> extra charge</white>"
             ]
         }
     },

@@ -52,7 +52,7 @@ import net.minecraft.resources.Identifier
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
@@ -60,11 +60,9 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
-import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
-
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseWindowedPvScreen("MAIN", gameProfile, profile) {
 
@@ -269,8 +267,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     ): LayoutElement {
         val convertedElements = data.map { (name, data) ->
             val level = getLevel(name, data).toString()
-            val iconValue = getIcon(name)
-            val icon = when (iconValue) {
+            val icon = when (val iconValue = getIcon(name)) {
                 is Identifier -> Displays.sprite(ThemeSupport.texture(iconValue), 12, 12)
                 is ItemStack -> Displays.item(iconValue, 12, 12)
                 else -> error("Invalid icon type")
@@ -390,7 +387,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             title = +"screens.main.essence",
             data = essence,
             width = width,
-            getIcon = { RepoItemsAPI.getItem("ESSENCE_${it.uppercase()}") },
+            getIcon = { SkyBlockItemsRepo.getItemStackOrDefault("ESSENCE_${it.uppercase()}")},
         ) { _, amount -> amount.shorten() }
     }
 

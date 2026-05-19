@@ -6,13 +6,12 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.config.DevConfig
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.screen.ContainerCloseEvent
 import tech.thatgravyboat.skyblockapi.api.events.screen.InventoryChangeEvent
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.impl.tagkey.ItemTag
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.match
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -46,7 +45,7 @@ object SacksParser {
 
             // Get the Sack Item ID, some sacks don't have multiple scales, some do
             val sackId = listOf("", "LARGE_", "MEDIUM_", "SMALL_").firstNotNullOfOrNull {
-                RepoItemsAPI.getItem("$it${title.replace(" ", "_").uppercase()}").takeUnless { it.item == Items.BARRIER }?.getData(DataTypes.ID)
+                SkyBlockItemsRepo.getItemStack("$it${title.replace(" ", "_").uppercase()}")?.getData(DataTypes.ID)
             } ?: title
 
             data.computeIfAbsent(name) { Sack(sackId, mutableSetOf()) }.add(parsedIds)
