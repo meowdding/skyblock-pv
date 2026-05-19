@@ -7,6 +7,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.FossilTypes
 import me.owdding.skyblockpv.data.api.skills.GlaciteData
+import me.owdding.skyblockpv.data.repo.CorpseMilestoneData
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
@@ -60,12 +61,8 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         title = "Info",
         element = PvLayouts.vertical(3) {
             fun grayText(text: String) = display(ExtraDisplays.grayText(text))
-            val fossilDust = glacite.fossilDust
 
             grayText("Mineshaft Entered: ${glacite.mineshaftsEntered.toFormattedString()}")
-            ExtraDisplays.grayText("Fossil Dust: ${fossilDust.toFormattedString()}")
-                .withTooltip(getFossilDustConversions(fossilDust))
-                .let { display(it) }
 
             addMiningPerk(profile, "frozen_skin")
             addMiningPerk(profile, "prehistorian")
@@ -128,24 +125,16 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addCorpse("tungsten", PvColors.GRAY)
             addCorpse("umber", PvColors.GOLD)
             addCorpse("vanguard", PvColors.AQUA)
-        },
-    )
 
-    private val fossilDustConversions = mapOf(
-        "Suspicious Scrap" to 500,
-    )
-
-    private fun getFossilDustConversions(fossilDust: Int) = Text.multiline(
-        Text.of("Fossil Dust Conversions:").apply {
-            bold = true
-        },
-        fossilDustConversions.map { (name, amount) ->
-            val converted = fossilDust / amount
-            val color = if (converted > 0) PvColors.GREEN else PvColors.RED
-            Text.join(
-                Text.of("$name: ").withColor(PvColors.GRAY),
-                Text.of(converted.toFormattedString()).withColor(color),
-                Text.of(" ($amount per)").withColor(PvColors.GRAY),
+            val maxMilestone = CorpseMilestoneData.data.maxMilestone
+            val currentMilestone = CorpseMilestoneData.getCorpseMilestone(glacite)
+            val max = currentMilestone >= maxMilestone
+            string(
+                Text.join(
+                    Text.of("Corpse Milestone: ").withColor(PvColors.DARK_GRAY),
+                    Text.of(currentMilestone.toString()).withColor(if (max) PvColors.GREEN else PvColors.RED),
+                    Text.of("/$maxMilestone").withColor(PvColors.DARK_GRAY)
+                )
             )
         },
     )
