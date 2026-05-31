@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
-import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 
@@ -19,7 +18,7 @@ data class HypixelPlayer(
     val prefix: Component = if (rawPrefix != null) {
         Text.of(rawPrefix)
     } else {
-        val tag = rank.displayName ?: rank.name
+        val tag = rank.displayName
         Text.of("[$tag]", rank.color)
     }
 
@@ -35,47 +34,55 @@ data class HypixelPlayer(
                 if (prefixString != null) {
                     Rank.byName(prefixString)
                 } else {
-                    fun takeOrNull(path: String) = json.getPathAs<String>("player.$path")?.takeUnless { it in listOf("NONE", "NORMAL") }
-                    val rankId = takeOrNull("rank")
+                    fun takeOrNull(path: String): Rank.Standard? {
+                        val value = json.getPathAs<String>("player.$path")
+                        if (value.isNullOrBlank() || value == "NONE" || value == "NORMAL") return null
+                        return Rank.Standard.entries.find { it.name.equals(value, true) }
+                    }
+
+                    takeOrNull("rank")
                         ?: takeOrNull("monthlyPackageRank")
                         ?: takeOrNull("newPackageRank")
                         ?: takeOrNull("packageRank")
-
-                    rankId?.let { Rank.byName(it) } ?: Rank.NONE
+                        ?: Rank.Standard.NONE
                 }
             }
-
-            println("---------")
-            println("Prefix: $prefixString")
-            println("Rank: $rank")
-            println("---------")
 
             return HypixelPlayer(social, rank, prefixString)
         }
     }
 }
 
-enum class Rank(val color: Int, displayName: String? = null) {
-    NONE(TextColor.GRAY),
-    VIP(TextColor.GREEN),
-    VIP_PLUS(TextColor.GREEN, "VIP+"),
-    MVP(TextColor.AQUA),
-    MVP_PLUS(TextColor.AQUA, "MVP+"),
-    SUPERSTAR(TextColor.ORANGE, "MVP++"),
-    YOUTUBER(TextColor.RED, "YOUTUBE"),
-    PIG_PLUS_PLUS_PLUS(TextColor.PINK, "PIG+++"),
-    STAFF(TextColor.RED, "ዞ"),
-    ;
+sealed interface Rank {
+    val color: Int
+    val displayName: String
 
-    val displayName: String = displayName ?: name
+    enum class Standard(override val color: Int, displayName: String? = null) : Rank {
+        NONE(TextColor.GRAY),
+        VIP(TextColor.GREEN),
+        VIP_PLUS(TextColor.GREEN, "VIP+"),
+        MVP(TextColor.AQUA),
+        MVP_PLUS(TextColor.AQUA, "MVP+"),
+        SUPERSTAR(TextColor.ORANGE, "MVP++"),
+        YOUTUBER(TextColor.RED, "YOUTUBE"),
+        PIG_PLUS_PLUS_PLUS(TextColor.PINK, "PIG+++"),
+        STAFF(TextColor.RED, "ዞ");
+
+        override val displayName: String = displayName ?: name
+    }
+
+    data class Unknown(val key: String) : Rank {
+        override val color: Int = TextColor.DARK_PURPLE
+        override val displayName: String = key
+    }
 
     companion object {
         fun byName(key: String): Rank {
             val cleanKey = key.stripColor().replace("[", "").replace("]", "")
-            return entries.find { it.name.equals(cleanKey, true) || it.displayName.equals(cleanKey, true) } ?: run {
-                println("Unknown rank: $key")
-                NONE
-            }
+
+            return Standard.entries.find {
+                it.name.equals(cleanKey, true) || it.displayName.equals(cleanKey, true)
+            } ?: Unknown(cleanKey)
         }
     }
 }
