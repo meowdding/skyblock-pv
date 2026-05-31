@@ -5,7 +5,7 @@ import com.ibm.icu.text.NumberFormat
 import com.ibm.icu.util.Currency
 import com.ibm.icu.util.ULocale
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.http.Http
@@ -13,7 +13,7 @@ import tech.thatgravyboat.skyblockapi.utils.http.Http
 private const val URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json"
 
 @LoadData
-object CurrenciesAPI : ExtraData {
+object CurrenciesAPI : DefaultedData {
 
     private val conversions = mutableMapOf<String, Double>()
 

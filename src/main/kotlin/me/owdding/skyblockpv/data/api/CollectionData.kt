@@ -1,6 +1,6 @@
 package me.owdding.skyblockpv.data.api
 
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 
 
 data class CollectionItem(
@@ -8,7 +8,7 @@ data class CollectionItem(
     val itemId: String,
     val amount: Long,
 ) {
-    val itemStack by RepoItemsAPI.getItemLazy(itemId)
+    val itemStack = SkyBlockItemsRepo.getItemStackOrDefault(itemId)
 }
 
 data class CollectionCategory(

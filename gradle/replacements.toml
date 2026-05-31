@@ -52,3 +52,18 @@ type = "string"
 condition = "< 1.21.11"
 from = "net.minecraft.world.entity.animal.parrot.Parrot"
 to = "net.minecraft.world.entity.animal.Parrot"
+
+[gui_graphics_unnamed]
+type = "regex"
+condition = "< 26.1"
+regex = "import net.minecraft.client.gui.GuiGraphicsExtractor(?!;)"
+to = "import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor"
+reverseRegex = "import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor"
+reverse = "import net.minecraft.client.gui.GuiGraphicsExtractor"
+
+[gui_graphics]
+type = "string"
+condition = "< 26.1"
+from = "GuiGraphicsExtractor"
+to = "GuiGraphics"
+named = true

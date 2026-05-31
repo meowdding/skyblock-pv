@@ -9,6 +9,7 @@ import java.net.URI
 
 interface PlayerRenderStateAccessor {
     var `skyblockpv$catOnShoulder`: URI?
+    var `skyblockpv$isCatBaby`: Boolean?
     var `skyblockpv$nameShader`: TextShader?
     var `skyblockpv$scoreShader`: TextShader?
 }

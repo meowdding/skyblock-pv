@@ -8,13 +8,13 @@ import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
 @LoadData
-object CrimsonIsleCodecs : ExtraData {
+object CrimsonIsleCodecs : DefaultedData {
     val factionRanks = mutableListOf<ThresholdData<String>>()
     val factionNameMap = mutableMapOf<String, Component>()
 
@@ -83,7 +83,7 @@ object CrimsonIsleCodecs : ExtraData {
     )
 
     override suspend fun load() {
-        val data = Utils.loadRepoData<Data>("crimson_isle")
+        val data = Utils.loadRemoteRepoData<Data>("pv/crimson_isle")
         this.factionNameMap.putAll(data.nameMap)
         this.factionRanks.addAll(data.factionRanks)
         DojoCodecs.load(data.dojo)

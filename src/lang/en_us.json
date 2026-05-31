@@ -50,8 +50,9 @@
             "auth_cooldown": "<red>Authentication is on cooldown. Please wait <0> seconds before retrying.</red>",
             "authenticating": "<gray>Authenticating with PV API...</gray>",
             "auth_successful": "<green>Successfully authenticated with PV API!</green>",
-            "auth_failed": "<run_cmd '/sbpv discord'><red>Failed to authenticate with PV API. Please try again later or ask in the <blue>Discord</blue>!.</red></run_cmd>",
-            "not_authenticated": "<run_cmd '/sbpv refreshauth'>Not authenticated with PV API. Click to try and authenticate.</run_cmd>"
+            "auth_failed": "<run_cmd '/sbpv discord'><red>Failed to authenticate with PV API. Please try again later or ask in the <blue>Discord</blue>!</red></run_cmd>",
+            "not_authenticated": "<run_cmd '/sbpv refreshauth'>Not authenticated with PV API. Click to try and authenticate.</run_cmd>",
+            "auth_uptime_limit": "<red>Minecraft has been open for longer than 24 hours, please restart to refresh auth.</red>"
         },
         "unknown_essence_perks": "<0> unknown essence perks.",
         "player_not_found": "<red>Player could not be found</red>",
@@ -75,7 +76,7 @@
             "disabled_tabs": {
                 "@value": "<pink>SbPv</pink><red>: Disabled Tabs on Profile</red>",
                 "explanation": [
-                    "<red>Due to missing data or disabled apis,</red>",
+                    "<red>Due to missing data or disabled APIs,</red>",
                     "<red>the following tabs are disabled or altered:</red>",
                     "<red><0></red>"
                 ]
@@ -90,7 +91,7 @@
         },
         "chat": {
             "@value": "Clickable Player Messages",
-            "desc": "Change the click action of player messages to open their pv page rather then their social menu"
+            "desc": "Change the click action of player messages to open their pv page rather than their social menu"
         },
         "chat_other": {
             "@value": "Clickable Player Messages in Party, Guild and Co-op",
@@ -110,7 +111,7 @@
         },
         "party_finder_message": {
             "@value": "Party Finder Message",
-            "desc": "Shows a breakdown of the joined players profile in chat, giving you a quick overview.",
+            "desc": "Shows a breakdown of the joined player's profile in chat, giving you a quick overview.",
             "off": "Disabled",
             "open_pv": "Click to Open PV",
             "breakdown": "Profile Breakdown"
@@ -130,7 +131,7 @@
             "@value": "Enable Display Scaling",
             "desc": [
                 "Scales displays to better fill the space available",
-                "<red>This might lead to unexpected behaviour and overflowing.</red>"
+                "<red>This might lead to unexpected behavior and overflowing.</red>"
             ]
         },
         "theme": {
@@ -140,6 +141,14 @@
         "socials": {
             "@value": "Linked Socials Dropdown",
             "desc": "Show a dropdown with all linked socials of the player and SkyCrypt."
+        },
+        "remember_last_tab": {
+            "@value": "Remember Last Tab",
+            "desc": "Remembers the last opened tab and opens it when reopening the profile viewer."
+        },
+        "autocomplete_sources": {
+            "@value": "Autocomplete Sources",
+            "desc": "The sources to use for the username autocomplete in the /pv command."
         }
     },
     "dev": {
@@ -152,7 +161,7 @@
         },
         "hoppity_parser": {
             "@value": "Parse Hoppity Rabbits",
-            "desc": "Parse all Hoppity Rabbits from Hypixels Rabbits UI in an rarity to api name format"
+            "desc": "Parse all Hoppity Rabbits from Hypixel's Rabbits UI in an rarity-to-API-name format"
         },
         "sacks_parser": {
             "@value": "Parse Sacks Contents",
@@ -178,6 +187,7 @@
         "combat": "Combat",
         "collection": "Collections",
         "mining": "Mining",
+        "foraging": "Foraging",
         "inventory": "Inventory",
         "fishing": "Fishing",
         "pets": "Pets",
@@ -285,11 +295,11 @@
                 "Is the API down?",
                 "Did data parsing fail?",
                 "Or is the API Key expired?",
-                "Report this on the discord with your /logs/latest.log"
+                "Report this on the Discord with your /logs/latest.log"
             ],
             "stacktrace": [
                 "Failed building screen <0>",
-                "Report this in the discord!",
+                "Report this in the Discord!",
                 "",
                 "User: <1> - <2>",
                 "Profile: <3>",
@@ -300,11 +310,11 @@
             "no_profiles": [
                 "<red>No profiles found for <0>",
                 "<gray>If you believe this is a mistake,",
-                "<gray>then report it on our discord!"
+                "<gray>then report it on our Discord!"
             ],
             "parsing_error": [
                 "Failed to parse profile!",
-                "Report this in the discord!",
+                "Report this in the Discord!",
                 "",
                 "User: <1> - <2>",
                 "",
@@ -388,6 +398,17 @@
                 "skill_avg": "Skill Avg: <0>",
                 "fairy_souls": "Fairy Souls: <0>",
                 "kd": "K/D: <0>/<1> (<2>)"
+            }
+        },
+        "inventory": {
+            "accessory": {
+                "highest_magical_power": [
+                    "This is the highest amount of magical power",
+                    "the player ever had on this profile. This",
+                    "number is straight from Hypixel, so it should",
+                    "always be accurate, but it may not reflect the",
+                    "current state of the player's accessory bag."
+                ]
             }
         }
     },

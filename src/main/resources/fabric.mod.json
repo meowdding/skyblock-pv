@@ -16,12 +16,18 @@
                 "value": "me.owdding.skyblockpv.SkyBlockPv",
                 "adapter": "kotlin"
             }
+        ],
+        "catharsis:imc/item_id": [
+            "me.owdding.skyblockpv.utils.CatharsisSupport::id"
+        ],
+        "catharsis:imc/disabled": [
+            "me.owdding.skyblockpv.utils.CatharsisSupport::disabled"
         ]
     },
     "depends": {
         "fabricloader": ">=0.16.10",
-        "minecraft": ">=${minecraft_start} <=${minecraft_end}",
-        "fabric": "*",
+        "minecraft": "${minecraft_range}",
+        "fabric-api": "*",
         "fabric-language-kotlin": ">=${fabric_lang_kotlin}",
         "resourcefullib": ">=${rlib}",
         "olympus": ">=${olympus}",

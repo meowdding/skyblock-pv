@@ -13,10 +13,28 @@ import me.owdding.skyblockpv.api.data.ProfileId
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
-import me.owdding.skyblockpv.data.api.*
+import me.owdding.skyblockpv.data.api.AttributesData
+import me.owdding.skyblockpv.data.api.Bank
+import me.owdding.skyblockpv.data.api.CfData
+import me.owdding.skyblockpv.data.api.CollectionItem
 import me.owdding.skyblockpv.data.api.Currency
-import me.owdding.skyblockpv.data.api.skills.*
-import me.owdding.skyblockpv.data.api.skills.combat.*
+import me.owdding.skyblockpv.data.api.Maxwell
+import me.owdding.skyblockpv.data.api.RiftData
+import me.owdding.skyblockpv.data.api.skills.FishData
+import me.owdding.skyblockpv.data.api.skills.ForagingCore
+import me.owdding.skyblockpv.data.api.skills.ForagingData
+import me.owdding.skyblockpv.data.api.skills.Forge
+import me.owdding.skyblockpv.data.api.skills.GlaciteData
+import me.owdding.skyblockpv.data.api.skills.MiningCore
+import me.owdding.skyblockpv.data.api.skills.Pet
+import me.owdding.skyblockpv.data.api.skills.SkillTrees
+import me.owdding.skyblockpv.data.api.skills.TrophyFishData
+import me.owdding.skyblockpv.data.api.skills.combat.BestiaryMobData
+import me.owdding.skyblockpv.data.api.skills.combat.CrimsonIsleData
+import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
+import me.owdding.skyblockpv.data.api.skills.combat.MobData
+import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
+import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
@@ -30,15 +48,20 @@ import me.owdding.skyblockpv.utils.Utils.toDashlessString
 import me.owdding.skyblockpv.utils.Utils.toUuid
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
-import net.minecraft.util.Util
 import net.minecraft.network.chat.Component
+import net.minecraft.util.Util
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvOpenedEvent
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asList
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
+import tech.thatgravyboat.skyblockapi.utils.extentions.asStringList
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -64,6 +87,10 @@ interface SkyBlockProfile {
     val slayer: Map<String, SlayerTypeData> get() = backingProfile.slayer.getNowOrElse(emptyMap())
     val dungeonData: DungeonData? get() = backingProfile.dungeonData.getNowOrElse(null)
     val mining: MiningCore? get() = backingProfile.mining.getNowOrElse(null)
+    val foragingCore: ForagingCore? get() = backingProfile.foragingCore.getNowOrElse(null)
+    val foraging: ForagingData? get() = backingProfile.foraging.getNowOrElse(null)
+    val skillTrees: SkillTrees? get() = backingProfile.skillTrees.getNowOrElse(null)
+    val attributeData: AttributesData get() = backingProfile.attributeData.getNowOrElse(AttributesData.EMPTY)
     val forge: Forge? get() = backingProfile.forge.getNowOrElse(null)
     val glacite: GlaciteData? get() = backingProfile.glacite.getNowOrElse(null)
     val tamingLevelPetsDonated: List<String> get() = backingProfile.tamingLevelPetsDonated.getNowOrElse(emptyList())
@@ -73,6 +100,7 @@ interface SkyBlockProfile {
     val miscFishData: FishData get() = backingProfile.miscFishData.getNowOrElse(FishData.EMPTY)
     val essenceUpgrades: Map<String, Int> get() = backingProfile.essenceUpgrades.getNowOrElse(emptyMap())
     val gardenData: GardenData get() = backingProfile.gardenData.getNowOrElse(GardenData.EMPTY)
+    val gardenChips: ChipsData get() = backingProfile.gardenChips.getNowOrElse(ChipsData.EMPTY)
     val farmingData: FarmingData get() = backingProfile.farmingData.getNowOrElse(FarmingData.EMPTY)
     val chocolateFactoryData: CfData? get() = backingProfile.chocolateFactoryData.getNowOrElse(null)
     val rift: RiftData? get() = backingProfile.rift.getNowOrElse(null)
@@ -126,6 +154,10 @@ data class BackingSkyBlockProfile(
     val slayer: CompletableFuture<Map<String, SlayerTypeData>> = emptyFuture(),
     val dungeonData: CompletableFuture<DungeonData?> = emptyFuture(),
     val mining: CompletableFuture<MiningCore?> = emptyFuture(),
+    val foragingCore: CompletableFuture<ForagingCore?> = emptyFuture(),
+    val foraging: CompletableFuture<ForagingData?> = emptyFuture(),
+    val skillTrees: CompletableFuture<SkillTrees?> = emptyFuture(),
+    val attributeData: CompletableFuture<AttributesData> = emptyFuture(),
     val forge: CompletableFuture<Forge?> = emptyFuture(),
     val glacite: CompletableFuture<GlaciteData?> = emptyFuture(),
     val tamingLevelPetsDonated: CompletableFuture<List<String>> = emptyFuture(),
@@ -136,6 +168,7 @@ data class BackingSkyBlockProfile(
     val essenceUpgrades: CompletableFuture<Map<String, Int>> = emptyFuture(),
     val gardenData: CompletableFuture<GardenData> = emptyFuture(),
     val farmingData: CompletableFuture<FarmingData> = emptyFuture(),
+    val gardenChips: CompletableFuture<ChipsData> = emptyFuture(),
     val chocolateFactoryData: CompletableFuture<CfData?> = emptyFuture(),
     val rift: CompletableFuture<RiftData?> = emptyFuture(),
     val crimsonIsleData: CompletableFuture<CrimsonIsleData> = emptyFuture(),
@@ -171,6 +204,11 @@ data class BackingSkyBlockProfile(
         crimsonIsleData,
         minions,
         maxwell,
+        skillTrees,
+        gardenChips,
+        attributeData,
+        foragingCore,
+        foraging,
     )
 
     companion object {
@@ -222,8 +260,8 @@ data class BackingSkyBlockProfile(
                         member.getAsJsonObject("shared_inventory"),
                     )
                 },
-                currency = future { Currency.fromJson(member) },
-                bank = future { Bank.fromJson(json, member) },
+                currency = future { Currency(member) },
+                bank = future { Bank(json, member) },
                 firstJoin = profile.getAs<Long>("first_join", 0L),
                 fairySouls = member.getPathAs<Int>("fairy_soul.total_collected", 0),
                 skyBlockLevel = future {
@@ -248,9 +286,11 @@ data class BackingSkyBlockProfile(
                 bestiaryData = future { member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList() },
                 slayer = future { member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap() },
                 dungeonData = future { member.getAs<JsonObject>("dungeons")?.let { DungeonData.fromJson(it) } },
-                mining = future { member.getAs<JsonObject>("mining_core")?.let { MiningCore.fromJson(it) } },
-                forge = future { member.getAs<JsonObject>("forge")?.let { Forge.fromJson(it) } },
-                glacite = future { member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData.fromJson(it) } },
+                mining = future { member.getAs<JsonObject>("mining_core")?.let { MiningCore(it) } },
+                foragingCore = future { member.getAs<JsonObject>("foraging_core")?.let { ForagingCore(it) } },
+                foraging = future { ForagingData(member.getAs<JsonObject>("foraging") ?: JsonObject()) },
+                forge = future { member.getAs<JsonObject>("forge")?.let { Forge(it) } },
+                glacite = future { member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData(it) } },
                 tamingLevelPetsDonated = future { member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() } },
                 pets = future { member.getPathAs<JsonArray>("pets_data.pets").asList { Pet.fromJson(it.asJsonObject) } },
                 trophyFish = future { TrophyFishData.fromJson(member) },
@@ -258,15 +298,18 @@ data class BackingSkyBlockProfile(
                 essenceUpgrades = future { playerData?.getAs<JsonObject>("perks").parseEssencePerks() },
                 petMilestones = future { playerStats?.getPath("pets.milestone").asMap { id, amount -> id to amount.asInt(0) } },
                 gardenData = future {
-                    val data = member.getAs<JsonObject>("garden_player_data") ?: return@future GardenData(0, 0, 0)
+                    val data = member.getAs<JsonObject>("garden_player_data") ?: return@future GardenData.EMPTY
 
                     GardenData(
                         data.getAs<Int>("copper", 0),
                         data.getAs<Int>("larva_consumed", 0),
                         playerStats.getAs<Int>("glowing_mushrooms_broken", 0),
+                        data.getAs<JsonArray>("analyzed_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
+                        data.getAs<JsonArray>("discovered_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
                     )
                 },
                 farmingData = future { FarmingData.fromJson(member.getAs("jacobs_contest")) },
+                gardenChips = future { ChipsData(playerData?.getAsJsonObject("garden_chips") ?: JsonObject()) },
                 chocolateFactoryData = future { member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) } },
                 rift = future {
                     playerStats?.getAs<JsonObject>("rift")
@@ -285,6 +328,8 @@ data class BackingSkyBlockProfile(
                         k.toUuid().takeUnless { entry.getPath("profile.deletion_notice") != null }
                     }?.filter { it != user } ?: emptyList(),
                 ),
+                skillTrees = future { SkillTrees(member) },
+                attributeData = AttributesData.fromJson(member),
             )
         }
 

@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.owdding.skyblockpv.mixin.accessors.ScissorStackAccessor;
-import me.owdding.skyblockpv.utils.accessors.GuiGraphicsAccessor;
+import me.owdding.skyblockpv.utils.accessors.GuiGraphicsExtractorAccessor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(GuiGraphics.class)
-abstract public class GuiGraphicsMixin implements GuiGraphicsAccessor {
+abstract public class GuiGraphicsMixin implements GuiGraphicsExtractorAccessor {
     @Shadow
     @Final
     public GuiGraphics.ScissorStack scissorStack;

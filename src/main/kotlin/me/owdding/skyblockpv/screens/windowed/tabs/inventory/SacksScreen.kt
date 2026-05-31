@@ -19,11 +19,13 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
-class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen(gameProfile, profile) {
-    private val sackItems get() = profile.inventory?.sacks ?: emptyMap()
-    private val sackDisplays: Map<ItemStack, Display>
+class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen<Map<String, Long>>(gameProfile, profile) {
+
+    override fun getRawInventory() = profile.inventory?.sacks
+
+    private val Map<String, Long>.sackDisplays: Map<ItemStack, Display>
         get() = SacksRepoData.data.mapNotNull { sack ->
-            val sackItems = sack.items.associateWith { sackItems[it] ?: 0 }
+            val sackItems = sack.items.associateWith { this[it] ?: 0 }
             if (sackItems.entries.sumOf { it.value } == 0L) return@mapNotNull null
 
             val display = sackItems.map {
@@ -53,9 +55,9 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
             RepoItemsAPI.getItem(sack.sack) to display
         }.toMap()
 
-    override fun getInventories(): List<Display> = sackDisplays.values.toList()
+    override fun Map<String, Long>.getInventories(): List<Display> = sackDisplays.values.toList()
 
-    override fun getIcons(): List<ItemStack> = sackDisplays.keys.toList()
+    override fun Map<String, Long>.getIcons(): List<ItemStack> = sackDisplays.keys.toList()
 
     override val itemStackSize = false
 }

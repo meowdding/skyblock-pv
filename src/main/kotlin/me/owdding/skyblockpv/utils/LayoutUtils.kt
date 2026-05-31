@@ -1,12 +1,15 @@
 package me.owdding.skyblockpv.utils
 
+import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.compound.LayoutWidget
+import earth.terrarium.olympus.client.components.string.TextWidget
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.Component
 
 object LayoutUtils {
 
@@ -42,4 +45,6 @@ object LayoutUtils {
     fun ListWidget.withScrollToBottom() {
         this.mouseScrolled(0.0, 0.0, 0.0, -this.height.toDouble())
     }
+
+    fun Component.asWidget(): TextWidget = Widgets.text(this)
 }

@@ -4,11 +4,11 @@ import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.centerIn
 import me.owdding.lib.displays.withTooltip
+import me.owdding.lib.rendering.text.textShader
 import me.owdding.skyblockpv.api.pronouns.PronounDbDecorations
 import me.owdding.skyblockpv.api.pronouns.PronounsDbAPI
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
-import me.owdding.skyblockpv.utils.Utils.withTextShader
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import tech.thatgravyboat.skyblockapi.helpers.McFont
@@ -26,10 +26,12 @@ object PronounWidget {
                 }
                 val shader = PronounDbDecorations.getShader(decoration ?: "")
                 ExtraDisplays.component(
-                    component = "widgets.pronouns".asTranslated(display),
+                    component = "widgets.pronouns".asTranslated(display).apply {
+                        textShader = shader
+                    },
                     color = { PvColors.DARK_GRAY.toUInt() or 0xFF000000u },
                     shadow = false,
-                ).centerIn(width, McFont.height).withTextShader(shader).withTooltip(+"screens.main.pronouns_hint")
+                ).centerIn(width, McFont.height).withTooltip(+"screens.main.pronouns_hint")
             },
             { ExtraDisplays.text("Error", color = { PvColors.RED.toUInt() }).centerIn(width, McFont.height) },
             { ExtraDisplays.text("Loading").centerIn(width, McFont.height) },

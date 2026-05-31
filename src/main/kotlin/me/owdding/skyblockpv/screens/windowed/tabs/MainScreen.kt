@@ -74,6 +74,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
     private var cachedX = 0.0F
     private var cachedY = 0.0F
+    override val tab: PvTab = PvTab.MAIN
 
     override fun create(bg: DisplayWidget) {
         val middleColumnWidth = (uiWidth * 0.2).toInt()
@@ -241,7 +242,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     height,
                     (width / 3f).floor(),
                     eyesX, eyesY,
-                ).render(gr, ctx.x, ctx.y + height / 10)
+                ).extract(gr, ctx.x, ctx.y + height / 10)
             }
         }
 
@@ -341,14 +342,6 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                 TooltipBuilder().apply {
                     add(skill.data.name) { this.color = PvColors.YELLOW }
                     add("Exp: ${num.shorten()}") { this.color = PvColors.GRAY }
-                    if (skill.id == "HUNTING" && num == 0L) { // TODO REMOVE
-                        add("Hypixel currently does not share your Hunting XP so we cant actually show a value") {
-                            color = TextColor.RED
-                        }
-                        add("This entry exists for when Hypixel finally adds it") {
-                            color = TextColor.RED
-                        }
-                    }
                     add {
                         append(+"screens.main.skills.progress")
                         this.color = PvColors.GRAY

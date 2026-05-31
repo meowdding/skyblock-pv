@@ -12,11 +12,12 @@ import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastManager
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 
 data class PvToast(
     private val display: Display,
@@ -30,12 +31,13 @@ data class PvToast(
     override fun getToken(): Any = Toast.NO_TOKEN
     override fun getWantedVisibility() = if (this.removalTime <= System.currentTimeMillis()) Toast.Visibility.HIDE else Toast.Visibility.SHOW
     override fun update(toastManager: ToastManager, visibilityTime: Long) {}
-    override fun render(graphics: GuiGraphics, ignore1: Font, ignore2: Long) {
+    //~ if >= 26.1 'render' -> 'extractRenderState'
+    override fun extractRenderState(graphics: GuiGraphicsExtractor, ignore1: Font, ignore2: Long) {
         if (removalTime == -1L) {
             removalTime = System.currentTimeMillis() + this.time
         }
 
-        this.display.render(graphics)
+        this.display.extract(graphics)
     }
 
     companion object {
@@ -43,6 +45,24 @@ data class PvToast(
         private const val RESEND_TIME = 10 * 60 * 1000L
 
         private val failedToLoadForUsers = mutableMapOf<ProfileId, Long>()
+
+        fun addFailedToLoadDataToast() {
+            val display = Displays.background(
+                ThemeSupport.texture(SkyBlockPv.id("buttons/normal")),
+                Displays.padding(
+                    5,
+                    Displays.column(
+                        Displays.text("§lFailed to load SbPv repo data!", color = { TextColor.RED.toUInt() }, shadow = false),
+                        Displays.text("This might cause unexpected behaviour,", color = { TextColor.RED.toUInt() }, shadow = false),
+                        Displays.text("try restarting your game.", color = { TextColor.RED.toUInt() }, shadow = false),
+                        Displays.empty(height = 2),
+                        Displays.text("In case the issue persists please", color = { TextColor.RED.toUInt() }, shadow = false),
+                        Displays.text("report it on the discord.", color = { TextColor.RED.toUInt() }, shadow = false),
+                    ),
+                ),
+            )
+            McClient.toasts.addToast(PvToast(display, 15000))
+        }
 
         fun addFailedToLoadForUsers(
             profile: SkyBlockProfile,

@@ -35,6 +35,7 @@ import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
+import me.owdding.skyblockpv.utils.PvPageState
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.multiLineDisplay
@@ -45,7 +46,7 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.util.Util
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -67,6 +68,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
     override val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
     override val uiHeight get() = (this.height * 0.65).toInt()
+    abstract val tab: PvTab
 
     override fun init() {
         val bg = Displays.background(ThemeSupport.texture(SkyBlockPv.backgroundTexture), uiWidth, uiHeight).asWidget()
@@ -100,6 +102,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                     e.getStackTraceString(7),
                 )
 
+                SkyBlockPv.error("Failed to build screen ${this.javaClass.simpleName}! ($name - $gameProfile)", e)
 
                 text.splitLines().forEach {
                     widget(PvWidgets.text(it).withCenterAlignment().withSize(uiWidth, 10))
@@ -219,14 +222,15 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             button.setSize(20, 31)
             button.withTexture(null)
             if (!tab.isSelected()) {
-                button.withCallback { McClient.setScreenAsync { tab.create(gameProfile, profile) } }
+                button.withCallback { Utils.openTab(tab, gameProfile, profile) }
             }
             button.withRenderer(
                 WidgetRenderers.layered(
                     WidgetRenderers.sprite(if (tab.isSelected()) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP),
                     WidgetRenderers.padded(
                         4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
-                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.renderItem(tab.getIcon(gameProfile), ctx.x, ctx.y) },
+                        //~ if >= 26.1 'renderItem(' -> 'item('
+                        WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(tab.getIcon(gameProfile), ctx.x, ctx.y) },
                     ),
                 ),
             )
@@ -261,9 +265,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             val username = Widgets.autocomplete<String>(usernameState) { box ->
                 box.withEnterCallback {
                     Utils.fetchGameProfile(box.value) { profile ->
-                        profile?.let {
-                            McClient.setScreenAsync { PvTab.MAIN.create(it) }
-                        }
+                        profile?.let { Utils.openPv(it) }
                     }
                 }
                 box.withTexture(ExtraConstants.TEXTBOX)
@@ -303,7 +305,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                         val gameProfile = profile.getNow(null)
                         if (gameProfile != null) {
                             Utils.preferedProfileId = this@BaseWindowedPvScreen.profile.id.id
-                            McClient.setScreenAsync { PvTab.MAIN.create(gameProfile) }
+                            Utils.openPv(gameProfile)
                         } else if (profile.isCompletedExceptionally) {
                             Text.of("Failed to fetch username!").sendWithPrefix()
                         } else {
@@ -417,7 +419,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         val source = "?utm_source=SkyBlockPv"
         val entries = listOf(
             SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}$source"),
-            SocialEntry("EliteBot", "https://elitebot.dev/@${gameProfile.name}/${profile.id.name}$source"),
+            SocialEntry("EliteSkyBlock", "https://eliteskyblock.com/@${gameProfile.name}/${profile.id.name}$source"),
             *PlayerAPI.getCached(gameProfile.id)?.socials?.map { it.key.toEntry(it.value) }.orEmpty().toTypedArray(),
         )
 
@@ -448,12 +450,16 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         return button
     }
 
-    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    //~ if >= 26.1 'render' -> 'extract' {
+    override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (ThemeSupport.currentTheme.backgroundBlur) {
             guiGraphics.applyBackgroundBlur()
-            this.renderTransparentBackground(guiGraphics)
+            this.extractTransparentBackground(guiGraphics)
         } else {
-            this.renderTransparentBackground(guiGraphics)
+            this.extractTransparentBackground(guiGraphics)
         }
     }
+    //~ }
+
+    open fun toTabState(): PvPageState = this.tab
 }

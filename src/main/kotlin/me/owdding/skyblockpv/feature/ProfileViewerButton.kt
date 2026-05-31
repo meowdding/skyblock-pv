@@ -3,6 +3,8 @@ package me.owdding.skyblockpv.feature
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.config.Config
+import me.owdding.skyblockpv.utils.CatharsisSupport.disableCatharsisModifications
+import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.Items
@@ -17,7 +19,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 @Module
 object ProfileViewerButton {
 
-    private val titleRegex = "(?<name>.*)'s Profile(?: \\[GUEST])?".toRegex()
+    private val titleRegex = "(?<name>.*)'s? Profile(?: \\[GUEST])?".toRegex()
 
     @Subscription
     fun onInventoryChange(event: InventoryChangeEvent) {
@@ -30,7 +32,7 @@ object ProfileViewerButton {
                 return@match
             }
 
-            event.item.replaceVisually {
+            event.item.disableCatharsisModifications().withCatharsisId("spying").replaceVisually {
                 item = Items.SPYGLASS
                 name(
                     Text.of(event.title) {
@@ -47,7 +49,7 @@ object ProfileViewerButton {
                 }
                 onClick {
                     event.screen.onClose()
-                    Utils.openMainScreen(name)
+                    Utils.openPv(name)
                 }
             }
         }

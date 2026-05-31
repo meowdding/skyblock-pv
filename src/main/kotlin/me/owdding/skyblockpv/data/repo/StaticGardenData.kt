@@ -15,7 +15,7 @@ import me.owdding.lib.extensions.round
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.core.component.DataComponents
@@ -27,10 +27,17 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.LazyItemStack
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+
+enum class GreenhouseUpgrade {
+    GROWTH_SPEED,
+    YIELD,
+    PLOT_LIMIT,
+}
 
 enum class GardenResource(internalName: String? = null, itemId: String? = null) : StringRepresentable {
     WHEAT,
@@ -53,12 +60,12 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
     val internalName: String = internalName ?: name
     val itemId: String = itemId ?: this.internalName
 
-    fun getItem() = RepoItemsAPI.getItem(itemId.replace(":", "-"))
+    fun getItem() = SkyBlockItemsRepo.getItemStackOrDefault(itemId.replace(":", "-"))
 
     companion object {
         fun getByApiId(s: String) = entries.find { it.internalName == s } ?: UNKNOWN
 
-        val actualValues = GardenResource.entries.filterNot { it == UNKNOWN }
+        val actualValues = entries.filterNot { it == UNKNOWN }
 
         @IncludedCodec(keyable = true)
         val CODEC: Codec<GardenResource> = StringRepresentable.fromEnum { entries.toTypedArray() }
@@ -80,23 +87,51 @@ object GardenCodecs {
         ).xmap({ Either.unwrap(it) }, { if (it.bundle) Either.right(it) else Either.left(it) })
 }
 
+@GenerateCodec
+data class GreenhouseUpgradeData(
+    @FieldName("reward_formula") val rewardFormula: String,
+    val format: CompostNumberFormat,
+    @NamedCodec("component_tag") val name: Component,
+    val tooltip: String,
+    @NamedCodec("cum_string_int_map") @FieldName("upgrades") val upgrade: List<Map<String, Int>>,
+) {
+    fun getRewardForLevel(level: Int): Int {
+        return rewardFormula.keval {
+            includeDefault()
+            function {
+                name = "clamp"
+                arity = 3
+                implementation = { (value, min, max) -> Math.clamp(value, min, max) }
+            }
+            constant {
+                name = "level"
+                value = level.toDouble()
+            }
+        }.toInt()
+    }
+
+    fun getTooltipForLevel(level: Int): Component {
+        //~ if >= 26.1 'parseText' -> 'parseComponent'
+        return TagParser.QUICK_TEXT_SAFE.parseComponent(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
+    }
+}
+
 @LoadData
-data object StaticGardenData : ExtraData {
-    lateinit var barnSkins: Map<String, DefaultBarnSkin>
-        private set
-    lateinit var composterData: Map<ComposterUpgrade, StaticComposterData>
-        private set
-    lateinit var cropMilestones: Map<GardenResource, List<Int>>
-        private set
-    lateinit var miscData: StaticMiscData
-        private set
-    lateinit var plotCost: Map<String, List<StaticPlotCost>>
-        private set
-    lateinit var plots: List<StaticPlotData>
-        private set
-    lateinit var visitors: List<StaticVisitorData>
-        private set
-    lateinit var tools: Map<GardenResource, StaticToolInfo>
+data object StaticGardenData : DefaultedData {
+    private var data: GardenData? = null
+
+    val barnSkins: Map<String, DefaultBarnSkin> get() = data?.barnSkins ?: emptyMap()
+    val composterData: Map<ComposterUpgrade, StaticComposterData> get() = data?.composterData ?: emptyMap()
+    val cropMilestones: Map<GardenResource, List<Int>> get() = data?.cropMilestones ?: emptyMap()
+    val miscData: StaticMiscData get() = data?.miscData ?: StaticMiscData.DEFAULT
+    val plotCost: Map<String, List<StaticPlotCost>> get() = data?.plotCost ?: emptyMap()
+    val plots: List<StaticPlotData> get() = data?.plots ?: emptyList()
+    val visitors: List<StaticVisitorData> get() = data?.visitors ?: emptyList()
+    val chips: List<Int> get() = data?.chips ?: emptyList()
+    val mutations: List<MutationData> get() = data?.mutations ?: emptyList()
+    val tools: Map<GardenResource, StaticToolInfo> get() = data?.tools ?: emptyMap()
+    val greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData> get() = data?.greenhouseUpgrades ?: emptyMap()
+
     val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO")
     const val COPPER = "copper"
 
@@ -109,26 +144,21 @@ data object StaticGardenData : ExtraData {
         @FieldName("composter_data") val composterData: Map<ComposterUpgrade, StaticComposterData>,
         @NamedCodec("garden§crop_milestones") @FieldName("crop_milestones") val cropMilestones: Map<GardenResource, List<Int>>,
         @FieldName("misc") val miscData: StaticMiscData,
+        @NamedCodec("cum_int_list") val chips: List<Int>,
         @FieldName("plot_cost") val plotCost: Map<String, List<StaticPlotCost>>,
+        val mutations: List<MutationData>,
         val plots: List<StaticPlotData>,
         val visitors: List<StaticVisitorData>,
         val tools: Map<GardenResource, StaticToolInfo>,
+        @FieldName("greenhouse_upgrades") val greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData>,
     )
 
-
     override suspend fun load() {
-        init(Utils.loadRepoData<GardenData>("garden_data"))
+        init(Utils.loadRemoteRepoData<GardenData>("pv/garden_data"))
     }
 
     fun init(data: GardenData) {
-        barnSkins = data.barnSkins
-        composterData = data.composterData
-        cropMilestones = data.cropMilestones
-        miscData = data.miscData
-        plotCost = data.plotCost
-        plots = data.plots
-        visitors = data.visitors
-        tools = data.tools
+        this.data = data
     }
 }
 
@@ -137,8 +167,10 @@ data class DefaultBarnSkin(
     @NamedCodec("component_tag") @FieldName("displayname") val displayName: Component,
     val item: String,
 ) {
-    fun getItem(): ItemStack = RepoItemsAPI.getItem(item).copy().apply {
-        set(DataComponents.CUSTOM_NAME, this@DefaultBarnSkin.displayName)
+    fun getItem(): LazyItemStack = SkyBlockItemsRepo.getLazyItemStack(item)?.withComponents {
+        this.set(DataComponents.CUSTOM_NAME, this@DefaultBarnSkin.displayName)
+    } ?: LazyItemStack(Items.BARRIER, 1) {
+        this[DataComponents.ITEM_NAME] = Text.of("Could not find item for key '$item' in items")
     }
 
     companion object {
@@ -174,9 +206,18 @@ data class StaticComposterData(
     }
 
     fun getTooltipForLevel(level: Int): Component {
-        return TagParser.QUICK_TEXT_SAFE.parseText(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
+        //~ if >= 26.1 'parseText' -> 'parseComponent'
+        return TagParser.QUICK_TEXT_SAFE.parseComponent(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }
+
+@GenerateCodec
+data class MutationData(
+    val id: String,
+    val name: String,
+    val rarity: SkyBlockRarity,
+    val analyzable: Boolean = true,
+)
 
 @GenerateCodec
 data class StaticMiscData(
@@ -192,6 +233,22 @@ data class StaticMiscData(
     @NamedCodec("cum_string_int_map") @FieldName("farming_level_cap") val farmingLevelCap: List<Map<String, Int>>,
     @NamedCodec("cum_string_int_map") @FieldName("extra_farming_fortune") val bonusDrops: List<Map<String, Int>>,
 ) {
+    companion object {
+        val DEFAULT = StaticMiscData(
+            emptyList(),
+            emptyList(),
+            "level",
+            emptyMap(),
+            emptyList(),
+            emptyList(),
+            "level",
+            5,
+            emptyMap(),
+            emptyList(),
+            emptyList(),
+        )
+    }
+
     fun getXpRequired(gardenLevel: Int): Int {
         if (gardenLevel >= gardenLevelBrackets.size - 1) {
             return 0
@@ -211,7 +268,7 @@ data class StaticPlotCost(
     val amount: Int,
     val bundle: Boolean,
 ) {
-    fun getDisplay() = RepoItemsAPI.getItemName("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")
+    fun getDisplay(): Component = (SkyBlockItemsRepo.getItemStackOrDefault("COMPOST".takeUnless { bundle } ?: "ENCHANTED_COMPOST")).hoverName
 }
 
 @GenerateCodec
@@ -237,9 +294,10 @@ data class StaticVisitorData(
     val skin: String?,
 ) {
 
-    val itemStack: ItemStack by lazy {
-        skin?.let { createSkull(it) } ?: RepoItemsAPI.getItem(item).takeUnless { it.item == Items.BARRIER } ?: Utils.getMinecraftItem(item)
-    }
+    val itemStack: ItemStack get()= skin?.let {
+        createSkull(it)
+    } ?: SkyBlockItemsRepo.getItemStack(item) ?: Utils.getMinecraftItem(item)
+
 }
 
 enum class ToolType(val id: String) {
@@ -255,14 +313,16 @@ enum class FarmingGear {
     NECKLACES,
     GLOVES,
     VACUUM,
-    PETS;
+    WATERING_CAN,
+    PETS,
+    ;
 
     var list: List<String> = emptyList()
         private set
 
     companion object {
         init {
-            Utils.loadFromRepo<Map<String, List<String>>>("gear/farming")?.forEach { (key, value) ->
+            Utils.loadFromRemoteRepo<Map<String, List<String>>>("pv/gear/farming")?.forEach { (key, value) ->
                 runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }
@@ -273,6 +333,7 @@ enum class FarmingGear {
         val belts = BELTS.list
         val armor = ARMOR.list
         val vacuum = VACUUM.list
+        val watering_can = WATERING_CAN.list
         val pets = PETS.list
     }
 }

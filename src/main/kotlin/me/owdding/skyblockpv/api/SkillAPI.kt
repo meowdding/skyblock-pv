@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.SkillData
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.resources.Identifier
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
@@ -76,7 +76,7 @@ object SkillAPI {
         override val icon: Identifier by lazy { SkyBlockPv.id("icon/skill/${id.lowercase()}") }
 
         @LoadData
-        companion object : ExtraData {
+        companion object : DefaultedData {
             override suspend fun load() {
                 val skills = get()?.getAsJsonObject("skills") ?: return
                 SkillAPI.skills = skills.entrySet().map { (key, value) ->

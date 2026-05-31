@@ -6,6 +6,9 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
+import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
+import tech.thatgravyboat.skyblockapi.utils.extentions.getRawLore
 
 @GenerateCodec
 data class MuseumItem(
@@ -29,4 +32,18 @@ data class MuseumItem(
         ).listOf()
 
     }
+
+    override fun matches(query: String): Boolean = buildSet {
+        add(id)
+        parentId?.let(::add)
+        addAll(mappedIds)
+    }.flatMap {
+        val item = RepoItemsAPI.getItemOrNull(it) ?: return@flatMap listOf(it)
+
+        buildList {
+            add(it)
+            add(item.cleanName)
+            item.getRawLore().forEach(::add)
+        }
+    }.any { it.contains(query, true) }
 }

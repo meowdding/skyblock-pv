@@ -2,17 +2,22 @@ package me.owdding.skyblockpv.data.repo
 
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.lib.utils.MeowddingLogger
+import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.Utils
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 
 @LoadData
-object CatacombsCodecs : ExtraData {
-    lateinit var data: CatacombsRepoData
-        private set
+object CatacombsCodecs : DefaultedData, MeowddingLogger by SkyBlockPv.featureLogger() {
+    private val defaultData = CatacombsRepoData(emptyList(), Long.MAX_VALUE)
+    private var _data: CatacombsRepoData? = null
+    val data: CatacombsRepoData get() = _data ?: defaultData
 
     override suspend fun load() {
-        data = Utils.loadRepoData<CatacombsRepoData>("catacombs")
+        _data = Utils.loadRemoteRepoData<CatacombsRepoData>("pv/catacombs")
     }
 
     @GenerateCodec
@@ -21,7 +26,7 @@ object CatacombsCodecs : ExtraData {
         @FieldName("experience_per_overflow") val experiencePerOverflow: Long,
     )
 
-    fun getLevelAndProgress(xp: Long, withOverflow: Boolean = false): Pair<Int, Float> {
+    fun getLevelAndProgress(xp: Long, withOverflow: Boolean = false): Pair<Int, Float> = runCatching {
         for (i in data.experience.indices) {
             val currentLevelXp = data.experience[i]
             if (xp <= currentLevelXp) {
@@ -44,6 +49,9 @@ object CatacombsCodecs : ExtraData {
         val overflowProgress = (overflowXp % data.experiencePerOverflow).toFloat() / data.experiencePerOverflow
 
         return (maxLevel + overflowLevel) to overflowProgress.coerceIn(0f, 1f)
+    }.getOrElse {
+        warn("Encountered an error getting level and progress!", it)
+        0 to 0f
     }
 
 }

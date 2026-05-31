@@ -119,12 +119,12 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
             PvLayouts.vertical {
                 stats.forEach { string(createKuudraStat(it)) }
                 spacer(height = 3)
-                val kuudraCollection = stats.mapIndexed { index, it -> it.completions * (index + 1) }.sum()
-                val currentCollection = CrimsonIsleCodecs.KuudraCodecs.collection.sortedByDescending { it }.indexOfFirst { it <= kuudraCollection }.plus(1)
-                val maxCollection = CrimsonIsleCodecs.KuudraCodecs.collection.size
-
                 string("Total Runs: ${stats.sumOf { it.completions }.toFormattedString()}")
-                string("Collection: ${kuudraCollection.toFormattedString()} (${currentCollection.toFormattedString()}/${maxCollection})")
+
+                val kuudraCollection = stats.mapIndexed { index, it -> it.completions * (index + 1) }.sum()
+                val currentTier = CrimsonIsleCodecs.KuudraCodecs.collection.indexOfFirst { it <= kuudraCollection }.plus(1)
+                val maxTier = CrimsonIsleCodecs.KuudraCodecs.collection.size
+                string("Collection: ${kuudraCollection.toFormattedString()} (${currentTier.toFormattedString()}/${maxTier})")
 
                 display(
                     ExtraDisplays.text(

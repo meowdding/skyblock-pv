@@ -28,10 +28,10 @@ object GardenAPI : CachedApi<SkyBlockProfile, GardenProfile, UUID>() {
     override fun getKey(data: SkyBlockProfile) = data.id.id
 }
 
-object MuseumAPI : CachedApi<SkyBlockProfile, MuseumData, UUID>() {
+object MuseumAPI : CachedApi<SkyBlockProfile, MuseumData, String>() {
     override fun path(data: SkyBlockProfile) = "/museum/${data.id.id}"
     override fun decode(data: JsonObject, originalData: SkyBlockProfile) = MuseumData.fromJson(originalData, data.getAsJsonObject("members"))
-    override fun getKey(data: SkyBlockProfile) = data.id.id
+    override fun getKey(data: SkyBlockProfile) = data.id.id.toString() + ":" + data.userId
 }
 
 object StatusAPI : CachedApi<UUID, PlayerStatus, UUID>() {

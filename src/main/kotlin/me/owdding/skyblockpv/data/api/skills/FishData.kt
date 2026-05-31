@@ -7,7 +7,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -123,7 +123,7 @@ enum class FishingGear {
 
     companion object {
         init {
-            Utils.loadFromRepo<Map<String, List<String>>>("gear/fishing")?.forEach { (key, value) ->
+            Utils.loadFromRemoteRepo<Map<String, List<String>>>("pv/gear/fishing")?.forEach { (key, value) ->
                 runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
             }
         }
@@ -321,10 +321,10 @@ enum class TrophyFishType(
 
     val internalName: String = internalName.takeUnless { it.isEmpty() } ?: name
 
-    val bronze by RepoItemsAPI.getItemLazy("${this.internalName}_BRONZE")
-    val silver by RepoItemsAPI.getItemLazy("${this.internalName}_SILVER")
-    val gold by RepoItemsAPI.getItemLazy("${this.internalName}_GOLD")
-    val diamond by RepoItemsAPI.getItemLazy("${this.internalName}_DIAMOND")
+    val bronze get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_BRONZE")
+    val silver get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_SILVER")
+    val gold get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_GOLD")
+    val diamond get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_DIAMOND")
 
     fun getItem(tier: TrophyFishTier): ItemStack {
         return when (tier) {

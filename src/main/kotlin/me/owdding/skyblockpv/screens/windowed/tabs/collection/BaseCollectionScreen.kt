@@ -2,9 +2,11 @@ package me.owdding.skyblockpv.screens.windowed.tabs.collection
 
 import com.mojang.authlib.GameProfile
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
@@ -15,17 +17,18 @@ import kotlin.reflect.full.isSubclassOf
 
 abstract class BaseCollectionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     AbstractCategorizedScreen("COLLECTION", gameProfile, profile) {
+    override val tab: PvTab = PvTab.COLLECTION
     override val categories: List<Category> get() = Category.getCategories<CollectionCategories>(profile)
 }
 
 enum class CollectionCategories(val screen: KClass<out BaseCollectionScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
-    FARMING(CommonCollectionScreen::class, Items.GOLDEN_HOE.defaultInstance),
-    MINING(CommonCollectionScreen::class, Items.STONE_PICKAXE.defaultInstance),
-    COMBAT(CommonCollectionScreen::class, Items.STONE_SWORD.defaultInstance),
-    FORAGING(CommonCollectionScreen::class, Items.JUNGLE_SAPLING.defaultInstance),
-    FISHING(CommonCollectionScreen::class, Items.FISHING_ROD.defaultInstance),
-    RIFT(CommonCollectionScreen::class, Items.MYCELIUM.defaultInstance),
-    MINION(MinionScreen::class, RepoItemsAPI.getItem("SNOW_GENERATOR_12"))
+    FARMING(CommonCollectionScreen::class, Items.GOLDEN_HOE.withCatharsisId("tab/collections/farming")),
+    MINING(CommonCollectionScreen::class, Items.STONE_PICKAXE.withCatharsisId("tab/collections/mining")),
+    COMBAT(CommonCollectionScreen::class, Items.STONE_SWORD.withCatharsisId("tab/collections/combat")),
+    FORAGING(CommonCollectionScreen::class, Items.JUNGLE_SAPLING.withCatharsisId("tab/collections/foraging")),
+    FISHING(CommonCollectionScreen::class, Items.FISHING_ROD.withCatharsisId("tab/collections/fishing")),
+    RIFT(CommonCollectionScreen::class, Items.MYCELIUM.withCatharsisId("tab/collections/rift")),
+    MINION(MinionScreen::class, RepoItemsAPI.getItem("SNOW_GENERATOR_12").withCatharsisId("tab/collections/minion"))
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()

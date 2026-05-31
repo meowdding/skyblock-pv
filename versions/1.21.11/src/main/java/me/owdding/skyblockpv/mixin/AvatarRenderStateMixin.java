@@ -48,4 +48,13 @@ public class AvatarRenderStateMixin implements PlayerRenderStateAccessor {
     public void setSkyblockpv$scoreShader(@Nullable TextShader textShader) {
         this.skyblockpv$scoreShader = textShader;
     }
+
+    @Override
+    public @Nullable Boolean getSkyblockpv$isCatBaby() {
+        return null;
+    }
+
+    @Override
+    public void setSkyblockpv$isCatBaby(@Nullable Boolean ignored) {
+    }
 }

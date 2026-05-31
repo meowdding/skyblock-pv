@@ -3,7 +3,7 @@ package me.owdding.skyblockpv.api
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.api.CollectionCategory
 import me.owdding.skyblockpv.data.api.CollectionEntry
-import me.owdding.skyblockpv.utils.codecs.ExtraData
+import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
@@ -13,7 +13,7 @@ import tech.thatgravyboat.skyblockapi.utils.http.Http
 private const val API_URL = "https://api.hypixel.net/v2/resources/skyblock/collections"
 
 @LoadData
-object CollectionAPI : ExtraData {
+object CollectionAPI : DefaultedData {
     var collectionData: Map<String, CollectionCategory> = emptyMap()
         private set
 

@@ -1,4 +1,4 @@
-accessWidener v2 named
+accessWidener v2 official
 accessible class net/minecraft/client/gui/GuiGraphics$ScissorStack
 accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/RenderType$CompositeState;)Lnet/minecraft/client/renderer/RenderType$CompositeRenderType;
 accessible class net/minecraft/client/renderer/RenderType$CompositeState
@@ -14,3 +14,5 @@ accessible field net/minecraft/client/renderer/RenderPipelines FOG_SNIPPET Lcom/
 # 1.21.6+
 accessible field net/minecraft/client/gui/GuiGraphics guiRenderState Lnet/minecraft/client/gui/render/state/GuiRenderState;
 accessible field net/minecraft/client/gui/GuiGraphics scissorStack Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
+
+accessible field net/minecraft/client/gui/layouts/FrameLayout children Ljava/util/List;
