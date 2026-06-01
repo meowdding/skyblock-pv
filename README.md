@@ -196,4 +196,4 @@ as of 2025-04-16
 
 1. Go to the directory where your Zapret is.
 2. Open lists folder
-3. Add domains mentioned before into list-general.txt ( You need to remove everything before "//" including it AND remove "/" at the end
+3. Add domains mentioned before into list-general.txt ( You need to remove everything before "//" including it AND remove "/" at the end )
