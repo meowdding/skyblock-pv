@@ -175,4 +175,25 @@ as of 2025-04-16
 
 - **Issue**: [SkyBlocker](https://github.com/SkyblockerMod/Skyblocker) includes its own Profile Viewer.
 - **Resolution**: We override their `/pv` command with ours. If you prefer SkyBlocker's version, use `/skyblocker pv` instead.
-- **Note**: We do not provide an option to disable this override, as using our mod implies a preference for our Profile Viewer.  
+- **Note**: We do not provide an option to disable this override, as using our mod implies a preference for our Profile Viewer.
+  
+### What to do if you are from Russia or any country that partially blocks the Internet and mod says external repo is not initialized?
+
+#### You need to add theese URLs in Zapret/VPN you are using:
+
+**For any mod**:
+- https://skyblock-repo.pages.dev/
+- https://skyblock-api-repo.thatgravyboat.tech/
+- *.owdding.me/
+
+**For pv**:
+- https://skyblock-pv.thatgravyboat.tech/
+
+**For Catharsis**:
+- https://catharsis.repo.meowdd.ing/
+- 
+### Detailed guide on how to do it with Zapret:
+
+1. Go to the directory where your Zapret is.
+2. Open lists folder
+3. Add domains mentioned before into list-general.txt ( You need to remove everything before "//" including it AND remove "/" at the end
