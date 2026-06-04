@@ -30,7 +30,7 @@ import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -194,7 +194,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
             val convertedElements = crystals.map { id ->
                 val (name, crystal) = id to (mining.crystals[id] ?: Crystal.EMPTY)
-                val icon = RepoItemsAPI.getItem(name.uppercase()).let { Displays.item(it) }
+                val icon = SkyBlockItemsRepo.getItemStackOrDefault(name.uppercase()).let { Displays.item(it) }
                 val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
                 }

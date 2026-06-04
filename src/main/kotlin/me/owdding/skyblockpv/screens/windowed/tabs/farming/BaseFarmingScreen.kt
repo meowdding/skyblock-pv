@@ -9,10 +9,9 @@ import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedLoadingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
-import net.minecraft.client.gui.screens.Screen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import kotlin.reflect.KClass
@@ -30,8 +29,8 @@ enum class FarmingCategory(val screen: KClass<out BaseFarmingScreen>, override v
     MAIN(FarmingScreen::class, Items.WHEAT.withCatharsisId("tab/farming/main")),
     VISITORS(VisitorScreen::class, Items.VILLAGER_SPAWN_EGG.withCatharsisId("tab/farming/visitors")),
     CROP(CropScreen::class, Items.CARROT.withCatharsisId("tab/farming/crops")),
-    MUTATIONS(MutationScreen::class, RepoItemsAPI.getItem("LONELILY").withCatharsisId("tab/farming/mutation")),
-    COMPOSTER(ComposterScreen::class, RepoItemsAPI.getItem("COMPOST").withCatharsisId("tab/farming/composter")),
+    MUTATIONS(MutationScreen::class, SkyBlockItemsRepo.getItemStackOrDefault("LONELILY").withCatharsisId("tab/farming/mutation")),
+    COMPOSTER(ComposterScreen::class, SkyBlockItemsRepo.getItemStackOrDefault("COMPOST").withCatharsisId("tab/farming/composter")),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()

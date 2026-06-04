@@ -12,7 +12,7 @@ import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
@@ -46,7 +46,7 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     }
 
     fun createMinion(context: MinionContext): Display {
-        val minion = RepoItemsAPI.getItem("${context.type}_GENERATOR_${context.maxObtainedLevel.coerceAtLeast(1)}")
+        val minion = SkyBlockItemsRepo.getItemStackOrDefault("${context.type}_GENERATOR_${context.maxObtainedLevel.coerceAtLeast(1)}")
         val maxTier = MinionCodecs.miscData.getMax(context.type)
 
         val stackSize = when (context.maxObtainedLevel) {

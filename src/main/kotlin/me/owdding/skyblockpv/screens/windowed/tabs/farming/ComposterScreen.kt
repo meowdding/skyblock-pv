@@ -27,7 +27,7 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -223,7 +223,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         this.color = PvColors.RED
                     }
                 } else {
-                    append(RepoItemsAPI.getItemName(key))
+                    append(SkyBlockItemsRepo.getLazyItemStack(key)?.getDisplayName() ?: Text.of("Unknown Item"))
                 }
                 append(CommonText.SPACE)
                 append(used.toFormattedString()) {

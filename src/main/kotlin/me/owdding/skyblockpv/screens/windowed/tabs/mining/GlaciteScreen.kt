@@ -7,6 +7,7 @@ import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.FossilTypes
 import me.owdding.skyblockpv.data.api.skills.GlaciteData
+import me.owdding.skyblockpv.data.repo.CorpseMilestoneData
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
@@ -18,7 +19,7 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -60,14 +61,16 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         title = "Info",
         element = PvLayouts.vertical(3) {
             fun grayText(text: String) = display(ExtraDisplays.grayText(text))
-            val fossilDust = glacite.fossilDust
 
             grayText("Mineshaft Entered: ${glacite.mineshaftsEntered.toFormattedString()}")
-            ExtraDisplays.grayText("Fossil Dust: ${fossilDust.toFormattedString()}")
-                .withTooltip(getFossilDustConversions(fossilDust))
-                .let { display(it) }
 
             addMiningPerk(profile, "frozen_skin")
+            addMiningPerk(profile, "prehistorian")
+            addMiningPerk(profile, "resourceful")
+            addMiningPerk(profile, "dwarven_expertise")
+            addMiningPerk(profile, "chilled_to_the_bone")
+            addMiningPerk(profile, "cut_loose")
+            addMiningPerk(profile, "sleight_of_hand")
         },
         icon = SkyBlockPv.id("icon/item/clipboard"),
     )
@@ -78,7 +81,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             val unlocked = glacite.fossilsDonated.contains(it.id.split("_").first())
             val inPetMenu = profile.pets.any { pet -> pet.type == it.pet }
 
-            val item = if (unlocked) RepoItemsAPI.getItem(it.id)
+            val item = if (unlocked) SkyBlockItemsRepo.getItemStackOrDefault(it.id)
             else Items.GRAY_DYE.defaultInstance
 
             val hover = Text.multiline(
@@ -122,24 +125,16 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             addCorpse("tungsten", PvColors.GRAY)
             addCorpse("umber", PvColors.GOLD)
             addCorpse("vanguard", PvColors.AQUA)
-        },
-    )
 
-    private val fossilDustConversions = mapOf(
-        "Suspicious Scrap" to 500,
-    )
-
-    private fun getFossilDustConversions(fossilDust: Int) = Text.multiline(
-        Text.of("Fossil Dust Conversions:").apply {
-            bold = true
-        },
-        fossilDustConversions.map { (name, amount) ->
-            val converted = fossilDust / amount
-            val color = if (converted > 0) PvColors.GREEN else PvColors.RED
-            Text.join(
-                Text.of("$name: ").withColor(PvColors.GRAY),
-                Text.of(converted.toFormattedString()).withColor(color),
-                Text.of(" ($amount per)").withColor(PvColors.GRAY),
+            val maxMilestone = CorpseMilestoneData.data.maxMilestone
+            val currentMilestone = CorpseMilestoneData.getCorpseMilestone(glacite)
+            val max = currentMilestone >= maxMilestone
+            string(
+                Text.join(
+                    Text.of("Corpse Milestone: ").withColor(PvColors.DARK_GRAY),
+                    Text.of(currentMilestone.toString()).withColor(if (max) PvColors.GREEN else PvColors.RED),
+                    Text.of("/$maxMilestone").withColor(PvColors.DARK_GRAY)
+                )
             )
         },
     )

@@ -58,7 +58,6 @@ data class ForgeSlot(override val json: JsonObject) : ParseHelper {
 
 data class GlaciteData(override val json: JsonObject) : ParseHelper {
     val fossilsDonated: List<String> by stringList("fossils_donated")
-    val fossilDust: Int by int("fossil_dust")
     val corpsesLooted: Map<String, Int> by stringIntMap("corpses_looted")
     val mineshaftsEntered: Int by int("mineshafts_entered")
 }
