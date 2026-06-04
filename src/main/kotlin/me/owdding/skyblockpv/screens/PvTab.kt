@@ -31,6 +31,7 @@ import me.owdding.skyblockpv.screens.windowed.tabs.rift.BaseRiftScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.rift.MainRiftScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.rift.RiftCategory
 import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
+import me.owdding.skyblockpv.utils.PageIssueManager
 import me.owdding.skyblockpv.utils.PvPageState
 import net.minecraft.util.TriState
 import net.minecraft.world.item.ItemStack
@@ -110,6 +111,7 @@ enum class PvTab(
     }
 
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?): BaseWindowedPvScreen {
+        PageIssueManager.notifyTab(this)
         return constructor.invoke(gameProfile, profile)
     }
 

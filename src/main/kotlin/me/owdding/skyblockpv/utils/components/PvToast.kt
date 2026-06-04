@@ -17,6 +17,7 @@ import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastManager
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 
 data class PvToast(
@@ -43,7 +44,7 @@ data class PvToast(
     companion object {
 
         private const val RESEND_TIME = 10 * 60 * 1000L
-
+        private val shownIssues = mutableMapOf<String, Long>()
         private val failedToLoadForUsers = mutableMapOf<ProfileId, Long>()
 
         fun addFailedToLoadDataToast() {
@@ -92,6 +93,25 @@ data class PvToast(
                 Displays.padding(
                     5,
                     ExtraDisplays.component("messages.toast.socials_copied".asTranslated(text), shadow = false),
+                ),
+            )
+            McClient.toasts.addToast(PvToast(display, time))
+        }
+
+        fun addPageIssueToast(title: String, message: String, time: Int = 10000) {
+            val lastTime = shownIssues[message]
+            if (lastTime != null && System.currentTimeMillis() - lastTime < RESEND_TIME) return
+            shownIssues[message] = System.currentTimeMillis()
+
+            val display = Displays.background(
+                ThemeSupport.texture(SkyBlockPv.id("buttons/normal")),
+                Displays.padding(
+                    5,
+                    Displays.column(
+                        Displays.text("§lNotice: $title", color = { TextColor.GOLD.toUInt() }, shadow = false),
+                        Displays.empty(height = 2),
+                        Text.of(message).multiLineDisplay(shadow = false),
+                    ),
                 ),
             )
             McClient.toasts.addToast(PvToast(display, time))

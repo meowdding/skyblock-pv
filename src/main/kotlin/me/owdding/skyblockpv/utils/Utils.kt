@@ -100,6 +100,7 @@ object Utils {
     fun openPv(name: String) = fetchGameProfile(name) { openPv(it) }
     fun openPv(gp: GameProfile?) {
         validateGameProfile(gp) {
+            PageIssueManager.notifyGlobal()
             McClient.setScreenAsync { (lastTab?.takeIf { Config.rememberLastTab } ?: PvTab.MAIN).create(gp!!) }
         }
     }
