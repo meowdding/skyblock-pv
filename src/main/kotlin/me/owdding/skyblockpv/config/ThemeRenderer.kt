@@ -18,8 +18,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.network.chat.Component
-//? < 1.21.11
-/*import tech.thatgravyboat.skyblockapi.helpers.McClient*/
 import tech.thatgravyboat.skyblockapi.platform.drawSprite
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.util.function.Consumer
@@ -66,7 +64,6 @@ class ThemeWidget(
             getWidth(),
             getHeight(),
         )
-        //? > 1.21.10 {
         graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
             Text.translatable(
                 ThemeHelper.themes.entries.firstOrNull { (key) ->
@@ -76,18 +73,6 @@ class ThemeWidget(
             x + 4, x + getWidth() - 16,
             y + 4, y + getHeight() - 4,
         )
-        //?} else {
-        /*renderScrollingString(
-            graphics,
-            McClient.self.font,
-            Text.translatable(ThemeHelper.themes.entries.firstOrNull { (key) -> key.toString() == this.getter.get() }?.value?.name ?: "Unknown"),
-            x + 4,
-            y + 4,
-            x + getWidth() - 16,
-            y + getHeight() - 4,
-            UIConstants.TEXT_PARAGRAPH,
-        )
-        *///?}
         graphics.drawSprite(
             ModSprites.CHEVRON_DOWN,
             x + getWidth() - 12,
@@ -171,22 +156,13 @@ class ThemeWidget(
                 getWidth() - 1,
                 getHeight(),
             )
+
             val color = if (this.isHovered()) UIConstants.TEXT_TITLE else UIConstants.TEXT_PARAGRAPH
-            //? > 1.21.10 {
             graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
                 Text.translatable(translationKey).withColor(color),
                 x + 4, x + getWidth() - 4,
                 y + 1, y + getHeight() - 1,
             )
-            //?} else {
-            /*renderScrollingString(
-                graphics, McClient.self.font, Text.translatable(translationKey),
-                x + 4, y + 1,
-                x + getWidth() - 4, y + getHeight() - 1,
-                color,
-            )
-            *///?}
-
         }
 
         override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {

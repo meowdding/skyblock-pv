@@ -26,7 +26,7 @@ body:
         attributes:
             label: SkyBlockPv Version
             description: The version of SkyBlockPv you are using.
-            placeholder: e.g., "1.6.2-1.21.10"
+            placeholder: e.g., "1.8.2-1.21.11"
         validations:
             required: true
     -   type: input
