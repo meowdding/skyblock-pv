@@ -255,10 +255,7 @@ data class BackingSkyBlockProfile(
                     }
                 },
                 inventory = (member.getAs<JsonObject>("inventory") ?: JsonObject()).let {
-                    InventoryData.fromJson(
-                        it,
-                        member.getAsJsonObject("shared_inventory"),
-                    )
+                    InventoryData.fromJson(member, it, member.getAsJsonObject("shared_inventory"))
                 },
                 currency = future { Currency(member) },
                 bank = future { Bank(json, member) },

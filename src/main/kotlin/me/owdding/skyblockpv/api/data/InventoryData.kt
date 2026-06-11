@@ -78,7 +78,7 @@ data class InventoryData(
     }
 
     companion object {
-        fun fromJson(inventory: JsonObject, sharedInventory: JsonObject?): CompletableFuture<InventoryData?> {
+        fun fromJson(member: JsonObject, inventory: JsonObject, sharedInventory: JsonObject?): CompletableFuture<InventoryData?> {
             val backpackIcons: Map<Int, ItemStack> = inventory.getAs<JsonObject>("backpack_icons")?.let { Backpack.icons(it) } ?: emptyMap()
             val bagContents = inventory.getAs<JsonObject>("bag_contents")
             val inventoryItems = inventory.getAs<JsonObject>("inv_contents")?.completableInventory()
@@ -93,7 +93,29 @@ data class InventoryData(
             val candy = sharedInventory?.getAs<JsonObject>("candy_inventory_contents")?.completableInventory()
             val carnivalMaskBag = sharedInventory?.getAs<JsonObject>("carnival_mask_inventory_contents")?.completableInventory()
 
-            val wardrobe = inventory.getAs<JsonObject>("wardrobe_contents")?.completableInventory()?.thenApply {
+            val wardrobe = member.getAs<JsonObject>("loadout")?.getAs<JsonObject>("armor")?.let { armorJson ->
+                val maxSlot = armorJson.entrySet().maxOfOrNull { it.key.toIntOrNull() ?: 0 } ?: 0
+                val totalPages = (maxSlot + 8) / 9
+
+                val futures = (0 until totalPages).flatMap { page ->
+                    val startSlot = page * 9 + 1
+                    val endSlot = startSlot + 8
+
+                    listOf("HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS").flatMap { piece ->
+                        (startSlot..endSlot).map { slotId ->
+                            val slotData = armorJson.getAs<JsonObject>(slotId.toString())
+
+                            slotData?.getAs<JsonObject>(piece)
+                                ?.completableInventory()
+                                ?.thenApply { it.firstOrNull() ?: ItemStack.EMPTY }
+                                ?: CompletableFuture.completedFuture(ItemStack.EMPTY)
+                        }
+                    }
+                }
+
+                if (futures.isEmpty()) null
+                else CompletableFuture.allOf(*futures.toTypedArray()).thenApply { futures.map { it.get() } }
+            }?.thenApply {
                 Wardrobe(
                     equippedArmor = inventory.get("wardrobe_equipped_slot").asInt,
                     armor = it,
