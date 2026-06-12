@@ -1,12 +1,12 @@
 [versions]
 
-fabric-loader = "0.18.4"
-fabric-language-kotlin = "1.13.6+kotlin.2.2.20"
+fabric-loader = "0.19.3"
+fabric-language-kotlin = "1.13.12+kotlin.2.4.0"
 
 keval = "1.1.1"
 
-kotlin = "2.3.0"
-kotlin-gradle-plugin = "2.3.0"
+kotlin = "2.4.0"
+kotlin-gradle-plugin = "2.4.0"
 kotlin-symbol-processor = "2.3.5"
 
 # Dependencies
@@ -26,7 +26,7 @@ meowdding-remote-repo = "1.0.4"
 meowdding-auto-mixins = "1.0.5"
 meowdding-item-dfu = "1.0.5"
 
-fabric-loom = "1.15-SNAPSHOT"
+fabric-loom = "1.16-SNAPSHOT"
 
 # Build src dependencies
 gson = "2.12.1"
