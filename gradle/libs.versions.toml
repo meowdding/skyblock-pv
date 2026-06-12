@@ -10,7 +10,7 @@ kotlin-gradle-plugin = "2.4.0"
 kotlin-symbol-processor = "2.3.5"
 
 # Dependencies
-skyblockapi = "4.1.10"
+skyblockapi = "4.1.11"
 repolib = "2.0.2"
 
 resourceful-configkt = "3.5.12"
