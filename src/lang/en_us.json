@@ -358,9 +358,10 @@
                 "Report this in the Discord!",
                 "",
                 "User: <1> - <2>",
+                "Version: <3> - <4>",
                 "",
-                "Exception: <4>: <5>",
-                "Stacktrace: <6>"
+                "Exception: <5>: <6>",
+                "Stacktrace: <7>"
             ]
         },
         "open_logs": "Open Logs",

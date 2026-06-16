@@ -45,13 +45,13 @@ import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
-import net.minecraft.util.Util
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.util.TriState
+import net.minecraft.util.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
@@ -145,6 +145,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                 name,
                 gameProfile.name,
                 gameProfile.id,
+                McClient.version,
+                SkyBlockPv.version,
                 throwable.javaClass.name,
                 throwable.message,
                 throwable.getStackTraceString(7),
