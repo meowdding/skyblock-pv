@@ -28,7 +28,11 @@ enum class InventoryCategory(val screen: KClass<out BaseWindowedPvScreen>, overr
     INVENTORY(InventoryScreen::class, Items.CHEST.withCatharsisId("tab/inventory/inventory")),
     ENDER_CHEST(EnderChestScreen::class, Items.ENDER_CHEST.withCatharsisId("tab/inventory/ender_chest")),
     BACKPACK(BackpackScreen::class, SkullTextures.BACKPACK.skull.withCatharsisId("tab/inventory/backpack")),
-    WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.withCatharsisId("tab/inventory/wardrobe")),
+    WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.withCatharsisId("tab/inventory/wardrobe")) {
+        override fun canDisplay(profile: SkyBlockProfile?): Boolean {
+            return super.canDisplay(profile) && profile?.inventory?.wardrobe != null
+        }
+    },
     ACCESSORY(AccessoryScreen::class, SkullTextures.ACCESSORY_BAG.skull.withCatharsisId("tab/inventory/accessory_bag")),
     SACKS(SacksScreen::class, SkullTextures.SACKS.skull.withCatharsisId("tab/inventory/sacks")),
     MISC_BAGS(MiscBagScreen::class, Items.BUNDLE.withCatharsisId("tab/inventory/misc_bag")),

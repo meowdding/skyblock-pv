@@ -20,6 +20,7 @@ import me.owdding.skyblockpv.screens.windowed.tabs.farming.FarmingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.foraging.BaseForagingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.foraging.MainForagingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.inventory.BaseInventoryScreen
+import me.owdding.skyblockpv.screens.windowed.tabs.inventory.InventoryCategory
 import me.owdding.skyblockpv.screens.windowed.tabs.inventory.InventoryScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.mining.BaseMiningScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.mining.MainMiningScreen
@@ -103,7 +104,7 @@ enum class PvTab(
     fun isSelected() = McScreen.self?.takeIf { it::class.isSubclassOf(screen) } != null
 
     fun getTabState(profile: SkyBlockProfile): TriState = when (this) {
-        INVENTORY -> if (profile.inventory != null) TriState.TRUE else TriState.FALSE
+        INVENTORY -> Category.getTabState<InventoryCategory>(profile)
         COLLECTION -> Category.getTabState<CollectionCategories>(profile)
         MINING -> Category.getTabState<MiningCategory>(profile)
         RIFT -> Category.getTabState<RiftCategory>(profile)

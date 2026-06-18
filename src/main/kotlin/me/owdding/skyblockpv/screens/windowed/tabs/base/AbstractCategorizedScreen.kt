@@ -54,7 +54,7 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
         val x = if (Config.alignCategoryButtonsLeft) bg.x - 22 else bg.x + bg.width - 9
         val y = bg.y + 20
 
-        this.categories.fold(Layouts.column().withGap(2)) { layout, category ->
+        this.categories.filter { it.canDisplay(profile) }.fold(Layouts.column().withGap(2)) { layout, category ->
             val button = Button().apply {
                 withSize(31, 20)
                 withCallback { Utils.openTab(category, gameProfile, profile) }
