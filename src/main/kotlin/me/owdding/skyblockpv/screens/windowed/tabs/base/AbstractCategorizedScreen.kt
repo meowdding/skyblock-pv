@@ -110,16 +110,17 @@ interface Category : PvPageState {
     }
 
     companion object {
-
         inline fun <reified T> getCategories(profile: SkyBlockProfile?): List<T> where T : Enum<T>, T : Category {
             return T::class.java.enumConstants.filter { it.canDisplay(profile) }
         }
 
         inline fun <reified T> getTabState(profile: SkyBlockProfile?): TriState where T : Enum<T>, T : Category {
             val visibleDisplays = getCategories<T>(profile)
+            val expectedDisplays = T::class.java.enumConstants.count { !it.hideOnStranded || profile?.onStranded != true }
+
             return when {
                 visibleDisplays.isEmpty() -> TriState.FALSE
-                visibleDisplays.size == T::class.java.enumConstants.count { it.canDisplay(profile) } -> TriState.TRUE
+                visibleDisplays.size == expectedDisplays -> TriState.TRUE
                 else -> TriState.DEFAULT
             }
         }

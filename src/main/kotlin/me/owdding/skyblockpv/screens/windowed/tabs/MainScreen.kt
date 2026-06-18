@@ -457,12 +457,13 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     }
 
     override fun onProfileSwitch(profile: SkyBlockProfile) {
-        if (!profile.dataFuture.isDone) return
-        val disabledTabs = PvTab.entries
-            .filter { it.getTabState(profile) != TriState.TRUE }
-            .filter { it.canDisplay(profile) }
-        if (disabledTabs.isNotEmpty()) {
-            McClient.runNextTick { PvToast.addFailedToLoadForUsers(profile, disabledTabs) }
+        profile.dataFuture.whenComplete { _, _ ->
+            val disabledTabs = PvTab.entries
+                .filter { it.getTabState(profile) != TriState.TRUE }
+                .filter { it.canDisplay(profile) }
+            if (disabledTabs.isNotEmpty()) {
+                McClient.runNextTick { PvToast.addFailedToLoadForUsers(profile, disabledTabs) }
+            }
         }
     }
 }
