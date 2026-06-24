@@ -46,7 +46,6 @@ class CarouselWidget(
         }
     }
 
-    //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
     override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
         graphics.requestCursor(CursorType.DEFAULT)
 

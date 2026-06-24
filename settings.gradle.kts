@@ -15,12 +15,12 @@ plugins {
 }
 rootProject.name = "skyblockpv"
 
-val versions = listOf("26.1", "1.21.11")
+val versions = listOf("26.1")
 
 stonecutter {
     create(rootProject) {
         versions.forEach {
-            version(it).buildscript = if (stonecutter.eval(it, "<=1.21.11")) "build.obf.gradle.kts" else "build.gradle.kts"
+            version(it).buildscript = "build.gradle.kts"
         }
         vcsVersion = versions.first()
     }

@@ -32,7 +32,6 @@ data class PvToast(
     override fun getToken(): Any = Toast.NO_TOKEN
     override fun getWantedVisibility() = if (this.removalTime <= System.currentTimeMillis()) Toast.Visibility.HIDE else Toast.Visibility.SHOW
     override fun update(toastManager: ToastManager, visibilityTime: Long) {}
-    //~ if >= 26.1 'render' -> 'extractRenderState'
     override fun extractRenderState(graphics: GuiGraphicsExtractor, ignore1: Font, ignore2: Long) {
         if (removalTime == -1L) {
             removalTime = System.currentTimeMillis() + this.time

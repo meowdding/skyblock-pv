@@ -68,7 +68,6 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
                         WidgetRenderers.sprite(if (category.isSelected) ExtraConstants.TAB_LEFT_SELECTED else ExtraConstants.TAB_LEFT),
                         WidgetRenderers.padded(
                             0, 9, 0, 4,
-                            //~ if >= 26.1 'renderItem(' -> 'item('
                             WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(category.icon, ctx.x, ctx.y) },
                         ),
                     ),
@@ -80,7 +79,6 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
                         WidgetRenderers.sprite(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT),
                         WidgetRenderers.padded(
                             0, 4, 0, 9,
-                            //~ if >= 26.1 'renderItem(' -> 'item('
                             WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(category.icon, ctx.x, ctx.y) },
                         ),
                     ),

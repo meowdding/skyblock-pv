@@ -54,7 +54,6 @@ class ThemeWidget(
     val setter: Consumer<String>,
 ) : BaseWidget(WIDTH, 16) {
 
-    //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
     override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
 
         graphics.drawSprite(
@@ -112,7 +111,6 @@ class ThemeWidget(
     }
 
     class DropdownList(x: Int, y: Int, height: Int) : ListWidget(x + 1, y, WIDTH - 2, height) {
-        //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
         override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
             graphics.drawSprite(
                 ModSprites.ACCENT,
@@ -128,7 +126,6 @@ class ThemeWidget(
                 getWidth(),
                 getHeight(),
             )
-            //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
             super.extractWidgetRenderState(graphics, mouseX, mouseY, partialTicks)
         }
 
@@ -147,7 +144,6 @@ class ThemeWidget(
 
     private class DropdownItem(private val option: String, private val translationKey: String, private val setter: Consumer<String>) : BaseWidget(WIDTH, 12),
         ListWidget.Item {
-        //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
         override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
             graphics.drawSprite(
                 ModSprites.ofButton(this.isHovered()),

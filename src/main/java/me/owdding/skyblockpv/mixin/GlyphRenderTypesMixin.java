@@ -1,4 +1,3 @@
-//~ named_identifier
 package me.owdding.skyblockpv.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
