@@ -111,7 +111,6 @@ data class GreenhouseUpgradeData(
     }
 
     fun getTooltipForLevel(level: Int): Component {
-        //~ if >= 26.1 'parseText' -> 'parseComponent'
         return TagParser.QUICK_TEXT_SAFE.parseComponent(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }
@@ -206,7 +205,6 @@ data class StaticComposterData(
     }
 
     fun getTooltipForLevel(level: Int): Component {
-        //~ if >= 26.1 'parseText' -> 'parseComponent'
         return TagParser.QUICK_TEXT_SAFE.parseComponent(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }

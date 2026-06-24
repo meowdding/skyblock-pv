@@ -231,7 +231,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                     WidgetRenderers.sprite(if (tab.isSelected()) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP),
                     WidgetRenderers.padded(
                         4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
-                        //~ if >= 26.1 'renderItem(' -> 'item('
                         WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(tab.getIcon(gameProfile), ctx.x, ctx.y) },
                     ),
                 ),
@@ -452,7 +451,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         return button
     }
 
-    //~ if >= 26.1 'render' -> 'extract' {
     override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (ThemeSupport.currentTheme.backgroundBlur) {
             guiGraphics.applyBackgroundBlur()
@@ -461,7 +459,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             this.extractTransparentBackground(guiGraphics)
         }
     }
-    //~ }
 
     open fun toTabState(): PvPageState = this.tab
 }
