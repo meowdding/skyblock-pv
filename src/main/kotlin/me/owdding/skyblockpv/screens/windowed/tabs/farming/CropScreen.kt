@@ -105,7 +105,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     }
                 }
             },
-            Displays.item(Items.ORANGE_DYE).withTooltip(Text.of("Loading...") { this.color = PvColors.LIGHT_PURPLE }),
+            Displays.item(Items.DYE.orange()).withTooltip(Text.of("Loading...") { this.color = PvColors.LIGHT_PURPLE }),
             Displays.item(Items.BEDROCK).withTooltip(Text.of("Error!") { this.color = PvColors.RED }),
         )
     }
@@ -175,7 +175,7 @@ class CropScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     }
                 }
             },
-            Displays.item(Items.ORANGE_DYE).withTooltip(Text.of("Loading...") { this.color = PvColors.LIGHT_PURPLE }),
+            Displays.item(Items.DYE.orange()).withTooltip(Text.of("Loading...") { this.color = PvColors.LIGHT_PURPLE }),
             Displays.item(Items.BEDROCK).withTooltip(Text.of("Error!") { this.color = PvColors.RED }),
         )
     }

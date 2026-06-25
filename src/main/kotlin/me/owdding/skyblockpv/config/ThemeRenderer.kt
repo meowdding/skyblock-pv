@@ -18,6 +18,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.network.chat.Component
+import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.platform.drawSprite
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.util.function.Consumer
@@ -82,10 +84,10 @@ class ThemeWidget(
     }
 
     override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {
-        Minecraft.getInstance().setScreen(DropdownOverlay(this))
+        McClient.setScreen(DropdownOverlay(this))
     }
 
-    class DropdownOverlay(private val widget: ThemeWidget) : Overlay(Minecraft.getInstance().screen) {
+    class DropdownOverlay(private val widget: ThemeWidget) : Overlay(McScreen.self) {
         override fun init() {
             val list: DropdownList = addRenderableWidget(DropdownList.of(widget))
             for ((option, theme) in ThemeHelper.themes) {

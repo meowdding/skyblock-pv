@@ -82,7 +82,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             val inPetMenu = profile.pets.any { pet -> pet.type == it.pet }
 
             val item = if (unlocked) SkyBlockItemsRepo.getItemStackOrDefault(it.id)
-            else Items.GRAY_DYE.defaultInstance
+            else Items.DYE.gray().defaultInstance
 
             val hover = Text.multiline(
                 Text.of(it.name).apply {

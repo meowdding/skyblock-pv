@@ -1,11 +1,18 @@
 package me.owdding.skyblockpv.utils.render.inventory
 
+//? >= 26.2 {
+//? }
+//? 26.1 {
+/*import com.mojang.blaze3d.vertex.Tesselator
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.textures.FilterMode
+import com.mojang.blaze3d.vertex.VertexFormat*/
+//? }
+import com.mojang.blaze3d.PrimitiveTopology
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.blaze3d.vertex.Tesselator
-import com.mojang.blaze3d.vertex.VertexFormat
 import earth.terrarium.olympus.client.pipelines.pips.OlympusPictureInPictureRenderState
 import earth.terrarium.olympus.client.pipelines.renderer.PipelineRenderer
 import me.owdding.skyblockpv.SkyBlockPv
@@ -13,11 +20,14 @@ import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.render.TextureSetup
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer
-import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.SubmitNodeCollector
 import org.joml.Matrix3x2f
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import java.util.function.Function
+import java.util.function.Supplier
+
+//? 26.1
+//import java.util.function.Function
 
 val MONO_TEXTURE = SkyBlockPv.id("textures/gui/inventory/mono.png")
 val POLY_TEXTURE = SkyBlockPv.id("textures/gui/inventory/poly.png")
@@ -61,8 +71,10 @@ data class MonoInventoryPipState(
     val color: Int,
     val vertical: Boolean,
 ) : SkyBlockPvPipState<MonoInventoryPipState>() {
-    override fun getFactory(): Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<MonoInventoryPipState>> =
-        Function { buffer -> MonoInventoryPipRenderer(buffer) }
+    //? if >= 26.2 {
+    override fun getFactory(): Supplier<PictureInPictureRenderer<MonoInventoryPipState>> = Supplier { MonoInventoryPipRenderer() }
+    //? } else
+    //override fun getFactory(): Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<MonoInventoryPipState>> = Function { buffer -> MonoInventoryPipRenderer(buffer) }
 
     override val shrinkToScissor: Boolean = false
 }
@@ -74,13 +86,16 @@ data class PolyInventoryPipState(
     val size: Vector2i,
     val color: Int,
 ) : SkyBlockPvPipState<PolyInventoryPipState>() {
-    override fun getFactory(): Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<PolyInventoryPipState>> =
-        Function { buffer -> PolyInventoryPipRenderer(buffer) }
+    //? if >= 26.2 {
+    override fun getFactory(): Supplier<PictureInPictureRenderer<PolyInventoryPipState>> = Supplier { PolyInventoryPipRenderer() }
+    //? } else
+    //override fun getFactory(): Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<PolyInventoryPipState>> = Function { buffer -> PolyInventoryPipRenderer(buffer) }
 
     override val shrinkToScissor: Boolean = false
 }
 
-class MonoInventoryPipRenderer(source: MultiBufferSource.BufferSource) : PictureInPictureRenderer<MonoInventoryPipState>(source) {
+//~ if >= 26.2 '(source: MultiBufferSource.BufferSource) : ' -> '() : ', '(source)' -> '()'
+class MonoInventoryPipRenderer() : PictureInPictureRenderer<MonoInventoryPipState>() {
     private var lastState: MonoInventoryPipState? = null
 
     override fun getRenderStateClass() = MonoInventoryPipState::class.java
@@ -89,39 +104,52 @@ class MonoInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
         return lastState != null && lastState == state
     }
 
-    override fun renderToTexture(state: MonoInventoryPipState, stack: PoseStack) {
+    override fun renderToTexture(state: MonoInventoryPipState, stack: PoseStack/*? >= 26.2 >> ')'*/, submitNodeCollector: SubmitNodeCollector) {
         val bounds = state.bounds ?: return
 
         val scale = McClient.window.guiScale.toFloat()
         val scaledWidth = (bounds.width) * scale
         val scaledHeight = bounds.height * scale
 
-        val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
-        buffer.addVertex(0f, 0f, 0f).setUv(0f, 0f).setColor(state.color)
-        buffer.addVertex(0f, scaledHeight, 0f).setUv(0f, 1f).setColor(state.color)
-        buffer.addVertex(scaledWidth, scaledHeight, 0f).setUv(1f, 1f).setColor(state.color)
-        buffer.addVertex(scaledWidth, 0f, 0f).setUv(1f, 0f).setColor(state.color)
+        //? >= 26.2 {
+        ByteBufferBuilder.exactlySized(DefaultVertexFormat.POSITION_TEX_COLOR.vertexSize * 4).use {
+            val buffer = BufferBuilder(it, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
+            //?} else
+            //val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
 
+            buffer.addVertex(0f, 0f, 0f).setUv(0f, 0f).setColor(state.color)
+            buffer.addVertex(0f, scaledHeight, 0f).setUv(0f, 1f).setColor(state.color)
+            buffer.addVertex(scaledWidth, scaledHeight, 0f).setUv(1f, 1f).setColor(state.color)
+            buffer.addVertex(scaledWidth, 0f, 0f).setUv(1f, 0f).setColor(state.color)
 
-        PipelineRenderer.builder(InventoryTextureRender.MONO_INVENTORY_BACKGROUND, buffer.buildOrThrow())
-            .uniform(MonoInventoryUniform.STORAGE, MonoInventoryUniform(state.size, if (state.vertical) 1 else 0))
-            .textures(
-                TextureSetup.singleTexture(
-                    McClient.self.textureManager.getTexture(ThemeSupport.texture(MONO_TEXTURE)).textureView,
-                    RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
-                ),
-            )
-            .color(state.color)
-            .draw()
+            val texture = McClient.self.textureManager.getTexture(ThemeSupport.texture(MONO_TEXTURE))
 
-        this.lastState = state
+            PipelineRenderer.builder(InventoryTextureRender.MONO_INVENTORY_BACKGROUND, buffer.buildOrThrow())
+                .uniform(MonoInventoryUniform.STORAGE, MonoInventoryUniform(state.size, if (state.vertical) 1 else 0))
+                .textures(
+                    //? >= 26.2 {
+                    TextureSetup.singleTexture(texture.textureView, texture.sampler),
+                    //?} else {
+                    /*TextureSetup.singleTexture(
+                        texture.textureView,
+                        RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
+                    )
+                    *///?}
+                )
+                .color(state.color)
+                .draw()
+
+            this.lastState = state
+            //? >= 26.2
+        }
     }
 
     override fun getTextureLabel() = "skyblockpv_mono_inventory"
 
 }
 
-class PolyInventoryPipRenderer(source: MultiBufferSource.BufferSource) : PictureInPictureRenderer<PolyInventoryPipState>(source) {
+//~ if >= 26.2 '(source: MultiBufferSource.BufferSource) : ' -> '() : ', '(source)' -> '()'
+class PolyInventoryPipRenderer() : PictureInPictureRenderer<PolyInventoryPipState>() {
     private var lastState: PolyInventoryPipState? = null
 
     override fun getRenderStateClass() = PolyInventoryPipState::class.java
@@ -130,31 +158,44 @@ class PolyInventoryPipRenderer(source: MultiBufferSource.BufferSource) : Picture
         return lastState != null && lastState == state
     }
 
-    override fun renderToTexture(state: PolyInventoryPipState, stack: PoseStack) {
+    override fun renderToTexture(state: PolyInventoryPipState, stack: PoseStack/*? >= 26.2 >> ')'*/, submitNodeCollector: SubmitNodeCollector) {
         val bounds = state.bounds ?: return
 
         val scale = McClient.window.guiScale.toFloat()
         val scaledWidth = bounds.width * scale
         val scaledHeight = bounds.height * scale
 
-        val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
-        buffer.addVertex(0f, 0f, 0f).setUv(0f, 0f).setColor(state.color)
-        buffer.addVertex(0f, scaledHeight, 0f).setUv(0f, 1f).setColor(state.color)
-        buffer.addVertex(scaledWidth, scaledHeight, 0f).setUv(1f, 1f).setColor(state.color)
-        buffer.addVertex(scaledWidth, 0f, 0f).setUv(1f, 0f).setColor(state.color)
+        //? >= 26.2 {
+        ByteBufferBuilder.exactlySized(DefaultVertexFormat.POSITION_TEX_COLOR.vertexSize * 4).use {
+            val buffer = BufferBuilder(it, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
+            //?} else
+            //val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
 
-        PipelineRenderer.builder(InventoryTextureRender.INVENTORY_BACKGROUND, buffer.buildOrThrow())
-            .uniform(PolyInventoryUniform.STORAGE, PolyInventoryUniform(state.size))
-            .textures(
-                TextureSetup.singleTexture(
-                    McClient.self.textureManager.getTexture(ThemeSupport.texture(POLY_TEXTURE)).textureView,
-                    RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
-                ),
-            )
-            .color(state.color)
-            .draw()
+            buffer.addVertex(0f, 0f, 0f).setUv(0f, 0f).setColor(state.color)
+            buffer.addVertex(0f, scaledHeight, 0f).setUv(0f, 1f).setColor(state.color)
+            buffer.addVertex(scaledWidth, scaledHeight, 0f).setUv(1f, 1f).setColor(state.color)
+            buffer.addVertex(scaledWidth, 0f, 0f).setUv(1f, 0f).setColor(state.color)
 
-        this.lastState = state
+            val texture = McClient.self.textureManager.getTexture(ThemeSupport.texture(POLY_TEXTURE))
+
+            PipelineRenderer.builder(InventoryTextureRender.INVENTORY_BACKGROUND, buffer.buildOrThrow())
+                .uniform(PolyInventoryUniform.STORAGE, PolyInventoryUniform(state.size))
+                .textures(
+                    //? >= 26.2 {
+                    TextureSetup.singleTexture(texture.textureView, texture.sampler),
+                    //?} else {
+                    /*TextureSetup.singleTexture(
+                        texture.textureView,
+                        RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
+                    )
+                    *///?}
+                )
+                .color(state.color)
+                .draw()
+
+            this.lastState = state
+            //? >= 26.2
+        }
     }
 
     override fun getTextureLabel() = "skyblockpv_poly_inventory"

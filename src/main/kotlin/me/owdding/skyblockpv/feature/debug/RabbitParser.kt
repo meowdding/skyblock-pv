@@ -28,7 +28,7 @@ object RabbitParser {
         if (!shouldParse()) return
         if (!event.title.contains("Hoppity's Collection")) return
         if (event.slot.index !in 9..44) return
-        if (!listOf(Items.PLAYER_HEAD, Items.GRAY_DYE).any { event.item.`is`(it) }) return
+        if (!listOf(Items.PLAYER_HEAD, Items.DYE.gray()).any { event.item.`is`(it) }) return
 
         val rarity = event.item.getData(DataTypes.RARITY) ?: return
         val name = event.item.cleanName

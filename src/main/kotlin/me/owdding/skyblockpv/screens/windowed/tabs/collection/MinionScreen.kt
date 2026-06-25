@@ -55,7 +55,8 @@ class MinionScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             else -> Text.of("${context.maxObtainedLevel}") { color = PvColors.YELLOW }
         }
 
-        return Displays.item(minion.takeUnless { context.maxObtainedLevel == -1 } ?: Items.GRAY_DYE.defaultInstance, customStackText = stackSize).withTooltip {
+        return Displays.item(minion.takeUnless { context.maxObtainedLevel == -1 } ?: Items.DYE.gray().defaultInstance, customStackText = stackSize)
+            .withTooltip {
             add(minion.cleanName.substringBeforeLast(" ")) {
                 this.color = PvColors.BLUE
             }

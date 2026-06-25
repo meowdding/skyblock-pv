@@ -43,7 +43,7 @@ class CategorizedMuseumScreen(val category: MuseumCategory, gameProfile: GamePro
         if (result != null && (filter == Filter.MISSING || filter == Filter.DONATED_THROUGH_PARENT)) return null
         return result ?: run {
             val parent = museumData.isParentDonated(museumItem)
-            val defaultInstance = (if (parent != null) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance
+            val defaultInstance = (if (parent != null) Items.DYE.lime() else Items.DYE.gray()).defaultInstance
             if (filter == Filter.MISSING && parent != null) return null
             if (filter == Filter.DONATED_THROUGH_PARENT && parent == null) {
                 return null
@@ -91,7 +91,7 @@ class CategorizedMuseumScreen(val category: MuseumCategory, gameProfile: GamePro
         val parent = data.isParentDonated(museumArmor)
 
         val missingItem = Displays.item(
-            (if (parent != null) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance.withTooltip {
+            (if (parent != null) Items.DYE.lime() else Items.DYE.gray()).defaultInstance.withTooltip {
                 if (parent != null) {
                     val parentItemName = SkyBlockItemsRepo.getLazyItemStack(parent)?.getDisplayName() ?:
                         Text.of("Unknown Item")

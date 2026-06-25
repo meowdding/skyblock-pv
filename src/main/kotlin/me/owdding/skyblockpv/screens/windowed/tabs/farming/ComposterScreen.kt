@@ -162,7 +162,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     fun getComposterUpgrade(upgrade: ComposterUpgrade, data: StaticComposterData): Display {
         return loaded(
             onError = Displays.item(Items.BEDROCK).withTooltip { add("Error") { this.color = PvColors.RED } },
-            whileLoading = Displays.item(Items.ORANGE_DYE).withTooltip { add("Loading...") { this.color = PvColors.GOLD } },
+            whileLoading = Displays.item(Items.DYE.orange()).withTooltip { add("Loading...") { this.color = PvColors.GOLD } },
         ) { createDisplay(it, upgrade, data) }
     }
 
@@ -251,7 +251,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             val map = MutableList(5) { MutableList(5) { Displays.empty() } }
 
             StaticGardenData.plots.forEach {
-                map[it.location] = Displays.tooltip(Displays.item(Items.BLACK_STAINED_GLASS_PANE), it.getName())
+                map[it.location] = Displays.tooltip(Displays.item(Items.STAINED_GLASS_PANE.black()), it.getName())
             }
 
             fun fillMap(value: Display) {
@@ -264,7 +264,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 onSuccess = { data ->
                     val staticPlots = StaticGardenData.plots.toMutableList().apply { removeAll(data.unlockedPlots) }
                     data.unlockedPlots.forEach {
-                        map[it.location] = Displays.item(Items.GREEN_STAINED_GLASS_PANE).withTooltip(it.getName().also { it.color = PvColors.GREEN })
+                        map[it.location] = Displays.item(Items.STAINED_GLASS_PANE.green()).withTooltip(it.getName().also { it.color = PvColors.GREEN })
                     }
                     val unlockedAmount = data.unlockedPlots.groupBy { it.type }.mapValues { it.value.size }
                     staticPlots.forEach {
@@ -276,7 +276,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         }
 
                         val plotCost = cost[plots]
-                        map[it.location] = Displays.item(Items.BLACK_STAINED_GLASS_PANE).withTooltip(
+                        map[it.location] = Displays.item(Items.STAINED_GLASS_PANE.black()).withTooltip(
                             it.getName(),
                             plotCost.getDisplay().copy().apply { append(Text.of(" x${plotCost.amount}") { color = PvColors.DARK_GRAY }) },
                         )
@@ -285,7 +285,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 loadingValue = {
                     fillMap(
                         Displays.tooltip(
-                            Displays.item(Items.ORANGE_STAINED_GLASS_PANE),
+                            Displays.item(Items.STAINED_GLASS_PANE.orange()),
                             Text.of("Loading...") { this.color = PvColors.GOLD },
                         ),
                     )
