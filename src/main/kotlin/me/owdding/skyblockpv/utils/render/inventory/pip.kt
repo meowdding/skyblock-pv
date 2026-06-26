@@ -9,6 +9,8 @@ import com.mojang.blaze3d.textures.FilterMode
 import com.mojang.blaze3d.vertex.VertexFormat*/
 //? }
 import com.mojang.blaze3d.PrimitiveTopology
+import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.textures.FilterMode
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
@@ -127,14 +129,10 @@ class MonoInventoryPipRenderer() : PictureInPictureRenderer<MonoInventoryPipStat
             PipelineRenderer.builder(InventoryTextureRender.MONO_INVENTORY_BACKGROUND, buffer.buildOrThrow())
                 .uniform(MonoInventoryUniform.STORAGE, MonoInventoryUniform(state.size, if (state.vertical) 1 else 0))
                 .textures(
-                    //? >= 26.2 {
-                    TextureSetup.singleTexture(texture.textureView, texture.sampler),
-                    //?} else {
-                    /*TextureSetup.singleTexture(
+                    TextureSetup.singleTexture(
                         texture.textureView,
                         RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
                     )
-                    *///?}
                 )
                 .color(state.color)
                 .draw()
@@ -181,14 +179,10 @@ class PolyInventoryPipRenderer() : PictureInPictureRenderer<PolyInventoryPipStat
             PipelineRenderer.builder(InventoryTextureRender.INVENTORY_BACKGROUND, buffer.buildOrThrow())
                 .uniform(PolyInventoryUniform.STORAGE, PolyInventoryUniform(state.size))
                 .textures(
-                    //? >= 26.2 {
-                    TextureSetup.singleTexture(texture.textureView, texture.sampler),
-                    //?} else {
-                    /*TextureSetup.singleTexture(
+                    TextureSetup.singleTexture(
                         texture.textureView,
                         RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
                     )
-                    *///?}
                 )
                 .color(state.color)
                 .draw()

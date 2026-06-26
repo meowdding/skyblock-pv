@@ -38,6 +38,7 @@ import net.fabricmc.loader.api.Version
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
 import net.minecraft.world.item.ItemStack
+import org.lwjgl.system.Configuration
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription

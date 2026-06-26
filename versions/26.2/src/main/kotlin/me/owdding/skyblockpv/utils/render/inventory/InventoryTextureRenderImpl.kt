@@ -1,14 +1,8 @@
 package me.owdding.skyblockpv.utils.render.inventory
 
-import com.mojang.blaze3d.PrimitiveTopology
 import com.mojang.blaze3d.pipeline.BindGroupLayout
-import com.mojang.blaze3d.pipeline.BlendFunction
-import com.mojang.blaze3d.pipeline.ColorTargetState
-import com.mojang.blaze3d.pipeline.DepthStencilState
 import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.platform.CompareOp
 import com.mojang.blaze3d.shaders.UniformType
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.layouts.ScalableWidget
 import me.owdding.skyblockpv.SkyBlockPv
@@ -21,42 +15,26 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.scaled
 object InventoryTextureRender {
 
     val INVENTORY_BACKGROUND: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder()
+        RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
             .withLocation(SkyBlockPv.id("inventory"))
-            .withVertexShader(SkyBlockPv.id("core/inventory"))
             .withFragmentShader(SkyBlockPv.id("core/inventory"))
             .withCull(false)
-            .withDepthStencilState(DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
-            .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withPrimitiveTopology(PrimitiveTopology.QUADS)
-            .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
             .withBindGroupLayout(
                 BindGroupLayout.builder()
                     .withUniform(POLY_UNIFORM_NAME, UniformType.UNIFORM_BUFFER)
-                    .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
-                    .withUniform("Projection", UniformType.UNIFORM_BUFFER)
-                    .withSampler("Sampler0")
                     .build(),
             )
             .build(),
     )
 
     val MONO_INVENTORY_BACKGROUND: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder()
+        RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
             .withLocation(SkyBlockPv.id("mono_inventory"))
-            .withVertexShader(SkyBlockPv.id("core/inventory"))
             .withFragmentShader(SkyBlockPv.id("core/mono_inventory"))
             .withCull(false)
-            .withDepthStencilState(DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
-            .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withPrimitiveTopology(PrimitiveTopology.QUADS)
-            .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
             .withBindGroupLayout(
                 BindGroupLayout.builder()
                     .withUniform(MONO_UNIFORM_NAME, UniformType.UNIFORM_BUFFER)
-                    .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
-                    .withUniform("Projection", UniformType.UNIFORM_BUFFER)
-                    .withSampler("Sampler0")
                     .build(),
             )
             .build(),
