@@ -18,7 +18,7 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.repolib.api.AttributesAPI
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.api.remote.api.RepoAttributeAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockAttributesRepo
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
@@ -99,10 +99,10 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     override fun toDisplay(group: SkyBlockRarity?, data: Pair<AttributesAPI.Attribute?, Attribute?>): Display {
         val (repo, api) = data
-        val item = repo?.id()?.let { RepoAttributeAPI.getAttributeByIdOrNull(it) }
+        val item = repo?.id()?.let { SkyBlockAttributesRepo.getItemStack(it) }
         return Displays.item(
             when {
-                repo?.let(::getMax) != 0 && (api == null || api.syphoned <= 0) && filter != Filter.LOCKED -> Items.GRAY_DYE.defaultInstance
+                repo?.let(::getMax) != 0 && (api == null || api.syphoned <= 0) && filter != Filter.LOCKED -> Items.DYE.gray().defaultInstance
                 else -> item ?: Items.BARRIER.defaultInstance
             },
         ).withTooltip {

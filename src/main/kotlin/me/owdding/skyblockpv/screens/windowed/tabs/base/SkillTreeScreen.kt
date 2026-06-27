@@ -101,16 +101,19 @@ data class SkillTreeItems(
 ) {
     companion object {
         private val tierItems = TierNodeItems(
-            locked = Items.RED_STAINED_GLASS_PANE,
-            unlocked = Items.GREEN_STAINED_GLASS_PANE,
-            unlocking = Items.YELLOW_STAINED_GLASS_PANE,
+            locked = Items.STAINED_GLASS_PANE.red(),
+            unlocked = Items.STAINED_GLASS_PANE.green(),
+            unlocking = Items.STAINED_GLASS_PANE.yellow(),
         )
 
         val MINING = SkillTreeItems(
             tierItems = tierItems,
             coreItems = CoreNodeItems(
                 maxLevel = Items.DIAMOND_BLOCK,
-                unlocked = Items.COPPER_BLOCK,
+                //? >= 26.2 {
+                unlocked = Items.COPPER_BLOCK.weathering.unaffected,
+                //?} else
+                //unlocked = Items.COPPER_BLOCK,
                 leveling = Items.REDSTONE_BLOCK,
                 locked = Items.BEDROCK,
             ),

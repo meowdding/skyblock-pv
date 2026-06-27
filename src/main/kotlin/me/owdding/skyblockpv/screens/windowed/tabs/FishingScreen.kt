@@ -374,7 +374,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             val caught = getCaughtInformation(fishies, profile)
             val tooltip = getCaughtInformationTooltip(fishies, profile, caught)
 
-            val item = highestObtainedType?.takeIf { it.tier != TrophyFishTier.NONE }?.item ?: Items.GRAY_DYE.defaultInstance
+            val item = highestObtainedType?.takeIf { it.tier != TrophyFishTier.NONE }?.item ?: Items.DYE.gray().defaultInstance
             val stackText = caught[TrophyFishTier.NONE]?.takeIf { i -> i != 0 }?.let(numberFormatInstance::format) ?: ""
 
             Displays.item(item, customStackText = stackText)
@@ -424,7 +424,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getTrophyTableEntry(trophyFish: TrophyFish, profile: SkyBlockProfile, amountCaught: Int): Display {
         val item = if (!profile.trophyFish.obtainedTypes.containsKey(trophyFish.apiName)) {
-            Displays.item(Items.GRAY_DYE.defaultInstance)
+            Displays.item(Items.DYE.gray().defaultInstance)
         } else {
             Displays.item(
                 trophyFish.item,

@@ -1,6 +1,8 @@
+import jdk.jfr.internal.JVM.include
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.ValidateAccessWidenerTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.idea.proto.com.google.protobuf.api
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -33,15 +35,6 @@ repositories {
     scopedMaven("https://maven.nucleoid.xyz/", "eu.pb4")
     mavenCentral()
 }
-
-
-fun makeAlias(configuration: String) = configuration
-
-val maybeModImplementation = makeAlias("implementation")
-val maybeModCompileOnly = makeAlias("compileOnly")
-val maybeModRuntimeOnly = makeAlias("runtimeOnly")
-val maybeModApi = makeAlias("api")
-
 
 val mcVersion = stonecutter.current.version.replace(".", "")
 val accessWidenerFile = rootProject.file("src/skyblockpv.accesswidener")
@@ -173,37 +166,37 @@ dependencies {
 
     includeImplementation(versionedCatalog["repolib"])
 
-    "api"(versionedCatalog["skyblockapi"]) {
+    api(versionedCatalog["skyblockapi"]) {
         capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${stonecutter.current.version}") }
     }
-    "include"(versionedCatalog["skyblockapi"]) {
+    include(versionedCatalog["skyblockapi"]) {
         capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${stonecutter.current.version}") }
     }
-    "api"(versionedCatalog["meowdding.lib"]) {
+    api(versionedCatalog["meowdding.lib"]) {
         capabilities { requireCapability("me.owdding.meowdding-lib:meowdding-lib-${stonecutter.current.version}") }
     }
-    "include"(versionedCatalog["meowdding.lib"]) {
+    include(versionedCatalog["meowdding.lib"]) {
         capabilities { requireCapability("me.owdding.meowdding-lib:meowdding-lib-${stonecutter.current.version}") }
     }
 
 
     includeImplementation(versionedCatalog["placeholders"])
-    maybeModImplementation(versionedCatalog["fabric.loader"])
-    maybeModImplementation(versionedCatalog["fabric.api"])
-    maybeModImplementation(versionedCatalog["mixinconstraints"])
-    maybeModRuntimeOnly(versionedCatalog["fabric.language.kotlin"])
-    "implementation"(versionedCatalog["fabric.language.kotlin"])
+    implementation(versionedCatalog["fabric.loader"])
+    implementation(versionedCatalog["fabric.api"])
+    implementation(versionedCatalog["mixinconstraints"])
+    runtimeOnly(versionedCatalog["fabric.language.kotlin"])
+    implementation(versionedCatalog["fabric.language.kotlin"])
     includeImplementation(versionedCatalog["resourceful.lib"])
     includeImplementation(versionedCatalog["resourceful.config"])
     includeImplementation(versionedCatalog["olympus"])
     includeImplementation(versionedCatalog["resourceful.configkt"])
-    "compileOnly"(versionedCatalog["meowdding.ktmodules"])
-    "compileOnly"(versionedCatalog["meowdding.ktcodecs"])
-    "ksp"(versionedCatalog["meowdding.ktmodules"])
-    "ksp"(versionedCatalog["meowdding.ktcodecs"])
+    compileOnly(versionedCatalog["meowdding.ktmodules"])
+    compileOnly(versionedCatalog["meowdding.ktcodecs"])
+    ksp(versionedCatalog["meowdding.ktmodules"])
+    ksp(versionedCatalog["meowdding.ktcodecs"])
 }
 
 fun DependencyHandlerScope.includeImplementation(dep: Any) {
-    "include"(dep)
-    maybeModImplementation(dep)
+    include(dep)
+    implementation(dep)
 }

@@ -282,7 +282,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
     private fun getEmployees(cf: CfData) = CfCodecs.data.employees.map { repoEmployee ->
         val employee = cf.employees.find { it.id == repoEmployee.id } ?: RabbitEmployee(repoEmployee.id, 0)
         val item = (CfCodecs.data.textures.find { it.id == employee.id }?.skull ?: Items.BARRIER.defaultInstance).takeIf { employee.level > 0 }
-            ?: Items.GRAY_DYE.defaultInstance
+            ?: Items.DYE.gray().defaultInstance
 
         PvWidgets.iconNumberElement(item, Text.of("${employee.level}") { color = employee.color }).withTooltip {
             add(repoEmployee.name) {
