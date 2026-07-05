@@ -184,21 +184,12 @@ as of 2025-04-16
 
 ### Required Domains
 
-Make sure the following domains are accessible through your VPN, Zapret, or any other bypass solution you are using.
-
-**Required for all supported mods:**
+Make sure the following domains are accessible through your VPN, Zapret, or any other bypass solution you are using:
 
 * `https://skyblock-repo.pages.dev/`
 * `https://skyblock-api-repo.thatgravyboat.tech/`
 * `*.owdding.me/`
-
-**Additional domain for SkyBlock Profile Viewer:**
-
 * `https://skyblock-pv.thatgravyboat.tech/`
-
-**Additional domain for Catharsis:**
-
-* `https://catharsis.repo.meowdd.ing/`
 
 ### Configuring Zapret
 
