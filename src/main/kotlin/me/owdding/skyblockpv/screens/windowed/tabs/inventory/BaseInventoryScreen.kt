@@ -13,8 +13,8 @@ import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import me.owdding.skyblockpv.utils.CarouselPage
-import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import net.minecraft.world.item.ItemStack
@@ -33,7 +33,7 @@ enum class InventoryCategory(val screen: KClass<out BaseWindowedPvScreen>, overr
             return super.canDisplay(profile) && profile?.inventory?.loadouts?.armorSets?.isNotEmpty() == true
         }
     },
-    EQUIPMENT(EquipmentScreen::class, Items.BROWN_HARNESS.withCatharsisId("tab/inventory/equipment")),
+    EQUIPMENT(EquipmentScreen::class, Items.HARNESS.brown().withCatharsisId("tab/inventory/equipment")),
     ACCESSORY(AccessoryScreen::class, SkullTextures.ACCESSORY_BAG.skull.withCatharsisId("tab/inventory/accessory_bag")),
     SACKS(SacksScreen::class, SkullTextures.SACKS.skull.withCatharsisId("tab/inventory/sacks")),
     MISC_BAGS(MiscBagScreen::class, Items.BUNDLE.withCatharsisId("tab/inventory/misc_bag")),

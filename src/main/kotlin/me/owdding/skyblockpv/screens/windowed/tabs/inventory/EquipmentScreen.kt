@@ -63,5 +63,5 @@ class EquipmentScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         }.let { PvWidgets.createInventory(it) }
     }
 
-    override fun List<List<ItemStack>>.getIcons() = List(size) { Items.BROWN_HARNESS.defaultInstance }
+    override fun List<List<ItemStack>>.getIcons() = List(size) { Items.HARNESS.brown().defaultInstance }
 }
