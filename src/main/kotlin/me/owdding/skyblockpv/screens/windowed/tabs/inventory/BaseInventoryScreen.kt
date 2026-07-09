@@ -30,9 +30,10 @@ enum class InventoryCategory(val screen: KClass<out BaseWindowedPvScreen>, overr
     BACKPACK(BackpackScreen::class, SkullTextures.BACKPACK.skull.withCatharsisId("tab/inventory/backpack")),
     WARDROBE(WardrobeScreen::class, Items.LEATHER_CHESTPLATE.withCatharsisId("tab/inventory/wardrobe")) {
         override fun canDisplay(profile: SkyBlockProfile?): Boolean {
-            return super.canDisplay(profile) && profile?.inventory?.wardrobe != null
+            return super.canDisplay(profile) && profile?.inventory?.loadouts?.armorSets?.isNotEmpty() == true
         }
     },
+    EQUIPMENT(EquipmentScreen::class, Items.BROWN_HARNESS.withCatharsisId("tab/inventory/equipment")),
     ACCESSORY(AccessoryScreen::class, SkullTextures.ACCESSORY_BAG.skull.withCatharsisId("tab/inventory/accessory_bag")),
     SACKS(SacksScreen::class, SkullTextures.SACKS.skull.withCatharsisId("tab/inventory/sacks")),
     MISC_BAGS(MiscBagScreen::class, Items.BUNDLE.withCatharsisId("tab/inventory/misc_bag")),

@@ -20,7 +20,7 @@ enum class NetworthCategory(val source: NetworthSource, formatted: String? = nul
     BACKPACKS(BackpacksSource),
     SACKS(SacksSource),
     PETS(PetsSource),
-    WARDROBE(WardrobeSource),
+    LOADOUT(LoadoutSource),
     EQUIPMENT(EquipmentSource),
     TALISMAN_BAG(TalismanBagSource),
     FISHING_BAG(FishingBagSource),
@@ -100,8 +100,11 @@ object PetsSource : NetworthSource {
     }
 }
 
-object WardrobeSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.wardrobe
+object LoadoutSource : ItemListNetworthSource {
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? {
+        val loadout = profile.inventory?.loadouts ?: return null
+        return loadout.equipmentSets.flatMap { it.value.getStacks() } + loadout.armorSets.flatMap { it.value.getStacks() }
+    }
 }
 
 object EquipmentSource : ItemListNetworthSource {

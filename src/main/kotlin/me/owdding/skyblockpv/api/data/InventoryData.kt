@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.sortedByKeys
 import me.owdding.skyblockpv.utils.getNbt
+import me.owdding.skyblockpv.utils.itemStack
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.legacyStack
 import net.minecraft.nbt.NbtAccounter
@@ -35,10 +36,48 @@ data class InventoryData(
     val sacks: Map<String, Long>,
     val quiver: Inventory?,
     val personalVault: Inventory?,
-    val wardrobe: Wardrobe?,
     val candy: Inventory?,
     val carnivalMaskBag: Inventory?,
+    val loadouts: LoadoutData?
 ) {
+
+    data class LoadoutData(
+        val equippedArmorSet: Int,
+        val armorSets: Map<Int, ArmorSet>,
+        val equippedEquipmentSet: Int,
+        val equipmentSets: Map<Int, EquipmentSet>,
+        val savedLoadouts: Map<Int, SavedLoadout>
+    )
+
+    data class ArmorSet(
+        val id: Int,
+        val helmet: ItemStack,
+        val chestplate: ItemStack,
+        val leggings: ItemStack,
+        val boots: ItemStack
+    ) {
+        fun getStacks() = listOf(helmet, chestplate, leggings, boots)
+    }
+
+    data class EquipmentSet(
+        val id: Int,
+        val slot1: ItemStack,
+        val slot2: ItemStack,
+        val slot3: ItemStack,
+        val slot4: ItemStack
+    ) {
+        fun getStacks() = listOf(slot1, slot2, slot3, slot4)
+    }
+
+    data class SavedLoadout(
+        val id: Int,
+        val name: String,
+        val armorSetId: Int,
+        val equipmentSetId: Int,
+        val powerStone: String,
+        val pet: String,
+        val tuningPointsSlot: Int
+    )
 
     /** Get all items from all sources, **EXCEPT** for sacks.*/
     fun getAllItems() = buildList {
@@ -54,13 +93,7 @@ data class InventoryData(
         addAll(fishingBag)
         addAll(quiver)
         addAll(personalVault)
-        addAll(wardrobe)
     }
-
-    data class Wardrobe(
-        val equippedArmor: Int,
-        val armor: Inventory,
-    ) : List<ItemStack> by armor
 
     data class Backpack(
         val items: Inventory,
@@ -93,34 +126,7 @@ data class InventoryData(
             val candy = sharedInventory?.getAs<JsonObject>("candy_inventory_contents")?.completableInventory()
             val carnivalMaskBag = sharedInventory?.getAs<JsonObject>("carnival_mask_inventory_contents")?.completableInventory()
 
-            val wardrobe = member.getAs<JsonObject>("loadout")?.getAs<JsonObject>("armor")?.let { armorJson ->
-                val maxSlot = armorJson.entrySet().maxOfOrNull { it.key.toIntOrNull() ?: 0 } ?: 0
-                val totalPages = (maxSlot + 8) / 9
-
-                val futures = (0 until totalPages).flatMap { page ->
-                    val startSlot = page * 9 + 1
-                    val endSlot = startSlot + 8
-
-                    listOf("HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS").flatMap { piece ->
-                        (startSlot..endSlot).map { slotId ->
-                            val slotData = armorJson.getAs<JsonObject>(slotId.toString())
-
-                            slotData?.getAs<JsonObject>(piece)
-                                ?.completableInventory()
-                                ?.thenApply { it.firstOrNull() ?: ItemStack.EMPTY }
-                                ?: CompletableFuture.completedFuture(ItemStack.EMPTY)
-                        }
-                    }
-                }
-
-                if (futures.isEmpty()) null
-                else CompletableFuture.allOf(*futures.toTypedArray()).thenApply { futures.map { it.get() } }
-            }?.thenApply {
-                Wardrobe(
-                    equippedArmor = inventory.get("wardrobe_equipped_slot").asInt,
-                    armor = it,
-                )
-            }
+            val loadouts = parseLoadoutData(member.asJsonObject)
 
             val backpacks = inventory.getAs<JsonObject>("backpack_contents")?.let {
                 Backpack.fromJson(it).map { (id, inv) ->
@@ -147,8 +153,8 @@ data class InventoryData(
                     vault,
                     candy,
                     carnivalMaskBag,
-                    wardrobe,
                     backpackFuture,
+                    loadouts,
                 ).toTypedArray(),
             ).thenApply {
                 InventoryData(
@@ -162,16 +168,93 @@ data class InventoryData(
                     equipmentItems = equipment?.get(),
                     personalVault = vault?.get(),
                     backpacks = backpackFuture.get(),
-                    wardrobe = wardrobe?.get(),
                     candy = candy?.get(),
                     carnivalMaskBag = carnivalMaskBag?.get(),
+                    loadouts = loadouts.get(),
                     sacks = inventory.getAs<JsonObject>("sacks_counts")?.asMap { key, value -> key to value.asLong(0) }?.filterValues { it > 0 } ?: emptyMap(),
                 )
             }
         }
+
+        fun parseLoadoutData(json: JsonObject?): CompletableFuture<LoadoutData?> {
+            if (json == null || !json.has("loadout")) return CompletableFuture.completedFuture(null)
+            val loadoutObj = json.getAsJsonObject("loadout")
+
+            val armorObj = loadoutObj.getAsJsonObject("armor")
+            val equippedArmor = armorObj?.get("equipped_set")?.asInt ?: 0
+            val armorSetFutures = mutableMapOf<Int, CompletableFuture<ArmorSet>>()
+
+            armorObj?.entrySet()?.filter { it.key != "equipped_set" }?.forEach { (key, element) ->
+                val setObj = element.asJsonObject
+                val id = setObj.get("id")?.asInt ?: 0
+                val helmetFut = parseItemStackSlot(setObj.getAsJsonObject("HELMET"))
+                val chestplateFut = parseItemStackSlot(setObj.getAsJsonObject("CHESTPLATE"))
+                val leggingsFut = parseItemStackSlot(setObj.getAsJsonObject("LEGGINGS"))
+                val bootsFut = parseItemStackSlot(setObj.getAsJsonObject("BOOTS"))
+
+                armorSetFutures[key.toInt()] = CompletableFuture.allOf(helmetFut, chestplateFut, leggingsFut, bootsFut).thenApply {
+                    ArmorSet(id, helmetFut.join(), chestplateFut.join(), leggingsFut.join(), bootsFut.join())
+                }
+            }
+
+            val equipmentObj = loadoutObj.getAsJsonObject("equipment")
+            val equippedEquipment = equipmentObj?.get("equipped_set")?.asInt ?: 0
+            val equipmentSetFutures = mutableMapOf<Int, CompletableFuture<EquipmentSet>>()
+
+            equipmentObj?.entrySet()?.filter { it.key != "equipped_set" }?.forEach { (key, element) ->
+                val setObj = element.asJsonObject
+                val id = setObj.get("id")?.asInt ?: 0
+                val slot1Fut = parseItemStackSlot(setObj.getAsJsonObject("EQUIPMENT_SLOT_1"))
+                val slot2Fut = parseItemStackSlot(setObj.getAsJsonObject("EQUIPMENT_SLOT_2"))
+                val slot3Fut = parseItemStackSlot(setObj.getAsJsonObject("EQUIPMENT_SLOT_3"))
+                val slot4Fut = parseItemStackSlot(setObj.getAsJsonObject("EQUIPMENT_SLOT_4"))
+
+                equipmentSetFutures[key.toInt()] = CompletableFuture.allOf(slot1Fut, slot2Fut, slot3Fut, slot4Fut).thenApply {
+                    EquipmentSet(id, slot1Fut.join(), slot2Fut.join(), slot3Fut.join(), slot4Fut.join())
+                }
+            }
+
+            val savedObj = loadoutObj.getAsJsonObject("loadouts")
+            val savedLoadouts = mutableMapOf<Int, SavedLoadout>()
+
+            savedObj?.entrySet()?.forEach { (key, element) ->
+                val setObj = element.asJsonObject
+                savedLoadouts[key.toInt()] = SavedLoadout(
+                    id = setObj.get("id")?.asInt ?: 0,
+                    name = setObj.get("name")?.asString ?: "",
+                    armorSetId = setObj.get("armor_set_id")?.asInt ?: 0,
+                    equipmentSetId = setObj.get("equipment_set_id")?.asInt ?: 0,
+                    powerStone = setObj.get("power_stone")?.asString ?: "",
+                    pet = setObj.get("pet")?.asString ?: "",
+                    tuningPointsSlot = setObj.get("tuning_points_slot")?.asInt ?: 0
+                )
+            }
+
+            val allFutures = armorSetFutures.values + equipmentSetFutures.values
+            return CompletableFuture.allOf(*allFutures.toTypedArray()).thenApply {
+                LoadoutData(
+                    equippedArmorSet = equippedArmor,
+                    armorSets = armorSetFutures.mapValues { it.value.join() },
+                    equippedEquipmentSet = equippedEquipment,
+                    equipmentSets = equipmentSetFutures.mapValues { it.value.join() },
+                    savedLoadouts = savedLoadouts
+                )
+            }
+        }
+
+        private fun parseItemStackSlot(obj: JsonObject?): CompletableFuture<ItemStack> {
+            if (obj == null || !obj.has("data")) return CompletableFuture.completedFuture(ItemStack.EMPTY)
+
+            val dataStr = obj.get("data").asString
+            if (dataStr.isBlank()) return CompletableFuture.completedFuture(ItemStack.EMPTY)
+
+            return runCatching {
+                val parsedList = obj.parseInvData()
+                parsedList.firstOrNull() ?: CompletableFuture.completedFuture(ItemStack.EMPTY)
+            }.getOrDefault(CompletableFuture.completedFuture(ItemStack.EMPTY))
+        }
     }
 }
-
 
 private fun JsonObject.getInventoryData(): List<Tag> = this.get("data")?.getNbt()?.getList("i")?.getOrNull() ?: emptyList()
 

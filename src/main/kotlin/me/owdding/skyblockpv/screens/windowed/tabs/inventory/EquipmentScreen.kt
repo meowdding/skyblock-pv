@@ -5,22 +5,21 @@ import me.owdding.lib.displays.Display
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
-import me.owdding.skyblockpv.utils.itemStack
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
-class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen<List<List<ItemStack>>>(gameProfile, profile) {
+class EquipmentScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen<List<List<ItemStack>>>(gameProfile, profile) {
     private val inventory get() = profile.inventory
-    private val activeArmor get() = inventory?.armorItems.orEmpty(4).asReversed()
+    private val activeArmor get() = inventory?.equipmentItems.orEmpty(4).asReversed()
 
     private val loadouts get() = inventory?.loadouts
-    private val selected get() = loadouts?.equippedArmorSet?.takeUnless { it == -1 }?.minus(1) ?: -1
+    private val selected get() = loadouts?.equippedEquipmentSet?.takeUnless { it == -1 }?.minus(1) ?: -1
 
     override fun getRawInventory(): List<List<ItemStack>>? {
-        val armorSets = loadouts?.armorSets ?: return null
+        val equipmentSets = loadouts?.equipmentSets ?: return null
         val pages = mutableListOf<List<ItemStack>>()
 
-        val maxSetId = armorSets.keys.maxOrNull() ?: 0
+        val maxSetId = equipmentSets.keys.maxOrNull() ?: 0
         val totalPages = (maxSetId / 9) + 1
 
         for (page in 0 until totalPages) {
@@ -28,13 +27,13 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             for (row in 0..3) {
                 for (col in 1..9) {
                     val setId = (page * 9) + col
-                    val armorSet = armorSets[setId]
+                    val equipmentSet = equipmentSets[setId]
 
                     val item = when (row) {
-                        0 -> armorSet?.helmet
-                        1 -> armorSet?.chestplate
-                        2 -> armorSet?.leggings
-                        3 -> armorSet?.boots
+                        0 -> equipmentSet?.slot1
+                        1 -> equipmentSet?.slot2
+                        2 -> equipmentSet?.slot3
+                        3 -> equipmentSet?.slot4
                         else -> null
                     } ?: ItemStack.EMPTY
 
@@ -47,9 +46,9 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     }
 
     override fun getExtraLine() = if (selected == -1) {
-        "No Armor Selected"
+        "No Equipment Selected"
     } else {
-        "Selected Armor: ${selected + 1}"
+        "Selected Equipment: ${selected + 1}"
     }.let { ExtraDisplays.grayText(it) }
 
     override fun List<List<ItemStack>>.getInventories(): List<Display> = mapIndexed { index, inventory ->
@@ -64,5 +63,5 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         }.let { PvWidgets.createInventory(it) }
     }
 
-    override fun List<List<ItemStack>>.getIcons() = List(size) { Items.LEATHER_CHESTPLATE.defaultInstance }
+    override fun List<List<ItemStack>>.getIcons() = List(size) { Items.BROWN_HARNESS.defaultInstance }
 }
