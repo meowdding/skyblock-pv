@@ -5,6 +5,7 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigUI
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import kotlinx.coroutines.runBlocking
+import me.owdding.dfu.item.MeowddingItemDfu
 import me.owdding.ktmodules.Module
 import me.owdding.lib.events.FinishRepoLoadingEvent
 import me.owdding.lib.utils.MeowddingLogger
@@ -21,7 +22,6 @@ import me.owdding.skyblockpv.feature.PartyFinderJoin.getDungeonData
 import me.owdding.skyblockpv.generated.SkyBlockPvExtraData
 import me.owdding.skyblockpv.generated.SkyBlockPvModules
 import me.owdding.skyblockpv.screens.DisplayTest
-import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.asTranslated
@@ -30,14 +30,12 @@ import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvToast
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
-import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
@@ -88,6 +86,10 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
     override fun onInitializeClient() {
         config // used to instantiate the lazy :3
         ResourcefulConfigUI.registerElementRenderer(THEME_RENDERER, ::ThemeRenderer)
+
+        if (isSuperUser) {
+            MeowddingItemDfu.logErrors = true
+        }
 
         SkyBlockPvModules.init { SkyBlockAPI.eventBus.register(it) }
 
