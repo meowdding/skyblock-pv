@@ -13,7 +13,7 @@ data class EmptySkyBlockProfile(
 ) : SkyBlockProfile {
     override val backingProfile: BackingSkyBlockProfile = BackingSkyBlockProfile(
         true,
-        ProfileId(UUID.randomUUID(), "Error"),
+        ProfileId(UUID.randomUUID(), "Error", userId),
         userId,
     )
     override val netWorth: CompletableFuture<Networth> = CompletableFuture()

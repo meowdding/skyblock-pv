@@ -239,95 +239,100 @@ data class BackingSkyBlockProfile(
                 SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
             }
 
-            return BackingSkyBlockProfile(
-                selected = selected,
-                id = ProfileId(
-                    id = json.getAs("profile_id", Util.NIL_UUID),
-                    name = json.getAs("cute_name", "Unknown"),
-                ),
-                userId = user,
-                profileType = future {
-                    when (json.getAs<String>("game_mode")) {
-                        "ironman" -> ProfileType.IRONMAN
-                        "island" -> ProfileType.STRANDED
-                        "bingo" -> ProfileType.BINGO
-                        else -> ProfileType.NORMAL
-                    }
-                },
-                inventory = (member.getAs<JsonObject>("inventory") ?: JsonObject()).let {
-                    InventoryData.fromJson(member, it, member.getAsJsonObject("shared_inventory"))
-                },
-                currency = future { Currency(member) },
-                bank = future { Bank(json, member) },
-                firstJoin = profile.getAs<Long>("first_join", 0L),
-                fairySouls = member.getPathAs<Int>("fairy_soul.total_collected", 0),
-                skyBlockLevel = future {
-                    val experience = member.getPathAs<Int>("leveling.experience", 0)
-
-                    experience / 100 to (experience % 100)
-                },
-                skill = playerData.getSkillData(
-                    allMembers {
-                        it.getPathAs<Long>("player_data.experience." + SkillAPI.Skills.SOCIAL.skillApiId) ?: 0
-                    }.sum(),
-                ),
-                collections = future {
-                    allMembers(::getCollectionData) { members ->
-                        members.filterNotNull().flatten().groupBy { it.itemId }.values.mapNotNull { items ->
-                            val item = items.firstOrNull() ?: return@mapNotNull null
-                            CollectionItem(item.category, item.itemId, items.sumOf { (_, _, count) -> count })
-                        }
-                    }.takeUnless { it.isEmpty() }
-                },
-                mobData = future { playerStats?.getMobData() ?: emptyList() },
-                bestiaryData = future { member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList() },
-                slayer = future { member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap() },
-                dungeonData = future { member.getAs<JsonObject>("dungeons")?.let { DungeonData.fromJson(it) } },
-                mining = future { member.getAs<JsonObject>("mining_core")?.let { MiningCore(it) } },
-                foragingCore = future { member.getAs<JsonObject>("foraging_core")?.let { ForagingCore(it) } },
-                foraging = future { ForagingData(member.getAs<JsonObject>("foraging") ?: JsonObject()) },
-                forge = future { member.getAs<JsonObject>("forge")?.let { Forge(it) } },
-                glacite = future { member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData(it) } },
-                tamingLevelPetsDonated = future { member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() } },
-                pets = future { member.getPathAs<JsonArray>("pets_data.pets").asList { Pet.fromJson(it.asJsonObject) } },
-                trophyFish = future { TrophyFishData.fromJson(member) },
-                miscFishData = future { FishData.fromJson(member, playerStats, playerData) },
-                essenceUpgrades = future { playerData?.getAs<JsonObject>("perks").parseEssencePerks() },
-                petMilestones = future { playerStats?.getPath("pets.milestone").asMap { id, amount -> id to amount.asInt(0) } },
-                gardenData = future {
-                    val data = member.getAs<JsonObject>("garden_player_data") ?: return@future GardenData.EMPTY
-
-                    GardenData(
-                        data.getAs<Int>("copper", 0),
-                        data.getAs<Int>("larva_consumed", 0),
-                        playerStats.getAs<Int>("glowing_mushrooms_broken", 0),
-                        data.getAs<JsonArray>("analyzed_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
-                        data.getAs<JsonArray>("discovered_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
-                    )
-                },
-                farmingData = future { FarmingData.fromJson(member.getAs("jacobs_contest")) },
-                gardenChips = future { ChipsData(playerData?.getAsJsonObject("garden_chips") ?: JsonObject()) },
-                chocolateFactoryData = future { member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) } },
-                rift = future {
-                    playerStats?.getAs<JsonObject>("rift")
-                        ?.let { stats -> member.getAs<JsonObject>("rift")?.let { RiftData.fromJson(it, stats) } }
-                },
-                crimsonIsleData = future { CrimsonIsleData.fromJson(member.getAs("nether_island_player_data")) },
-                minions = future {
-                    allMembers {
-                        it.getPathAs<JsonArray>("player_data.crafted_generators")?.asStringList()
-                            ?.filter { it.isNotBlank() }
-                    }.filterNotNull().flatten().sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
-                },
-                maxwell = future { member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(member, it) } },
-                coopMembers = PlayerDbAPI.bulkFetch(
-                    json.getAs<JsonObject>("members")?.entrySet()?.mapNotNull { (k, entry) ->
-                        k.toUuid().takeUnless { entry.getPath("profile.deletion_notice") != null }
-                    }?.filter { it != user } ?: emptyList(),
-                ),
-                skillTrees = future { SkillTrees(member) },
-                attributeData = AttributesData.fromJson(member),
+            val profileId = ProfileId(
+                id = json.getAs("profile_id", Util.NIL_UUID),
+                name = json.getAs("cute_name", "Unknown"),
+                user = user,
             )
+
+            context(profileId) {
+                return BackingSkyBlockProfile(
+                    selected = selected,
+                    id = profileId,
+                    userId = user,
+                    profileType = future {
+                        when (json.getAs<String>("game_mode")) {
+                            "ironman" -> ProfileType.IRONMAN
+                            "island" -> ProfileType.STRANDED
+                            "bingo" -> ProfileType.BINGO
+                            else -> ProfileType.NORMAL
+                        }
+                    },
+                    inventory = (member.getAs<JsonObject>("inventory") ?: JsonObject()).let {
+                        InventoryData.fromJson(member, it, member.getAsJsonObject("shared_inventory"))
+                    },
+                    currency = future { Currency(member) },
+                    bank = future { Bank(json, member) },
+                    firstJoin = profile.getAs<Long>("first_join", 0L),
+                    fairySouls = member.getPathAs<Int>("fairy_soul.total_collected", 0),
+                    skyBlockLevel = future {
+                        val experience = member.getPathAs<Int>("leveling.experience", 0)
+
+                        experience / 100 to (experience % 100)
+                    },
+                    skill = playerData.getSkillData(
+                        allMembers {
+                            it.getPathAs<Long>("player_data.experience." + SkillAPI.Skills.SOCIAL.skillApiId) ?: 0
+                        }.sum(),
+                    ),
+                    collections = future {
+                        allMembers(::getCollectionData) { members ->
+                            members.filterNotNull().flatten().groupBy { it.itemId }.values.mapNotNull { items ->
+                                val item = items.firstOrNull() ?: return@mapNotNull null
+                                CollectionItem(item.category, item.itemId, items.sumOf { (_, _, count) -> count })
+                            }
+                        }.takeUnless { it.isEmpty() }
+                    },
+                    mobData = future { playerStats?.getMobData() ?: emptyList() },
+                    bestiaryData = future { member.getPath("bestiary")?.asJsonObject?.getBestiaryMobData() ?: emptyList() },
+                    slayer = future { member.getAs<JsonObject>("slayer")?.getSlayerData() ?: emptyMap() },
+                    dungeonData = future { member.getAs<JsonObject>("dungeons")?.let { DungeonData.fromJson(it) } },
+                    mining = future { member.getAs<JsonObject>("mining_core")?.let { MiningCore(it) } },
+                    foragingCore = future { member.getAs<JsonObject>("foraging_core")?.let { ForagingCore(it) } },
+                    foraging = future { ForagingData(member.getAs<JsonObject>("foraging") ?: JsonObject()) },
+                    forge = future { member.getAs<JsonObject>("forge")?.let { Forge(it) } },
+                    glacite = future { member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData(it) } },
+                    tamingLevelPetsDonated = future { member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() } },
+                    pets = future { member.getPathAs<JsonArray>("pets_data.pets").asList { Pet.fromJson(it.asJsonObject) } },
+                    trophyFish = future { TrophyFishData.fromJson(member) },
+                    miscFishData = future { FishData.fromJson(member, playerStats, playerData) },
+                    essenceUpgrades = future { playerData?.getAs<JsonObject>("perks").parseEssencePerks() },
+                    petMilestones = future { playerStats?.getPath("pets.milestone").asMap { id, amount -> id to amount.asInt(0) } },
+                    gardenData = future {
+                        val data = member.getAs<JsonObject>("garden_player_data") ?: return@future GardenData.EMPTY
+
+                        GardenData(
+                            data.getAs<Int>("copper", 0),
+                            data.getAs<Int>("larva_consumed", 0),
+                            playerStats.getAs<Int>("glowing_mushrooms_broken", 0),
+                            data.getAs<JsonArray>("analyzed_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
+                            data.getAs<JsonArray>("discovered_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
+                        )
+                    },
+                    farmingData = future { FarmingData.fromJson(member.getAs("jacobs_contest")) },
+                    gardenChips = future { ChipsData(playerData?.getAsJsonObject("garden_chips") ?: JsonObject()) },
+                    chocolateFactoryData = future { member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) } },
+                    rift = future {
+                        playerStats?.getAs<JsonObject>("rift")
+                            ?.let { stats -> member.getAs<JsonObject>("rift")?.let { RiftData.fromJson(it, stats) } }
+                    },
+                    crimsonIsleData = future { CrimsonIsleData.fromJson(member.getAs("nether_island_player_data")) },
+                    minions = future {
+                        allMembers {
+                            it.getPathAs<JsonArray>("player_data.crafted_generators")?.asStringList()
+                                ?.filter { it.isNotBlank() }
+                        }.filterNotNull().flatten().sortedByDescending { it.filter { it.isDigit() }.toIntOrNull() ?: -1 }
+                    },
+                    maxwell = future { member.getAs<JsonObject>("accessory_bag_storage")?.let { Maxwell.fromJson(member, it) } },
+                    coopMembers = PlayerDbAPI.bulkFetch(
+                        json.getAs<JsonObject>("members")?.entrySet()?.mapNotNull { (k, entry) ->
+                            k.toUuid().takeUnless { entry.getPath("profile.deletion_notice") != null }
+                        }?.filter { it != user } ?: emptyList(),
+                    ),
+                    skillTrees = future { SkillTrees(member) },
+                    attributeData = AttributesData.fromJson(member),
+                )
+            }
         }
 
         private fun JsonObject?.getSkillData(totalSocialXp: Long): CompletableFuture<Map<String, Long>> = future {

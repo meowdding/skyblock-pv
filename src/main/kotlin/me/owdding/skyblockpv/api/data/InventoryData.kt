@@ -2,9 +2,16 @@
 
 package me.owdding.skyblockpv.api.data
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.sortedByKeys
+import me.owdding.lib.utils.MeowddingLogger
+import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
+import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.api.data.profile.BackingSkyBlockProfile
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.getNbt
 import me.owdding.skyblockpv.utils.itemStack
 import me.owdding.skyblockpv.utils.json.getAs
@@ -72,11 +79,13 @@ data class InventoryData(
     data class SavedLoadout(
         val id: Int,
         val name: String,
-        val armorSetId: Int,
-        val equipmentSetId: Int,
-        val powerStone: String,
-        val pet: String,
-        val tuningPointsSlot: Int
+        val armorSetId: Int?,
+        val equipmentSlotId: Int?,
+        val miningCoreSelectedSlot: Int?,
+        val foragingCoreSelectedSlot: Int?,
+        val powerStone: String?,
+        val tuningPointsSlot: Int?,
+        val pet: String?
     )
 
     /** Get all items from all sources, **EXCEPT** for sacks.*/
@@ -110,7 +119,8 @@ data class InventoryData(
         }
     }
 
-    companion object {
+    companion object : MeowddingLogger by SkyBlockPv.featureLogger() {
+        context(_: ProfileId)
         fun fromJson(member: JsonObject, inventory: JsonObject, sharedInventory: JsonObject?): CompletableFuture<InventoryData?> {
             val backpackIcons: Map<Int, ItemStack> = inventory.getAs<JsonObject>("backpack_icons")?.let { Backpack.icons(it) } ?: emptyMap()
             val bagContents = inventory.getAs<JsonObject>("bag_contents")
@@ -176,6 +186,7 @@ data class InventoryData(
             }
         }
 
+        context(profileId: ProfileId)
         fun parseLoadoutData(json: JsonObject?): CompletableFuture<LoadoutData?> {
             if (json == null || !json.has("loadout")) return CompletableFuture.completedFuture(null)
             val loadoutObj = json.getAsJsonObject("loadout")
@@ -215,29 +226,31 @@ data class InventoryData(
             }
 
             val savedObj = loadoutObj.getAsJsonObject("loadouts")
-            val savedLoadouts = mutableMapOf<Int, SavedLoadout>()
+            val savedLoadouts = mutableMapOf<Int, CompletableFuture<SavedLoadout>>()
 
             savedObj?.entrySet()?.forEach { (key, element) ->
                 val setObj = element.asJsonObject
-                savedLoadouts[key.toInt()] = SavedLoadout(
-                    id = setObj.get("id")?.asInt ?: 0,
-                    name = setObj.get("name")?.asString ?: "",
-                    armorSetId = setObj.get("armor_set_id")?.asInt ?: 0,
-                    equipmentSetId = setObj.get("equipment_set_id")?.asInt ?: 0,
-                    powerStone = setObj.get("power_stone")?.asString ?: "",
-                    pet = setObj.get("pet")?.asString ?: "",
-                    tuningPointsSlot = setObj.get("tuning_points_slot")?.asInt ?: 0
-                )
+                    savedLoadouts[key.toInt()] = BackingSkyBlockProfile.future {SavedLoadout(
+                        id = setObj.get("id")?.asInt!!,
+                        name = setObj.get("name")?.asString!!,
+                        armorSetId = setObj.getAs<JsonElement>("armor_set_id")?.asInt,
+                        equipmentSlotId = setObj.getAs<JsonElement>("equipment_set_id")?.asInt,
+                        miningCoreSelectedSlot = setObj.getAs<JsonElement>("mining_core_selected_slot")?.asInt,
+                        foragingCoreSelectedSlot = setObj.getAs<JsonElement>("foraging_core_selected_slot")?.asInt,
+                        powerStone = setObj.getAs<JsonElement>("power_stone")?.asString,
+                        tuningPointsSlot = setObj.getAs<JsonElement>("tuning_points_slot")?.asInt,
+                        pet = setObj.getAs<JsonElement>("pet")?.asString,
+                    )}
             }
 
-            val allFutures = armorSetFutures.values + equipmentSetFutures.values
+            val allFutures = armorSetFutures.values + equipmentSetFutures.values + savedLoadouts.values
             return CompletableFuture.allOf(*allFutures.toTypedArray()).thenApply {
                 LoadoutData(
                     equippedArmorSet = equippedArmor,
-                    armorSets = armorSetFutures.mapValues { it.value.join() },
+                    armorSets = armorSetFutures.mapValues { it.value.get() },
                     equippedEquipmentSet = equippedEquipment,
-                    equipmentSets = equipmentSetFutures.mapValues { it.value.join() },
-                    savedLoadouts = savedLoadouts
+                    equipmentSets = equipmentSetFutures.mapValues { it.value.get() },
+                    savedLoadouts = savedLoadouts.mapValues { (_, value) -> value.get() }
                 )
             }
         }
@@ -280,6 +293,6 @@ private fun parseV0InventoryData(json: JsonObject): List<CompletableFuture<ItemS
     val data = json.get("data").asString
     val tag = NbtIo.readCompressed(ByteArrayInputStream(Base64.decode(data)), NbtAccounter.unlimitedHeap())
     return tag.getList("i").getOrNull()?.mapNotNull {
-        runCatching { CompletableFuture.supplyAsync { it.legacyStack() } }.getOrDefault(CompletableFuture.completedFuture(ItemStack.EMPTY))
+        runCatching { BackingSkyBlockProfile.future { it.legacyStack() } }.getOrDefault(CompletableFuture.completedFuture(ItemStack.EMPTY))
     } ?: emptyList()
 }
