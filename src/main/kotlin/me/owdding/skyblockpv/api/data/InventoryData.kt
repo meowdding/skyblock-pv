@@ -102,6 +102,8 @@ data class InventoryData(
         addAll(fishingBag)
         addAll(quiver)
         addAll(personalVault)
+        addAll(loadouts?.equipmentSets?.flatMap { it.value.getStacks() })
+        addAll(loadouts?.armorSets?.flatMap { it.value.getStacks() })
     }
 
     data class Backpack(
