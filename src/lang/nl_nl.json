@@ -188,16 +188,16 @@
         }
     },
     "tab": {
-        "main": "General",
-        "combat": "Combat",
-        "collection": "Collections",
-        "mining": "Mining",
-        "foraging": "Foraging",
-        "inventory": "Inventory",
-        "fishing": "Fishing",
-        "pets": "Pets",
-        "farming": "Farming",
-        "chocolate_factory": "Chocolate Factory",
+        "main": "Algemeen",
+        "combat": "Vechten",
+        "collection": "Collection",
+        "mining": "Mijnen",
+        "foraging": "foraging",
+        "inventory": "Inventaris",
+        "fishing": "Vissen",
+        "pets": "Huisdieren",
+        "farming": "Landbouw",
+        "chocolate_factory": "Chocolade Fabriek",
         "rift": "Rift",
         "museum": "Museum"
     },
@@ -207,22 +207,22 @@
                 {
                     "@id": "ice_essence_shop"
                 },
-                "<white>Increase the chance to spawn a <gold>Reindrake</gold></white>",
-                "<white>by <green>10%</green> while on <red>Jerry's Workshop</red>.</white>"
+                "<white>Verhoogt de kans om een <gold>Reindrake</gold> te spawnen</white>",
+                "<white>met <green>10%</green> terwijl je in <red>Jerry's Workshop</red> bent.</white>"
             ],
             "midas_lure": [
                 {
                     "@id": "gold_essence_shop"
                 },
-                "<white>Increases your chances of fishing up a </white>",
-                "<white><gold>Gold Trophy Fish</gold> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+                "<white>Verhoogt de kans om een </white>",
+                "<white><gold>Goude Trophy Fish</gold> te vangen terwijl je in de <red>Crimson Isle</red> bent met <green>2-20%</green>.</white>"
             ],
             "radiant_fisher": [
                 {
                     "@id": "diamond_essence_shop"
                 },
-                "<white>Increases your chances of fishing up a</white>",
-                "<white><aqua>Diamond Trophy Fish</aqua> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+                "<white>Verhoogt je kans om een</white>",
+                "<white><aqua>Diamante Trophy Fish</aqua> te vangen terwijl je in de <red>Crimson Isle</red> bent met <green>2-20%</green>.</white>"
             ]
         },
         "mining": {
@@ -230,117 +230,117 @@
                 {
                     "@id": "crimson_essence_shop"
                 },
-                "<white>Gain <gold>☘ Mining Fortune</gold> <white>when mining Mycelium</white>"
+                "<white>Krijg <gold>☘ Mining Fortune</gold> <white>terwijl je Mycelium mijnt</white>"
             ],
             "harena_fortuna": [
                 {
                     "@id": "crimson_essence_shop"
                 },
-                "<white>Gain <gold>☘ Mining Fortune</gold> <white>when mining Red Sand</white>"
+                "<white>Krijg <gold>☘ Mining Fortune</gold> <white>terwijl je Red Sand mijnt</white>"
             ],
             "frozen_skin": [
                 {
                     "@id": "ice_essence_shop"
                 },
-                "<white>Increases your </white><aqua>❄ Cold Resistance</aqua>"
+                "<white>Verhoogt je </white><aqua>❄ Cold Resistance</aqua>"
             ],
             "treasures_of_the_earth": [
                 {
                     "@id": "gold_essence_shop"
                 },
-                "<white>Increases your chances of spawning a Worm or Scatha when mining Hard Stone</white>"
+                "<white>Verhoogt je kans om een Worm of Scatha te spawnen terwijl je Hard Stone mijnt</white>"
             ],
             "dwarven_training": [
                 {
                     "@id": "gold_essence_shop"
                 },
-                "<white>Increases your <dark_aqua>☯ Mining Wisdom</dark_aqua> while on Mining Islands</white>"
+                "<white>Verhoogt je <dark_aqua>☯ Mining Wisdom</dark_aqua> terwijl je op een Mining Island bent</white>"
             ],
             "eager_miner": [
                 {
                     "@id": "gold_essence_shop"
                 },
-                "<white>Increases your <gold>⸕ Mining Speed</gold> while on Mining Islands</white>"
+                "<white>Verhoogt je <gold>⸕ Mining Speed</gold> terwijl je op een Mining Island bent</white>"
             ],
             "rhinestone_infusion": [
                 {
                     "@id": "diamond_essence_shop"
                 },
-                "<white>Increases <light_purple>Gemstone</light_purple> <gold>☘ Mining Fortune</gold> while on Mining Islands</white>"
+                "<white>Verhoogt <light_purple>Gemstone</light_purple> <gold>☘ Mining Fortune</gold> terwijl je op een Mining Island bent</white>"
             ],
             "high_roller": [
                 {
                     "@id": "diamond_essence_shop"
                 },
-                "<white>Gain <green>1</green> extra random drop when obtaining a</white> <light_purple>Crystal Nucleus Bundle</light_purple>"
+                "<white>Krijg <green>1</green> extra random drop terwijl je een <light_purple>Crystal Nucleus Bundle</light_purple> opent</white>"
             ],
             "return_to_sender": [
                 {
                     "@id": "diamond_essence_shop"
                 },
-                "<white>Increases the chances of a <aqua>Diamond Goblin</aqua> spawning</white>"
+                "<white>Verhoogt de kans om een <aqua>Diamond Goblin</aqua> te spawnen</white>"
             ],
             "prehistorian": [
                 {
                     "@id": "fossil_essence_shop"
                 },
-                "<white>Increases the chance of the <gold>Fossil Dye</gold> spawning in the <gold>Fossil Excavator</gold></white>"
+                "<white>Verhoogt de kans voor een <gold>Fossil Dye</gold> om te spawnen in de <gold>Fossil Excavator</gold></white>"
             ],
             "resourceful": [
                 {
                     "@id": "fossil_essence_shop"
                 },
-                "<white>Grants a chance to not consume a <gray>Corpse Key</gray> when opening <gray>Corpses</gray> in a <aqua>Glacite Mineshaft</aqua></white>"
+                "<white>Geeft een kans om een <gray>Corpse Key</gray> niet te gebruiken wanner je een <gray>Corps</gray> opent in een <aqua>Glacite Mineshaft</aqua></white>"
             ],
             "dwarven_expertise": [
                 {
                     "@id": "fossil_essence_shop"
                 },
-                "<white>Increases your <gold>☘ Dwarven Metal Fortune</gold> while on <aqua>Mining Islands</aqua></white>"
+                "<white>Verhooght je <gold>☘ Dwarven Metal Fortune</gold> terwijl je op een <aqua>Mining Island</aqua> bent</white>"
             ],
             "chilled_to_the_bone": [
                 {
                     "@id": "ice_essence_shop"
                 },
-                "<white>Increases your chances of fishing up <purple>Skeleton Fish</purple> in the <red>Crimson Isle</red></white>"
+                "<white>Verhoogt je kans om een <purple>Skeleton Fish</purple> te vangen in de <red>Crimson Isle</red></white>"
             ],
             "cut_loose": [
                 {
                     "@id": "ice_essence_shop"
                 },
-                "<white>Killing a <aqua>❆ Glacial Mob</aqua> while inside a <aqua>Glacial Mineshaft</aqua> grants bonus <aqua>❄ Cold Resistance</aqua></white>"
+                "<white>Een <aqua>❆ Glacial Mob</aqua> doden terwijl je in een <aqua>Glacial Mineshaft</aqua> bent geeft bonus <aqua>❄ Cold Resistance</aqua></white>"
             ],
             "sleight_of_hand": [
                 {
                     "@id": "ice_essence_shop"
                 },
-                "<white>Start the <gold>Fossil Excavator</gold> with <green>1</green> extra charge</white>"
+                "<white>Start de <gold>Fossil Excavator</gold> met <green>1</green> extra poging</white>"
             ]
         }
     },
     "widgets": {
-        "pronouns": "Pronouns: <0>",
+        "pronouns": "Voornaamwoorden: <0>",
         "open_settings": [
-            "<underline><gray>Open Settings</gray></underline>",
-            "You can also use <gray>/sbpv</gray>!"
+            "<underline><gray>Open Instellingen</gray></underline>",
+            "Je kan ook <gray>/sbpv</gray> gebruiken!"
         ],
         "theme_switcher": [
-            "<underline><gray>Cycle Theme</gray></underline>",
-            "Cycles to the next theme in the List",
-            "You can also select a theme in the config!",
+            "<underline><gray>Verander Thema</gray></underline>",
+            "Verander naar het volgende thema in de lijst",
+            "Je kunt also een ander thema selecteren in de instellingen!",
             "",
-            "<gray>Current Theme: </gray><0>"
+            "<gray>Actief thema: </gray><0>"
         ],
         "error": {
             "loading": [
-                "Is the API down?",
-                "Did data parsing fail?",
-                "Or is the API Key expired?",
-                "Report this on the Discord with your /logs/latest.log"
+                "Is de API neer?",
+                "Heeft data parsing gefaald?",
+                "Of is de API Key verlopen?",
+                "Rapporteer dit in de Discord met je /logs/latest.log"
             ],
             "stacktrace": [
-                "Failed building screen <0>",
-                "Report this in the Discord!",
+                "Gefaalt scherm te bouwen <0>",
+                "Rapporteer dit in de Discord!",
                 "",
                 "User: <1> - <2>",
                 "Profile: <3>",
@@ -349,13 +349,13 @@
                 "Stacktrace: <6>"
             ],
             "no_profiles": [
-                "<red>No profiles found for <0>",
-                "<gray>If you believe this is a mistake,",
-                "<gray>then report it on our Discord!"
+                "<red>Geen profiel gevonded voor <0>",
+                "<gray>Als je denkt dat dit een fout is,",
+                "<gray>rapporteer did dan in onze Discord!"
             ],
             "parsing_error": [
-                "Failed to parse profile!",
-                "Report this in the Discord!",
+                "Gefaald dit profiel te parseren!",
+                "Rapporeer did in de Discord!",
                 "",
                 "User: <1> - <2>",
                 "Version: <3> - <4>",
@@ -365,22 +365,22 @@
             ]
         },
         "open_logs": "Open Logs",
-        "username_input": "Username...",
+        "username_input": "Gebruikersnaam...",
         "networth": {
-            "@value": "Net Worth: ",
-            "failed": "Failed to load",
-            "error": "An error occurred: ",
-            "loading": "Loading...",
+            "@value": "Nettowaarde: ",
+            "failed": "Gefaald te laden",
+            "error": "Een error heeft plaatsgevonden: ",
+            "loading": "Laden...",
             "tooltip": {
-                "@value": "<yellow>Networth: ",
-                "cookies": "<yellow>Net worth in Cookies: ",
-                "currency": "<yellow>Net worth in <0>: ",
-                "note": "<gray>Note: You can change the currency in the settings using <dark_gray>/sbpv</dark_gray>.",
-                "sources": "<gray>Source: "
+                "@value": "<yellow>Nettowaarde: ",
+                "cookies": "<yellow>Nettowaarde in Cookies: ",
+                "currency": "<yellow>Nettowaarde in <0>: ",
+                "note": "<gray>Notitie: je kunt de munteenheid aanpassen in de instellinging met <dark_gray>/sbpv</dark_gray>.",
+                "sources": "<gray>Bronnen: "
             }
         },
         "socials": "<white>Socials</white>",
-        "coop_search_tooltip": "<gray>View Co-op Members</gray>"
+        "coop_search_tooltip": "<gray>Bekijk Co-op leden</gray>"
     },
     "screens": {
         "main": {
@@ -388,55 +388,55 @@
                 "@value": "Slayer",
                 "kills": "Kills: ",
                 "exp": "Exp: ",
-                "next_level": "Next Level: "
+                "next_level": "Volgend Level: "
             },
             "essence": "Essence",
             "skills": {
                 "@value": "Skills",
                 "exp": "Exp: ",
-                "progress": "Progress: ",
-                "max_cap": "<purple>Reached max skill cap!</purple>",
-                "to_next": "<green><0>% to next</green>",
-                "progress_to_max": "Progress to max: ",
-                "unknown": "<red>Unknown</red>"
+                "progress": "Voortgang: ",
+                "max_cap": "<purple>Max skill berijkt!</purple>",
+                "to_next": "<green><0>% naar volgend</green>",
+                "progress_to_max": "Voortgang naar max: ",
+                "unknown": "<red>Onbekend</red>"
             },
-            "pronouns_hint": "Provided by https://pronoundb.org/",
+            "pronouns_hint": "Aangeleverd door https://pronoundb.org/",
             "status": {
-                "load": "<white>Load Status</white>",
-                "loading": "<white>Loading...</white>",
+                "load": "<white>Laad Status</white>",
+                "loading": "<white>Aan het laden...</white>",
                 "online": "<green>ONLINE</green> <dark_gray>-</dark_gray> ",
                 "error": "<dark_red>ERROR</dark_red>",
                 "offline": "<red>OFFLINE</red> <dark_gray>-</dark_gray> ",
                 "unknown": "<red>Unknown</red>"
             },
             "info": {
-                "purse": "Purse: <0>",
+                "purse": "Portemonnee: <0>",
                 "bank": {
                     "@value": "Bank: <0>",
-                    "solo": "<gray>Solo Bank:</gray> <gold><0></gold>",
-                    "coop": "<gray>Profile Bank:</gray> <gold><0></gold>",
+                    "solo": "<gray>Eigen Bank:</gray> <gold><0></gold>",
+                    "coop": "<gray>Profiel Bank:</gray> <gold><0></gold>",
                     "history": {
-                        "@value": "<gray>Bank History:</gray>",
+                        "@value": "<gray>Bank Geschiedenis:</gray>",
                         "entry": [
-                            "<gold><0></gold><gray> <1> by <2></gray>",
-                            "<gray>Date: </gray><yellow><3></yellow>"
+                            "<gold><0></gold><gray> <1> door <2></gray>",
+                            "<gray>Datum: </gray><yellow><3></yellow>"
                         ]
                     },
                     "actions": {
-                        "withdraw": "withdrawn",
-                        "deposit": "deposited"
+                        "withdraw": "uitgehaald",
+                        "deposit": "ingestopt"
                     }
                 },
                 "cookie": {
                     "@value": "Cookie Buff: <0>",
-                    "active": "<green>Active",
-                    "inactive": "<red>Inactive"
+                    "active": "<green>Actief",
+                    "inactive": "<red>Inactief"
                 },
                 "sb_lvl": {
                     "@value": "SkyBlock Level: <0>",
-                    "progress": "<gray>Progress: <0>/100"
+                    "progress": "<gray>Voortgang: <0>/100"
                 },
-                "first_join": "First Join: <0>",
+                "first_join": "Eerste Join: <0>",
                 "skill_avg": "Skill Avg: <0>",
                 "fairy_souls": "Fairy Souls: <0>",
                 "kd": "K/D: <0>/<1> (<2>)"
@@ -445,21 +445,21 @@
         "inventory": {
             "accessory": {
                 "highest_magical_power": [
-                    "This is the highest amount of magical power",
-                    "the player ever had on this profile. This",
-                    "number is straight from Hypixel, so it should",
-                    "always be accurate, but it may not reflect the",
-                    "current state of the player's accessory bag."
+                    "Dit is de hoogste hoeveelheid magical power",
+                    "dat de speler ooit heeft gehad op dit profiel. Dit",
+                    "nummer is rechtstreeks van Hypixel, dus het zou",
+                    "altijd accuraat moeten zijn, maar het kan afwijken",
+                    "van de momentele staat van de speler's accessory bag."
                 ]
             }
         }
     },
     "themes": {
-        "dark": "Dark mode",
-        "default": "Default",
+        "dark": "Donkere modus",
+        "default": "Standaard",
         "neu": "NEU"
     },
     "misc": {
-        "maxed": "<red>Maxed!</red>"
+        "maxed": "<red>Maximaal!</red>"
     }
 }
