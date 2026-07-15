@@ -41,6 +41,8 @@ object ExtraDisplays {
         }
     }
 
+    fun Display.withInventoryBackground(columns: Int, rows: Int, color: Int = -1) = inventoryBackground(columns, rows, this, color)
+
     fun inventoryBackground(columns: Int, rows: Int, display: Display, color: Int = -1): Display {
         if (rows == 1) {
             return inventoryBackground(columns, Orientation.HORIZONTAL, display, color)

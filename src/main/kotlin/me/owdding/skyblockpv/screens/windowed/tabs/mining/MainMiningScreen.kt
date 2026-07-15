@@ -133,7 +133,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             if (!profile.onStranded) {
 
                 val mining = profile.mining ?: return@vertical
-                val tree = profile.skillTrees?.mining
+                val tree = profile.skillTrees?.selectedMining
                 fun grayText(text: String) = display(ExtraDisplays.grayText(text))
                 val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
                 val hotmLevel = tree?.getTreeLevel() ?: 0
@@ -229,7 +229,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     private fun getForge(): Layout? {
         val forgeSlots = profile.forge?.slots ?: return null
         if (forgeSlots.isEmpty()) return null
-        val quickForgeLevel = profile.skillTrees?.mining?.nodes?.entries?.find { it.key == "forge_time" }?.value ?: 0
+        val quickForgeLevel = profile.skillTrees?.selectedMining?.nodes?.entries?.find { it.key == "forge_time" }?.value ?: 0
 
         return PvWidgets.label(
             "Forge",

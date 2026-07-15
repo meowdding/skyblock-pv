@@ -1,5 +1,8 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.base
 
+import earth.terrarium.olympus.client.components.buttons.Button
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
@@ -15,15 +18,22 @@ import me.owdding.lib.repo.LevelableTreeNode
 import me.owdding.lib.repo.SpacerNode
 import me.owdding.lib.repo.TierNode
 import me.owdding.lib.repo.TreeNode
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.SkillTree
+import me.owdding.skyblockpv.data.api.skills.SkillTreeType
+import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
+import me.owdding.skyblockpv.utils.CarouselPageState
+import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.withScrollToBottom
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.debugToggle
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.GridLayout
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.SpacerElement
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
@@ -37,6 +47,7 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 val enableDebugOrdering by debugToggle("skill_tree/order_debug", "Removes the default ordering from skill tree nodes.")
@@ -161,14 +172,68 @@ data class SkillTreeItems(
     }
 }
 
-interface SkillTreeScreen {
-    val treeType: String
-    val coreNode: String
-    val items: SkillTreeItems
-    fun skillTree(): SkillTree?
-    fun nodes(): List<TreeNode>
+data class SimpleSkillTreeVisualizer(val skillTree: SkillTree?, val type: SkillTreeType) : SkillTreeScreen {
 
-    fun createLayout(bg: DisplayWidget): Layout {
+    override val skillTreeType: SkillTreeType = type
+    override fun skillTree(): SkillTree? = skillTree
+    override val showTier: Boolean = false
+    override val withScrollbar: Boolean = false
+    override fun getButtons(): LayoutElement? = null
+
+}
+
+interface LoadoutSkillTreeScreen : SkillTreeScreen {
+    var selected: Int
+    val profile: SkyBlockProfile?
+
+    fun rebuildScreen()
+    override fun skillTree(): SkillTree? = profile?.skillTrees?.select(skillTreeType, selected)
+
+    override fun getButtons(): LayoutElement = LayoutFactory.horizontal(spacing = 2) {
+        for (loadoutIndex in 1..5) {
+            Button()
+                .withSize(20, 20)
+                .withTexture(null)
+                .withRenderer(
+                    WidgetRenderers.layered(
+                        ExtraWidgetRenderers.conditional(
+                            WidgetRenderers.sprite(ExtraConstants.BUTTON_PRIMARY_OPAQUE),
+                            WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK_OPAQUE),
+                        ) { loadoutIndex == selected || loadoutIndex == 1 && selected <= 1 },
+                        WidgetRenderers.center(
+                            20,
+                            20,
+                            WidgetRenderers.padded(
+                                1,
+                                2,
+                                3,
+                                2,
+                                DisplayWidget.displayRenderer(Displays.item(skillTreeType.skullTextures.skull)),
+                            ),
+                        ),
+                    ),
+                ).withCallback {
+                    selected = loadoutIndex
+                    rebuildScreen()
+                }.withTooltip(Text.of("Slot $loadoutIndex")).add()
+        }
+    }
+}
+
+interface SkillTreeScreen {
+    val skillTreeType: SkillTreeType
+    fun skillTree(): SkillTree?
+
+    val showTier get() = true
+    fun getButtons(): LayoutElement?
+
+    val withScrollbar get() = true
+    val treeType: String get() = skillTreeType.treeType
+    val coreNode: String get() = skillTreeType.coreNode
+    val items: SkillTreeItems get() = skillTreeType.skillTreeItems
+    fun nodes(): List<TreeNode> = skillTreeType.nodes()
+
+    fun createLayout(bg: LayoutElement): Layout {
         val skillTree = skillTree() ?: return PvLayouts.empty()
         val gridLayout = GridLayout()
 
@@ -178,14 +243,17 @@ interface SkillTreeScreen {
         if (unknownNodes.isNotEmpty()) {
             println("Unknown $treeType nodes: $unknownNodes")
         }
+        val xOffset = if (showTier) 2 else 0
 
         nodes().forEachIndexed { index, node ->
+            if ((node is SpacerNode || node is TierNode) && !showTier) return@forEachIndexed
+
             if (node is SpacerNode) {
                 if (enableDebugOrdering) return@forEachIndexed
                 gridLayout.addChild(
                     SpacerElement(node.size.x, node.size.y),
                     9 - node.location.y,
-                    node.location.x + 2,
+                    node.location.x + xOffset,
                 )
                 return@forEachIndexed
             }
@@ -216,14 +284,28 @@ interface SkillTreeScreen {
                 gridLayout.addChild(
                     ExtraDisplays.inventorySlot(Displays.padding(2, getNode(node, level, disabled, skillTree))).asWidget(),
                     9 - node.location.y,
-                    node.location.x + 2,
+                    node.location.x + xOffset,
                 )
             }
-
         }
 
-        return gridLayout.asScrollable(bg.width, bg.height) {
+        gridLayout.arrangeElements()
+
+        val buttons = getButtons()
+        val layout = if (buttons != null) {
+            LayoutFactory.vertical(alignment = 0.5f) {
+                widget(buttons)
+                spacer(height = 10)
+                widget(gridLayout)
+            }
+        } else {
+            gridLayout
+        }
+
+        return if (bg.height > layout.height && withScrollbar) layout.asScrollable(layout.width + 15, bg.height) {
             withScrollToBottom()
+        } else {
+            layout
         }
     }
 

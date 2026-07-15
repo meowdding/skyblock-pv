@@ -10,10 +10,7 @@ import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.BackingSkyBlockProfile
-import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.getNbt
-import me.owdding.skyblockpv.utils.itemStack
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.legacyStack
 import net.minecraft.nbt.NbtAccounter
@@ -23,7 +20,9 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asUUID
 import java.io.ByteArrayInputStream
+import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.io.encoding.Base64
@@ -56,24 +55,29 @@ data class InventoryData(
         val savedLoadouts: Map<Int, SavedLoadout>
     )
 
+    interface ItemSet {
+        fun getStacks(): List<ItemStack>
+        val id: Int
+    }
+
     data class ArmorSet(
-        val id: Int,
+        override val id: Int,
         val helmet: ItemStack,
         val chestplate: ItemStack,
         val leggings: ItemStack,
         val boots: ItemStack
-    ) {
-        fun getStacks() = listOf(helmet, chestplate, leggings, boots)
+    ) : ItemSet {
+        override fun getStacks() = listOf(helmet, chestplate, leggings, boots)
     }
 
     data class EquipmentSet(
-        val id: Int,
+        override val id: Int,
         val slot1: ItemStack,
         val slot2: ItemStack,
         val slot3: ItemStack,
         val slot4: ItemStack
-    ) {
-        fun getStacks() = listOf(slot1, slot2, slot3, slot4)
+    ) : ItemSet {
+        override fun getStacks() = listOf(slot1, slot2, slot3, slot4)
     }
 
     data class SavedLoadout(
@@ -85,8 +89,10 @@ data class InventoryData(
         val foragingCoreSelectedSlot: Int?,
         val powerStone: String?,
         val tuningPointsSlot: Int?,
-        val pet: String?
-    )
+        val pet: UUID?
+    ) {
+        val isEmpty get() = armorSetId == null && equipmentSlotId == null && miningCoreSelectedSlot == null && foragingCoreSelectedSlot == null && powerStone == null && tuningPointsSlot == null && pet == null && name == "Loadout $id"
+    }
 
     /** Get all items from all sources, **EXCEPT** for sacks.*/
     fun getAllItems() = buildList {
@@ -241,7 +247,7 @@ data class InventoryData(
                         foragingCoreSelectedSlot = setObj.getAs<JsonElement>("foraging_core_selected_slot")?.asInt,
                         powerStone = setObj.getAs<JsonElement>("power_stone")?.asString,
                         tuningPointsSlot = setObj.getAs<JsonElement>("tuning_points_slot")?.asInt,
-                        pet = setObj.getAs<JsonElement>("pet")?.asString,
+                        pet = setObj.getAs<JsonElement>("pet")?.asUUID(),
                     )}
             }
 

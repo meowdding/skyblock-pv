@@ -22,6 +22,7 @@ import me.owdding.skyblockpv.screens.windowed.tabs.foraging.MainForagingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.inventory.BaseInventoryScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.inventory.InventoryCategory
 import me.owdding.skyblockpv.screens.windowed.tabs.inventory.InventoryScreen
+import me.owdding.skyblockpv.screens.windowed.tabs.loadout.LoadoutTab
 import me.owdding.skyblockpv.screens.windowed.tabs.mining.BaseMiningScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.mining.MainMiningScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.mining.MiningCategory
@@ -60,6 +61,7 @@ enum class PvTab(
         Items.DIAMOND_SWORD.withCatharsisId("tab/combat/icon"),
     ),
     INVENTORY(BaseInventoryScreen::class, ::InventoryScreen, Items.CHEST.withCatharsisId("tab/inventory/icon")),
+    LOADOUT(LoadoutTab::class, Items.BARREL.withCatharsisId("tab/loadout/icon")),
     COLLECTION(BaseCollectionScreen::class, CollectionCategories::createScreen, Items.ITEM_FRAME.withCatharsisId("tab/collections/icon")),
     MINING(BaseMiningScreen::class, ::MainMiningScreen, Items.DIAMOND_PICKAXE.withCatharsisId("tab/mining/icon")),
     FISHING(FishingScreen::class, Items.FISHING_ROD.withCatharsisId("tab/fishing/icon")),

@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.toColumn
@@ -25,6 +26,7 @@ import me.owdding.skyblockpv.screens.windowed.tabs.base.GroupedScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
+import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
@@ -135,6 +137,7 @@ object Utils {
             null
         }
     }
+
     inline fun <reified T : Any> loadFromRemoteRepo(file: String) = runBlocking {
         try {
             SkyBlockPv.debug("Loading $file.json from remote repo")
@@ -251,6 +254,13 @@ object Utils {
 
     fun <Type> ListMerger<Type>.skipUntil(predicate: (Type) -> Boolean) {
         while (index + 1 < original.size && !predicate(peek())) read()
+    }
+
+    fun LayoutElement.framed(width: Int = this.width, height: Int = this.height) = LayoutFactory.frame(width, height) {
+        widget(this@framed) {
+            alignHorizontallyCenter()
+            alignHorizontallyCenter()
+        }
     }
 }
 
