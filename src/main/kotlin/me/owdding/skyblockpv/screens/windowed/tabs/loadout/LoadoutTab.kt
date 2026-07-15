@@ -211,7 +211,7 @@ class LoadoutTab(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     context(loadouts: InventoryData.LoadoutData?)
     fun InventoryData.SavedLoadout?.getIcon(inventory: InventoryData?): ItemStack {
         if (this == null) {
-            return Items.DYE.red.defaultInstance
+            return Items.DYE.red().defaultInstance
         }
 
         fun getItem(items: List<ItemStack>?): ItemStack? {
@@ -256,11 +256,11 @@ class LoadoutTab(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         }
 
         if (this.isEmpty) {
-            return Items.DYE.gray.defaultInstance
+            return Items.DYE.gray().defaultInstance
         }
 
 
-        return Items.DYE.green.defaultInstance
+        return Items.DYE.green().defaultInstance
     }
 
     context(loadouts: InventoryData.LoadoutData?, inventory: InventoryData?)

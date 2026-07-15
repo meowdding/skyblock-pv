@@ -2,8 +2,8 @@ package me.owdding.skyblockpv.utils.render.inventory
 
 //? 26.1 {
 /*import com.mojang.blaze3d.vertex.Tesselator
-import com.mojang.blaze3d.vertex.VertexFormat*/
-//? }
+import com.mojang.blaze3d.vertex.VertexFormat
+*///? }
 //? >= 26.2
 import com.mojang.blaze3d.PrimitiveTopology
 import com.mojang.blaze3d.systems.RenderSystem
