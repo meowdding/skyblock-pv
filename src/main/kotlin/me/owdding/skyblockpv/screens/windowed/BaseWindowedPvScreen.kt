@@ -54,6 +54,7 @@ import net.minecraft.util.TriState
 import net.minecraft.util.Util
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -113,19 +114,27 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
 
         createTabs().applyLayout(bg.x + 20, bg.y - 22)
-        createSearch(bg).applyLayout()
+        val searchBox = createSearch(bg)
+        searchBox.applyLayout()
         createProfileDropdown(bg).let {
             it.applyLayout()
 
             if (!Config.socials) return@let
-            val button = createSocialDropdown()
+            val availableWidth = searchBox.x - (it.x + it.width) - 5
+            val socialsWidth = availableWidth.coerceIn(0, 100)
+            val button = createSocialDropdown(socialsWidth)
             button.setPosition(it.x + it.width + 5, it.y)
             button.applyLayout()
         }
 
-        addRenderableOnly(
-            PvWidgets.text(this.tabTitle).withCenterAlignment().withSize(this.uiWidth, 20).withPosition(bg.x, bg.bottom + 2),
-        )
+        // Only add the Title if theres enough width
+        val bottomRowWidth = 100 + if (Config.socials) 105 else 0
+        val titleWidth = McFont.width(this.tabTitle)
+        if (this.uiWidth > bottomRowWidth + titleWidth + 50) {
+            addRenderableOnly(
+                PvWidgets.text(this.tabTitle).withCenterAlignment().withSize(this.uiWidth, 20).withPosition(bg.x, bg.bottom + 2),
+            )
+        }
     }
 
     private fun addNoProfiles() {
@@ -416,7 +425,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         return dropdown
     }
 
-    private fun createSocialDropdown(): LayoutElement {
+    private fun createSocialDropdown(dropdownWidth: Int): LayoutElement {
         val source = "?utm_source=SkyBlockPv"
         val entries = listOf(
             SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}$source"),
@@ -429,7 +438,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             entries,
             { Text.of(it.name) },
             { button ->
-                button.withSize(100, 20)
+                button.withSize(dropdownWidth, 20)
                 button.withRenderer(WidgetRenderers.text(+"widgets.socials"))
             },
             { builder ->
