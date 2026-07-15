@@ -6,33 +6,33 @@
         "objectAsKeys": true,
         "@references": {
             "ice_essence_shop": [
-                "<white>Can be upgraded at the <light_purple>Ice Essence Shop</light_purple></white>",
-                "<white>on <red>Jerry's Workshop</red></white>",
+                "<white>Kan ge-upgrade worden bij de <light_purple>Ice Essence Winkel</light_purple></white>",
+                "<white>in <red>Jerry's Workshop</red></white>",
                 ""
             ],
             "gold_essence_shop": [
-                "<white>Can be upgraded at the <light_purple>Gold Essence Shop</light_purple></white>",
-                "<white>in the <gold>Royal Mines</gold> in the <dark_green>Dwarven Mines</dark_green></white>",
+                "<white>Kan ge-upgrade worden bij de <light_purple>Gold Essence Winkel</light_purple></white>",
+                "<white>in de <gold>Royal Mines</gold> in de <dark_green>Dwarven Mines</dark_green></white>",
                 ""
             ],
             "diamond_essence_shop": [
-                "<white>Can be upgraded at the <light_purple>Diamond Essence Shop</light_purple></white>",
-                "<white>in the <dark_purple>Crystal Nucleus</dark_purple> in the <dark_purple>Crystal Hollows</dark_purple></white>",
+                "<white>Kan ge-upgrade worden bij de <light_purple>Diamond Essence Winkel</light_purple></white>",
+                "<white>in de <dark_purple>Crystal Nucleus</dark_purple> in de <dark_purple>Crystal Hollows</dark_purple></white>",
                 ""
             ],
             "crimson_essence_shop": [
-                "<white>Can be upgraded at the <light_purple>Crimson Essence Shop</light_purple></white>",
-                "<white>in the <red>Crimson Isle</red></white>",
+                "<white>Kan ge-upgrade worden bij de <light_purple>Crimson Essence Winkel</light_purple></white>",
+                "<white>in de <red>Crimson Isle</red></white>",
                 ""
             ],
             "forest_essence_shop": [
-                "<white>Can be upgraded at the <light_purple>Forest Essence Shop</light_purple></white>",
-                "<white>in the <gray>Murkwater Outpost</gray> on <dark_green>Galatea</dark_green></white>",
+                "<white>Kan ge-upgrade worden bij de <light_purple>Forest Essence Winkel</light_purple></white>",
+                "<white>in de <gray>Murkwater Outpost</gray> op <dark_green>Galatea</dark_green></white>",
                 ""
             ],
             "fossil_essence_shop": [
-                "<white>Can be upgraded at the <light_purple>Fossil Essence Shop</light_purple></white>",
-                "<white>in the <dark_aqua>Dwarven Base Camp</dark_aqua> in the Glacite Tunnels</white>",
+                "<white>Kan ge-upgrade worden bij de <light_purple>Fossil Essence Winkel</light_purple></white>",
+                "<white>in de <dark_aqua>Dwarven Base Camp</dark_aqua> in de Glacite Tunnels</white>",
                 ""
             ]
         },
@@ -40,33 +40,33 @@
     },
     "messages": {
         "new_version": {
-            "@value": "New version found! (<red><0></red><gray> -> </gray><green><1></green>)",
-            "download": "Click to download."
+            "@value": "Nieuwe versie gevonden! (<red><0></red><gray> -> </gray><green><1></green>)",
+            "download": "Klik om the Downloaden."
         },
-        "party_finder_join": "<run_cmd '/sbpv pv <!0>'>Click here to open <0>'s profile.</run_cmd>",
+        "party_finder_join": "<run_cmd '/sbpv pv <!0>'>Klik hier om <0>'s profiel te openen.</run_cmd>",
         "forge": {
-            "already_finished": "<red>Process already finished!</red>",
-            "reminder_set": "<gray>Reminder set for <0> in <yellow><1></yellow>!</gray>",
-            "reminder": "<gray>Forge Process for <0> is done!</gray>"
+            "already_finished": "<red>Process is al klaar!</red>",
+            "reminder_set": "<gray>Herinnering gezet voor <0> in <yellow><1></yellow>!</gray>",
+            "reminder": "<gray>Forge process voor <0> is klaar!</gray>"
         },
         "api": {
-            "something_went_wrong": "Something went wrong fetching the status from Hypixel. Please report this on the Discord or the GitHub!",
-            "failed_to_authenticate": "<hover 'Click to retry!'><run_cmd '/sbpv refreshauth'>Failed to authenticate with PV API. Check if you are connected to Mojang servers. Click to retry.</run_cmd></hover>",
-            "auth_cooldown": "<red>Authentication is on cooldown. Please wait <0> seconds before retrying.</red>",
-            "authenticating": "<gray>Authenticating with PV API...</gray>",
-            "auth_successful": "<green>Successfully authenticated with PV API!</green>",
-            "auth_failed": "<run_cmd '/sbpv discord'><red>Failed to authenticate with PV API. Please try again later or ask in the <blue>Discord</blue>!</red></run_cmd>",
-            "not_authenticated": "<run_cmd '/sbpv refreshauth'>Not authenticated with PV API. Click to try and authenticate.</run_cmd>",
-            "auth_uptime_limit": "<red>Minecraft has been open for longer than 24 hours, please restart to refresh auth.</red>"
+            "something_went_wrong": "Iets is misgegaan bij het ophalen van de status van Hypixel. Rapporteer dit alsjeblieft in de Discord of de GitHub!",
+            "failed_to_authenticate": "<hover 'Klik om het opniew te proberen!'><run_cmd '/sbpv refreshauth'>Gefaald om te authenticeren met PV API. Check of je verbonden bent met de Mojang servers. Klik om het opnieuw te proberen.</run_cmd></hover>",
+            "auth_cooldown": "<red>Authenticatie is op cooldown. Wacht alsjeblieft <0> seconden voor het opniew te proberen.</red>",
+            "authenticating": "<gray>Aan het authenticeren met PV API...</gray>",
+            "auth_successful": "<green>Succesvol geauthenticeerd met PV API!</green>",
+            "auth_failed": "<run_cmd '/sbpv discord'><red>Gefaald om te authenticeren met PV API. Probeer het alsjeblieft later opnieuw of vraag in de <blue>Discord</blue>!</red></run_cmd>",
+            "not_authenticated": "<run_cmd '/sbpv refreshauth'>Niet geauthenticeerd met PV API. Klik om het opnieuw to proberen en te authenticeren.</run_cmd>",
+            "auth_uptime_limit": "<red>Minecraft is open geweest voor meer dan 24 uur, herstart alsjeblieft om authenticatie te vernieuwen.</red>"
         },
-        "unknown_essence_perks": "<0> unknown essence perks.",
-        "player_not_found": "<red>Player could not be found</red>",
-        "no_dungeon_data": "<red>No Dungeon Data found for <0>.</red>",
+        "unknown_essence_perks": "<0> onbekende essence perks.",
+        "player_not_found": "<red>Speler kon niet gevonden worden</red>",
+        "no_dungeon_data": "<red>Geen Dungeon data gevonden voor <0>.</red>",
         "dungeon_partyfinder": {
-            "header": "<red><0></red><gray>'s Dungeon Stats</gray>",
-            "general_info_header": "  <bold><red>General Info</red></bold>",
+            "header": "<red><0></red><gray>'s Dungeon Statestieken</gray>",
+            "general_info_header": "  <bold><red>Algemene Info</red></bold>",
             "level": "    <red>Catacombs </red><gray>Level: <0></gray>\n    <green><1> </green><gray>Level: <2></gray>",
-            "secrets_found": "    <gold>Secrets Found</gold><gray>: <0> (<1>/run)</gray>",
+            "secrets_found": "    <gold>Geheimen gevonden</gold><gray>: <0> (<1>/run)</gray>",
             "utilities_header": "<underline><red>Utilities</red></underline>",
             "has_bonus_item_true": " <green><0></green><gray>:</gray> <green>✔</green>",
             "has_bonus_item_false": " <red><0></red><gray>:</gray> <red>✘</red>",
@@ -74,116 +74,116 @@
             "catacombs_floor_info_header": "    <underline><dark_green>Catacombs</dark_green></underline> <underline><red>Floor Info</red></underline>",
             "mastermode_floor_info_header": "    <underline><red>Mastermode</red></underline> <underline><red>Floor Info</red></underline>",
             "floor_info": "<gray> Floor</gray><red> <0></red><gray>: </gray><green><1></green><gray> compl | PB: </gray><gold><2></gold> <gray>| PB S+: </gray><gold><3></gold>",
-            "empty_slot": "<run_cmd '/sbpv pfjoin <!0>'><red>Empty Slot! Click to Recheck</red></run_cmd>"
+            "empty_slot": "<run_cmd '/sbpv pfjoin <!0>'><red>Leeg Slot! Klik om opniew te checken</red></run_cmd>"
         },
-        "click_to_open_pv": "<yellow>Click to open <0>'s profile in SkyBlock Profile Viewer.</yellow>",
+        "click_to_open_pv": "<yellow>Klik om <0>'s profiel to openen in SkyBlock Profile Viewer.</yellow>",
         "toast": {
             "disabled_tabs": {
-                "@value": "<pink>SbPv</pink><red>: Disabled Tabs on Profile</red>",
+                "@value": "<pink>SbPv</pink><red>: Tabs op Profiel uitgezet</red>",
                 "explanation": [
-                    "<red>Due to missing data or disabled APIs,</red>",
-                    "<red>the following tabs are disabled or altered:</red>",
+                    "<red>Vanwege missende data of uitgezette APIs,</red>",
+                    "<red>de volgende tabs zijn uitgezet of verandered:</red>",
                     "<red><0></red>"
                 ]
             },
-            "socials_copied": "<green>Copied <0> to clipboard!</green>"
+            "socials_copied": "<green><0> Gekopieerd naar clipboard!</green>"
         }
     },
     "config": {
         "spying": {
-            "@value": "Spying Button",
-            "desc": "Add a button to the Hypixel Profile Viewer that allows you to open our Profile Viewer directly."
+            "@value": "Spiek Knop",
+            "desc": "Voegt een knop to aan de Hypixel Profile Viewer die je onze Profile Viewer laat openen."
         },
         "chat": {
-            "@value": "Clickable Player Messages",
-            "desc": "Change the click action of player messages to open their pv page rather than their social menu"
+            "@value": "Klikbare Speler Berichten",
+            "desc": "Verander de klik actie van speler berichten om hun pv pagina to open in plaats van hun social menu"
         },
         "chat_other": {
-            "@value": "Clickable Player Messages in Party, Guild and Co-op",
-            "desc": "Change the click action of player messages in party and guild chat to open their pv page"
+            "@value": "Klikbare Speler Berichten in Party, Guild en Co-op",
+            "desc": "Verander de klik actie van speler berichten in party en guild chat om hun pv pagina te openen"
         },
         "currency": {
-            "@value": "Networth Currency",
-            "desc": "The currency to use for the networth to IRL currency conversion."
+            "@value": "Vermogen Munteenheid",
+            "desc": "De munteenheid om te gebruiken voor het vermogen naar IRL munteenheid te bereken."
         },
         "align_category_buttons_left": {
-            "@value": "Align Category Buttons Left",
-            "desc": "Align the category buttons to the left side of the screen instead of the right."
+            "@value": "Lijn Catagorie Knoppen Links Uit",
+            "desc": "Lijn catagorie knoppen uit an de linker kant van het scherm in plaats van rechts."
         },
         "show_pronouns": {
-            "@value": "Show Pronouns",
-            "desc": "Show the pronouns of the player in the profile viewer if available."
+            "@value": "Laat Voornaamwoorden Zien",
+            "desc": "Laat de voornaamwoorden van de speler zijn in de profile viewer als die beschikbaar zijn."
         },
         "party_finder_message": {
-            "@value": "Party Finder Message",
-            "desc": "Shows a breakdown of the joined player's profile in chat, giving you a quick overview.",
-            "off": "Disabled",
-            "open_pv": "Click to Open PV",
-            "breakdown": "Profile Breakdown"
+            "@value": "Party Vinder Bericht",
+            "desc": "Laat een breakdown zien van de speler die net gejoind is in chat, om je snel een overzicht te geven.",
+            "off": "Uitgezet",
+            "open_pv": "Klik Om PV Te Openen",
+            "breakdown": "Profiel Breakdown"
         },
         "disable_outside_hypixel": {
-            "@value": "Disable outside hypixel",
-            "desc": "Disables/unregisters the <light_gray>/pv</light_gray> command outside of hypixel."
+            "@value": "Zet uit buiten hypixel",
+            "desc": "Zet het <light_gray>/pv</light_gray> commando uit buiten hypixel."
         },
         "skill_overflow": {
-            "@value": "Skill Overflow",
+            "@value": "Skill Overloop",
             "desc": [
-                "Shows the skill overflow level instead of the skill level.",
-                "<red>Currently only works with Dungeon Skills.</red>"
+                "Laat het skill overloop level zien in plaats van het skill level.",
+                "<red>Werkt momenteel alleen met Dungeon Skills.</red>"
             ]
         },
         "display_scaling": {
-            "@value": "Enable Display Scaling",
+            "@value": "Zet Display Opschaling Aan",
             "desc": [
-                "Scales displays to better fill the space available",
-                "<red>This might lead to unexpected behavior and overflowing.</red>"
+                "Schaalt het display om de beschikbare ruimte beter te vullen",
+                "<red>Dit kan leiden to onverwacht gedrag en overloping.</red>"
             ]
         },
         "theme": {
-            "@value": "Theme",
-            "desc": "The theme to use for the profile viewer."
+            "@value": "Thema",
+            "desc": "Het thema te gebruiken voor de profile viewer."
         },
         "socials": {
-            "@value": "Linked Socials Dropdown",
-            "desc": "Show a dropdown with all linked socials of the player and SkyCrypt."
+            "@value": "Gelinkte Socials Dropdown",
+            "desc": "Laat een dropdown zien met alle gelinkte socials van de speler en SkyCrypt."
         },
         "remember_last_tab": {
-            "@value": "Remember Last Tab",
-            "desc": "Remembers the last opened tab and opens it when reopening the profile viewer."
+            "@value": "Onthoud Laatste Tab",
+            "desc": "Onthoud de laats geopende tab en opent die wanneer je de profile viewer heropend."
         },
         "autocomplete_sources": {
-            "@value": "Autocomplete Sources",
-            "desc": "The sources to use for the username autocomplete in the /pv command."
+            "@value": "Automatisch Aanvullen Bronnen",
+            "desc": "De bronnen te gebruiken voor het automatisch aanvullen van gebruikersnamen in het /pv commando."
         }
     },
     "dev": {
         "dev_mode": {
-            "@value": "Dev Mode",
+            "@value": "Dev Modus",
             "desc": [
-                "Enable Debug Dev Features.",
-                "<red>Might bring unwanted consequences like crashes."
+                "Zet Debug Dev Functies Aan.",
+                "<red>Kan ongewenste effecten hebben zoals crashes."
             ]
         },
         "hoppity_parser": {
-            "@value": "Parse Hoppity Rabbits",
-            "desc": "Parse all Hoppity Rabbits from Hypixel's Rabbits UI in an rarity-to-API-name format"
+            "@value": "Parse Hoppity Konijnen",
+            "desc": "Parse alle Hoppity Konijnen from Hypixel's Konijnen UI in een rarity-to-API-name format"
         },
         "sacks_parser": {
-            "@value": "Parse Sacks Contents",
-            "desc": "Parse all Sack Items"
+            "@value": "Parse Sacks Inhoud",
+            "desc": "Parse alle Sack Items"
         },
         "bypass_cache": {
             "@value": "Bypass Cache",
             "desc": [
-                "Bypass the cache and always fetch data directly from the API.",
-                "<red>This won't work if you aren't a specified dev.</red>"
+                "Ga langs de cache en haal data altijd rechtstreeks van de API.",
+                "<red>Dit werkt niet als je geen gespecificierde dev bent.</red>"
             ]
         },
         "offline_mode": {
-            "@value": "Offline Mode",
+            "@value": "Offline Modus",
             "desc": [
-                "Permanently caches requested profiles.",
-                "<yellow>This is only ever intended for local development!</yellow>"
+                "Caches aangevraagde profielen permanent.",
+                "<yellow>Dit is alleen bedoelt voor locale development!</yellow>"
             ]
         }
     },
