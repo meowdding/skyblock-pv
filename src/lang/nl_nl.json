@@ -1,0 +1,465 @@
+{
+    "@meowdding:metadata": {
+        "allowMultiline": true,
+        "allowReferences": true,
+        "allowTags": true,
+        "objectAsKeys": true,
+        "@references": {
+            "ice_essence_shop": [
+                "<white>Kan ge-upgrade worden bij de <light_purple>Ice Essence Winkel</light_purple></white>",
+                "<white>in <red>Jerry's Workshop</red></white>",
+                ""
+            ],
+            "gold_essence_shop": [
+                "<white>Kan ge-upgrade worden bij de <light_purple>Gold Essence Winkel</light_purple></white>",
+                "<white>in de <gold>Royal Mines</gold> in de <dark_green>Dwarven Mines</dark_green></white>",
+                ""
+            ],
+            "diamond_essence_shop": [
+                "<white>Kan ge-upgrade worden bij de <light_purple>Diamond Essence Winkel</light_purple></white>",
+                "<white>in de <dark_purple>Crystal Nucleus</dark_purple> in de <dark_purple>Crystal Hollows</dark_purple></white>",
+                ""
+            ],
+            "crimson_essence_shop": [
+                "<white>Kan ge-upgrade worden bij de <light_purple>Crimson Essence Winkel</light_purple></white>",
+                "<white>in de <red>Crimson Isle</red></white>",
+                ""
+            ],
+            "forest_essence_shop": [
+                "<white>Kan ge-upgrade worden bij de <light_purple>Forest Essence Winkel</light_purple></white>",
+                "<white>in de <gray>Murkwater Outpost</gray> op <dark_green>Galatea</dark_green></white>",
+                ""
+            ],
+            "fossil_essence_shop": [
+                "<white>Kan ge-upgrade worden bij de <light_purple>Fossil Essence Winkel</light_purple></white>",
+                "<white>in de <dark_aqua>Dwarven Base Camp</dark_aqua> in de Glacite Tunnels</white>",
+                ""
+            ]
+        },
+        "prefix": "skyblockpv"
+    },
+    "messages": {
+        "new_version": {
+            "@value": "Nieuwe versie gevonden! (<red><0></red><gray> -> </gray><green><1></green>)",
+            "download": "Klik om the Downloaden."
+        },
+        "party_finder_join": "<run_cmd '/sbpv pv <!0>'>Klik hier om <0>'s profiel te openen.</run_cmd>",
+        "forge": {
+            "already_finished": "<red>Process is al klaar!</red>",
+            "reminder_set": "<gray>Herinnering gezet voor <0> in <yellow><1></yellow>!</gray>",
+            "reminder": "<gray>Forge process voor <0> is klaar!</gray>"
+        },
+        "api": {
+            "something_went_wrong": "Iets is misgegaan bij het ophalen van de status van Hypixel. Rapporteer dit alsjeblieft in de Discord of de GitHub!",
+            "failed_to_authenticate": "<hover 'Klik om het opniew te proberen!'><run_cmd '/sbpv refreshauth'>Gefaald om te authenticeren met PV API. Check of je verbonden bent met de Mojang servers. Klik om het opnieuw te proberen.</run_cmd></hover>",
+            "auth_cooldown": "<red>Authenticatie is op cooldown. Wacht alsjeblieft <0> seconden voor het opniew te proberen.</red>",
+            "authenticating": "<gray>Aan het authenticeren met PV API...</gray>",
+            "auth_successful": "<green>Succesvol geauthenticeerd met PV API!</green>",
+            "auth_failed": "<run_cmd '/sbpv discord'><red>Gefaald om te authenticeren met PV API. Probeer het alsjeblieft later opnieuw of vraag in de <blue>Discord</blue>!</red></run_cmd>",
+            "not_authenticated": "<run_cmd '/sbpv refreshauth'>Niet geauthenticeerd met PV API. Klik om het opnieuw to proberen en te authenticeren.</run_cmd>",
+            "auth_uptime_limit": "<red>Minecraft is open geweest voor meer dan 24 uur, herstart alsjeblieft om authenticatie te vernieuwen.</red>"
+        },
+        "unknown_essence_perks": "<0> onbekende essence perks.",
+        "player_not_found": "<red>Speler kon niet gevonden worden</red>",
+        "no_dungeon_data": "<red>Geen Dungeon data gevonden voor <0>.</red>",
+        "dungeon_partyfinder": {
+            "header": "<red><0></red><gray>'s Dungeon Statestieken</gray>",
+            "general_info_header": "  <bold><red>Algemene Info</red></bold>",
+            "level": "    <red>Catacombs </red><gray>Level: <0></gray>\n    <green><1> </green><gray>Level: <2></gray>",
+            "secrets_found": "    <gold>Geheimen gevonden</gold><gray>: <0> (<1>/run)</gray>",
+            "utilities_header": "<underline><red>Utilities</red></underline>",
+            "has_bonus_item_true": " <green><0></green><gray>:</gray> <green>✔</green>",
+            "has_bonus_item_false": " <red><0></red><gray>:</gray> <red>✘</red>",
+            "equipment_header": "  <underline><bold><red>Equipment</red></bold></underline>",
+            "catacombs_floor_info_header": "    <underline><dark_green>Catacombs</dark_green></underline> <underline><red>Floor Info</red></underline>",
+            "mastermode_floor_info_header": "    <underline><red>Mastermode</red></underline> <underline><red>Floor Info</red></underline>",
+            "floor_info": "<gray> Floor</gray><red> <0></red><gray>: </gray><green><1></green><gray> compl | PB: </gray><gold><2></gold> <gray>| PB S+: </gray><gold><3></gold>",
+            "empty_slot": "<run_cmd '/sbpv pfjoin <!0>'><red>Leeg Slot! Klik om opniew te checken</red></run_cmd>"
+        },
+        "click_to_open_pv": "<yellow>Klik om <0>'s profiel to openen in SkyBlock Profile Viewer.</yellow>",
+        "toast": {
+            "disabled_tabs": {
+                "@value": "<pink>SbPv</pink><red>: Tabs op Profiel uitgezet</red>",
+                "explanation": [
+                    "<red>Vanwege missende data of uitgezette APIs,</red>",
+                    "<red>de volgende tabs zijn uitgezet of verandered:</red>",
+                    "<red><0></red>"
+                ]
+            },
+            "socials_copied": "<green><0> Gekopieerd naar clipboard!</green>"
+        }
+    },
+    "config": {
+        "spying": {
+            "@value": "Spiek Knop",
+            "desc": "Voegt een knop to aan de Hypixel Profile Viewer die je onze Profile Viewer laat openen."
+        },
+        "chat": {
+            "@value": "Klikbare Speler Berichten",
+            "desc": "Verander de klik actie van speler berichten om hun pv pagina to open in plaats van hun social menu"
+        },
+        "chat_other": {
+            "@value": "Klikbare Speler Berichten in Party, Guild en Co-op",
+            "desc": "Verander de klik actie van speler berichten in party en guild chat om hun pv pagina te openen"
+        },
+        "currency": {
+            "@value": "Vermogen Munteenheid",
+            "desc": "De munteenheid om te gebruiken voor het vermogen naar IRL munteenheid te bereken."
+        },
+        "align_category_buttons_left": {
+            "@value": "Lijn Catagorie Knoppen Links Uit",
+            "desc": "Lijn catagorie knoppen uit an de linker kant van het scherm in plaats van rechts."
+        },
+        "show_pronouns": {
+            "@value": "Laat Voornaamwoorden Zien",
+            "desc": "Laat de voornaamwoorden van de speler zijn in de profile viewer als die beschikbaar zijn."
+        },
+        "party_finder_message": {
+            "@value": "Party Vinder Bericht",
+            "desc": "Laat een breakdown zien van de speler die net gejoind is in chat, om je snel een overzicht te geven.",
+            "off": "Uitgezet",
+            "open_pv": "Klik Om PV Te Openen",
+            "breakdown": "Profiel Breakdown"
+        },
+        "disable_outside_hypixel": {
+            "@value": "Zet uit buiten hypixel",
+            "desc": "Zet het <light_gray>/pv</light_gray> commando uit buiten hypixel."
+        },
+        "skill_overflow": {
+            "@value": "Skill Overloop",
+            "desc": [
+                "Laat het skill overloop level zien in plaats van het skill level.",
+                "<red>Werkt momenteel alleen met Dungeon Skills.</red>"
+            ]
+        },
+        "display_scaling": {
+            "@value": "Zet Display Opschaling Aan",
+            "desc": [
+                "Schaalt het display om de beschikbare ruimte beter te vullen",
+                "<red>Dit kan leiden to onverwacht gedrag en overloping.</red>"
+            ]
+        },
+        "theme": {
+            "@value": "Thema",
+            "desc": "Het thema te gebruiken voor de profile viewer."
+        },
+        "socials": {
+            "@value": "Gelinkte Socials Dropdown",
+            "desc": "Laat een dropdown zien met alle gelinkte socials van de speler en SkyCrypt."
+        },
+        "remember_last_tab": {
+            "@value": "Onthoud Laatste Tab",
+            "desc": "Onthoud de laats geopende tab en opent die wanneer je de profile viewer heropend."
+        },
+        "autocomplete_sources": {
+            "@value": "Automatisch Aanvullen Bronnen",
+            "desc": "De bronnen te gebruiken voor het automatisch aanvullen van gebruikersnamen in het /pv commando."
+        }
+    },
+    "dev": {
+        "dev_mode": {
+            "@value": "Dev Modus",
+            "desc": [
+                "Zet Debug Dev Functies Aan.",
+                "<red>Kan ongewenste effecten hebben zoals crashes."
+            ]
+        },
+        "hoppity_parser": {
+            "@value": "Parse Hoppity Konijnen",
+            "desc": "Parse alle Hoppity Konijnen from Hypixel's Konijnen UI in een rarity-to-API-name format"
+        },
+        "sacks_parser": {
+            "@value": "Parse Sacks Inhoud",
+            "desc": "Parse alle Sack Items"
+        },
+        "bypass_cache": {
+            "@value": "Bypass Cache",
+            "desc": [
+                "Ga langs de cache en haal data altijd rechtstreeks van de API.",
+                "<red>Dit werkt niet als je geen gespecificierde dev bent.</red>"
+            ]
+        },
+        "offline_mode": {
+            "@value": "Offline Modus",
+            "desc": [
+                "Caches aangevraagde profielen permanent.",
+                "<yellow>Dit is alleen bedoelt voor locale development!</yellow>"
+            ]
+        }
+    },
+    "tab": {
+        "main": "Algemeen",
+        "combat": "Vechten",
+        "collection": "Collection",
+        "mining": "Mijnen",
+        "foraging": "foraging",
+        "inventory": "Inventaris",
+        "fishing": "Vissen",
+        "pets": "Huisdieren",
+        "farming": "Landbouw",
+        "chocolate_factory": "Chocolade Fabriek",
+        "rift": "Rift",
+        "museum": "Museum"
+    },
+    "essence": {
+        "fishing": {
+            "drake_piper": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Verhoogt de kans om een <gold>Reindrake</gold> te spawnen</white>",
+                "<white>met <green>10%</green> terwijl je in <red>Jerry's Workshop</red> bent.</white>"
+            ],
+            "midas_lure": [
+                {
+                    "@id": "gold_essence_shop"
+                },
+                "<white>Verhoogt de kans om een </white>",
+                "<white><gold>Goude Trophy Fish</gold> te vangen terwijl je in de <red>Crimson Isle</red> bent met <green>2-20%</green>.</white>"
+            ],
+            "radiant_fisher": [
+                {
+                    "@id": "diamond_essence_shop"
+                },
+                "<white>Verhoogt je kans om een</white>",
+                "<white><aqua>Diamante Trophy Fish</aqua> te vangen terwijl je in de <red>Crimson Isle</red> bent met <green>2-20%</green>.</white>"
+            ]
+        },
+        "mining": {
+            "fungus_fortuna": [
+                {
+                    "@id": "crimson_essence_shop"
+                },
+                "<white>Krijg <gold>☘ Mining Fortune</gold> <white>terwijl je Mycelium mijnt</white>"
+            ],
+            "harena_fortuna": [
+                {
+                    "@id": "crimson_essence_shop"
+                },
+                "<white>Krijg <gold>☘ Mining Fortune</gold> <white>terwijl je Red Sand mijnt</white>"
+            ],
+            "frozen_skin": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Verhoogt je </white><aqua>❄ Cold Resistance</aqua>"
+            ],
+            "treasures_of_the_earth": [
+                {
+                    "@id": "gold_essence_shop"
+                },
+                "<white>Verhoogt je kans om een Worm of Scatha te spawnen terwijl je Hard Stone mijnt</white>"
+            ],
+            "dwarven_training": [
+                {
+                    "@id": "gold_essence_shop"
+                },
+                "<white>Verhoogt je <dark_aqua>☯ Mining Wisdom</dark_aqua> terwijl je op een Mining Island bent</white>"
+            ],
+            "eager_miner": [
+                {
+                    "@id": "gold_essence_shop"
+                },
+                "<white>Verhoogt je <gold>⸕ Mining Speed</gold> terwijl je op een Mining Island bent</white>"
+            ],
+            "rhinestone_infusion": [
+                {
+                    "@id": "diamond_essence_shop"
+                },
+                "<white>Verhoogt <light_purple>Gemstone</light_purple> <gold>☘ Mining Fortune</gold> terwijl je op een Mining Island bent</white>"
+            ],
+            "high_roller": [
+                {
+                    "@id": "diamond_essence_shop"
+                },
+                "<white>Krijg <green>1</green> extra random drop terwijl je een <light_purple>Crystal Nucleus Bundle</light_purple> opent</white>"
+            ],
+            "return_to_sender": [
+                {
+                    "@id": "diamond_essence_shop"
+                },
+                "<white>Verhoogt de kans om een <aqua>Diamond Goblin</aqua> te spawnen</white>"
+            ],
+            "prehistorian": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Verhoogt de kans voor een <gold>Fossil Dye</gold> om te spawnen in de <gold>Fossil Excavator</gold></white>"
+            ],
+            "resourceful": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Geeft een kans om een <gray>Corpse Key</gray> niet te gebruiken wanner je een <gray>Corps</gray> opent in een <aqua>Glacite Mineshaft</aqua></white>"
+            ],
+            "dwarven_expertise": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Verhooght je <gold>☘ Dwarven Metal Fortune</gold> terwijl je op een <aqua>Mining Island</aqua> bent</white>"
+            ],
+            "chilled_to_the_bone": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Verhoogt je kans om een <purple>Skeleton Fish</purple> te vangen in de <red>Crimson Isle</red></white>"
+            ],
+            "cut_loose": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Een <aqua>❆ Glacial Mob</aqua> doden terwijl je in een <aqua>Glacial Mineshaft</aqua> bent geeft bonus <aqua>❄ Cold Resistance</aqua></white>"
+            ],
+            "sleight_of_hand": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Start de <gold>Fossil Excavator</gold> met <green>1</green> extra poging</white>"
+            ]
+        }
+    },
+    "widgets": {
+        "pronouns": "Voornaamwoorden: <0>",
+        "open_settings": [
+            "<underline><gray>Open Instellingen</gray></underline>",
+            "Je kan ook <gray>/sbpv</gray> gebruiken!"
+        ],
+        "theme_switcher": [
+            "<underline><gray>Verander Thema</gray></underline>",
+            "Verander naar het volgende thema in de lijst",
+            "Je kunt also een ander thema selecteren in de instellingen!",
+            "",
+            "<gray>Actief thema: </gray><0>"
+        ],
+        "error": {
+            "loading": [
+                "Is de API neer?",
+                "Heeft data parsing gefaald?",
+                "Of is de API Key verlopen?",
+                "Rapporteer dit in de Discord met je /logs/latest.log"
+            ],
+            "stacktrace": [
+                "Gefaalt scherm te bouwen <0>",
+                "Rapporteer dit in de Discord!",
+                "",
+                "User: <1> - <2>",
+                "Profile: <3>",
+                "",
+                "Exception: <4>: <5>",
+                "Stacktrace: <6>"
+            ],
+            "no_profiles": [
+                "<red>Geen profiel gevonded voor <0>",
+                "<gray>Als je denkt dat dit een fout is,",
+                "<gray>rapporteer did dan in onze Discord!"
+            ],
+            "parsing_error": [
+                "Gefaald dit profiel te parseren!",
+                "Rapporeer did in de Discord!",
+                "",
+                "User: <1> - <2>",
+                "Version: <3> - <4>",
+                "",
+                "Exception: <5>: <6>",
+                "Stacktrace: <7>"
+            ]
+        },
+        "open_logs": "Open Logs",
+        "username_input": "Gebruikersnaam...",
+        "networth": {
+            "@value": "Nettowaarde: ",
+            "failed": "Gefaald te laden",
+            "error": "Een error heeft plaatsgevonden: ",
+            "loading": "Laden...",
+            "tooltip": {
+                "@value": "<yellow>Nettowaarde: ",
+                "cookies": "<yellow>Nettowaarde in Cookies: ",
+                "currency": "<yellow>Nettowaarde in <0>: ",
+                "note": "<gray>Notitie: je kunt de munteenheid aanpassen in de instellinging met <dark_gray>/sbpv</dark_gray>.",
+                "sources": "<gray>Bronnen: "
+            }
+        },
+        "socials": "<white>Socials</white>",
+        "coop_search_tooltip": "<gray>Bekijk Co-op leden</gray>"
+    },
+    "screens": {
+        "main": {
+            "slayer": {
+                "@value": "Slayer",
+                "kills": "Kills: ",
+                "exp": "Exp: ",
+                "next_level": "Volgend Level: "
+            },
+            "essence": "Essence",
+            "skills": {
+                "@value": "Skills",
+                "exp": "Exp: ",
+                "progress": "Voortgang: ",
+                "max_cap": "<purple>Max skill berijkt!</purple>",
+                "to_next": "<green><0>% naar volgend</green>",
+                "progress_to_max": "Voortgang naar max: ",
+                "unknown": "<red>Onbekend</red>"
+            },
+            "pronouns_hint": "Aangeleverd door https://pronoundb.org/",
+            "status": {
+                "load": "<white>Laad Status</white>",
+                "loading": "<white>Aan het laden...</white>",
+                "online": "<green>ONLINE</green> <dark_gray>-</dark_gray> ",
+                "error": "<dark_red>ERROR</dark_red>",
+                "offline": "<red>OFFLINE</red> <dark_gray>-</dark_gray> ",
+                "unknown": "<red>Unknown</red>"
+            },
+            "info": {
+                "purse": "Portemonnee: <0>",
+                "bank": {
+                    "@value": "Bank: <0>",
+                    "solo": "<gray>Eigen Bank:</gray> <gold><0></gold>",
+                    "coop": "<gray>Profiel Bank:</gray> <gold><0></gold>",
+                    "history": {
+                        "@value": "<gray>Bank Geschiedenis:</gray>",
+                        "entry": [
+                            "<gold><0></gold><gray> <1> door <2></gray>",
+                            "<gray>Datum: </gray><yellow><3></yellow>"
+                        ]
+                    },
+                    "actions": {
+                        "withdraw": "uitgehaald",
+                        "deposit": "ingestopt"
+                    }
+                },
+                "cookie": {
+                    "@value": "Cookie Buff: <0>",
+                    "active": "<green>Actief",
+                    "inactive": "<red>Inactief"
+                },
+                "sb_lvl": {
+                    "@value": "SkyBlock Level: <0>",
+                    "progress": "<gray>Voortgang: <0>/100"
+                },
+                "first_join": "Eerste Join: <0>",
+                "skill_avg": "Skill Avg: <0>",
+                "fairy_souls": "Fairy Souls: <0>",
+                "kd": "K/D: <0>/<1> (<2>)"
+            }
+        },
+        "inventory": {
+            "accessory": {
+                "highest_magical_power": [
+                    "Dit is de hoogste hoeveelheid magical power",
+                    "dat de speler ooit heeft gehad op dit profiel. Dit",
+                    "nummer is rechtstreeks van Hypixel, dus het zou",
+                    "altijd accuraat moeten zijn, maar het kan afwijken",
+                    "van de momentele staat van de speler's accessory bag."
+                ]
+            }
+        }
+    },
+    "themes": {
+        "dark": "Donkere modus",
+        "default": "Standaard",
+        "neu": "NEU"
+    },
+    "misc": {
+        "maxed": "<red>Maximaal!</red>"
+    }
+}
