@@ -92,11 +92,26 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     private fun BestiaryMobEntry.getItem(): Display {
         val kills = profile.bestiaryData.filter { mobs.contains(it.mobId) }.sumOf { it.kills }
-        val fullBracket = BestiaryCodecs.data.brackets[bracket] ?: emptyList()
-        val maxLevel = fullBracket.indexOf(cap) + 1
-        val bracket = fullBracket.take(maxLevel)
-        val requiredKills = bracket.lastOrNull() ?: 0
-        val currentLevel = bracket.indexOfLast { kills >= it } + 1
+
+        val fullBracket = if (bracketType != null) {
+            val upperType = bracketType.uppercase()
+            val bracketSets = BestiaryCodecs.data.bracketSets ?: emptyMap()
+
+            val typeBrackets = bracketSets[upperType] ?: bracketSets[BRACKET_TYPE_ALIASES[upperType]]
+
+            typeBrackets?.get(bracket) ?: emptyList()
+        } else {
+            BestiaryCodecs.data.brackets[bracket] ?: emptyList()
+        }
+
+        val tiers = if (fullBracket.isEmpty()) {
+            emptyList()
+        } else {
+            fullBracket.takeWhile { it < cap } + cap
+        }
+        val maxLevel = tiers.size
+        val requiredKills = tiers.lastOrNull() ?: 0
+        val currentLevel = tiers.indexOfLast { kills >= it } + 1
 
         val item = if (kills == 0L) Items.DYE.gray().defaultInstance else icon.getItem()
 
@@ -137,10 +152,10 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                     color = PvColors.GRAY
                     append(kills.toFormattedString()) { color = PvColors.YELLOW }
                     append("/") { color = PvColors.GOLD }
-                    append(bracket[currentLevel].toFormattedString()) { color = PvColors.YELLOW }
+                    append(tiers[currentLevel].toFormattedString()) { color = PvColors.YELLOW }
 
                     append(" (")
-                    append((kills / bracket[currentLevel].toDouble() * 100).round()) {
+                    append((kills / tiers[currentLevel].toDouble() * 100).round()) {
                         color = PvColors.GREEN
                         append("%")
                     }
@@ -165,6 +180,13 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         ),
     ).apply {
         set(DataComponents.CUSTOM_NAME, Text.join(name) { italic = false; color = PvColors.WHITE })
+    }
+
+    companion object {
+        // The bracketSet is CRITTERS while its using CRITTER inside each entry
+        private val BRACKET_TYPE_ALIASES = mapOf(
+            "CRITTER" to "CRITTERS",
+        )
     }
 }
 

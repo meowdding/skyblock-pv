@@ -13,7 +13,6 @@ import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.DispatchedCodec
-import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.codecs.ReservedUnboundMapCodec
 import kotlin.jvm.optionals.getOrNull
@@ -25,6 +24,7 @@ typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, ComplexBestiar
 object BestiaryCodecs : DefaultedData {
 
     private val defaultData: BestiaryRepoData = BestiaryRepoData(
+        emptyMap(),
         emptyMap(),
         emptyMap(),
     )
@@ -85,12 +85,19 @@ object BestiaryCodecs : DefaultedData {
         Codec.INT.listOf(),
     )
 
+    @IncludedCodec(named = "be§bracketSets")
+    val BRACKET_SETS_CODEC: Codec<Map<String, Map<Int, List<Int>>>> = Codec.unboundedMap(
+        Codec.STRING,
+        BRACKETS_CODEC,
+    )
+
     @IncludedCodec(named = "be§categories")
     val CATEGORIES_CODEC: MapCodec<Map<String, BestiaryCategoriesEntry>> = MapCodec.assumeMapUnsafe(
         ReservedUnboundMapCodec(
             Codec.STRING,
             CATEGORY_CODEC,
             "brackets",
+            "bracketSets",
         ),
     )
 
@@ -102,6 +109,7 @@ object BestiaryCodecs : DefaultedData {
 @GenerateCodec
 data class BestiaryRepoData(
     @NamedCodec("be§brackets") val brackets: Map<Int, List<Int>>,
+    @NamedCodec("be§bracketSets") val bracketSets: Map<String, Map<Int, List<Int>>>?,
     @NamedCodec("be§categories") @Unnamed val categories: Map<String, BestiaryCategoriesEntry>,
 )
 
@@ -126,4 +134,5 @@ data class BestiaryMobEntry(
     val cap: Int,
     val mobs: List<String>,
     val bracket: Int,
+    val bracketType: String?,
 )
