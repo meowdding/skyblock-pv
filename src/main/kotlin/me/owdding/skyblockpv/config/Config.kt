@@ -10,6 +10,8 @@ import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider.Suggestion
 import me.owdding.skyblockpv.feature.PartyFinderJoin
 import me.owdding.skyblockpv.utils.Utils
 import net.minecraft.resources.Identifier
+import tech.thatgravyboat.skyblockapi.api.repo.v2.ExperimentalRepo
+import tech.thatgravyboat.skyblockapi.api.repo.v2.RepoV2
 import java.util.function.UnaryOperator
 
 object Config : ConfigKt("skyblockpv/config") {
@@ -58,6 +60,12 @@ object Config : ConfigKt("skyblockpv/config") {
     )
     var socials by boolean(true) { this.translation = "skyblockpv.config.socials" }
     var rememberLastTab by boolean(true) { this.translation = "skyblockpv.config.remember_last_tab" }
+    var useExperimentalRepo by observable(boolean(false) { this.translation = "skyblockpv.config.experimental_repo" }) { _, new ->
+        if (new) {
+            @OptIn(ExperimentalRepo::class)
+            val v2 = RepoV2
+        }
+    }
     var autocompleteSources by enums(value = SuggestionTypes.entries.toTypedArray()) { this.translation = "skyblockpv.config.autocomplete_sources" }
 
     val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel

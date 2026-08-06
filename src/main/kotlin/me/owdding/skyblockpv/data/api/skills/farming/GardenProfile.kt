@@ -7,6 +7,10 @@ import me.owdding.lib.utils.FeatureName
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.api.data.parseInvData
+import me.owdding.skyblockpv.api.data.parseItemFromCustomData
+import me.owdding.skyblockpv.config.Config
+import me.owdding.skyblockpv.data.api.skills.farming.ToolkitEntry.Companion.fromJson
 import me.owdding.skyblockpv.data.repo.DefaultBarnSkin
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.GreenhouseUpgrade
@@ -18,12 +22,14 @@ import net.minecraft.world.item.ItemStack
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.repo.LazyItemStack
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
+import tech.thatgravyboat.skyblockapi.api.repo.v2.ExperimentalRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.asDouble
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asShort
 import tech.thatgravyboat.skyblockapi.utils.extentions.filterKeysNotNull
+import java.util.concurrent.CompletableFuture
 
 data class GardenData(
     val copper: Int,
@@ -37,6 +43,105 @@ data class GardenData(
     }
 }
 
+data class ToolkitEntry(
+    val item: ItemStack?,
+    val inUse: Boolean,
+) {
+    companion object : MeowddingLogger by SkyBlockPv.featureLogger("ToolkitEntry") {
+        fun JsonObject.fromJson(id: String, type: Int = 0): CompletableFuture<ToolkitEntry> {
+            if (!Config.useExperimentalRepo) return COMPLETED_EMPTY
+
+            val inUse = this.getAs<Boolean>("IN_USE.$id.$type") ?: false
+
+            val idEntries = this.getAs<JsonArray>(id) ?: return COMPLETED_EMPTY
+            val entry = idEntries.filterIsInstance<JsonObject>().getOrNull(type) ?: return COMPLETED_EMPTY
+
+            @OptIn(ExperimentalRepo::class)
+            val itemData = entry.parseItemFromCustomData().firstOrNull() ?: return COMPLETED_EMPTY
+            return itemData.thenApply {
+                ToolkitEntry(it, inUse)
+            }.exceptionallyCompose {
+                CompletableFuture.failedStage(RuntimeException(id, it))
+            }
+        }
+
+        val EMPTY = ToolkitEntry(null, false)
+        val COMPLETED_EMPTY: CompletableFuture<ToolkitEntry> = CompletableFuture.completedFuture(EMPTY)
+    }
+}
+
+data class FarmingToolkit(
+    val isUnlocked: Boolean,
+
+    val cactus: ToolkitEntry = ToolkitEntry.EMPTY,
+    val carrot: ToolkitEntry = ToolkitEntry.EMPTY,
+    val cocoaBeans: ToolkitEntry = ToolkitEntry.EMPTY,
+    val melon: ToolkitEntry = ToolkitEntry.EMPTY,
+    val mushroom: ToolkitEntry = ToolkitEntry.EMPTY,
+    val netherStalk: ToolkitEntry = ToolkitEntry.EMPTY,
+    val potato: ToolkitEntry = ToolkitEntry.EMPTY,
+    val pumpkin: ToolkitEntry = ToolkitEntry.EMPTY,
+    val sugarCane: ToolkitEntry = ToolkitEntry.EMPTY,
+    val sunflower: ToolkitEntry = ToolkitEntry.EMPTY,
+    val wheat: ToolkitEntry = ToolkitEntry.EMPTY,
+    val wildRose: ToolkitEntry = ToolkitEntry.EMPTY,
+) {
+    val items = listOfNotNull(
+        cactus.item,
+        carrot.item,
+        cocoaBeans.item,
+        melon.item,
+        mushroom.item,
+        netherStalk.item,
+        potato.item,
+        pumpkin.item,
+        sugarCane.item,
+        sunflower.item,
+        wheat.item,
+        wildRose.item,
+    ).takeUnless { it.isEmpty() }
+
+    companion object {
+        fun fromJson(json: JsonObject): CompletableFuture<FarmingToolkit> = with(json) {
+            fun create(id: String, type: Int = 0) = this.fromJson(id, type)
+
+            val cactus = create("CACTUS")
+            val carrot = create("CARROT")
+            val cacoaBeans = create("COCOA_BEANS")
+            val melon = create("MELON")
+            val mushroom = create("MUSHROOM")
+            val netherStalk = create("NETHER_STALK")
+            val potato = create("POTATO")
+            val pumpkin = create("PUMPKIN")
+            val sugarCane = create("SUGAR_CANE")
+            val sunflower = create("SUNFLOWER")
+            val wheat = create("WHEAT")
+            val wildRose = create("WILD_ROSE")
+
+            return CompletableFuture.allOf(cactus, carrot, cacoaBeans, melon, mushroom, netherStalk, potato, pumpkin, sugarCane, sunflower, wheat, wildRose)
+                .thenApply {
+                    FarmingToolkit(
+                        this.getAs("IS_UNLOCKED", false),
+                        cactus.get(),
+                        carrot.get(),
+                        cacoaBeans.get(),
+                        melon.get(),
+                        mushroom.get(),
+                        netherStalk.get(),
+                        potato.get(),
+                        pumpkin.get(),
+                        sugarCane.get(),
+                        sunflower.get(),
+                        wheat.get(),
+                        wildRose.get(),
+                    )
+                }
+        }
+
+        val EMPTY = FarmingToolkit(false)
+    }
+}
+
 data class GardenProfile(
     val unlockedPlots: List<StaticPlotData>,
     val selectedBarnSkin: ItemStack,
@@ -47,7 +152,7 @@ data class GardenProfile(
     val resourcesCollected: Map<GardenResource, Long>,
     val cropUpgradeLevels: Map<GardenResource, Short>,
     val greenhouseSlots: List<Vector2i>,
-    val greenhouseUpgrades: Map<GreenhouseUpgrade, Int>
+    val greenhouseUpgrades: Map<GreenhouseUpgrade, Int>,
 ) {
     @FeatureName("GardenProfileParser")
     companion object : MeowddingLogger by SkyBlockPv.featureLogger() {
@@ -74,7 +179,7 @@ data class GardenProfile(
                 } ?: emptyList(),
                 greenhouseUpgrades = result.getAs<JsonObject>("garden_upgrades").asMap { string, element ->
                     runCatching { GreenhouseUpgrade.valueOf(string) }.getOrNull() to element.asInt(0)
-                }.filterKeysNotNull()
+                }.filterKeysNotNull(),
             )
         }
 

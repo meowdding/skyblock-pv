@@ -34,6 +34,7 @@ repositories {
     )
     scopedMaven("https://maven.nucleoid.xyz/", "eu.pb4")
     mavenCentral()
+    mavenLocal()
 }
 
 val mcVersion = stonecutter.current.version.replace(".", "")

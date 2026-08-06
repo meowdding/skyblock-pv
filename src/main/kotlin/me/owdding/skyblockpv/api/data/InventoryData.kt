@@ -10,6 +10,7 @@ import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.BackingSkyBlockProfile
+import me.owdding.skyblockpv.data.api.skills.farming.FarmingToolkit
 import me.owdding.skyblockpv.utils.getNbt
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.legacyStack
@@ -17,6 +18,8 @@ import net.minecraft.nbt.NbtAccounter
 import net.minecraft.nbt.NbtIo
 import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.api.repo.v2.ExperimentalRepo
+import tech.thatgravyboat.skyblockapi.api.repo.v2.RepoV2
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
@@ -44,7 +47,8 @@ data class InventoryData(
     val personalVault: Inventory?,
     val candy: Inventory?,
     val carnivalMaskBag: Inventory?,
-    val loadouts: LoadoutData?
+    val loadouts: LoadoutData?,
+    val toolkit: FarmingToolkit
 ) {
 
     data class LoadoutData(
@@ -110,6 +114,7 @@ data class InventoryData(
         addAll(personalVault)
         addAll(loadouts?.equipmentSets?.flatMap { it.value.getStacks() })
         addAll(loadouts?.armorSets?.flatMap { it.value.getStacks() })
+        addAll(toolkit.items)
     }
 
     data class Backpack(
@@ -129,7 +134,7 @@ data class InventoryData(
 
     companion object : MeowddingLogger by SkyBlockPv.featureLogger() {
         context(_: ProfileId)
-        fun fromJson(member: JsonObject, inventory: JsonObject, sharedInventory: JsonObject?): CompletableFuture<InventoryData?> {
+        fun fromJson(member: JsonObject, inventory: JsonObject, sharedInventory: JsonObject?, toolkit: CompletableFuture<FarmingToolkit>): CompletableFuture<InventoryData?> {
             val backpackIcons: Map<Int, ItemStack> = inventory.getAs<JsonObject>("backpack_icons")?.let { Backpack.icons(it) } ?: emptyMap()
             val bagContents = inventory.getAs<JsonObject>("bag_contents")
             val inventoryItems = inventory.getAs<JsonObject>("inv_contents")?.completableInventory()
@@ -173,6 +178,7 @@ data class InventoryData(
                     carnivalMaskBag,
                     backpackFuture,
                     loadouts,
+                    toolkit
                 ).toTypedArray(),
             ).thenApply {
                 InventoryData(
@@ -190,6 +196,7 @@ data class InventoryData(
                     carnivalMaskBag = carnivalMaskBag?.get(),
                     loadouts = loadouts.get(),
                     sacks = inventory.getAs<JsonObject>("sacks_counts")?.asMap { key, value -> key to value.asLong(0) }?.filterValues { it > 0 } ?: emptyMap(),
+                    toolkit = toolkit.get()
                 )
             }
         }
@@ -303,4 +310,21 @@ private fun parseV0InventoryData(json: JsonObject): List<CompletableFuture<ItemS
     return tag.getList("i").getOrNull()?.mapNotNull {
         runCatching { BackingSkyBlockProfile.future { it.legacyStack() } }.getOrDefault(CompletableFuture.completedFuture(ItemStack.EMPTY))
     } ?: emptyList()
+}
+
+@ExperimentalRepo
+internal fun JsonObject.parseItemFromCustomData(): List<CompletableFuture<ItemStack>> = runCatching {
+    when (this.get("type").asInt(-1)) {
+        0 -> parseV0ItemCustomData(this)
+        else -> emptyList()
+    }
+}.getOrElse { emptyList() }
+
+@ExperimentalRepo
+private fun parseV0ItemCustomData(json: JsonObject): List<CompletableFuture<ItemStack>> {
+    val data = json.get("data").asString
+    val tag = NbtIo.readCompressed(ByteArrayInputStream(Base64.decode(data)), NbtAccounter.unlimitedHeap())
+    return listOf(BackingSkyBlockProfile.future {
+        RepoV2.createItem(tag).orThrow.create()
+    })
 }

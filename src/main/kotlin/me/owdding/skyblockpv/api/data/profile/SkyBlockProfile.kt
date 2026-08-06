@@ -36,6 +36,7 @@ import me.owdding.skyblockpv.data.api.skills.combat.MobData
 import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
+import me.owdding.skyblockpv.data.api.skills.farming.FarmingToolkit
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
 import me.owdding.skyblockpv.data.repo.EssenceData
 import me.owdding.skyblockpv.data.repo.MagicalPowerCodecs
@@ -100,6 +101,7 @@ interface SkyBlockProfile {
     val miscFishData: FishData get() = backingProfile.miscFishData.getNowOrElse(FishData.EMPTY)
     val essenceUpgrades: Map<String, Int> get() = backingProfile.essenceUpgrades.getNowOrElse(emptyMap())
     val gardenData: GardenData get() = backingProfile.gardenData.getNowOrElse(GardenData.EMPTY)
+    val farmingToolkit: FarmingToolkit get() = backingProfile.farmingToolkit.getNowOrElse(FarmingToolkit.EMPTY)
     val gardenChips: ChipsData get() = backingProfile.gardenChips.getNowOrElse(ChipsData.EMPTY)
     val farmingData: FarmingData get() = backingProfile.farmingData.getNowOrElse(FarmingData.EMPTY)
     val chocolateFactoryData: CfData? get() = backingProfile.chocolateFactoryData.getNowOrElse(null)
@@ -167,6 +169,7 @@ data class BackingSkyBlockProfile(
     val miscFishData: CompletableFuture<FishData> = emptyFuture(),
     val essenceUpgrades: CompletableFuture<Map<String, Int>> = emptyFuture(),
     val gardenData: CompletableFuture<GardenData> = emptyFuture(),
+    val farmingToolkit: CompletableFuture<FarmingToolkit> = emptyFuture(),
     val farmingData: CompletableFuture<FarmingData> = emptyFuture(),
     val gardenChips: CompletableFuture<ChipsData> = emptyFuture(),
     val chocolateFactoryData: CompletableFuture<CfData?> = emptyFuture(),
@@ -209,6 +212,7 @@ data class BackingSkyBlockProfile(
         attributeData,
         foragingCore,
         foraging,
+        farmingToolkit,
     )
 
     companion object {
@@ -245,6 +249,8 @@ data class BackingSkyBlockProfile(
                 user = user,
             )
 
+            val toolkit = FarmingToolkit.fromJson(member.getPathAs<JsonObject>("garden_player_data.farming_toolkit") ?: JsonObject())
+
             context(profileId) {
                 return BackingSkyBlockProfile(
                     selected = selected,
@@ -259,7 +265,7 @@ data class BackingSkyBlockProfile(
                         }
                     },
                     inventory = (member.getAs<JsonObject>("inventory") ?: JsonObject()).let {
-                        InventoryData.fromJson(member, it, member.getAsJsonObject("shared_inventory"))
+                        InventoryData.fromJson(member, it, member.getAsJsonObject("shared_inventory"), toolkit)
                     },
                     currency = future { Currency(member) },
                     bank = future { Bank(json, member) },
@@ -309,6 +315,7 @@ data class BackingSkyBlockProfile(
                             data.getAs<JsonArray>("discovered_greenhouse_crops")?.mapNotNull { it.asString() }?.toSet() ?: emptySet(),
                         )
                     },
+                    farmingToolkit = toolkit,
                     farmingData = future { FarmingData.fromJson(member.getAs("jacobs_contest")) },
                     gardenChips = future { ChipsData(playerData?.getAsJsonObject("garden_chips") ?: JsonObject()) },
                     chocolateFactoryData = future { member.getPath("events.easter")?.let { CfData.fromJson(it.asJsonObject) } },
