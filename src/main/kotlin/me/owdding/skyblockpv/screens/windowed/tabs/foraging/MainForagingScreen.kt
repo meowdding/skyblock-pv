@@ -4,11 +4,13 @@ import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.data.api.skills.SkillTreeCurrency
 import me.owdding.skyblockpv.data.repo.StaticForagingData
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.util.ARGB
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -57,14 +59,31 @@ class MainForagingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = n
                 foraging?.treeGifts?.fig ?: 0,
             )
 
+            addGifts(
+                "Helix",
+                foraging?.treeGifts?.helixTierClaimed ?: 0,
+                StaticForagingData.treeGifts.helix.size,
+                foraging?.treeGifts?.helix ?: 0,
+            )
+
             spacer(height = 1)
-            string("Forest Whispers (Current/Total)")
-            string("") {
-                val whispers = profile.foragingCore?.forestsWhispers ?: 0
-                val spentWhispers = profile.foragingCore?.forestsSpentWhispers ?: 0
-                append((whispers - spentWhispers).toFormattedString(), TextColor.DARK_AQUA)
-                append("/")
-                append(whispers.toFormattedString(), TextColor.DARK_AQUA)
+            string("Whispers (Current/Total)")
+
+            data class Thingy(val name: String, val color: Int, val selector: SkyBlockProfile.() -> SkillTreeCurrency?)
+
+            for ((name, color, selector) in listOf(
+                Thingy("Forest", TextColor.DARK_AQUA) { foragingCore?.forestsWhispers },
+                Thingy("Desert", TextColor.GOLD) { foragingCore?.desertWhispers },
+            )) {
+                string(name) {
+                    append(": ", PvColors.DARK_GRAY )
+                    this.color = color
+                    val whispers = profile.selector()?.total ?: 0
+                    val spentWhispers = profile.selector()?.spent(profile.skillTrees?.selectedForagingTree) ?: 0
+                    append((whispers - spentWhispers).toFormattedString())
+                    append("/", PvColors.DARK_GRAY)
+                    append(whispers.toFormattedString(), ARGB.scaleRGB(color, 0.75f))
+                }
             }
             profile.foragingCore
         },
@@ -78,12 +97,11 @@ class MainForagingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = n
         fun getPerkLevel(name: String): Int = profile.essenceUpgrades[name] ?: 0
 
 
-        fun addType(name: String, id: String, maxFortune: Int, personalBest: Int, personalBestMax: Int, formula: String) = PvWidgets.label(
+        fun addType(name: String, starlyn: String, id: String, maxFortune: Int, personalBest: Int, personalBestMax: Int, formula: String) = PvWidgets.label(
             name,
             PvLayouts.vertical(3) {
-                val level = getPerkLevel("agatha_${id}_fortune")
-                val hasPersonalBestUnlocked = hasPerk("agatha_${id}_personal_best")
-
+                val level = getPerkLevel("${starlyn}_${id}_fortune")
+                val hasPersonalBestUnlocked = hasPerk("${starlyn}_${id}_personal_best")
 
                 string("$name Personal Bests: ") {
                     append(if (hasPersonalBestUnlocked) "Yes" else "No") {
@@ -116,6 +134,7 @@ class MainForagingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = n
 
         addType(
             "Fig",
+            "agatha",
             "fig",
             StaticForagingData.misc.figFortune,
             profile.foraging?.personalBests?.fig ?: 0,
@@ -124,11 +143,21 @@ class MainForagingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = n
         )
         addType(
             "Mangrove",
+            "agatha",
             "mangrove",
             StaticForagingData.misc.mangroveFortune,
             profile.foraging?.personalBests?.mangrove ?: 0,
             StaticForagingData.misc.mangrovePersonalBest,
             StaticForagingData.misc.mangroveRewardFormula,
+        )
+        addType(
+            "Helix",
+            "miria",
+            "helix",
+            StaticForagingData.misc.helixFortune,
+            profile.foraging?.personalBests?.helix ?: 0,
+            StaticForagingData.misc.helixPersonalBest,
+            StaticForagingData.misc.helixRewardFormula,
         )
     }
 }

@@ -12,6 +12,7 @@ import me.owdding.skyblockpv.utils.codecs.LoadData
 data class TreeGifts(
     @NamedCodec("cum_int_list_alt") val fig: List<Int>,
     @NamedCodec("cum_int_list_alt") val mangrove: List<Int>,
+    @NamedCodec("cum_int_list_alt") val helix: List<Int>,
 )
 
 @GenerateCodec
@@ -22,6 +23,9 @@ data class MiscForagingData(
     @FieldName("fig_reward_formula") val figRewardFormula: String,
     @FieldName("fig_personal_best") val figPersonalBest: Int,
     @FieldName("fig_fortune") val figFortune: Int,
+    @FieldName("helix_reward_formula") val helixRewardFormula: String,
+    @FieldName("helix_personal_best") val helixPersonalBest: Int,
+    @FieldName("helix_fortune") val helixFortune: Int,
     @FieldName("agatha_power") val agathaPower: Int,
 )
 
@@ -30,9 +34,13 @@ data object StaticForagingData : DefaultedData {
     val treeDataDefault = TreeGifts(
         emptyList(),
         emptyList(),
+        emptyList(),
     )
 
     val miscDataDefault = MiscForagingData(
+        "level",
+        100000,
+        50,
         "level",
         100000,
         50,

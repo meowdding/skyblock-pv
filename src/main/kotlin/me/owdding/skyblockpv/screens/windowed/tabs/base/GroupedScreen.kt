@@ -175,7 +175,7 @@ interface GroupedScreen<FilterType : Any, GroupType : Any, DataType : Any> : Fil
                         alignHorizontallyCenter()
                         alignVerticallyMiddle()
                     }
-                }.asScrollable(width, height)
+                }
             }
 
         return display ?: PvLayouts.frame(width, height) {
