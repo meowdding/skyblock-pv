@@ -12,6 +12,9 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.Crystal
 import me.owdding.skyblockpv.data.api.skills.MiningCore
 import me.owdding.skyblockpv.data.api.skills.RockBracket
+import me.owdding.skyblockpv.data.api.skills.SkillTree
+import me.owdding.skyblockpv.data.api.skills.SkillTreeCurrency
+import me.owdding.skyblockpv.data.api.skills.SkillTrees
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk
 import me.owdding.skyblockpv.data.repo.ForgeTimeData
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
@@ -67,7 +70,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val mining = profile.mining ?: return PvLayouts.empty()
 
         val info = getInformation(profile)
-        val powder = getPowder(mining)
+        val powder = getPowder(profile.skillTrees, mining)
         val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: PvLayouts.empty()
         val forge = getForge()
 
@@ -160,27 +163,23 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         icon = SkyBlockPv.id("icon/item/clipboard"),
     )
 
-    private fun getPowder(mining: MiningCore) = PvWidgets.label(
+    private fun getPowder(skillTrees: SkillTrees?, mining: MiningCore) = PvWidgets.label(
         "Powder",
         PvLayouts.vertical(3) {
+            fun create(name: String, color: Int, skillTreeCurrency: SkillTreeCurrency): List<Any> {
+                return listOf(
+                    Text.of(name) { this.color = color },
+                    (skillTreeCurrency.total - skillTreeCurrency.spent(skillTrees?.selectedMiningTree)).shorten(),
+                    skillTreeCurrency.total.shorten(),
+                )
+            }
+
             display(
                 listOf(
                     listOf("", "Current", "Total"),
-                    listOf(
-                        Text.of("Mithril") { this.color = PvColors.DARK_GREEN },
-                        mining.powderMithril.shorten(),
-                        (mining.powderSpentMithril + mining.powderMithril).shorten(),
-                    ),
-                    listOf(
-                        Text.of("Gemstone") { this.color = PvColors.LIGHT_PURPLE },
-                        mining.powderGemstone.shorten(),
-                        (mining.powderSpentGemstone + mining.powderGemstone).shorten(),
-                    ),
-                    listOf(
-                        Text.of("Glacite") { this.color = PvColors.AQUA },
-                        mining.powderGlacite.shorten(),
-                        (mining.powderSpentGlacite + mining.powderGlacite).shorten(),
-                    ),
+                    create("Mithril", PvColors.DARK_GREEN, mining.powderMithril),
+                    create("Gemstone", PvColors.LIGHT_PURPLE, mining.powderGemstone),
+                    create("Glacite", PvColors.AQUA, mining.powderGlacite),
                 ).asTable(5),
             )
         },

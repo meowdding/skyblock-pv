@@ -4,7 +4,6 @@ import com.google.gson.JsonObject
 import me.owdding.lib.repo.TreeNode
 import me.owdding.lib.repo.TreeRepoData
 import me.owdding.skyblockpv.data.repo.SkullTextures
-import me.owdding.skyblockpv.screens.windowed.tabs.base.CoreNodeItems
 import me.owdding.skyblockpv.screens.windowed.tabs.base.SkillTreeItems
 import me.owdding.skyblockpv.utils.ParseHelper
 import me.owdding.skyblockpv.utils.json.getAs
@@ -55,9 +54,36 @@ class SkillTree(override val json: JsonObject, id: String, skillType: String, tr
 
 }
 
-enum class SkillTreeType(val skillType: String, val treeType: String, val coreNode: String, val skillTreeItems: SkillTreeItems, val nodes: () -> List<TreeNode>, val skullTextures: SkullTextures) {
-    MINING("mining", "mountain", "core_of_the_mountain", SkillTreeItems.MINING, TreeRepoData::hotm, SkullTextures.HOTM),
-    FORAGING("foraging", "forest", "center_of_the_forest", SkillTreeItems.FORAGING, TreeRepoData::hotf, SkullTextures.HOTF),
+enum class SkillTreeType(
+    val skillType: String,
+    val treeType: String,
+    val coreNode: String,
+    val skillTreeItems: SkillTreeItems,
+    val nodes: () -> List<TreeNode>,
+    val skullTextures: SkullTextures,
+    val spentPath: (currency: CurrencyType, index: Int) -> String,
+    val totalPath: (currency: CurrencyType) -> String,
+) {
+    MINING(
+        "mining",
+        "mountain",
+        "core_of_the_mountain",
+        SkillTreeItems.MINING,
+        TreeRepoData::hotm,
+        SkullTextures.HOTM,
+        { currency, index -> "powder_spent_${currency.name.lowercase()}" + if (index > 1) "_$index" else "" },
+        { currency -> "powder_${currency.name.lowercase()}" },
+    ),
+    FORAGING(
+        "foraging",
+        "forest",
+        "center_of_the_forest",
+        SkillTreeItems.FORAGING,
+        TreeRepoData::hotf,
+        SkullTextures.HOTF,
+        { currency, index -> "${currency.name.lowercase()}.$index.spent" },
+        { currency -> "${currency.name.lowercase()}.total" },
+    ),
     ;
 }
 
@@ -86,10 +112,47 @@ data class SkillTrees(override val json: JsonObject) : ParseHelper {
         SkillTreeType.MINING -> mining
     }
 
-    val selectedMiningTree by int("selected_skill_tree_slot.mining")
-    val selectedForagingTree by int("selected_skill_tree_slot.foraging")
+    val selectedMiningTree by int("skill_tree.selected_skill_tree_slot.mining")
+    val selectedForagingTree by int("skill_tree.selected_skill_tree_slot.foraging")
     val selectedMining: SkillTree get() = select(SkillTreeType.MINING, selectedMiningTree)
     val selectedForaging: SkillTree get() = select(SkillTreeType.FORAGING, selectedForagingTree)
 
     val refundAbilityFree: Boolean by boolean("skill_tree.refund_ability_free")
+}
+
+enum class CurrencyType(val treeType: SkillTreeType) {
+    MITHRIL(SkillTreeType.MINING),
+    GEMSTONE(SkillTreeType.MINING),
+    GLACITE(SkillTreeType.MINING),
+
+    FOREST(SkillTreeType.FORAGING),
+    DESERT(SkillTreeType.FORAGING),
+    ;
+
+    fun spent(slot: Int): String = treeType.spentPath(this, slot)
+    fun total(): String = treeType.totalPath(this)
+}
+
+data class SkillTreeCurrency(
+    override val json: JsonObject,
+    val currency: CurrencyType
+):  ParseHelper {
+    companion object {
+        fun of(currency: CurrencyType) = { obj: JsonObject -> SkillTreeCurrency(obj, currency)}
+    }
+
+    val first: Int by int(currency.spent(1))
+    val second: Int by int(currency.spent(2))
+    val third: Int by int(currency.spent(3))
+    val fourth: Int by int(currency.spent(4))
+    val fifth: Int by int(currency.spent(5))
+    val total: Long by long(currency.total())
+
+    fun spent(slot: Int?): Int = when (slot) {
+        2 -> second
+        3 -> third
+        4 -> fourth
+        5 -> fifth
+        else -> first
+    }
 }

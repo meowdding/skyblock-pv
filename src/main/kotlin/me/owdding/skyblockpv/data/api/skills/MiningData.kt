@@ -15,12 +15,9 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 
 data class MiningCore(override val json: JsonObject) : ParseHelper {
     val crystals: Map<String, Crystal> by map("crystals") { id, data -> id to Crystal(data.asJsonObject) }
-    val powderMithril: Int by int("powder_mithril")
-    val powderSpentMithril: Int by int("powder_spent_mithril")
-    val powderGemstone: Int by int("powder_gemstone")
-    val powderSpentGemstone: Int by int("powder_spent_gemstone")
-    val powderGlacite: Int by int("powder_glacite")
-    val powderSpentGlacite: Int by int("powder_spent_glacite")
+    val powderMithril = SkillTreeCurrency(json, CurrencyType.MITHRIL)
+    val powderGemstone = SkillTreeCurrency(json, CurrencyType.GEMSTONE)
+    val powderGlacite = SkillTreeCurrency(json, CurrencyType.GLACITE)
 }
 
 data class Crystal(override val json: JsonObject) : ParseHelper {

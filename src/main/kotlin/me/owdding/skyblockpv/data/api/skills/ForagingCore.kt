@@ -12,27 +12,8 @@ data class ForagingCore(override val json: JsonObject) : ParseHelper {
 
     val dailyGifts by int("daily_gifts")
 
-    val forestsWhispers: SkillTreeCurrency by obj("whispers.forest", ::SkillTreeCurrency)
-    val desertWhispers: SkillTreeCurrency by obj("whispers.desert", ::SkillTreeCurrency)
-}
-
-data class SkillTreeCurrency(
-    override val json: JsonObject
-):  ParseHelper {
-    val first: Int by int("1.spent")
-    val second: Int by int("2.spent")
-    val third: Int by int("3.spent")
-    val fourth: Int by int("4.spent")
-    val fifth: Int by int("5.spent")
-    val total: Long by long("total")
-
-    fun spent(slot: Int?): Int = when (slot) {
-        2 -> second
-        3 -> third
-        4 -> fourth
-        5 -> fifth
-        else -> first
-    }
+    val forestsWhispers: SkillTreeCurrency by obj("whispers", SkillTreeCurrency.of(CurrencyType.FOREST))
+    val desertWhispers: SkillTreeCurrency by obj("whispers.desert", SkillTreeCurrency.of(CurrencyType.DESERT))
 }
 
 data class PersonalBests(override val json: JsonObject) : ParseHelper {
