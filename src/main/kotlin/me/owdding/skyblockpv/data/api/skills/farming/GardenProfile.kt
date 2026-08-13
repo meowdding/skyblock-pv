@@ -80,7 +80,9 @@ data class GardenProfile(
 
         private fun JsonObject?.toComposterData(): ComposterData {
             val upgrades = this?.getAs<JsonObject>("upgrades")
-                .asMap { key, value -> ComposterUpgrade.valueOf(key.uppercase()) to value.asInt(0) }.toMutableMap()
+                .asMap { key, value ->
+                    ComposterUpgrade.valueOf(key.uppercase()) to value.asInt(0)
+                }.toMutableMap()
 
             ComposterUpgrade.entries.forEach {
                 upgrades.putIfAbsent(it, 0)
@@ -146,6 +148,7 @@ enum class ComposterUpgrade {
     FUEL_CAP,
     ORGANIC_MATTER_CAP,
     COST_REDUCTION,
+    COMPOST_SPEED_ATTRIBUTE
 }
 
 data class ComposterData(

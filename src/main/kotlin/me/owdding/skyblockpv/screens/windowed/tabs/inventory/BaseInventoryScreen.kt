@@ -37,6 +37,7 @@ enum class InventoryCategory(val screen: KClass<out BaseWindowedPvScreen>, overr
     ACCESSORY(AccessoryScreen::class, SkullTextures.ACCESSORY_BAG.skull.withCatharsisId("tab/inventory/accessory_bag")),
     SACKS(SacksScreen::class, SkullTextures.SACKS.skull.withCatharsisId("tab/inventory/sacks")),
     MISC_BAGS(MiscBagScreen::class, Items.BUNDLE.withCatharsisId("tab/inventory/misc_bag")),
+    SEARCH(InventorySearchScreen::class, Items.SPYGLASS.withCatharsisId("tab/inventory/search")),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()
@@ -60,6 +61,7 @@ abstract class BasePagedInventoryScreen<T>(gameProfile: GameProfile, profile: Sk
     abstract fun T.getInventories(): List<Display>
     abstract fun T.getIcons(): List<ItemStack>
     open fun getExtraLine(): Display? = null
+    open val showIconTooltips = false
 
     open val itemStackSize = true
 
@@ -81,7 +83,7 @@ abstract class BasePagedInventoryScreen<T>(gameProfile: GameProfile, profile: Sk
             List(inventories.size) { index ->
                 val icon = icons[index]
                 if (itemStackSize) icon.count = index + 1
-                Displays.item(icon, showStackSize = true)
+                Displays.item(icon, showStackSize = true, showTooltip = showIconTooltips)
             }
         }
 

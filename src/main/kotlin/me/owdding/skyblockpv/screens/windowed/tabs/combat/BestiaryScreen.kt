@@ -67,13 +67,82 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     }
 
     private fun getCategories(): Map<ItemStack, Display> = BestiaryCodecs.data.categories.map { (_, v) ->
-        Either.unwrap(
+        val icon = Either.unwrap(
             v.mapBoth(
                 { it.icon.getItem(it.name) to it.getCategory() }, // Simple
                 { it.icon.getItem(it.name) to it.getCategory() }, // Complex
             ),
         )
+        val (completePair, unlockedPair) = Either.unwrap(
+            v.mapBoth(
+                { it.getComplete() to it.getUnlocked() },
+                { it.getComplete() to it.getUnlocked() }
+            )
+        )
+        val (complete, total) = completePair
+        val (unlocked, _) = unlockedPair
+        icon.first.apply {
+            withTooltip {
+                add(hoverName)
+                add("Unlocked: ") {
+                    color = PvColors.GRAY
+                    append("${unlocked}/${total}") {
+                        color = if (unlocked == total) PvColors.GOLD else PvColors.GRAY
+                    }
+                }
+                add("Complete: ") {
+                    color = PvColors.GRAY
+                    append("${complete}/${total}") {
+                        color = if (complete == total) PvColors.GOLD else PvColors.GRAY
+                    }
+                }
+            }
+        }
+        icon
     }.toMap()
+
+    private fun getUnlocked(mobs: List<BestiaryMobEntry>): Pair<Int, Int> {
+        var unlocked = 0
+        var total = 0
+        for (entry in mobs) {
+            val kills = profile.bestiaryData.filter { entry.mobs.contains(it.mobId) }.sumOf { it.kills }
+            if (kills > 0) unlocked ++
+            total ++
+        }
+        return unlocked to total
+    }
+    private fun getComplete(mobs: List<BestiaryMobEntry>): Pair<Int, Int> {
+        var complete = 0
+        var total = 0
+        for (entry in mobs) {
+            val kills = profile.bestiaryData.filter { entry.mobs.contains(it.mobId) }.sumOf { it.kills }
+            val fullBracket = if (entry.bracketType != null) {
+                val upperType = entry.bracketType.uppercase()
+                val bracketSets = BestiaryCodecs.data.bracketSets ?: emptyMap()
+
+                val typeBrackets = bracketSets[upperType] ?: bracketSets[BRACKET_TYPE_ALIASES[upperType]]
+
+                typeBrackets?.get(entry.bracket) ?: emptyList()
+            } else {
+                BestiaryCodecs.data.brackets[entry.bracket] ?: emptyList()
+            }
+            val tiers = if (fullBracket.isEmpty()) {
+                emptyList()
+            } else {
+                fullBracket.takeWhile { it < entry.cap } + entry.cap
+            }
+            val requiredKills = tiers.lastOrNull() ?: 0
+            if (kills >= requiredKills) complete ++
+            total ++
+        }
+        return complete to total
+    }
+
+    private fun BestiaryCategoryEntry.getUnlocked() = getUnlocked(mobs)
+    private fun BestiaryCategoryEntry.getComplete() = getComplete(mobs)
+
+    private fun ComplexBestiaryCategoryEntry.getUnlocked() = getUnlocked(this.subcategories.values.flatMap { it.mobs })
+    private fun ComplexBestiaryCategoryEntry.getComplete() = getComplete(this.subcategories.values.flatMap { it.mobs })
 
     private fun BestiaryCategoryEntry.getCategory() = mobs.map { it.getItem() }.format(MOBS_PER_ROW_SIMPLE)
 
@@ -172,7 +241,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         )
     }
 
-    private fun BestiaryIcon.getItem(name: String = ""): ItemStack = Either.unwrap(
+    private fun BestiaryIcon.getItem(name: String? = ""): ItemStack = Either.unwrap(
         this.mapBoth(
             { Utils.getMinecraftItem(it) },
             // NEU Repo can be weird, sometimes including that weird split or wrong length of base64

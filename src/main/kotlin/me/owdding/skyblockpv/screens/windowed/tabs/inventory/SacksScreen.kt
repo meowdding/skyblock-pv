@@ -57,7 +57,16 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
 
     override fun Map<String, Long>.getInventories(): List<Display> = sackDisplays.values.toList()
 
-    override fun Map<String, Long>.getIcons(): List<ItemStack> = sackDisplays.keys.toList()
+    override fun Map<String, Long>.getIcons(): List<ItemStack> = sackDisplays.keys.map {
+        it.apply {
+            withTooltip {
+                add(hoverName)
+                val lore = getLore()
+                lore.takeWhile { line -> !line.stripped.isBlank() }.apply { forEach(::add) }
+            }
+        }
+    }
 
     override val itemStackSize = false
+    override val showIconTooltips = true
 }

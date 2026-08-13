@@ -21,6 +21,7 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.TooltipFlag
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
@@ -116,6 +117,22 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
                         }
                     }
                 },
+            )
+            display(
+                ExtraDisplays.text(
+                    Text.of("Montezuma Pet Item: ") {
+                        color = PvColors.DARK_GRAY
+
+                        val item = SkyBlockItemsRepo.getItemStack(rift.deadCat.pet?.heldItem ?: "NONE")
+                        if (item != null) {
+                            append(item.customName)
+                        } else {
+                            append("None") {
+                                color = PvColors.RED
+                            }
+                        }
+                    }
+                )
             )
             display(
                 ExtraDisplays.text(

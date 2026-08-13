@@ -57,24 +57,20 @@ class CarouselWidget(
         val right = left + curr.getWidth()
 
         val midY = y + 10
-        val bottom = y + curr.getHeight()
-        val sideHeight = bottom - midY
+        val sideBottom = y + height
 
-        val lastDiff = curr.getHeight() - 10 - (curr.getHeight() - (last?.getHeight() ?: 0)).coerceAtLeast(0)
-        val lastY = midY + sideHeight - lastDiff
-        val lastBottom = lastY + lastDiff
-        graphics.scissor(x..left, lastY..lastBottom) {
+        graphics.scissor(x..left, midY..sideBottom) {
 
             Displays.disableTooltips {
-                last?.extract(graphics, x, lastY)
+                last?.extract(graphics, x, midY)
             }
 
             graphics.renderCarouselOverlay {
-                graphics.fill(x, lastY, left, lastBottom, 0x7F000000)
+                graphics.fill(x, midY, left, sideBottom, 0x7F000000)
 
-                if (mouseX in x..left && mouseY in lastY..lastBottom) {
+                if (mouseX in x..left && mouseY in midY..sideBottom) {
                     graphics.pushPop {
-                        graphics.translate(x + (left - x) / 2f, lastY + lastDiff / 2f - 7.5f)
+                        graphics.translate(x + (left - x) / 2f, midY + (sideBottom - midY) / 2f - 7.5f)
                         graphics.scale(2f, 2f)
                         graphics.drawString("<", -leftWidth / 2, 0, 0xFFFFFF)
                     }
@@ -83,21 +79,17 @@ class CarouselWidget(
             }
         }
 
-        val nextDiff = curr.getHeight() - 10 - (curr.getHeight() - (next?.getHeight() ?: 0)).coerceAtLeast(0)
-        val nextY = midY + sideHeight - nextDiff
-        val nextBottom = nextY + nextDiff
-
-        graphics.scissor(right..(x + width), nextY..nextBottom) {
+        graphics.scissor(right..(x + width), midY..sideBottom) {
             Displays.disableTooltips {
-                next?.extract(graphics, x + width, nextY, alignmentX = 1f)
+                next?.extract(graphics, x + width, midY, alignmentX = 1f)
             }
 
             graphics.renderCarouselOverlay {
-                graphics.fill(right, nextY, x + width, nextBottom, 0x7F000000)
+                graphics.fill(right, midY, x + width, sideBottom, 0x7F000000)
 
-                if (mouseX in right..(x + width) && mouseY in nextY..nextBottom) {
+                if (mouseX in right..(x + width) && mouseY in midY..sideBottom) {
                     graphics.pushPop {
-                        graphics.translate(right + (x + width - right) / 2f, nextY + nextDiff / 2f - 7.5f)
+                        graphics.translate(right + (x + width - right) / 2f, midY + (sideBottom - midY) / 2f - 7.5f)
                         graphics.scale(2f, 2f)
                         graphics.drawString(">", -rightWidth / 2, 0, 0xFFFFFF)
                     }
@@ -112,29 +104,18 @@ class CarouselWidget(
     override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {
         val (mouseX, mouseY) = event
         val curr = displays.getOrNull(index) ?: return
-        val last = displays.getOrNull((index - 1 + displays.size) % displays.size)
-        val next = displays.getOrNull((index + 1) % displays.size)
 
-        val left = x + (width - displays[index].getWidth()) / 2
-        val right = left + displays[index].getWidth()
+        val left = x + (width - curr.getWidth()) / 2
+        val right = left + curr.getWidth()
 
         val midY = y + 10
-        val bottom = y + curr.getHeight()
-        val sideHeight = bottom - midY
+        val sideBottom = y + height
 
-        val lastDiff = curr.getHeight() - 10 - (curr.getHeight() - (last?.getHeight() ?: 0)).coerceAtLeast(0)
-        val lastY = midY + sideHeight - lastDiff
-        val lastBottom = lastY + lastDiff
-
-        if (mouseX.toInt() in x..left && mouseY.toInt() in lastY..lastBottom) {
+        if (mouseX.toInt() in x..left && mouseY.toInt() in midY..sideBottom) {
             index = (index - 1 + displays.size) % displays.size
         }
 
-        val nextDiff = curr.getHeight() - 10 - (curr.getHeight() - (next?.getHeight() ?: 0)).coerceAtLeast(0)
-        val nextY = midY + sideHeight - nextDiff
-        val nextBottom = nextY + nextDiff
-
-        if (mouseX.toInt() in right..(x + width) && mouseY.toInt() in nextY..nextBottom) {
+        if (mouseX.toInt() in right..(x + width) && mouseY.toInt() in midY..sideBottom) {
             index = (index + 1) % displays.size
         }
     }
