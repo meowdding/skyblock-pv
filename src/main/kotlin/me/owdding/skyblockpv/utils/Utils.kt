@@ -51,13 +51,19 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.jvm.optionals.getOrNull
 
 object Utils {
 
     var preferedProfileId: UUID? = null
 
-    val executorPool: ExecutorService = Executors.newFixedThreadPool(12)
+    val threadNumber = AtomicInteger(1)
+    val executorPool: ExecutorService = Executors.newFixedThreadPool(12) { runnable ->
+        Thread(runnable, "skyblockpv-executor-pool-thread-${threadNumber.getAndIncrement()}").apply {
+            isDaemon = true
+        }
+    }
 
     val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
 
