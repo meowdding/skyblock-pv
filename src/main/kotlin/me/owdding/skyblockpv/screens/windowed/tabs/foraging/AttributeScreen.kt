@@ -61,6 +61,7 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         return when (filter) {
             Filter.ALL -> true
             Filter.MAXED -> (repo?.let(::getMax) ?: 0) <= (api?.syphoned ?: 0)
+            Filter.NOT_MAXED -> (repo?.let(::getMax) ?: 0) > (api?.syphoned ?: 0)
             Filter.UNLOCKED -> api != null
             Filter.LOCKED -> api == null
         }
@@ -218,6 +219,7 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         ALL("All"),
         UNLOCKED("Unlocked"),
         LOCKED("Locked"),
+        NOT_MAXED("Not Maxed"),
         MAXED("Maxed"),
         ;
     }
