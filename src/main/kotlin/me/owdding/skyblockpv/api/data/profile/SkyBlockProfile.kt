@@ -214,7 +214,11 @@ data class BackingSkyBlockProfile(
 
             val selected = json.getAs<Boolean>("selected", false)
             if (selected && user == McPlayer.uuid) {
-                SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
+                McClient.runOrNextTick {
+                    SkyBlockPv.runCatching("Publishing profile data to sbapi") {
+                        SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
+                    }
+                }
             }
 
             val profileId = ProfileId(
