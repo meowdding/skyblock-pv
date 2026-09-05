@@ -166,8 +166,6 @@ tasks.withType<ValidateAccessWidenerTask> { enabled = false }
 dependencies {
     "minecraft"(versionedCatalog["minecraft"])
 
-    includeImplementation(versionedCatalog["repolib"])
-
     api(versionedCatalog["skyblockapi"]) {
         capabilities { requireCapability("tech.thatgravyboat:skyblock-api-${stonecutter.current.version}") }
     }
