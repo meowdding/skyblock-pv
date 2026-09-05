@@ -1,11 +1,11 @@
-package me.owdding.skyblockpv.screens.windowed.tabs
+package me.owdding.skyblockpv.screens.windowed.tabs.cf
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
 import me.owdding.lib.extensions.toReadableString
-import me.owdding.lib.layouts.setPos
+import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.CfData
@@ -13,41 +13,49 @@ import me.owdding.skyblockpv.data.api.RabbitEmployee
 import me.owdding.skyblockpv.data.repo.CfCodecs
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.PvTab
-import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
+import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.core.component.DataComponents
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.level.ItemLike
+import tech.thatgravyboat.skyblockapi.api.datetime.SkyBlockInstant
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.extentions.until
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.hover
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.url
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.split
 import java.time.Instant
+import java.util.concurrent.TimeUnit
+import kotlin.time.toJavaInstant
 
-class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseWindowedPvScreen("CHOCOLATE_FACTORY", gameProfile, profile) {
+class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCfScreen(gameProfile, profile) {
 
     override val tab: PvTab = PvTab.CHOCOLATE_FACTORY
 
-    override fun create(bg: DisplayWidget) {
-        val cf = profile.chocolateFactoryData ?: return
+    override fun getLayout(bg: DisplayWidget): Layout {
+        val cf = profile.chocolateFactoryData ?: return PvLayouts.frame { }
 
         val employees = getEmployees(cf)
         val rarities = getRarities(cf, CfCodecs.data)
         val info = getInfo(cf, CfCodecs.data)
         val upgrades = getUpgrades(cf)
 
-        PvLayouts.frame(bg.width, bg.height) {
+        return PvLayouts.frame(bg.width, bg.height) {
             if (maxOf(employees.width, upgrades.width) + info.width + rarities.width + 6 > bg.width) {
                 widget(
                     PvLayouts.vertical(3, 0.5f) {
@@ -67,7 +75,7 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                     widget(rarities)
                 }
             }
-        }.setPos(bg.x, bg.y).visitWidgets(this::addRenderableWidget)
+        }
     }
 
     private fun getUpgrades(cf: CfData) = PvWidgets.label(
@@ -237,6 +245,44 @@ class ChocolateFactoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile?
                             color = PvColors.GOLD
                         }
                         append(")")
+                    }
+                },
+            )
+
+            display(
+                ExtraDisplays.text(
+                    Text.of("Chocobits: ") {
+                        color = PvColors.DARK_GRAY
+
+                        append(cf.chocobits.size.toFormattedString()) {
+                            this.color = PvColors.GOLD
+                        }
+                        append(" / ")
+
+                        append(cf.chocobitsFound.toFormattedString()) {
+                            this.color = PvColors.GOLD
+                        }
+
+                    },
+                    shadow = false
+                ).withTooltip {
+                    add("Current ") {
+                        color = TextColor.RED
+                        append(" / ")
+                        append("Total Found", TextColor.RED)
+                    }
+                    space()
+                    if (cf.chocobits.isEmpty()) {
+                        add("NONE", TextColor.RED)
+                    }
+                    cf.chocobits.sortedBy { it.expiryYear }.forEach {
+                        add("Chocobit ") {
+                            append(it.id.toFormattedString(), TextColor.YELLOW)
+                            append(", found in year ")
+                            append(it.ownedYear.toFormattedString(), TextColor.GREEN)
+                            append(", expires in ")
+                            append(SkyBlockInstant(year = it.expiryYear).instant.until().toReadableTime(maxUnits = 3), TextColor.ORANGE)
+                        }
                     }
                 },
             )

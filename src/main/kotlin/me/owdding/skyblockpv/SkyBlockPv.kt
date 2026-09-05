@@ -34,6 +34,8 @@ import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.Version
+import net.minecraft.core.HolderLookup
+import net.minecraft.data.registries.VanillaRegistries
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
 import tech.thatgravyboat.repolib.api.RepoAPI
@@ -57,6 +59,7 @@ import java.util.concurrent.CompletableFuture
 @Module
 object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.autoResolve() {
 
+    val registryLookup: HolderLookup.Provider by lazy { VanillaRegistries.createLookup() }
     private var meowddingRepo: Boolean = false
     private var apiRepo: Boolean = false
 

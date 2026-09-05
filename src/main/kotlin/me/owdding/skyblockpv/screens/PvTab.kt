@@ -5,11 +5,12 @@ import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
-import me.owdding.skyblockpv.screens.windowed.tabs.ChocolateFactoryScreen
+import me.owdding.skyblockpv.screens.windowed.tabs.cf.ChocolateFactoryScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.FishingScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.MainScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.PetScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.screens.windowed.tabs.cf.BaseCfScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.collection.BaseCollectionScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.collection.CollectionCategories
 import me.owdding.skyblockpv.screens.windowed.tabs.combat.BaseCombatScreen
@@ -76,7 +77,7 @@ enum class PvTab(
         Items.GOLD_BLOCK.withCatharsisId("tab/museum/icon"),
         true,
     ),
-    CHOCOLATE_FACTORY(ChocolateFactoryScreen::class, SkullTextures.CHOCOLATE_FACTORY.skull.withCatharsisId("tab/chocolate_factory/icon")),
+    CHOCOLATE_FACTORY(BaseCfScreen::class, ::ChocolateFactoryScreen, SkullTextures.CHOCOLATE_FACTORY.skull.withCatharsisId("tab/chocolate_factory/icon")),
     RIFT(BaseRiftScreen::class, ::MainRiftScreen, SkullTextures.RIFT.skull.withCatharsisId("tab/rift/icon"), true),
     ;
 
