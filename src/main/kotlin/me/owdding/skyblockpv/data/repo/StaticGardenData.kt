@@ -60,7 +60,7 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
     val internalName: String = internalName ?: name
     val itemId: String = itemId ?: this.internalName
 
-    fun getItem() = SkyBlockItemsRepo.getItemStackOrDefault(itemId.replace(":", "-"))
+    fun getItem() = SkyBlockItemsRepo.getItemStackOrDefault(itemId)
 
     companion object {
         fun getByApiId(s: String) = entries.find { it.internalName == s } ?: UNKNOWN
