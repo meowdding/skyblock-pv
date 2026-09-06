@@ -16,6 +16,7 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.world.item.Items
+import tech.thatgravyboat.skyblockapi.impl.ColoredItems
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -48,8 +49,8 @@ class FactionCfScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                             ExtraDisplays.inventoryBackground(
                                 strings.size, 1,
                                 strings.map {
-                                    val amount = cf.rabbits.get(it)
-                                    Displays.item(if (amount != null) Items.DYE.lime else Items.DYE.gray).withPadding(2).withTooltip {
+                                    val amount = cf.rabbits[it]
+                                    Displays.item(if (amount != null) ColoredItems.LIME_DYE else ColoredItems.GRAY_DYE).withPadding(2).withTooltip {
                                         add(it.toTitleCase(), PvColors.GRAY)
                                         add("Found: ") {
                                             color = PvColors.GRAY

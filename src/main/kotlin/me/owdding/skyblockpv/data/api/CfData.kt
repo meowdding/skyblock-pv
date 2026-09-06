@@ -96,8 +96,7 @@ data class RabbitEmployee(
         in (125..174) -> PvColors.DARK_PURPLE
         in (175..199) -> PvColors.GOLD
         in (200..219) -> PvColors.LIGHT_PURPLE
-        in (220..225) -> PvColors.AQUA
-        in (225..235) -> PvColors.RED
+        in (220..235) -> PvColors.AQUA
         else -> PvColors.GRAY
     }
 }
