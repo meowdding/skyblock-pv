@@ -7,7 +7,6 @@ import com.ibm.icu.util.ULocale
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.LoadData
-import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.http.Http
 
 private const val URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json"
@@ -42,39 +41,70 @@ private fun parse(language: String, country: String): ULocale {
 
 enum class ConfigCurrency(
     val uLocale: ULocale,
+    val isFakeMoney: Boolean = false,
 ) {
     // Real Money
-    USD(ULocale.US),
-    EUR(ULocale.GERMANY),
-    JPY(ULocale.JAPAN),
-    GBP(ULocale.UK),
     AUD(ULocale("en", "AU")),
+    ARS("es", "AR"),
+    BRL("pt", "BR"),
     CAD(ULocale.CANADA),
     CHF("de", "CH"),
-    CNH(ULocale.CHINA),
-    HKD(ULocale.CHINA),
-    NZD("en", "NZ"),
-    CZK("cz", "CZ"),
-    ZWL("en", "ZW"),
+    CNH("zh", "HK"),
+    CZK("cs", "CZ"),
+    CLP("es", "CL"),
+    DKK("da", "DK"),
+    EUR(ULocale.GERMANY),
+    GBP(ULocale.UK),
+    HKD("zh", "HK"),
+    HUF("hu", "HU"),
     INR("hi", "IN"),
+    IDR("id", "ID"),
+    JPY(ULocale.JAPAN),
+    KRW("ko", "KR"),
+    MXN("es", "MX"),
+    MYR("ms", "MY"),
+    NZD("en", "NZ"),
+    NOK("no", "NO"),
+    PLN("pl", "PL"),
+    PHP("en", "PH"),
+    RUB("ru", "RU"),
+    RON("ro", "RO"),
+    SGD("en", "SG"),
+    SEK("sv", "SE"),
+    THB("th", "TH"),
+    TRY("tr", "TR"),
+    TWD("zh", "TW"),
+    USD(ULocale.US),
+    UAH("uk", "UA"),
+    VND("vi", "VN"),
+    ZAR("en", "ZA"),
+    ZWG("en", "ZW"),
 
     // Fake Money
-    BTC(ULocale.US),
-    ETH(ULocale.US),
-    DOGE(ULocale.US),
+    BTC(ULocale.US, isFakeMoney = true),
+    DOGE(ULocale.US, isFakeMoney = true),
+    ETH(ULocale.US, isFakeMoney = true),
+    LTC(ULocale.US, isFakeMoney = true),
+    SOL(ULocale.US, isFakeMoney = true),
     ;
 
     constructor(language: String, country: String) : this(parse(language, country))
 
-    val currencyType = runCatching {
+    val currencyType = if (isFakeMoney) null else runCatching {
         Currency.getInstance(name)
     }.onFailure {
-        if (this.name.length == 4) return@onFailure
         SkyBlockPv.warn("Failed to load currency for $name")
     }.getOrNull()
 
-    fun format(number: Long): String {
-        if (currencyType == null) return "${number.toFormattedString()} $name"
+    fun format(number: Double): String {
+        if (currencyType == null) {
+            val formatted = if (number in -1.0..1.0 && number != 0.0) {
+                String.format(uLocale.toLocale(), "%.8f", number).trimEnd('0').trimEnd('.', ',')
+            } else {
+                NumberFormat.getNumberInstance(uLocale).format(number)
+            }
+            return "$formatted $name"
+        }
 
         val instance = NumberFormat.getCurrencyInstance(uLocale)
         instance.currency = currencyType
