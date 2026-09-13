@@ -13,13 +13,16 @@ import me.owdding.skyblockpv.screens.windowed.tabs.base.GroupedScreen
 import me.owdding.skyblockpv.utils.Utils.skipUntil
 import me.owdding.skyblockpv.utils.Utils.toDateTime
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.network.chat.CommonComponents.space
 import net.minecraft.util.ARGB
 import net.minecraft.world.item.Items
+import sun.management.MemoryUsageCompositeData.getMax
 import tech.thatgravyboat.repolib.api.AttributesAPI
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockAttributesRepo
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -29,14 +32,15 @@ import kotlin.math.absoluteValue
 import kotlin.math.min
 
 class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseForagingScreen(gameProfile, profile),
-    GroupedScreen<AttributeScreen.Filter, SkyBlockRarity, Pair<AttributesAPI.Attribute?, Attribute?>> {
+    GroupedScreen<AttributeScreen.Companion.Filter, SkyBlockRarity, Pair<AttributesAPI.Attribute?, Attribute?>> {
     override val type: ForagingCategory = ForagingCategory.ATTRIBUTES
     override var query: String? = null
     override var filter: Filter = Filter.ALL
     override val noMatchFoundText: String = "No Attribute matches the input!"
-    override val Pair<AttributesAPI.Attribute?, Attribute?>.group: SkyBlockRarity? get() {
-        return runCatching { SkyBlockRarity.valueOf(first?.rarity!!) }.getOrNull()
-    }
+    override val Pair<AttributesAPI.Attribute?, Attribute?>.group: SkyBlockRarity?
+        get() {
+            return runCatching { SkyBlockRarity.valueOf(first?.rarity!!) }.getOrNull()
+        }
 
     override fun filterEntries(): Collection<Filter> = Filter.entries
     override fun Filter.display(): String = this.display
@@ -82,11 +86,6 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         }.map { it.stripColor() }.any { it.contains(query, ignoreCase = true) }
     }
 
-    fun getMax(repo: AttributesAPI.Attribute) = when (repo.id.lowercase()) {
-        "reptiloid" -> 0
-        else -> repo.max
-    }
-
     override fun getColor(group: SkyBlockRarity?, data: Pair<AttributesAPI.Attribute?, Attribute?>): Int {
         val (repo, api) = data
         val baseColor = group?.color ?: -1
@@ -106,26 +105,36 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 repo?.let(::getMax) != 0 && (api == null || api.syphoned <= 0) && filter != Filter.LOCKED -> Items.DYE.gray().defaultInstance
                 else -> item ?: Items.BARRIER.defaultInstance
             },
-        ).withTooltip {
+        ).withTooltip { getAttributeTooltip(group, repo, api) }
+    }
+
+    companion object {
+        fun getMax(repo: AttributesAPI.Attribute) = when (repo.id.lowercase()) {
+            "reptiloid" -> 0
+            else -> repo.max
+        }
+
+        context(builder: TooltipBuilder)
+        fun getAttributeTooltip(rarity: SkyBlockRarity?, repo: AttributesAPI.Attribute?, api: Attribute?) {
             val max = repo?.let(::getMax) ?: -1
 
             if (repo == null) {
-                add("Unknown shard!")
+                builder.add("Unknown shard!")
             } else {
-                add {
+                builder.add {
                     append(repo.name)
                     append(" (")
                     append(repo.shardName)
                     append(")")
 
-                    color = group?.color ?: -1
+                    color = rarity?.color ?: -1
                 }
                 ListMerger(repo.lore).apply {
                     addUntil { it.stripColor().startsWith("You can Syphon this shard") }
                     skipUntil { it.endsWith("SHARD") }
 
                     addRemaining()
-                }.destination.forEach(::add)
+                }.destination.forEach(builder::add)
             }
 
             val capturedAt = api?.capturedAt?.takeUnless { it == 0L }
@@ -134,14 +143,14 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
             space()
 
-            add {
+            builder.add {
                 color = TextColor.GRAY
                 append("Owned: ")
                 append(owned.toString(), TextColor.YELLOW)
             }
 
             if (owned != 0) {
-                add {
+                builder.add {
                     color = TextColor.GRAY
                     append("Last Captured At: ")
                     if (capturedAt == null) {
@@ -153,8 +162,8 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             }
 
             when (max) {
-                0 -> add("Can't be syphoned!", TextColor.RED)
-                else if group == null -> add {
+                0 -> builder.add("Can't be syphoned!", TextColor.RED)
+                else if rarity == null -> builder.add {
                     color = TextColor.GRAY
                     append("Syphoned: ")
                     append(syphoned.toString(), TextColor.YELLOW)
@@ -163,9 +172,9 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 }
 
                 else -> {
-                    val level = group.getLevel(syphoned)
-                    val max = group.getMax()
-                    add {
+                    val level = rarity.getLevel(syphoned)
+                    val max = rarity.getMax()
+                    builder.add {
                         color = TextColor.GRAY
                         append("Syphoned: ")
                         append(
@@ -179,7 +188,7 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         append("/")
                         append(max.toString(), TextColor.GREEN)
                     }
-                    add {
+                    builder.add {
                         color = TextColor.GRAY
                         append("Level: ")
                         append(
@@ -197,7 +206,7 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     val total = 40
                     val used = min(level * 4, total)
                     val unused = total - used
-                    add {
+                    builder.add {
                         append(" ".repeat(used), TextColor.GREEN)
                         append(" ".repeat(unused), TextColor.GRAY)
                         strikethrough = true
@@ -207,20 +216,20 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
             if (McClient.options.advancedItemTooltips && repo != null) {
                 space()
-                add("${repo.id.lowercase()} - ${repo.attributeId} (${repo.shardId.lowercase()})", TextColor.DARK_GRAY)
+                builder.add("${repo.id.lowercase()} - ${repo.attributeId} (${repo.shardId.lowercase()})", TextColor.DARK_GRAY)
             }
         }
-    }
 
-    private fun SkyBlockRarity.getLevel(syphoned: Int) = AttributesData[this].indexOfLast { it <= syphoned }
-    private fun SkyBlockRarity.getMax() = AttributesData[this].max()
+        private fun SkyBlockRarity.getLevel(syphoned: Int) = AttributesData[this].indexOfLast { it <= syphoned }
+        private fun SkyBlockRarity.getMax() = AttributesData[this].max()
 
-    enum class Filter(val display: String) {
-        ALL("All"),
-        UNLOCKED("Unlocked"),
-        LOCKED("Locked"),
-        NOT_MAXED("Not Maxed"),
-        MAXED("Maxed"),
-        ;
+        enum class Filter(val display: String) {
+            ALL("All"),
+            UNLOCKED("Unlocked"),
+            LOCKED("Locked"),
+            NOT_MAXED("Not Maxed"),
+            MAXED("Maxed"),
+            ;
+        }
     }
 }

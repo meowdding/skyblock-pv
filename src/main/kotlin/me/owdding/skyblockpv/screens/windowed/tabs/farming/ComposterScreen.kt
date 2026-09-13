@@ -17,6 +17,7 @@ import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.data.repo.GreenhouseUpgrade
 import me.owdding.skyblockpv.data.repo.StaticComposterData
 import me.owdding.skyblockpv.data.repo.StaticGardenData
+import me.owdding.skyblockpv.screens.windowed.tabs.foraging.AttributeScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -27,6 +28,9 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockAttributesRepo
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
@@ -145,29 +149,46 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     private fun getUpgrades() = PvWidgets.label(
         "Upgrades",
         PvLayouts.frame {
+            val upgrades = buildList {
+                StaticGardenData.composterData.map { (upgrade, data) ->
+                    add(Displays.padding(2, getComposterUpgrade(upgrade, data)))
+                }
+                add(Displays.padding(2, getComposterUpgrade(ComposterUpgrade.COMPOST_SPEED_ATTRIBUTE, null)))
+            }
+
             display(
                 ExtraDisplays.inventoryBackground(
-                    5, Orientation.HORIZONTAL,
-                    Displays.padding(
-                        2,
-                        StaticGardenData.composterData.map { (upgrade, data) ->
-                            Displays.padding(2, getComposterUpgrade(upgrade, data))
-                        }.toRow(),
-                    ),
+                    upgrades.size, Orientation.HORIZONTAL,
+                    Displays.padding(2, upgrades.toRow()),
                 ),
             )
         },
     )
 
-    fun getComposterUpgrade(upgrade: ComposterUpgrade, data: StaticComposterData): Display {
+    fun getComposterUpgrade(upgrade: ComposterUpgrade, data: StaticComposterData?): Display {
         return loaded(
             onError = Displays.item(Items.BEDROCK).withTooltip { add("Error") { this.color = PvColors.RED } },
             whileLoading = Displays.item(Items.DYE.orange()).withTooltip { add("Loading...") { this.color = PvColors.GOLD } },
-        ) { createDisplay(it, upgrade, data) }
+        ) { createComposterUpgradeDisplay(it, upgrade, data) }
     }
 
-    fun createDisplay(gardenProfile: GardenProfile, upgrade: ComposterUpgrade, data: StaticComposterData): Display {
+    fun createComposterUpgradeDisplay(gardenProfile: GardenProfile, upgrade: ComposterUpgrade, data: StaticComposterData?): Display {
         val level = gardenProfile.composterData.upgrades[upgrade] ?: 0
+
+        if (upgrade == ComposterUpgrade.COMPOST_SPEED_ATTRIBUTE) {
+            val id = "compost_speed"
+            return Displays.item(SkyBlockId.attribute(id).toItem(), customStackText = level.toString()).withTooltip {
+                AttributeScreen.getAttributeTooltip(SkyBlockRarity.UNCOMMON, SkyBlockAttributesRepo.get(id), profile.attributeData.data.find { it.id == id })
+            }
+        }
+
+        if (data == null) {
+            return Displays.item(Items.BARRIER).withTooltip {
+                add("Error") { this.color = PvColors.RED }
+                add("Data for $upgrade was null which shouldn't have happened")
+            }
+        }
+
         return Displays.item(data.item, customStackText = level).withTooltip {
             add(
                 data.name.copy().apply {
