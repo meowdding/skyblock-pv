@@ -18,7 +18,7 @@ resourceful-configkt = "4.0.0-beta.1"
 hypixelapi = "1.0.1+build.1+mc1.21"
 mixinconstraints = "1.0.7"
 
-meowdding-lib = "4.2.12"
+meowdding-lib = "4.2.22"
 meowdding-ktmodules = "1.0.5"
 meowdding-ktcodecs = "1.1.14"
 meowdding-resources = "1.0.17"
