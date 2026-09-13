@@ -9,16 +9,23 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.data.museum.MuseumData
 import me.owdding.skyblockpv.utils.Utils.mapInParallel
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
 import java.util.*
 
-object CachedApis {
+enum class CachedApis(val api: CachedApi<*, *, *>) {
+    GARDEN(GardenAPI),
+    MUSEUM(MuseumAPI),
+    STATUS(StatusAPI),
+    PROFILE(ProfileAPI),
+    PLAYER(PlayerAPI);
 
-    fun clearCaches() {
-        ProfileAPI.clearCache()
-        StatusAPI.clearCache()
-        GardenAPI.clearCache()
-        MuseumAPI.clearCache()
-        PlayerAPI.clearCache()
+    private val formattedName = toFormattedName()
+    override fun toString(): String = formattedName
+
+    companion object {
+        fun clearCaches() {
+            entries.forEach { it.api.clearCache() }
+        }
     }
 }
 

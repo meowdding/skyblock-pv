@@ -10,6 +10,7 @@ import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
 import earth.terrarium.olympus.client.utils.State
+import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Alignment
@@ -22,7 +23,12 @@ import me.owdding.lib.platform.screens.MouseButtonEvent
 import me.owdding.lib.platform.screens.mouseClicked
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApis
+import me.owdding.skyblockpv.api.GardenAPI
+import me.owdding.skyblockpv.api.MuseumAPI
 import me.owdding.skyblockpv.api.PlayerAPI
+import me.owdding.skyblockpv.api.ProfileAPI
+import me.owdding.skyblockpv.api.PvAPI
+import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.SocialEntry
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile.Reason
@@ -33,6 +39,7 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
+import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.PvPageState
@@ -56,12 +63,17 @@ import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
+import tech.thatgravyboat.skyblockapi.utils.json.Json
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toPrettyString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
+import java.nio.file.Files
+import java.util.concurrent.CompletableFuture
 
 private const val ASPECT_RATIO = 16.0 / 9.0
 
@@ -215,12 +227,52 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         val networthDebug = Button().withRenderer(WidgetRenderers.text(Text.of("Networth"))).withSize(60, 20).withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback { McClient.clipboard = NetworthDisplay.networthDebug(profile).joinToString("\n") }
 
+        val saveRawDropdown = Widgets.dropdown(
+            DropdownState<CachedApis>.empty(),
+            CachedApis.entries,
+            { Text.of(it.toString()) },
+            { button ->
+                button.withSize(60, 20)
+                button.withRenderer(WidgetRenderers.text(Text.of("Save Raw")))
+            },
+            { builder ->
+                builder.withCallback { endpoint ->
+                    if (endpoint == null) return@withCallback
+                    CompletableFuture.runAsync {
+                        runBlocking {
+                            val path = when (endpoint) {
+                                CachedApis.PROFILE -> ProfileAPI.path(gameProfile.id)
+                                CachedApis.GARDEN -> GardenAPI.path(profile)
+                                CachedApis.MUSEUM -> MuseumAPI.path(profile)
+                                CachedApis.STATUS -> StatusAPI.path(gameProfile.id)
+                                CachedApis.PLAYER -> PlayerAPI.path(gameProfile.id)
+                            }
+
+                            val response = PvAPI.get(path, "save_raw")
+                            if (response != null) {
+                                val idSuffix = if (endpoint == CachedApis.GARDEN || endpoint == CachedApis.MUSEUM) profile.id.id else gameProfile.id
+                                val file = SkyBlockPv.configDir.resolve("raw/${endpoint.name.lowercase()}/$idSuffix.json")
+                                Files.createDirectories(file.parent)
+                                Files.writeString(file, response.first.toPrettyString())
+                                ChatUtils.chat("Raw response saved to ${file.fileName}")
+                            } else {
+                                ChatUtils.chat("Failed to fetch raw response for ${endpoint.name}.")
+                            }
+                        }
+                    }
+                }
+                builder.withAlignment(OverlayAlignment.BOTTOM_LEFT)
+            },
+        ).apply {
+            withTexture(ExtraConstants.BUTTON_DARK)
+        }
 
         widget(refreshButton)
         widget(screenSizeText)
-        widget(saveButton)
+        // widget(saveButton) Formatted Saving doesnt work with the "new" load system
         widget(clearCache)
         widget(networthDebug)
+        widget(saveRawDropdown)
     }
 
     private fun createTabs() = PvLayouts.horizontal(2) {
