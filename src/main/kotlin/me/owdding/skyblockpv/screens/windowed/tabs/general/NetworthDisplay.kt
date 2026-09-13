@@ -69,7 +69,10 @@ object NetworthDisplay {
                 }
             }
 
-            if (!hasMuseum) {
+            if (profile.onStranded) {
+                this.space()
+                this.add(+"widgets.networth.tooltip.stranded_museum_hint")
+            } else if (!hasMuseum) {
                 this.space()
                 this.add(+"widgets.networth.tooltip.museum_hint")
             }

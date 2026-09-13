@@ -379,6 +379,7 @@
                 "note": "<gray>Note: You can change the currency in the settings using <dark_gray>/sbpv</dark_gray>.",
                 "sources": "<gray>Source: ",
                 "museum_hint": "<gray>* Open Museum tab to include Museum net worth</gray>",
+                "stranded_museum_hint": "<gray>* Stranded players do not have museum data</gray>",
                 "not_loaded": "<red>Not loaded</red>"
             }
         },
