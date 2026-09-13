@@ -62,7 +62,7 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
     fun setupRenderState(renderState: AvatarRenderState, partialTick: Float) {
         renderState.nameTag = customDisplayName
         renderState.scoreText = null
-        ContributorHandler.contributors[gameProfile.id]?.let {
+        ContributorHandler.getCosmetic(gameProfile.id)?.let {
             renderState.scoreText = it.title
             (renderState as PlayerRenderStateAccessor).`skyblockpv$scoreShader` = it.titleShader
 
@@ -78,9 +78,6 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
                 renderState.`skyblockpv$catOnShoulder` = cat
             }
             it.babyCat?.let { cat ->
-                //? if < 26.1
-                //return
-
                 renderState.`skyblockpv$catOnShoulder` = cat
                 renderState.`skyblockpv$isCatBaby` = true
             }
