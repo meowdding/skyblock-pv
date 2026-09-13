@@ -77,6 +77,12 @@ object Config : ConfigKt("skyblockpv/config") {
             json.addProperty("partyFinderMessage", state.name)
             json
         },
+        2 to UnaryOperator { json ->
+            if (json.get("currency").asString == "ZWL") {
+                json.addProperty("currency", "ZWG")
+            }
+            json
+        },
     )
     override val version get() = patches.size
 }
