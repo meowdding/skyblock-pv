@@ -24,8 +24,9 @@ object NetworthDisplay {
 
     private fun Display.addTooltip(networth: Networth): Display {
         val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
-        val networthCookies = if (cookiePrice > 0) (networth.first / cookiePrice).roundToLong() else 0L
-        val networthUSD = ((networthCookies * 325.0) / 675.0) * 4.99
+        val cookies = if (cookiePrice > 0) networth.first / cookiePrice else 0.0
+        val networthCookies = cookies.roundToLong()
+        val networthUSD = ((cookies * 325.0) / 675.0) * 4.99
 
         val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
 
@@ -44,9 +45,7 @@ object NetworthDisplay {
 
             this.add {
                 this.append("widgets.networth.tooltip.currency".asTranslated(currency.name))
-                val roundedNetworth = networthConverted.roundToLong()
-
-                this.append(currency.format(roundedNetworth)) { this.color = PvColors.GREEN }
+                this.append(currency.format(networthConverted)) { this.color = PvColors.GREEN }
             }
 
             this.space()
