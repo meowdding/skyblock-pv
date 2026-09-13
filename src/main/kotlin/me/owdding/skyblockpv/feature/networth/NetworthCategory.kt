@@ -1,5 +1,6 @@
 package me.owdding.skyblockpv.feature.networth
 
+import me.owdding.skyblockpv.api.MuseumAPI
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils.filterNotAir
 import net.minecraft.world.item.ItemStack
@@ -26,6 +27,7 @@ enum class NetworthCategory(val source: NetworthSource, formatted: String? = nul
     FISHING_BAG(FishingBagSource),
     QUIVER_BAG(QuiverBagSource),
     PERSONAL_VAULT(PersonalVaultSource),
+    MUSEUM(MuseumSource),
     ;
 
     val formatted = formatted ?: toFormattedName()
@@ -46,7 +48,10 @@ interface NetworthSource {
 interface ItemListNetworthSource : NetworthSource {
     override fun getItemValues(profile: SkyBlockProfile): Map<String, Long> = buildMap {
         getItems(profile)?.filterNotAir()?.forEach {
-            put(it.cleanName, it.getItemValue().price)
+            val price = runCatching { it.getItemValue().price }.getOrDefault(0L)
+            if (price > 0) {
+                this[it.cleanName] = (this[it.cleanName] ?: 0L) + price
+            }
         }
     }
 
@@ -125,4 +130,16 @@ object QuiverBagSource : ItemListNetworthSource {
 
 object PersonalVaultSource : ItemListNetworthSource {
     override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.personalVault
+}
+
+object MuseumSource : ItemListNetworthSource {
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? {
+        val museum = MuseumAPI.getCached(profile) ?: return null
+        val donatedItems = museum.items
+            .filterNot { it.id in museum.borrowingItemIds }
+            .flatMap { it.stacks }
+            .map { it.value }
+        val specialItems = museum.special.map { it.value }
+        return donatedItems + specialItems
+    }
 }

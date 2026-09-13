@@ -16,7 +16,11 @@ import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 
-data class MuseumData(val items: List<MuseumEntry>, val special: List<Lazy<ItemStack>>) {
+data class MuseumData(
+    val items: List<MuseumEntry>,
+    val special: List<Lazy<ItemStack>>,
+    val borrowingItemIds: Set<String> = emptySet(),
+) {
     companion object {
         @OptIn(SkyBlockPvRequired::class)
         fun fromJson(profile: SkyBlockProfile, members: JsonObject?): MuseumData {
@@ -38,7 +42,8 @@ data class MuseumData(val items: List<MuseumEntry>, val special: List<Lazy<ItemS
                 SkyBlockPvMuseumOpenedEvent(items.complete(false)).post(SkyBlockAPI.eventBus)
             }
 
-            return MuseumData(items.complete(), special)
+            val borrowingItemIds = items.filter { it.borrowing }.map { it.id }.toSet()
+            return MuseumData(items.complete(), special, borrowingItemIds)
         }
 
         private fun List<TempMuseumEntry>.complete(includeBorrowing: Boolean = true) =
