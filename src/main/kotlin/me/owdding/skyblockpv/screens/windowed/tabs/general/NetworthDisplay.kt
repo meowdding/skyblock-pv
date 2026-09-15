@@ -5,10 +5,12 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.extensions.shorten
+import me.owdding.skyblockpv.api.MuseumAPI
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.feature.networth.Networth
+import me.owdding.skyblockpv.feature.networth.NetworthCategory
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
@@ -22,7 +24,7 @@ import kotlin.math.roundToLong
 
 object NetworthDisplay {
 
-    private fun Display.addTooltip(networth: Networth): Display {
+    private fun Display.addTooltip(networth: Networth, profile: SkyBlockProfile): Display {
         val cookiePrice = BazaarAPI.getProduct("BOOSTER_COOKIE")?.buyPrice ?: 0.0
         val cookies = if (cookiePrice > 0) networth.first / cookiePrice else 0.0
         val networthCookies = cookies.roundToLong()
@@ -31,6 +33,8 @@ object NetworthDisplay {
         val (currency, networthConverted) = CurrenciesAPI.convert(Config.currency, networthUSD)
 
         if (cookiePrice <= 0) return this
+
+        val hasMuseum = profile.onStranded || MuseumAPI.getCached(profile) != null
 
         return this.withTooltip {
             this.add {
@@ -55,10 +59,22 @@ object NetworthDisplay {
             networth.second.forEach { (category, map) ->
                 this.add {
                     this.append(category.toString()) { this.color = PvColors.YELLOW }
-                    val categoryTotal = map.values.sum()
                     this.append(": ") { this.color = PvColors.YELLOW }
-                    this.append(categoryTotal.toFormattedString()) { this.color = PvColors.GREEN }
+                    if (category == NetworthCategory.MUSEUM && !hasMuseum) {
+                        this.append(+"widgets.networth.tooltip.not_loaded")
+                    } else {
+                        val categoryTotal = map.values.sum()
+                        this.append(categoryTotal.toFormattedString()) { this.color = PvColors.GREEN }
+                    }
                 }
+            }
+
+            if (profile.onStranded) {
+                this.space()
+                this.add(+"widgets.networth.tooltip.stranded_museum_hint")
+            } else if (!hasMuseum) {
+                this.space()
+                this.add(+"widgets.networth.tooltip.museum_hint")
             }
         }
     }
@@ -67,7 +83,11 @@ object NetworthDisplay {
         ExtraDisplays.component(+"widgets.networth", color = { PvColors.DARK_GRAY.toUInt() }, shadow = false),
         ExtraDisplays.completableDisplay(
             profile.netWorth,
-            { ExtraDisplays.grayText(it.first.shorten()).addTooltip(it) },
+            { networth ->
+                val hasMuseum = profile.onStranded || MuseumAPI.getCached(profile) != null
+                val text = if (hasMuseum) networth.first.shorten() else "${networth.first.shorten()}*"
+                ExtraDisplays.grayText(text).addTooltip(networth, profile)
+            },
             { error ->
                 ExtraDisplays.component(+"widgets.networth.failed", color = { PvColors.RED.toUInt() }, shadow = false).withTooltip {
                     this.add {

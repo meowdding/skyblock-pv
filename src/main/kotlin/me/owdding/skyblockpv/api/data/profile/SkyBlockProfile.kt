@@ -90,6 +90,7 @@ interface SkyBlockProfile {
     val dataFuture: CompletableFuture<Void> get() = backingProfile.dataFuture
 
     val netWorth: CompletableFuture<Networth>
+    fun recalculateNetworth(): CompletableFuture<Networth> = netWorth
     val magicalPower: CompletableFuture<Pair<Int, Component>>
 
     val onStranded: Boolean get() = profileType == ProfileType.STRANDED
@@ -107,9 +108,15 @@ interface SkyBlockProfile {
 private fun <T> CompletableFuture<T>.getNowOrElse(defaultValue: T) = if (this.isCompletedExceptionally) defaultValue else this.getNow(defaultValue)
 
 data class CompletableSkyBlockProfile(override val backingProfile: BackingSkyBlockProfile) : SkyBlockProfile {
-    override val netWorth: CompletableFuture<Networth> = NetworthCalculator.calculateNetworthAsync(this)
+    override var netWorth: CompletableFuture<Networth> = NetworthCalculator.calculateNetworthAsync(this)
+        private set
     override val magicalPower: CompletableFuture<Pair<Int, Component>> = MagicalPowerCodecs.calculateMagicalPower(this)
     override val isEmpty: Boolean get() = false
+
+    override fun recalculateNetworth(): CompletableFuture<Networth> {
+        netWorth = NetworthCalculator.calculateNetworthAsync(this)
+        return netWorth
+    }
 }
 
 data class BackingSkyBlockProfile(
