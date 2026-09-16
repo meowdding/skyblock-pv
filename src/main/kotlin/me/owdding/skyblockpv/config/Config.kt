@@ -56,6 +56,7 @@ object Config : ConfigKt("skyblockpv/config") {
         { it.toString() },
         { Identifier.tryParse(it) ?: id("normal") },
     )
+    var seenAutoThemes by strings() { condition = { false } }
     var socials by boolean(true) { this.translation = "skyblockpv.config.socials" }
     var rememberLastTab by boolean(true) { this.translation = "skyblockpv.config.remember_last_tab" }
     var autocompleteSources by enums(value = SuggestionTypes.entries.toTypedArray()) { this.translation = "skyblockpv.config.autocomplete_sources" }
