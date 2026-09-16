@@ -432,7 +432,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             )
         }
 
-        return ExtraDisplays.inventorySlot(Displays.padding(3, item)).let {
+        return ExtraDisplays.inventorySlot(Displays.padding(4, item)).let {
             if (trophyFish.tier == TrophyFishTier.NONE) {
                 return@let Displays.padding(0, 0, 0, 0, it)
             }
