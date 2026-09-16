@@ -34,7 +34,7 @@ data class PvTheme(
     val name: String,
     @FieldName("background_blur") val backgroundBlur: Boolean = true,
 ) {
-    val translation: Component = Component.translatable(name)
+    val translation: Component by lazy { Component.translatable(name) }
 
     companion object {
         val CODEC = SkyBlockPvCodecs.PvThemeCodec
