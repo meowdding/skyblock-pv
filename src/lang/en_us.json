@@ -216,14 +216,14 @@
                     "@id": "gold_essence_shop"
                 },
                 "<white>Increases your chances of fishing up a </white>",
-                "<white><gold>Gold Trophy Fish</gold> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+                "<white><gold>GOLD</gold> tier <gold>Trophies</gold> by <green>2-20%</green>.</white>"
             ],
             "radiant_fisher": [
                 {
                     "@id": "diamond_essence_shop"
                 },
                 "<white>Increases your chances of fishing up a</white>",
-                "<white><aqua>Diamond Trophy Fish</aqua> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+                "<white><aqua>DIAMOND</aqua> tier <gold>Trophies</gold> by <green>2-20%</green>.</white>"
             ]
         },
         "mining": {
