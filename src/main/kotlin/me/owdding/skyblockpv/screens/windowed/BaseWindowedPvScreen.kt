@@ -22,13 +22,7 @@ import me.owdding.lib.layouts.setPos
 import me.owdding.lib.platform.screens.MouseButtonEvent
 import me.owdding.lib.platform.screens.mouseClicked
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.CachedApis
-import me.owdding.skyblockpv.api.GardenAPI
-import me.owdding.skyblockpv.api.MuseumAPI
-import me.owdding.skyblockpv.api.PlayerAPI
-import me.owdding.skyblockpv.api.ProfileAPI
-import me.owdding.skyblockpv.api.PvAPI
-import me.owdding.skyblockpv.api.StatusAPI
+import me.owdding.skyblockpv.api.*
 import me.owdding.skyblockpv.api.data.SocialEntry
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile.Reason
@@ -59,12 +53,12 @@ import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.util.TriState
 import net.minecraft.util.Util
+import tech.thatgravyboat.skyblockapi.api.location.LocationAPI
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McFont
+import tech.thatgravyboat.skyblockapi.impl.HypixelPackLoader
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
-import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
-import tech.thatgravyboat.skyblockapi.utils.json.Json
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toPrettyString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -187,22 +181,39 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
     }
 
     private fun LayoutBuilder.createUserRow() = horizontal(5) {
-        val settingsButton =
-            Button().withSize(20, 20).withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
-                .withTexture(null)
-                .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
-                .withTooltip(+"widgets.open_settings")
+        val settingsButton = Widgets.button {
+            it.withTexture(null)
+            it.withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
+            it.withSize(20, 20)
+            it.withTooltip(+"widgets.open_settings")
+            it.withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
+        }
 
-        val themeSwitcher =
-            Widgets.button().withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.EYE_DROPPER).withColor(MinecraftColors.WHITE)).withSize(20, 20)
-                .withTexture(null).withCallback {
-                    ThemeSupport.nextTheme()
-                    safelyRebuild()
-                    SkyBlockPv.config.save()
-                }.withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
+        val themeSwitcher = Widgets.button {
+            it.withTexture(null)
+            it.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.EYE_DROPPER).withColor(MinecraftColors.WHITE))
+            it.withSize(20, 20)
+            it.withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
+            it.withCallback {
+                ThemeSupport.nextTheme()
+                safelyRebuild()
+                SkyBlockPv.config.save()
+            }
+        }
+
+        val applyPackButton = Widgets.button {
+            it.withTexture(null)
+            it.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.DOWNLOAD).withColor(MinecraftColors.WHITE))
+            it.withSize(20, 20)
+            it.withTooltip(+"widgets.pack_button")
+            it.withCallback {
+                HypixelPackLoader.downloadAndApplyStablePack()
+            }
+        }
 
         widget(settingsButton)
         widget(themeSwitcher)
+        if (!LocationAPI.isOnSkyBlock) widget(applyPackButton)
     }
 
     private fun LayoutBuilder.createDevRow(bg: DisplayWidget) = horizontal(5) {

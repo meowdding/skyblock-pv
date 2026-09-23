@@ -332,6 +332,10 @@
             "",
             "<gray>Current Theme: </gray><0>"
         ],
+        "pack_button": [
+            "<underline><gray>Apply Hypixel Pack</gray></underline>",
+            "Downloads and applies the current Hypixel Pack to avoid seeing missing textures."
+        ],
         "error": {
             "loading": [
                 "Is the API down?",
