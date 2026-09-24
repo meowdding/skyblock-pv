@@ -50,7 +50,7 @@ class FactionCfScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                                 strings.size, 1,
                                 strings.map {
                                     val amount = cf.rabbits[it]
-                                    Displays.item(if (amount != null) ColoredItems.LIME_DYE else ColoredItems.GRAY_DYE).withPadding(2).withTooltip {
+                                    Displays.item(if (amount != null) Items.DYE.lime() else Items.DYE.gray()).withPadding(2).withTooltip {
                                         add(it.toTitleCase(), PvColors.GRAY)
                                         add("Found: ") {
                                             color = PvColors.GRAY

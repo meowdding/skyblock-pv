@@ -1,4 +1,4 @@
-#version 150
+#version 330
 
 uniform sampler2D Sampler0;
 
@@ -7,10 +7,19 @@ layout (std140) uniform MonoInventoryUniform {
     int Vertical;
 };
 
+#ifdef NO_LAYOUTS
 in vec2 texCoord0;
 in vec4 vertexColor;
 
 out vec4 fragColor;
+#else
+#extension GL_ARB_separate_shader_objects : require
+
+layout(location = 0) in vec2 texCoord0;
+layout(location = 1) in vec4 vertexColor;
+
+layout(location = 0) out vec4 fragColor;
+#endif
 
 void main() {
 

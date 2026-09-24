@@ -10,7 +10,7 @@ import me.owdding.ktmodules.Module
 import me.owdding.lib.events.FinishRepoLoadingEvent
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingUpdateChecker
-import me.owdding.lib.utils.isMeowddingDev
+import me.owdding.lib.utils.isMeowddingMaintainer
 import me.owdding.repo.RemoteRepo
 import me.owdding.skyblockpv.api.PvAPI
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider
@@ -43,7 +43,7 @@ import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.events.misc.LiteralCommandBuilder
 import tech.thatgravyboat.skyblockapi.api.events.misc.RegisterCommandsEvent
-import tech.thatgravyboat.skyblockapi.api.events.misc.RepoStatusEvent
+import tech.thatgravyboat.skyblockapi.api.events.repo.RepoEvent
 import tech.thatgravyboat.skyblockapi.api.events.screen.ScreenInitializedEvent
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -59,7 +59,8 @@ import java.util.concurrent.CompletableFuture
 @Module
 object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.autoResolve() {
 
-    val registryLookup: HolderLookup.Provider by lazy { VanillaRegistries.createLookup() }
+    //~ if >= 26.3 'createLookup' -> 'createWorldLookup'
+    val registryLookup: HolderLookup.Provider by lazy { VanillaRegistries.createWorldLookup() }
     private var meowddingRepo: Boolean = false
     private var apiRepo: Boolean = false
 
@@ -78,7 +79,7 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
     val config by lazy { Config.register(configurator) }
 
     val isDevMode get() = McClient.isDev || DevConfig.devMode
-    val isSuperUser by lazy { McPlayer.uuid.isMeowddingDev() }
+    val isSuperUser by lazy { McPlayer.uuid.isMeowddingMaintainer() }
 
     val backgroundTexture = id("buttons/normal")
 
@@ -114,10 +115,10 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
         // Prioritise over skyblocker pv
         val commandId = id("skyblock_pv_command")
         ClientCommandRegistrationCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, commandId)
-        ClientCommandRegistrationCallback.EVENT.register(commandId) { dispatcher, _ ->
+        ClientCommandRegistrationCallback.EVENT.register(commandId) { dispatcher, context ->
             if (!Config.isDisabled) {
                 dispatcher.root.children.removeIf { it.name == "pv" }
-                onRegisterCommands(RegisterCommandsEvent(dispatcher))
+                onRegisterCommands(RegisterCommandsEvent(dispatcher, context))
             }
         }
 
@@ -129,7 +130,7 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
     }
 
     @Subscription
-    private fun RepoStatusEvent.repoReady() {
+    private fun RepoEvent.Status.repoReady() {
         apiRepo = true
         onRepoReady()
     }

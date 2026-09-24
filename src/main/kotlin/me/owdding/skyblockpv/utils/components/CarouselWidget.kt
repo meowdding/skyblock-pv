@@ -2,13 +2,12 @@ package me.owdding.skyblockpv.utils.components
 
 import com.mojang.blaze3d.platform.cursor.CursorType
 import com.mojang.blaze3d.platform.cursor.CursorTypes
+import earth.terrarium.olympus.client.components.base.BaseWidget
 import earth.terrarium.olympus.client.components.buttons.Button
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
-import me.owdding.lib.platform.screens.BaseWidget
-import me.owdding.lib.platform.screens.MouseButtonEvent
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.CarouselPageState
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
@@ -17,6 +16,7 @@ import me.owdding.skyblockpv.utils.Utils
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutSettings
+import net.minecraft.client.input.MouseButtonEvent
 import tech.thatgravyboat.skyblockapi.helpers.McFont
 import tech.thatgravyboat.skyblockapi.platform.drawString
 import tech.thatgravyboat.skyblockapi.platform.pushPop
@@ -110,7 +110,8 @@ class CarouselWidget(
     }
 
     override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {
-        val (mouseX, mouseY) = event
+        val mouseX = event.x
+        val mouseY = event.y
         val curr = displays.getOrNull(index) ?: return
         val last = displays.getOrNull((index - 1 + displays.size) % displays.size)
         val next = displays.getOrNull((index + 1) % displays.size)

@@ -45,10 +45,10 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
     private var _skin: PlayerSkin = DEFAULT_SKIN
 
     init {
-        equipment.set(EquipmentSlot.HEAD, armor[3])
-        equipment.set(EquipmentSlot.CHEST, armor[2])
-        equipment.set(EquipmentSlot.LEGS, armor[1])
-        equipment.set(EquipmentSlot.FEET, armor[0])
+        equipment.set(HEAD, armor[3])
+        equipment.set(CHEST, armor[2])
+        equipment.set(LEGS, armor[1])
+        equipment.set(FEET, armor[0])
         McClient.self.playerSkinRenderCache().lookup(_profile).whenComplete { skin, _ ->
             skin.ifPresent { skin ->
                 _skin = skin.playerSkin()
@@ -90,7 +90,7 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
     override fun getDisplayName(): Component = customDisplayName
     override fun getSkin() = _skin
 
-    override fun isModelPartShown(part: PlayerModelPart) = part != PlayerModelPart.CAPE
+    override fun isModelPartShown(part: PlayerModelPart) = part != CAPE
 
     override fun position(): Vec3? = Minecraft.getInstance().cameraEntity?.position()
 

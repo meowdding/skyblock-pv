@@ -1,34 +1,34 @@
 package me.owdding.skyblockpv.utils.render.inventory
 
-//? 26.1 {
-/*import com.mojang.blaze3d.vertex.Tesselator
-import com.mojang.blaze3d.vertex.VertexFormat
-*///? }
-//? >= 26.2
-import com.mojang.blaze3d.PrimitiveTopology
-import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.textures.FilterMode
-import com.mojang.blaze3d.vertex.BufferBuilder
-import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.renderpearl.api.pipeline.RenderPipeline
 import earth.terrarium.olympus.client.pipelines.pips.OlympusPictureInPictureRenderState
-import earth.terrarium.olympus.client.pipelines.renderer.PipelineRenderer
+import earth.terrarium.olympus.client.pipelines.renderer.PipelineSubmit
+import earth.terrarium.olympus.client.pipelines.uniforms.RenderPipelineUniforms
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.render.TextureSetup
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer
-//? 26.1
-//import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.DynamicGpuDataStorage
 import net.minecraft.client.renderer.SubmitNodeCollector
+import net.minecraft.client.renderer.texture.AbstractTexture
 import org.joml.Matrix3x2f
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import java.util.function.Supplier
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.ByteBufferBuilder
 
-//? 26.1
-//import java.util.function.Function
+//? >= 26.2
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology
+//? 26.1 {
+/*import com.mojang.blaze3d.vertex.Tesselator
+import com.mojang.renderpearl.api.vertex.VertexFormat
+import net.minecraft.client.renderer.MultiBufferSource
+import java.util.function.Function
+*///? }
 
 val MONO_TEXTURE = SkyBlockPv.id("textures/gui/inventory/mono.png")
 val POLY_TEXTURE = SkyBlockPv.id("textures/gui/inventory/poly.png")
@@ -95,8 +95,54 @@ data class PolyInventoryPipState(
     override val shrinkToScissor: Boolean = false
 }
 
-//~ if >= 26.2 '(source: MultiBufferSource.BufferSource) : ' -> '() : ', '(source)' -> '()'
-class MonoInventoryPipRenderer() : PictureInPictureRenderer<MonoInventoryPipState>() {
+private fun <Uniform : RenderPipelineUniforms> submit(
+    pipeline: RenderPipeline,
+    width: Float,
+    height: Float,
+    uniformStorage: Supplier<DynamicGpuDataStorage<Uniform>>,
+    uniform: Uniform,
+    texture: AbstractTexture,
+    color: Int,/*? >= 26.2 >> ')'*/
+    submitNodeCollector: SubmitNodeCollector,
+) {
+    //? if 26.1 {
+/*
+    val bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
+
+    *///? else 26.2 {
+/*
+    ByteBufferBuilder.exactlySized(DefaultVertexFormat.POSITION_TEX_COLOR.vertexSize * 4).use {
+        val bufferBuilder = BufferBuilder(it, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
+    *///? }
+
+    //? if >= 26.3 {
+
+    PipelineSubmit.builder(pipeline)
+        .vertices(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.QUADS) { bufferBuilder ->
+
+            //? }
+
+            bufferBuilder.addVertex(0f, 0f, 0f).setUv(0f, 0f).setColor(color)
+            bufferBuilder.addVertex(0f, height, 0f).setUv(0f, 1f).setColor(color)
+            bufferBuilder.addVertex(width, height, 0f).setUv(1f, 1f).setColor(color)
+            bufferBuilder.addVertex(width, 0f, 0f).setUv(1f, 0f).setColor(color)
+
+            //? 26.3
+        }
+        //? < 26.3
+        //PipelineSubmit.builder(pipeline, bufferBuilder.buildOrThrow())
+        .uniform(uniformStorage, uniform)
+        .textures(TextureSetup.singleTexture(texture.textureView, texture.sampler)).color(color)
+        //~ if >= 26.3 'draw(' -> 'submit(submitNodeCollector'
+        .submit(submitNodeCollector)
+
+    //? = 26.2
+    //}
+
+}
+
+//~ if >= 26.2 '(source: MultiBufferSource.BufferSource) : ' -> ' : ', '(source)' -> '()'
+class MonoInventoryPipRenderer : PictureInPictureRenderer<MonoInventoryPipState>() {
     private var lastState: MonoInventoryPipState? = null
 
     override fun getRenderStateClass() = MonoInventoryPipState::class.java
@@ -112,41 +158,27 @@ class MonoInventoryPipRenderer() : PictureInPictureRenderer<MonoInventoryPipStat
         val scaledWidth = (bounds.width) * scale
         val scaledHeight = bounds.height * scale
 
-        //? >= 26.2 {
-        ByteBufferBuilder.exactlySized(DefaultVertexFormat.POSITION_TEX_COLOR.vertexSize * 4).use {
-            val buffer = BufferBuilder(it, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
-            //?} else
-            //val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
+        val texture = McClient.self.textureManager.getTexture(ThemeSupport.texture(MONO_TEXTURE))
 
-            buffer.addVertex(0f, 0f, 0f).setUv(0f, 0f).setColor(state.color)
-            buffer.addVertex(0f, scaledHeight, 0f).setUv(0f, 1f).setColor(state.color)
-            buffer.addVertex(scaledWidth, scaledHeight, 0f).setUv(1f, 1f).setColor(state.color)
-            buffer.addVertex(scaledWidth, 0f, 0f).setUv(1f, 0f).setColor(state.color)
-
-            val texture = McClient.self.textureManager.getTexture(ThemeSupport.texture(MONO_TEXTURE))
-
-            PipelineRenderer.builder(InventoryTextureRender.MONO_INVENTORY_BACKGROUND, buffer.buildOrThrow())
-                .uniform(MonoInventoryUniform.STORAGE, MonoInventoryUniform(state.size, if (state.vertical) 1 else 0))
-                .textures(
-                    TextureSetup.singleTexture(
-                        texture.textureView,
-                        RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
-                    )
-                )
-                .color(state.color)
-                .draw()
-
-            this.lastState = state
+        submit(
+            InventoryTextureRender.MONO_INVENTORY_BACKGROUND,
+            scaledWidth,
+            scaledHeight,
+            MonoInventoryUniform.STORAGE,
+            MonoInventoryUniform(state.size, if (state.vertical) 1 else 0),
+            texture,
+            state.color,
             //? >= 26.2
-        }
+            submitNodeCollector,
+        )
     }
 
     override fun getTextureLabel() = "skyblockpv_mono_inventory"
 
 }
 
-//~ if >= 26.2 '(source: MultiBufferSource.BufferSource) : ' -> '() : ', '(source)' -> '()'
-class PolyInventoryPipRenderer() : PictureInPictureRenderer<PolyInventoryPipState>() {
+//~ if >= 26.2 '(source: MultiBufferSource.BufferSource) : ' -> ' : ', '(source)' -> '()'
+class PolyInventoryPipRenderer : PictureInPictureRenderer<PolyInventoryPipState>() {
     private var lastState: PolyInventoryPipState? = null
 
     override fun getRenderStateClass() = PolyInventoryPipState::class.java
@@ -162,33 +194,20 @@ class PolyInventoryPipRenderer() : PictureInPictureRenderer<PolyInventoryPipStat
         val scaledWidth = bounds.width * scale
         val scaledHeight = bounds.height * scale
 
-        //? >= 26.2 {
-        ByteBufferBuilder.exactlySized(DefaultVertexFormat.POSITION_TEX_COLOR.vertexSize * 4).use {
-            val buffer = BufferBuilder(it, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
-            //?} else
-            //val buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR)
 
-            buffer.addVertex(0f, 0f, 0f).setUv(0f, 0f).setColor(state.color)
-            buffer.addVertex(0f, scaledHeight, 0f).setUv(0f, 1f).setColor(state.color)
-            buffer.addVertex(scaledWidth, scaledHeight, 0f).setUv(1f, 1f).setColor(state.color)
-            buffer.addVertex(scaledWidth, 0f, 0f).setUv(1f, 0f).setColor(state.color)
+        val texture = McClient.self.textureManager.getTexture(ThemeSupport.texture(POLY_TEXTURE))
 
-            val texture = McClient.self.textureManager.getTexture(ThemeSupport.texture(POLY_TEXTURE))
-
-            PipelineRenderer.builder(InventoryTextureRender.INVENTORY_BACKGROUND, buffer.buildOrThrow())
-                .uniform(PolyInventoryUniform.STORAGE, PolyInventoryUniform(state.size))
-                .textures(
-                    TextureSetup.singleTexture(
-                        texture.textureView,
-                        RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST),
-                    )
-                )
-                .color(state.color)
-                .draw()
-
-            this.lastState = state
+        submit(
+            InventoryTextureRender.INVENTORY_BACKGROUND,
+            scaledWidth,
+            scaledHeight,
+            PolyInventoryUniform.STORAGE,
+            PolyInventoryUniform(state.size),
+            texture,
+            state.color,
             //? >= 26.2
-        }
+            submitNodeCollector,
+        )
     }
 
     override fun getTextureLabel() = "skyblockpv_poly_inventory"

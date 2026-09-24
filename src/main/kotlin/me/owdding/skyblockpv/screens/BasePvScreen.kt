@@ -2,9 +2,11 @@ package me.owdding.skyblockpv.screens
 
 import com.google.gson.*
 import com.mojang.authlib.GameProfile
+import com.mojang.blaze3d.Blaze3D
 import com.mojang.serialization.JsonOps
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.dialog.OlympusDialogs
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.asWidget
@@ -114,7 +116,8 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
                     .withRenderer(WidgetRenderers.text(+"widgets.open_logs"))
                     .withSize(100, 20)
                     .withCallback {
-                        Util.getPlatform().openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
+                        //~ if >= 26.3 'Util.getPlatform()' -> 'Blaze3D'
+                        Blaze3D.openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
                     },
             )
         }
