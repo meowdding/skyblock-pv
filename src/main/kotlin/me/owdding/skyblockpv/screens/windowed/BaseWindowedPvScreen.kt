@@ -516,8 +516,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                         McClient.clipboard = it.url
                         PvToast.addSocialsCopiedToast(it.url)
                     } else {
-                        //~ if >= 26.3 'Util.getPlatform()' -> 'Blaze3D', '(it.url)' -> '(URI(it.url))'
-                        Blaze3D.openUri(URI(it.url))
+                        McClient.openUri(it.url)
                     }
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)

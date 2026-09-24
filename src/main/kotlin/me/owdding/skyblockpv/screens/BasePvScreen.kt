@@ -30,6 +30,7 @@ import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import java.lang.reflect.Type
@@ -116,8 +117,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
                     .withRenderer(WidgetRenderers.text(+"widgets.open_logs"))
                     .withSize(100, 20)
                     .withCallback {
-                        //~ if >= 26.3 'Util.getPlatform()' -> 'Blaze3D'
-                        Blaze3D.openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
+                        McClient.openUri(FabricLoader.getInstance().gameDir.resolve("logs").normalize().toUri())
                     },
             )
         }
