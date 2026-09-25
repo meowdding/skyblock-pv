@@ -1,6 +1,8 @@
 package me.owdding.skyblockpv.screens.windowed
 
 import com.mojang.authlib.GameProfile
+import com.mojang.blaze3d.Blaze3D
+import com.mojang.blaze3d.platform.InputConstants
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
@@ -19,8 +21,6 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
-import me.owdding.lib.platform.screens.MouseButtonEvent
-import me.owdding.lib.platform.screens.mouseClicked
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.*
 import me.owdding.skyblockpv.api.data.SocialEntry
@@ -50,9 +50,10 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.input.MouseButtonInfo
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.util.TriState
-import net.minecraft.util.Util
 import tech.thatgravyboat.skyblockapi.api.location.LocationAPI
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
@@ -66,8 +67,12 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
+import java.net.URI
 import java.nio.file.Files
 import java.util.concurrent.CompletableFuture
+
+//? < 26.3
+//import net.minecraft.util.Util
 
 private const val ASPECT_RATIO = 16.0 / 9.0
 
@@ -435,7 +440,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             if (coopDropdownVisible) {
                 widget(coopMemberDropdown)
                 McClient.runNextTick {
-                    coopMemberDropdown.mouseClicked(MouseButtonEvent(coopMemberDropdown.x + 1.0, coopMemberDropdown.y + 1.0, 1), false)
+                    coopMemberDropdown.mouseClicked(MouseButtonEvent(coopMemberDropdown.x + 1.0, coopMemberDropdown.y + 1.0, MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, 0)), false)
                 }
                 coopDropdownVisible = false
             } else widget(username)
@@ -511,7 +516,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                         McClient.clipboard = it.url
                         PvToast.addSocialsCopiedToast(it.url)
                     } else {
-                        Util.getPlatform().openUri(it.url)
+                        McClient.openUri(it.url)
                     }
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)

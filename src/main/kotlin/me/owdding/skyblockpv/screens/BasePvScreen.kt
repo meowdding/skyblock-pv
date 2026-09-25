@@ -2,9 +2,11 @@ package me.owdding.skyblockpv.screens
 
 import com.google.gson.*
 import com.mojang.authlib.GameProfile
+import com.mojang.blaze3d.Blaze3D
 import com.mojang.serialization.JsonOps
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
+import earth.terrarium.olympus.client.dialog.OlympusDialogs
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.asWidget
@@ -28,6 +30,7 @@ import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import java.lang.reflect.Type
@@ -114,7 +117,7 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
                     .withRenderer(WidgetRenderers.text(+"widgets.open_logs"))
                     .withSize(100, 20)
                     .withCallback {
-                        Util.getPlatform().openPath(FabricLoader.getInstance().gameDir.resolve("logs"))
+                        McClient.openUri(FabricLoader.getInstance().gameDir.resolve("logs").normalize().toUri())
                     },
             )
         }

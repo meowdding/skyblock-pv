@@ -37,7 +37,18 @@ class CatOnShoulderLayer(renderer: RenderLayerParent<AvatarRenderState, PlayerMo
             if (catResource.equals(MissingTextureAtlasSprite.getLocation())) return
             val asset = clientAssetConverter()(catResource)
             val leftShoulder = renderState.parrotOnLeftShoulder == null
-            submitOnShoulder(poseStack, collector, packedLight, renderState, (asset as ClientAsset.Texture).id(), yRot, xRot, leftShoulder, renderState.`skyblockpv$isCatBaby` == true)
+
+            submitOnShoulder(
+                poseStack,
+                collector,
+                packedLight,
+                renderState,
+                (asset as ClientAsset.Texture).id(),
+                yRot,
+                xRot,
+                leftShoulder,
+                renderState.`skyblockpv$isCatBaby` == true,
+            )
         }
     }
 
@@ -62,7 +73,17 @@ class CatOnShoulderLayer(renderer: RenderLayerParent<AvatarRenderState, PlayerMo
         catRenderState.yRot = yRot
         catRenderState.xRot = xRot
         val model = if (isBaby) this.babyModel else this.adultModel
-        collector.submitModel(model, catRenderState, poseStack, model.renderType(variant), packedLight, OverlayTexture.NO_OVERLAY, 0, null)
+        collector.submitModel(
+            model,
+            catRenderState,
+            poseStack,
+            model.renderType(variant),
+            packedLight,
+            OverlayTexture.NO_OVERLAY,
+            0,
+            //? < 26.3
+            //null,
+        )
         poseStack.popPose()
     }
 }
