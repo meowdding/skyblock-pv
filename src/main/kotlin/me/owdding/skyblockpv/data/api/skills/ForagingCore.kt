@@ -15,7 +15,7 @@ data class ForagingCore(override val json: JsonObject) : ParseHelper {
     val dailyGifts by int("daily_gifts")
 
     val forestsWhispers: SkillTreeCurrency by obj("whispers", SkillTreeCurrency.of(CurrencyType.FOREST))
-    val desertWhispers: SkillTreeCurrency by obj("whispers.desert", SkillTreeCurrency.of(CurrencyType.DESERT))
+    val desertWhispers: SkillTreeCurrency by obj("whispers", SkillTreeCurrency.of(CurrencyType.DESERT))
 }
 
 data class PersonalBests(override val json: JsonObject) : ParseHelper {
