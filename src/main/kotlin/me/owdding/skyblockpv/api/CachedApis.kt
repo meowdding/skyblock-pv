@@ -8,6 +8,7 @@ import me.owdding.skyblockpv.api.data.PlayerStatus
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.data.museum.MuseumData
+import me.owdding.skyblockpv.utils.PlayerLevelCache
 import me.owdding.skyblockpv.utils.Utils.mapInParallel
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
 import java.util.*
@@ -62,7 +63,12 @@ object ProfileAPI : CachedApi<UUID, List<SkyBlockProfile>, UUID>() {
 
     fun getProfiles(gameProfile: GameProfile, intent: String, handler: (List<SkyBlockProfile>) -> Unit) = getDataAsync(gameProfile.id, intent) { result ->
         result
-            .onSuccess(handler)
+            .onSuccess { profiles ->
+                profiles.find { it.selected }?.skyBlockLevel?.first?.let { level ->
+                    PlayerLevelCache.update(gameProfile.name, level)
+                }
+                handler(profiles)
+            }
             .onFailure {
                 SkyBlockPv.error("Failed to get profiles for: ${gameProfile.name} (${gameProfile.id})", it)
                 handler(listOf())
