@@ -460,6 +460,14 @@
                     "current state of the player's accessory bag."
                 ]
             }
+        },
+        "bestiary": {
+            "level": "<gray>Bestiary Level: </gray><yellow><0></yellow>",
+            "tiers": "<gray>Tiers: </gray><yellow><0></yellow><gold>/</gold><yellow><1></yellow>",
+            "progress": "<gray>Progress: </gray><green><0>%</green>",
+            "mobs_maxed": "<gray>Mobs Maxed: </gray><yellow><0></yellow><gold>/</gold><yellow><1></yellow>",
+            "next_milestone": "<gray>Next Milestone: </gray><yellow><0></yellow><gold>/</gold><yellow>10</yellow>",
+            "milestone_progress": "<yellow><0></yellow><gold>/</gold><yellow>10</yellow>"
         }
     },
     "themes": {
