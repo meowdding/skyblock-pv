@@ -140,12 +140,13 @@ data class Commission(
     val visitorId: String,
 )
 
-enum class ComposterUpgrade {
+enum class ComposterUpgrade(val fakeUpgrade: Boolean = false) {
     SPEED,
     MULTI_DROP,
     FUEL_CAP,
     ORGANIC_MATTER_CAP,
     COST_REDUCTION,
+    COMPOST_SPEED_ATTRIBUTE(fakeUpgrade = true)
 }
 
 data class ComposterData(

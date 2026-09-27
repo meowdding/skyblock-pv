@@ -54,7 +54,7 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
         val x = if (Config.alignCategoryButtonsLeft) bg.x - 22 else bg.x + bg.width - 9
         val y = bg.y + 20
 
-        this.categories.fold(Layouts.column().withGap(2)) { layout, category ->
+        this.categories.filter { it.canDisplay(profile) }.fold(Layouts.column().withGap(2)) { layout, category ->
             val button = Button().apply {
                 withSize(31, 20)
                 withCallback { Utils.openTab(category, gameProfile, profile) }
@@ -68,7 +68,6 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
                         WidgetRenderers.sprite(if (category.isSelected) ExtraConstants.TAB_LEFT_SELECTED else ExtraConstants.TAB_LEFT),
                         WidgetRenderers.padded(
                             0, 9, 0, 4,
-                            //~ if >= 26.1 'renderItem(' -> 'item('
                             WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(category.icon, ctx.x, ctx.y) },
                         ),
                     ),
@@ -80,7 +79,6 @@ abstract class AbstractCategorizedScreen(name: String, gameProfile: GameProfile,
                         WidgetRenderers.sprite(if (category.isSelected) ExtraConstants.TAB_RIGHT_SELECTED else ExtraConstants.TAB_RIGHT),
                         WidgetRenderers.padded(
                             0, 4, 0, 9,
-                            //~ if >= 26.1 'renderItem(' -> 'item('
                             WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(category.icon, ctx.x, ctx.y) },
                         ),
                     ),
@@ -110,16 +108,17 @@ interface Category : PvPageState {
     }
 
     companion object {
-
         inline fun <reified T> getCategories(profile: SkyBlockProfile?): List<T> where T : Enum<T>, T : Category {
             return T::class.java.enumConstants.filter { it.canDisplay(profile) }
         }
 
         inline fun <reified T> getTabState(profile: SkyBlockProfile?): TriState where T : Enum<T>, T : Category {
             val visibleDisplays = getCategories<T>(profile)
+            val expectedDisplays = T::class.java.enumConstants.count { !it.hideOnStranded || profile?.onStranded != true }
+
             return when {
                 visibleDisplays.isEmpty() -> TriState.FALSE
-                visibleDisplays.size == T::class.java.enumConstants.count { it.canDisplay(profile) } -> TriState.TRUE
+                visibleDisplays.size == expectedDisplays -> TriState.TRUE
                 else -> TriState.DEFAULT
             }
         }

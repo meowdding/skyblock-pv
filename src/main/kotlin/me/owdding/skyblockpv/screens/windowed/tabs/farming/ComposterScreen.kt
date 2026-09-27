@@ -17,6 +17,7 @@ import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
 import me.owdding.skyblockpv.data.repo.GreenhouseUpgrade
 import me.owdding.skyblockpv.data.repo.StaticComposterData
 import me.owdding.skyblockpv.data.repo.StaticGardenData
+import me.owdding.skyblockpv.screens.windowed.tabs.foraging.AttributeScreen
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -27,7 +28,10 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockAttributesRepo
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -145,29 +149,46 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     private fun getUpgrades() = PvWidgets.label(
         "Upgrades",
         PvLayouts.frame {
+            val upgrades = buildList {
+                StaticGardenData.composterData.map { (upgrade, data) ->
+                    add(Displays.padding(2, getComposterUpgrade(upgrade, data)))
+                }
+                add(Displays.padding(2, getComposterUpgrade(ComposterUpgrade.COMPOST_SPEED_ATTRIBUTE, null)))
+            }
+
             display(
                 ExtraDisplays.inventoryBackground(
-                    5, Orientation.HORIZONTAL,
-                    Displays.padding(
-                        2,
-                        StaticGardenData.composterData.map { (upgrade, data) ->
-                            Displays.padding(2, getComposterUpgrade(upgrade, data))
-                        }.toRow(),
-                    ),
+                    upgrades.size, Orientation.HORIZONTAL,
+                    Displays.padding(2, upgrades.toRow()),
                 ),
             )
         },
     )
 
-    fun getComposterUpgrade(upgrade: ComposterUpgrade, data: StaticComposterData): Display {
+    fun getComposterUpgrade(upgrade: ComposterUpgrade, data: StaticComposterData?): Display {
         return loaded(
             onError = Displays.item(Items.BEDROCK).withTooltip { add("Error") { this.color = PvColors.RED } },
-            whileLoading = Displays.item(Items.ORANGE_DYE).withTooltip { add("Loading...") { this.color = PvColors.GOLD } },
-        ) { createDisplay(it, upgrade, data) }
+            whileLoading = Displays.item(Items.DYE.orange()).withTooltip { add("Loading...") { this.color = PvColors.GOLD } },
+        ) { createComposterUpgradeDisplay(it, upgrade, data) }
     }
 
-    fun createDisplay(gardenProfile: GardenProfile, upgrade: ComposterUpgrade, data: StaticComposterData): Display {
+    fun createComposterUpgradeDisplay(gardenProfile: GardenProfile, upgrade: ComposterUpgrade, data: StaticComposterData?): Display {
         val level = gardenProfile.composterData.upgrades[upgrade] ?: 0
+
+        if (upgrade == ComposterUpgrade.COMPOST_SPEED_ATTRIBUTE) {
+            val id = "compost_speed"
+            return Displays.item(SkyBlockId.attribute(id).toItem(), customStackText = level.toString()).withTooltip {
+                AttributeScreen.getAttributeTooltip(SkyBlockRarity.UNCOMMON, SkyBlockAttributesRepo.get(id), profile.attributeData.data.find { it.id == id })
+            }
+        }
+
+        if (data == null) {
+            return Displays.item(Items.BARRIER).withTooltip {
+                add("Error") { this.color = PvColors.RED }
+                add("Data for $upgrade was null which shouldn't have happened")
+            }
+        }
+
         return Displays.item(data.item, customStackText = level).withTooltip {
             add(
                 data.name.copy().apply {
@@ -223,7 +244,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         this.color = PvColors.RED
                     }
                 } else {
-                    append(RepoItemsAPI.getItemName(key))
+                    append(SkyBlockItemsRepo.getLazyItemStack(key)?.getDisplayName() ?: Text.of("Unknown Item"))
                 }
                 append(CommonText.SPACE)
                 append(used.toFormattedString()) {
@@ -251,7 +272,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             val map = MutableList(5) { MutableList(5) { Displays.empty() } }
 
             StaticGardenData.plots.forEach {
-                map[it.location] = Displays.tooltip(Displays.item(Items.BLACK_STAINED_GLASS_PANE), it.getName())
+                map[it.location] = Displays.tooltip(Displays.item(Items.STAINED_GLASS_PANE.black()), it.getName())
             }
 
             fun fillMap(value: Display) {
@@ -264,7 +285,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 onSuccess = { data ->
                     val staticPlots = StaticGardenData.plots.toMutableList().apply { removeAll(data.unlockedPlots) }
                     data.unlockedPlots.forEach {
-                        map[it.location] = Displays.item(Items.GREEN_STAINED_GLASS_PANE).withTooltip(it.getName().also { it.color = PvColors.GREEN })
+                        map[it.location] = Displays.item(Items.STAINED_GLASS_PANE.green()).withTooltip(it.getName().also { it.color = PvColors.GREEN })
                     }
                     val unlockedAmount = data.unlockedPlots.groupBy { it.type }.mapValues { it.value.size }
                     staticPlots.forEach {
@@ -276,7 +297,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         }
 
                         val plotCost = cost[plots]
-                        map[it.location] = Displays.item(Items.BLACK_STAINED_GLASS_PANE).withTooltip(
+                        map[it.location] = Displays.item(Items.STAINED_GLASS_PANE.black()).withTooltip(
                             it.getName(),
                             plotCost.getDisplay().copy().apply { append(Text.of(" x${plotCost.amount}") { color = PvColors.DARK_GRAY }) },
                         )
@@ -285,7 +306,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 loadingValue = {
                     fillMap(
                         Displays.tooltip(
-                            Displays.item(Items.ORANGE_STAINED_GLASS_PANE),
+                            Displays.item(Items.STAINED_GLASS_PANE.orange()),
                             Text.of("Loading...") { this.color = PvColors.GOLD },
                         ),
                     )

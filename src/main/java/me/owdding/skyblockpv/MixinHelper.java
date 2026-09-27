@@ -1,6 +1,6 @@
 package me.owdding.skyblockpv;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 public class MixinHelper {
 

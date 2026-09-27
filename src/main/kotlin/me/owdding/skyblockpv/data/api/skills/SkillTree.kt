@@ -1,17 +1,31 @@
 package me.owdding.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.toColumn
+import me.owdding.lib.displays.withTooltip
+import me.owdding.lib.extensions.round
+import me.owdding.lib.repo.TreeNode
+import me.owdding.lib.repo.TreeRepoData
+import me.owdding.skyblockpv.data.repo.SkullTextures
+import me.owdding.skyblockpv.screens.windowed.tabs.base.SkillTreeItems
 import me.owdding.skyblockpv.utils.ParseHelper
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.json.getAs
+import me.owdding.skyblockpv.utils.theme.PvColors
+import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
-class SkillTree(override val json: JsonObject, skillType: String, treeType: String) : ParseHelper {
+class SkillTree(override val json: JsonObject, id: String, skillType: String, treeType: String, val skillTreeType: SkillTreeType) : ParseHelper {
 
-    constructor(json: JsonObject, treeType: SkillTreeType) : this(json, treeType.skillType, treeType.treeType)
+    constructor(json: JsonObject, id: String, treeType: SkillTreeType) : this(json, id, treeType.skillType, treeType.treeType, treeType)
 
-    val nodes: Map<String, Int> by map("nodes.$skillType") { id, amount -> id to amount.asInt(0) }.map { it.filterKeys { !it.startsWith("toggle_") } }
+    val nodes: Map<String, Int> by map("nodes.$skillType$id") { id, amount -> id to amount.asInt(0) }.map { it.filterKeys { !it.startsWith("toggle_") } }
     val disabled: List<String> by lazy {
         json.getAs<JsonObject>("nodes.$skillType")?.entrySet()?.asSequence()
             ?.filter { it.key.startsWith("toggle") }
@@ -20,44 +34,166 @@ class SkillTree(override val json: JsonObject, skillType: String, treeType: Stri
             ?.map { it.first }
             ?.toList() ?: emptyList()
     }
-    val selectedAbility: String? by parse("selected_ability.$skillType") { it.asString() }
-    val tokensSpent: Int by int("selected_ability.$treeType")
+    val selectedAbility: String? by parse("selected_ability.$skillType$id") { it.asString() }
+    val tokensSpent: Int by int("selected_ability.$treeType$id")
     val experience: Long by long("experience.$skillType")
     val lastReset: Long by long("last_reset.$skillType")
 
     // todo repo, low prio
-    val levelToExp = mapOf(
-        1 to 0,
-        2 to 3_000,
-        3 to 12_000,
-        4 to 37_000,
-        5 to 97_000,
-        6 to 197_000,
-        7 to 347_000,
-        8 to 557_000,
-        9 to 847_000,
-        10 to 1_247_000,
-    )
+    val levelToExp get() = skillTreeType.levelToExp
 
     fun getTreeLevel(): Int = levelToExp.entries.findLast { it.value <= experience }?.key ?: 0
     fun getXpToNextLevel() = experience - (levelToExp[getTreeLevel()] ?: 0)
-    fun getXpRequiredForNextLevel(): Int {
+    fun getXpRequiredForNextLevel(): Long {
         val level = (getTreeLevel() + 1).coerceAtMost(10)
         return (levelToExp[level] ?: 0) - (levelToExp[level - 1] ?: 0)
     }
 
     fun getAbilityLevel(coreNode: String) = 1.takeIf { (nodes[coreNode] ?: 0) < 1 } ?: 2
 
+    fun getLevelDisplay(prefix: String): Display {
+        val level = getTreeLevel()
+        val maxLevel = levelToExp.keys.maxOrNull() ?: 10
+        val isMaxed = level >= maxLevel
+
+        val xpReq = getXpRequiredForNextLevel()
+        val xpToNext = getXpToNextLevel()
+        val progressAmt = if (isMaxed || xpReq <= 0) 1f else (xpToNext.toFloat() / xpReq).coerceIn(0f, 1f)
+
+        val tooltip = TooltipBuilder().apply {
+            add("$prefix Level: $level") { color = PvColors.YELLOW }
+
+            if (isMaxed) {
+                add("Progress to Max: ") {
+                    color = PvColors.GRAY
+                    append("Maxed") { color = PvColors.GOLD }
+                }
+            } else {
+                add("Progress to Level ${level + 1}: ") {
+                    color = PvColors.GRAY
+                    append(xpToNext.toFormattedString()) { color = PvColors.YELLOW }
+                    append("/") { color = PvColors.GOLD }
+                    append(xpReq.toFormattedString()) { color = PvColors.YELLOW }
+                    append(" (${(progressAmt * 100).round()}%)") { color = PvColors.GREEN }
+                }
+            }
+        }.build()
+
+        return listOf(
+            ExtraDisplays.grayText("$prefix: $level"),
+            ExtraDisplays.progress(progressAmt, isMaxed),
+        ).toColumn(2).withTooltip(tooltip)
+    }
 }
 
-enum class SkillTreeType(val skillType: String, val treeType: String) {
-    MINING("mining", "mountain"),
-    FORAGING("foraging", "forest"),
+enum class SkillTreeType(
+    val skillType: String,
+    val treeType: String,
+    val coreNode: String,
+    val skillTreeItems: SkillTreeItems,
+    val nodes: () -> List<TreeNode>,
+    val skullTextures: SkullTextures,
+    val spentPath: (currency: CurrencyType, index: Int) -> String,
+    val totalPath: (currency: CurrencyType) -> String,
+    val levelToExp: Map<Int, Long>,
+) {
+    MINING(
+        "mining",
+        "mountain",
+        "core_of_the_mountain",
+        SkillTreeItems.MINING,
+        TreeRepoData::hotm,
+        SkullTextures.HOTM,
+        { currency, index -> "powder_spent_${currency.name.lowercase()}" + if (index > 1) "_$index" else "" },
+        { currency -> "powder_${currency.name.lowercase()}" },
+        mapOf(
+            1 to 0L, 2 to 3_000L, 3 to 12_000L, 4 to 37_000L, 5 to 97_000L,
+            6 to 197_000L, 7 to 347_000L, 8 to 557_000L, 9 to 847_000L, 10 to 1_247_000L,
+        ),
+    ),
+    FORAGING(
+        "foraging",
+        "forest",
+        "center_of_the_forest",
+        SkillTreeItems.FORAGING,
+        TreeRepoData::hotf,
+        SkullTextures.HOTF,
+        { currency, index -> "${currency.name.lowercase()}.$index.spent" },
+        { currency -> "${currency.name.lowercase()}.total" },
+        mapOf(
+            1 to 0L, 2 to 3_000L, 3 to 12_000L, 4 to 37_000L,
+            5 to 97_000L, 6 to 197_000L, 7 to 347_000L, 8 to 547_000L,
+        ),
+    ),
     ;
 }
 
 data class SkillTrees(override val json: JsonObject) : ParseHelper {
-    val mining: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), SkillTreeType.MINING) }
-    val foraging: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), SkillTreeType.FORAGING) }
+    val mining: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "", SkillTreeType.MINING) }
+    val mining2: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "_2", SkillTreeType.MINING) }
+    val mining3: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "_3", SkillTreeType.MINING) }
+    val mining4: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "_4", SkillTreeType.MINING) }
+    val mining5: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "_5", SkillTreeType.MINING) }
+    val foraging: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "", SkillTreeType.FORAGING) }
+    val foraging2: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "_2", SkillTreeType.FORAGING) }
+    val foraging3: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "_3", SkillTreeType.FORAGING) }
+    val foraging4: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "_4", SkillTreeType.FORAGING) }
+    val foraging5: SkillTree by parse("skill_tree") { SkillTree(it?.asJsonObject ?: JsonObject(), "_5", SkillTreeType.FORAGING) }
+
+    fun select(treeType: SkillTreeType, index: Int) = when (treeType) {
+        SkillTreeType.FORAGING if index == 5 -> foraging5
+        SkillTreeType.FORAGING if index == 4 -> foraging4
+        SkillTreeType.FORAGING if index == 3 -> foraging3
+        SkillTreeType.FORAGING if index == 2 -> foraging2
+        SkillTreeType.FORAGING -> foraging
+        SkillTreeType.MINING if index == 5 -> mining5
+        SkillTreeType.MINING if index == 4 -> mining4
+        SkillTreeType.MINING if index == 3 -> mining3
+        SkillTreeType.MINING if index == 2 -> mining2
+        SkillTreeType.MINING -> mining
+    }
+
+    val selectedMiningTree by int("skill_tree.selected_skill_tree_slot.mining")
+    val selectedForagingTree by int("skill_tree.selected_skill_tree_slot.foraging")
+    val selectedMining: SkillTree get() = select(SkillTreeType.MINING, selectedMiningTree)
+    val selectedForaging: SkillTree get() = select(SkillTreeType.FORAGING, selectedForagingTree)
+
     val refundAbilityFree: Boolean by boolean("skill_tree.refund_ability_free")
+}
+
+enum class CurrencyType(val treeType: SkillTreeType) {
+    MITHRIL(SkillTreeType.MINING),
+    GEMSTONE(SkillTreeType.MINING),
+    GLACITE(SkillTreeType.MINING),
+
+    FOREST(SkillTreeType.FORAGING),
+    DESERT(SkillTreeType.FORAGING),
+    ;
+
+    fun spent(slot: Int): String = treeType.spentPath(this, slot)
+    fun total(): String = treeType.totalPath(this)
+}
+
+data class SkillTreeCurrency(
+    override val json: JsonObject,
+    val currency: CurrencyType,
+) : ParseHelper {
+    companion object {
+        fun of(currency: CurrencyType) = { obj: JsonObject -> SkillTreeCurrency(obj, currency) }
+    }
+
+    val first: Int by int(currency.spent(1))
+    val second: Int by int(currency.spent(2))
+    val third: Int by int(currency.spent(3))
+    val fourth: Int by int(currency.spent(4))
+    val fifth: Int by int(currency.spent(5))
+    val total: Long by long(currency.total())
+
+    fun spent(slot: Int?): Int = when (slot) {
+        2 -> second
+        3 -> third
+        4 -> fourth
+        5 -> fifth
+        else -> first
+    }
 }

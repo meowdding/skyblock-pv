@@ -21,7 +21,8 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class CategorizedMuseumScreen(val category: MuseumCategory, gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
@@ -42,7 +43,7 @@ class CategorizedMuseumScreen(val category: MuseumCategory, gameProfile: GamePro
         if (result != null && (filter == Filter.MISSING || filter == Filter.DONATED_THROUGH_PARENT)) return null
         return result ?: run {
             val parent = museumData.isParentDonated(museumItem)
-            val defaultInstance = (if (parent != null) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance
+            val defaultInstance = (if (parent != null) Items.DYE.lime() else Items.DYE.gray()).defaultInstance
             if (filter == Filter.MISSING && parent != null) return null
             if (filter == Filter.DONATED_THROUGH_PARENT && parent == null) {
                 return null
@@ -50,11 +51,16 @@ class CategorizedMuseumScreen(val category: MuseumCategory, gameProfile: GamePro
 
             listOf(
                 defaultInstance.withTooltip {
-                    add(RepoItemsAPI.getItemName(museumItem.id))
-                    if (parent != null) {
+                    val museumItemName = SkyBlockItemsRepo.getLazyItemStack(museumItem.id)?.getDisplayName() ?:
+                        Text.of("Unknown Item")
+                    val parentItemName = parent?.let { SkyBlockItemsRepo.getLazyItemStack(it)?.getDisplayName() ?:
+                        Text.of("Unknown Item") }
+
+                    add(museumItemName)
+                    if (parentItemName != null) {
                         add("Parent donated: ") {
                             this.color = PvColors.GRAY
-                            append(RepoItemsAPI.getItemName(parent))
+                            append(parentItemName)
                         }
                     } else {
                         add("This item has not been donated!") {
@@ -85,11 +91,13 @@ class CategorizedMuseumScreen(val category: MuseumCategory, gameProfile: GamePro
         val parent = data.isParentDonated(museumArmor)
 
         val missingItem = Displays.item(
-            (if (parent != null) Items.LIME_DYE else Items.GRAY_DYE).defaultInstance.withTooltip {
+            (if (parent != null) Items.DYE.lime() else Items.DYE.gray()).defaultInstance.withTooltip {
                 if (parent != null) {
+                    val parentItemName = SkyBlockItemsRepo.getLazyItemStack(parent)?.getDisplayName() ?:
+                        Text.of("Unknown Item")
                     add("Parent donated: ") {
                         this.color = PvColors.GRAY
-                        append(RepoItemsAPI.getItemName(parent))
+                        append(parentItemName)
                     }
                 } else {
                     add("Missing Armor") {
@@ -97,7 +105,7 @@ class CategorizedMuseumScreen(val category: MuseumCategory, gameProfile: GamePro
                     }
                 }
 
-                museumArmor.armorIds.map { RepoItemsAPI.getItem(it) }.sortedByDescending { sortAmor(it) }.forEach {
+                museumArmor.armorIds.map { SkyBlockItemsRepo.getItemStackOrDefault(it) }.sortedByDescending { sortAmor(it) }.forEach {
                     add(it.hoverName)
                 }
             },

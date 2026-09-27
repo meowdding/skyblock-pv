@@ -30,16 +30,16 @@ class AccessoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
     override fun getExtraLine() = DisplayFactory.vertical(alignment = Alignment.CENTER) {
         val maxwell = profile.maxwell ?: return@vertical
 
-        val display = profile.magicalPower.thenApply { (magicalPower, breakdown) ->
+        val display = profile.magicalPower.thenApply { (accessoryPower, breakdown) ->
             Displays.text(
-                Text.of("Magical Power: ${magicalPower.toFormattedString()}") {
+                Text.of("Accessory Power: ${accessoryPower.toFormattedString()}") {
                     color = PvColors.DARK_GRAY
                     shadowColor = null
                 },
             ).withTooltip(breakdown)
         }
         val loadingDisplay = Displays.text(
-            Text.of("Magical Power: ") {
+            Text.of("Accessory Power: ") {
                 color = PvColors.DARK_GRAY
                 shadowColor = null
                 append("Loading...") {

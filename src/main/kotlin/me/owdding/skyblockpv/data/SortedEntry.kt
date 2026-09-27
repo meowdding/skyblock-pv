@@ -115,6 +115,9 @@ enum class SortedEntry(vararg entries: String) {
         "DIAMOND",
         "ICE",
         "CRIMSON",
+        "FORAGING", // Not in the api yet?
+        "FOSSIL", // Not in the api yet?
+        "SAFARI",
     ),
     RARITY(
         "DIVINE",

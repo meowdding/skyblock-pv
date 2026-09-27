@@ -1,14 +1,16 @@
 package me.owdding.skyblockpv.feature.networth
 
+import me.owdding.skyblockpv.api.MuseumAPI
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils.filterNotAir
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.item.calculator.getItemValue
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.LowestBinAPI
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.Pricing
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 
 enum class NetworthCategory(val source: NetworthSource, formatted: String? = null) {
@@ -19,12 +21,13 @@ enum class NetworthCategory(val source: NetworthSource, formatted: String? = nul
     BACKPACKS(BackpacksSource),
     SACKS(SacksSource),
     PETS(PetsSource),
-    WARDROBE(WardrobeSource),
+    LOADOUT(LoadoutSource),
     EQUIPMENT(EquipmentSource),
     TALISMAN_BAG(TalismanBagSource),
     FISHING_BAG(FishingBagSource),
     QUIVER_BAG(QuiverBagSource),
     PERSONAL_VAULT(PersonalVaultSource),
+    MUSEUM(MuseumSource),
     ;
 
     val formatted = formatted ?: toFormattedName()
@@ -45,7 +48,10 @@ interface NetworthSource {
 interface ItemListNetworthSource : NetworthSource {
     override fun getItemValues(profile: SkyBlockProfile): Map<String, Long> = buildMap {
         getItems(profile)?.filterNotAir()?.forEach {
-            put(it.cleanName, it.getItemValue().price)
+            val price = runCatching { it.getItemValue().price }.getOrDefault(0L)
+            if (price > 0) {
+                this[it.cleanName] = (this[it.cleanName] ?: 0L) + price
+            }
         }
     }
 
@@ -81,7 +87,8 @@ object SacksSource : NetworthSource {
         profile.inventory?.sacks?.forEach { (id, amount) ->
             val unitPrice = Pricing.getPrice(id)
             if (unitPrice > 0) {
-                this[RepoItemsAPI.getItemName(id).stripped] = unitPrice * amount
+                val displayName = SkyBlockItemsRepo.getLazyItemStack(id)?.getDisplayName() ?: Text.of("Unknown Item")
+                this[displayName.stripped] = unitPrice * amount
             }
         }
     }
@@ -98,8 +105,11 @@ object PetsSource : NetworthSource {
     }
 }
 
-object WardrobeSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.wardrobe
+object LoadoutSource : ItemListNetworthSource {
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? {
+        val loadout = profile.inventory?.loadouts ?: return null
+        return loadout.equipmentSets.flatMap { it.value.getStacks() } + loadout.armorSets.flatMap { it.value.getStacks() }
+    }
 }
 
 object EquipmentSource : ItemListNetworthSource {
@@ -120,4 +130,16 @@ object QuiverBagSource : ItemListNetworthSource {
 
 object PersonalVaultSource : ItemListNetworthSource {
     override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.personalVault
+}
+
+object MuseumSource : ItemListNetworthSource {
+    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? {
+        val museum = MuseumAPI.getCached(profile) ?: return null
+        val donatedItems = museum.items
+            .filterNot { it.id in museum.borrowingItemIds }
+            .flatMap { it.stacks }
+            .map { it.value }
+        val specialItems = museum.special.map { it.value }
+        return donatedItems + specialItems
+    }
 }

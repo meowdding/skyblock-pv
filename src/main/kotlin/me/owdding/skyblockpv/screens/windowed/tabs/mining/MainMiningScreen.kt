@@ -12,6 +12,9 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.Crystal
 import me.owdding.skyblockpv.data.api.skills.MiningCore
 import me.owdding.skyblockpv.data.api.skills.RockBracket
+import me.owdding.skyblockpv.data.api.skills.SkillTree
+import me.owdding.skyblockpv.data.api.skills.SkillTreeCurrency
+import me.owdding.skyblockpv.data.api.skills.SkillTrees
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk
 import me.owdding.skyblockpv.data.repo.ForgeTimeData
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
@@ -30,7 +33,7 @@ import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LinearLayout
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -67,7 +70,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         val mining = profile.mining ?: return PvLayouts.empty()
 
         val info = getInformation(profile)
-        val powder = getPowder(mining)
+        val powder = getPowder(profile.skillTrees, mining)
         val crystal = getCrystal(mining).takeIf { mining.crystals.isNotEmpty() } ?: PvLayouts.empty()
         val forge = getForge()
 
@@ -133,12 +136,15 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
             if (!profile.onStranded) {
 
                 val mining = profile.mining ?: return@vertical
-                val tree = profile.skillTrees?.mining
+                val tree = profile.skillTrees?.selectedMining
                 fun grayText(text: String) = display(ExtraDisplays.grayText(text))
                 val totalRuns = mining.crystals.filter { it.key in nucleusRunCrystals }.minOfOrNull { it.value.totalPlaced } ?: 0
-                val hotmLevel = tree?.getTreeLevel() ?: 0
 
-                grayText("HotM: $hotmLevel")
+                if (tree != null) {
+                    display(tree.getLevelDisplay("HotM"))
+                } else {
+                    grayText("HotM: 0")
+                }
                 grayText("Total Runs: ${totalRuns.toFormattedString()}")
 
                 display(rockPetDisplay)
@@ -160,27 +166,23 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
         icon = SkyBlockPv.id("icon/item/clipboard"),
     )
 
-    private fun getPowder(mining: MiningCore) = PvWidgets.label(
+    private fun getPowder(skillTrees: SkillTrees?, mining: MiningCore) = PvWidgets.label(
         "Powder",
         PvLayouts.vertical(3) {
+            fun create(name: String, color: Int, skillTreeCurrency: SkillTreeCurrency): List<Any> {
+                return listOf(
+                    Text.of(name) { this.color = color },
+                    (skillTreeCurrency.total - skillTreeCurrency.spent(skillTrees?.selectedMiningTree)).shorten(),
+                    skillTreeCurrency.total.shorten(),
+                )
+            }
+
             display(
                 listOf(
                     listOf("", "Current", "Total"),
-                    listOf(
-                        Text.of("Mithril") { this.color = PvColors.DARK_GREEN },
-                        mining.powderMithril.shorten(),
-                        (mining.powderSpentMithril + mining.powderMithril).shorten(),
-                    ),
-                    listOf(
-                        Text.of("Gemstone") { this.color = PvColors.LIGHT_PURPLE },
-                        mining.powderGemstone.shorten(),
-                        (mining.powderSpentGemstone + mining.powderGemstone).shorten(),
-                    ),
-                    listOf(
-                        Text.of("Glacite") { this.color = PvColors.AQUA },
-                        mining.powderGlacite.shorten(),
-                        (mining.powderSpentGlacite + mining.powderGlacite).shorten(),
-                    ),
+                    create("Mithril", PvColors.DARK_GREEN, mining.powderMithril),
+                    create("Gemstone", PvColors.LIGHT_PURPLE, mining.powderGemstone),
+                    create("Glacite", PvColors.AQUA, mining.powderGlacite),
                 ).asTable(5),
             )
         },
@@ -194,7 +196,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
 
             val convertedElements = crystals.map { id ->
                 val (name, crystal) = id to (mining.crystals[id] ?: Crystal.EMPTY)
-                val icon = RepoItemsAPI.getItem(name.uppercase()).let { Displays.item(it) }
+                val icon = SkyBlockItemsRepo.getItemStackOrDefault(name.uppercase()).let { Displays.item(it) }
                 val state = ("§2✔".takeIf { crystal.state in listOf("FOUND", "PLACED") } ?: "§4❌").let {
                     Displays.padding(0, 0, 4, 0, Displays.text("§l$it"))
                 }
@@ -229,7 +231,7 @@ class MainMiningScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
     private fun getForge(): Layout? {
         val forgeSlots = profile.forge?.slots ?: return null
         if (forgeSlots.isEmpty()) return null
-        val quickForgeLevel = profile.skillTrees?.mining?.nodes?.entries?.find { it.key == "forge_time" }?.value ?: 0
+        val quickForgeLevel = profile.skillTrees?.selectedMining?.nodes?.entries?.find { it.key == "forge_time" }?.value ?: 0
 
         return PvWidgets.label(
             "Forge",

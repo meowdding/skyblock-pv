@@ -12,7 +12,7 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.ItemStack
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -29,7 +29,7 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
             if (sackItems.entries.sumOf { it.value } == 0L) return@mapNotNull null
 
             val display = sackItems.map {
-                val item = RepoItemsAPI.getItem(it.key).copy().apply {
+                val item = SkyBlockItemsRepo.getItemStackOrDefault(it.key).copy().apply {
                     withTooltip {
                         add(hoverName)
                         val lore = getLore()
@@ -52,7 +52,7 @@ class SacksScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : 
                 )
             }
 
-            RepoItemsAPI.getItem(sack.sack) to display
+            SkyBlockItemsRepo.getItemStackOrDefault(sack.sack) to display
         }.toMap()
 
     override fun Map<String, Long>.getInventories(): List<Display> = sackDisplays.values.toList()

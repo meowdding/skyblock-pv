@@ -37,7 +37,7 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.area.farming.garden.GardenChip
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -192,7 +192,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                                 add(
                                     when (it.key) {
                                         "gold_medal" -> "Gold Medal"
-                                        else -> RepoItemsAPI.getItemName(it.key).stripped
+                                        else -> (SkyBlockItemsRepo.getLazyItemStack(it.key)?.getDisplayName() ?: Text.of("Unknown Item")).stripped
                                     },
                                 ) {
                                     this.color = PvColors.GRAY

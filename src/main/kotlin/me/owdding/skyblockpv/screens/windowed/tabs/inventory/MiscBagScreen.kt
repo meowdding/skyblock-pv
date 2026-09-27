@@ -2,16 +2,15 @@ package me.owdding.skyblockpv.screens.windowed.tabs.inventory
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.Display
-import me.owdding.skyblockpv.api.data.Inventory
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 
-val greenCandy by RepoItemsAPI.getItemLazy("GREEN_CANDY")
-val carnivalMaskBag by RepoItemsAPI.getItemLazy("CARNIVAL_MASK_BAG")
+val greenCandy by lazy { SkyBlockItemsRepo.getItemStackOrDefault("GREEN_CANDY") }
+val carnivalMaskBag by lazy { SkyBlockItemsRepo.getItemStackOrDefault("CARNIVAL_MASK_BAG") }
 
 class MiscBagScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen<Unit>(gameProfile, profile) {
     override fun getRawInventory(): Unit = Unit

@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.screens.windowed
 
 import com.mojang.authlib.GameProfile
+import com.mojang.blaze3d.platform.InputConstants
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.buttons.Button
@@ -10,6 +11,7 @@ import earth.terrarium.olympus.client.constants.MinecraftColors
 import earth.terrarium.olympus.client.ui.OverlayAlignment
 import earth.terrarium.olympus.client.ui.UIIcons
 import earth.terrarium.olympus.client.utils.State
+import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Alignment
@@ -18,11 +20,8 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
-import me.owdding.lib.platform.screens.MouseButtonEvent
-import me.owdding.lib.platform.screens.mouseClicked
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.CachedApis
-import me.owdding.skyblockpv.api.PlayerAPI
+import me.owdding.skyblockpv.api.*
 import me.owdding.skyblockpv.api.data.SocialEntry
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile.Reason
@@ -33,6 +32,7 @@ import me.owdding.skyblockpv.screens.BasePvScreen
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
+import me.owdding.skyblockpv.utils.ChatUtils
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.PvPageState
@@ -45,22 +45,32 @@ import me.owdding.skyblockpv.utils.components.PvToast
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
-import net.minecraft.util.Util
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.input.MouseButtonInfo
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.util.TriState
+import tech.thatgravyboat.skyblockapi.api.location.LocationAPI
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McFont
+import tech.thatgravyboat.skyblockapi.impl.HypixelPackLoader
 import tech.thatgravyboat.skyblockapi.platform.applyBackgroundBlur
+import tech.thatgravyboat.skyblockapi.utils.json.Json.toPrettyString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
+import java.nio.file.Files
+import java.util.concurrent.CompletableFuture
+
+//? < 26.3
+//import net.minecraft.util.Util
 
 private const val ASPECT_RATIO = 16.0 / 9.0
 
@@ -113,19 +123,31 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
 
         createTabs().applyLayout(bg.x + 20, bg.y - 22)
-        createSearch(bg).applyLayout()
+        val searchBox = createSearch(bg)
+        searchBox.applyLayout()
         createProfileDropdown(bg).let {
             it.applyLayout()
 
             if (!Config.socials) return@let
-            val button = createSocialDropdown()
+            val availableWidth = searchBox.x - (it.x + it.width) - 5
+            val socialsWidth = availableWidth.coerceIn(0, 100)
+            val button = createSocialDropdown(socialsWidth)
             button.setPosition(it.x + it.width + 5, it.y)
             button.applyLayout()
         }
 
-        addRenderableOnly(
-            PvWidgets.text(this.tabTitle).withCenterAlignment().withSize(this.uiWidth, 20).withPosition(bg.x, bg.bottom + 2),
-        )
+        // Only add the Title if theres enough width
+        val maxLeft = 100 + if (Config.socials) 105 else 0
+        val maxRight = 120
+        val maxInwardsThing = maxOf(maxLeft, maxRight)
+
+        val titleWidth = McFont.width(this.tabTitle)
+
+        if (this.uiWidth > (maxInwardsThing * 2) + titleWidth + 20) {
+            addRenderableOnly(
+                PvWidgets.text(this.tabTitle).withCenterAlignment().withSize(this.uiWidth, 20).withPosition(bg.x, bg.bottom + 2),
+            )
+        }
     }
 
     private fun addNoProfiles() {
@@ -145,6 +167,8 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                 name,
                 gameProfile.name,
                 gameProfile.id,
+                McClient.version,
+                SkyBlockPv.version,
                 throwable.javaClass.name,
                 throwable.message,
                 throwable.getStackTraceString(7),
@@ -164,22 +188,39 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
     }
 
     private fun LayoutBuilder.createUserRow() = horizontal(5) {
-        val settingsButton =
-            Button().withSize(20, 20).withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
-                .withTexture(null)
-                .withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
-                .withTooltip(+"widgets.open_settings")
+        val settingsButton = Widgets.button {
+            it.withTexture(null)
+            it.withRenderer(WidgetRenderers.icon<AbstractWidget>(SkyBlockPv.olympusId("icons/edit")).withColor(MinecraftColors.WHITE))
+            it.withSize(20, 20)
+            it.withTooltip(+"widgets.open_settings")
+            it.withCallback { McClient.setScreenAsync { ResourcefulConfigScreen.getFactory(SkyBlockPv.MOD_ID).apply(this@BaseWindowedPvScreen) } }
+        }
 
-        val themeSwitcher =
-            Widgets.button().withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.EYE_DROPPER).withColor(MinecraftColors.WHITE)).withSize(20, 20)
-                .withTexture(null).withCallback {
-                    ThemeSupport.nextTheme()
-                    safelyRebuild()
-                    SkyBlockPv.config.save()
-                }.withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
+        val themeSwitcher = Widgets.button {
+            it.withTexture(null)
+            it.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.EYE_DROPPER).withColor(MinecraftColors.WHITE))
+            it.withSize(20, 20)
+            it.withTooltip("widgets.theme_switcher".asTranslated(ThemeSupport.currentTheme.translation))
+            it.withCallback {
+                ThemeSupport.nextTheme()
+                safelyRebuild()
+                SkyBlockPv.config.save()
+            }
+        }
+
+        val applyPackButton = Widgets.button {
+            it.withTexture(null)
+            it.withRenderer(WidgetRenderers.icon<AbstractWidget>(UIIcons.DOWNLOAD).withColor(MinecraftColors.WHITE))
+            it.withSize(20, 20)
+            it.withTooltip(+"widgets.pack_button")
+            it.withCallback {
+                HypixelPackLoader.downloadAndApplyStablePack()
+            }
+        }
 
         widget(settingsButton)
         widget(themeSwitcher)
+        if (!LocationAPI.isOnSkyBlock) widget(applyPackButton)
     }
 
     private fun LayoutBuilder.createDevRow(bg: DisplayWidget) = horizontal(5) {
@@ -204,12 +245,52 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         val networthDebug = Button().withRenderer(WidgetRenderers.text(Text.of("Networth"))).withSize(60, 20).withTexture(ExtraConstants.BUTTON_DARK)
             .withCallback { McClient.clipboard = NetworthDisplay.networthDebug(profile).joinToString("\n") }
 
+        val saveRawDropdown = Widgets.dropdown(
+            DropdownState<CachedApis>.empty(),
+            CachedApis.entries,
+            { Text.of(it.toString()) },
+            { button ->
+                button.withSize(60, 20)
+                button.withRenderer(WidgetRenderers.text(Text.of("Save Raw")))
+            },
+            { builder ->
+                builder.withCallback { endpoint ->
+                    if (endpoint == null) return@withCallback
+                    CompletableFuture.runAsync {
+                        runBlocking {
+                            val path = when (endpoint) {
+                                CachedApis.PROFILE -> ProfileAPI.path(gameProfile.id)
+                                CachedApis.GARDEN -> GardenAPI.path(profile)
+                                CachedApis.MUSEUM -> MuseumAPI.path(profile)
+                                CachedApis.STATUS -> StatusAPI.path(gameProfile.id)
+                                CachedApis.PLAYER -> PlayerAPI.path(gameProfile.id)
+                            }
+
+                            val response = PvAPI.get(path, "save_raw")
+                            if (response != null) {
+                                val idSuffix = if (endpoint == CachedApis.GARDEN || endpoint == CachedApis.MUSEUM) profile.id.id else gameProfile.id
+                                val file = SkyBlockPv.configDir.resolve("raw/${endpoint.name.lowercase()}/$idSuffix.json")
+                                Files.createDirectories(file.parent)
+                                Files.writeString(file, response.first.toPrettyString())
+                                ChatUtils.chat("Raw response saved to ${file.fileName}")
+                            } else {
+                                ChatUtils.chat("Failed to fetch raw response for ${endpoint.name}.")
+                            }
+                        }
+                    }
+                }
+                builder.withAlignment(OverlayAlignment.BOTTOM_LEFT)
+            },
+        ).apply {
+            withTexture(ExtraConstants.BUTTON_DARK)
+        }
 
         widget(refreshButton)
         widget(screenSizeText)
-        widget(saveButton)
+        // widget(saveButton) Formatted Saving doesnt work with the "new" load system
         widget(clearCache)
         widget(networthDebug)
+        widget(saveRawDropdown)
     }
 
     private fun createTabs() = PvLayouts.horizontal(2) {
@@ -229,7 +310,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                     WidgetRenderers.sprite(if (tab.isSelected()) ExtraConstants.TAB_TOP_SELECTED else ExtraConstants.TAB_TOP),
                     WidgetRenderers.padded(
                         4 - (1.takeIf { tab.isSelected() } ?: 0), 0, 9, 0,
-                        //~ if >= 26.1 'renderItem(' -> 'item('
                         WidgetRenderers.center(16, 16) { gr, ctx, _ -> gr.item(tab.getIcon(gameProfile), ctx.x, ctx.y) },
                     ),
                 ),
@@ -362,7 +442,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             if (coopDropdownVisible) {
                 widget(coopMemberDropdown)
                 McClient.runNextTick {
-                    coopMemberDropdown.mouseClicked(MouseButtonEvent(coopMemberDropdown.x + 1.0, coopMemberDropdown.y + 1.0, 1), false)
+                    coopMemberDropdown.mouseClicked(MouseButtonEvent(coopMemberDropdown.x + 1.0, coopMemberDropdown.y + 1.0, MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, 0)), false)
                 }
                 coopDropdownVisible = false
             } else widget(username)
@@ -415,7 +495,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         return dropdown
     }
 
-    private fun createSocialDropdown(): LayoutElement {
+    private fun createSocialDropdown(dropdownWidth: Int): LayoutElement {
         val source = "?utm_source=SkyBlockPv"
         val entries = listOf(
             SocialEntry("SkyCrypt", "https://sky.shiiyu.moe/stats/${gameProfile.name}/${profile.id.name}$source"),
@@ -428,7 +508,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             entries,
             { Text.of(it.name) },
             { button ->
-                button.withSize(100, 20)
+                button.withSize(dropdownWidth, 20)
                 button.withRenderer(WidgetRenderers.text(+"widgets.socials"))
             },
             { builder ->
@@ -438,7 +518,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                         McClient.clipboard = it.url
                         PvToast.addSocialsCopiedToast(it.url)
                     } else {
-                        Util.getPlatform().openUri(it.url)
+                        McClient.openUri(it.url)
                     }
                 }
                 builder.withAlignment(OverlayAlignment.TOP_LEFT)
@@ -450,7 +530,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         return button
     }
 
-    //~ if >= 26.1 'render' -> 'extract' {
     override fun extractBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (ThemeSupport.currentTheme.backgroundBlur) {
             guiGraphics.applyBackgroundBlur()
@@ -459,7 +538,6 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             this.extractTransparentBackground(guiGraphics)
         }
     }
-    //~ }
 
     open fun toTabState(): PvPageState = this.tab
 }

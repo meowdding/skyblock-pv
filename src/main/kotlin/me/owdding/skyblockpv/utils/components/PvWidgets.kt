@@ -42,6 +42,9 @@ object PvWidgets {
             widget(getMainContentWidget(element, width))
         }
 
+    fun LayoutElement.withLabel(title: String, padding: Int = 0, width: Int = this.width + padding + 20, icon: Identifier? = null) =
+        label(Text.of(title), this, padding, width, icon)
+
     fun tools(
         profile: SkyBlockProfile,
         score: (ItemStack) -> Int,

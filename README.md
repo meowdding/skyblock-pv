@@ -175,4 +175,41 @@ as of 2025-04-16
 
 - **Issue**: [SkyBlocker](https://github.com/SkyblockerMod/Skyblocker) includes its own Profile Viewer.
 - **Resolution**: We override their `/pv` command with ours. If you prefer SkyBlocker's version, use `/skyblocker pv` instead.
-- **Note**: We do not provide an option to disable this override, as using our mod implies a preference for our Profile Viewer.  
+- **Note**: We do not provide an option to disable this override, as using our mod implies a preference for our Profile Viewer.
+  
+## Repository Access Issues
+
+> [!WARNING]
+> If you are from Russia or another country where parts of the Internet are blocked, the mod may fail to initialize its external repositories.
+
+### Required Domains
+
+Make sure the following domains are accessible through your VPN, Zapret, or any other bypass solution you are using:
+
+* `https://skyblock-repo.pages.dev/`
+* `https://skyblock-api-repo.thatgravyboat.tech/`
+* `*.owdding.me/`
+* `https://skyblock-pv.thatgravyboat.tech/`
+
+### Configuring Zapret
+
+If you are using Zapret, follow these steps:
+
+1. Open your Zapret installation directory.
+2. Navigate to the `lists` folder.
+3. Open `list-general.txt`.
+4. Add the domains listed above.
+5. When adding them, remove everything before `//` (including `//`) and remove the trailing `/` from each URL.
+
+For example:
+
+```
+https://skyblock-repo.pages.dev/
+```
+
+should become
+
+```
+skyblock-repo.pages.dev
+```
+

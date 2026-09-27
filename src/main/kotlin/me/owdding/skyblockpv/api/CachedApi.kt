@@ -86,7 +86,9 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
             },
             expire.toEpochMilliseconds() - maxCache,
         )
-    }.takeUnless { it.isExpired() }?.data ?: run {
+    }.takeUnless { it.isExpired() }?.data?.also { result ->
+        result.getOrNull()?.let { onDataLoaded(data, it) }
+    } ?: run {
         cache.remove(getKey(data))
         getData(data)
     }
@@ -121,6 +123,7 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
     abstract fun path(data: D): String
     abstract fun getKey(data: D): K
     abstract fun decode(data: JsonObject, originalData: D): V?
+    open fun onDataLoaded(data: D, value: V) {}
 
     fun clearCache() {
         cache.clear()

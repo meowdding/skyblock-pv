@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.toColumn
@@ -21,14 +22,18 @@ import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.FilterScreen
-import me.owdding.skyblockpv.screens.windowed.tabs.base.GroupedScreen
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
+import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.core.Holder
+import net.minecraft.core.HolderLookup
+import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.minecraft.util.Util
 import net.minecraft.world.item.ItemStack
 import org.joml.Matrix3x2f
@@ -36,6 +41,7 @@ import org.joml.Matrix3x2fStack
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
+import tech.thatgravyboat.skyblockapi.platform.identifier
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toDataOrThrow
@@ -49,13 +55,19 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.jvm.optionals.getOrNull
 
 object Utils {
 
     var preferedProfileId: UUID? = null
 
-    val executorPool: ExecutorService = Executors.newFixedThreadPool(12)
+    val threadNumber = AtomicInteger(1)
+    val executorPool: ExecutorService = Executors.newFixedThreadPool(12) { runnable ->
+        Thread(runnable, "skyblockpv-executor-pool-thread-${threadNumber.getAndIncrement()}").apply {
+            isDaemon = true
+        }
+    }
 
     val onHypixel: Boolean get() = McClient.self.connection?.serverBrand()?.startsWith("Hypixel BungeeCord") == true
 
@@ -100,6 +112,7 @@ object Utils {
     fun openPv(name: String) = fetchGameProfile(name) { openPv(it) }
     fun openPv(gp: GameProfile?) {
         validateGameProfile(gp) {
+            PageIssueManager.notifyGlobal()
             McClient.setScreenAsync { (lastTab?.takeIf { Config.rememberLastTab } ?: PvTab.MAIN).create(gp!!) }
         }
     }
@@ -134,6 +147,7 @@ object Utils {
             null
         }
     }
+
     inline fun <reified T : Any> loadFromRemoteRepo(file: String) = runBlocking {
         try {
             SkyBlockPv.debug("Loading $file.json from remote repo")
@@ -251,6 +265,25 @@ object Utils {
     fun <Type> ListMerger<Type>.skipUntil(predicate: (Type) -> Boolean) {
         while (index + 1 < original.size && !predicate(peek())) read()
     }
+
+    fun LayoutElement.framed(width: Int = this.width, height: Int = this.height) = LayoutFactory.frame(width, height) {
+        widget(this@framed) {
+            alignHorizontallyCenter()
+            alignHorizontallyCenter()
+        }
+    }
+
+    fun <T : Any> ResourceKey<out Registry<T>>.list(): List<T> = this.lookup().listElements().map { it.value() }.toList()
+    fun <T : Any> ResourceKey<T>.get(): Holder<T>? = SkyBlockPv.registryLookup.get(this).getOrNull()
+    fun <T : Any> ResourceKey<out Registry<T>>.lookup(): HolderLookup.RegistryLookup<T> = SkyBlockPv.registryLookup.lookupOrThrow(this)
+    fun <T : Any> ResourceKey<out Registry<T>>.get(value: T): Holder<T> = this.lookup().filterElements { it == value }.listElements().findFirst().orElseThrow()
+    fun <T : Any> ResourceKey<out Registry<T>>.get(value: Identifier): Holder<T> = runCatching {
+        this.lookup().listElements().filter {
+            it.unwrapKey().get().identifier == value
+        }.findFirst().orElseThrow()
+    }.onFailure {
+        throw RuntimeException("Failed to load $value from registry $identifier", it)
+    }.getOrThrow()
 }
 
 interface PvPageState {

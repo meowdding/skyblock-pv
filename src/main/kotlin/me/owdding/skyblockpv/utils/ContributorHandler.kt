@@ -5,6 +5,7 @@ import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.ktmodules.Module
+import me.owdding.lib.config.MeowddingLibConfig
 import me.owdding.lib.cosmetics.CosmeticManager
 import me.owdding.lib.events.CosmeticLoadEvent
 import me.owdding.lib.extensions.associateNotNull
@@ -20,8 +21,9 @@ import java.util.*
 
 @Module
 object ContributorHandler {
-    var contributors: MutableMap<UUID, ContributorData> = mutableMapOf()
-        private set
+    private var contributors: MutableMap<UUID, ContributorData> = mutableMapOf()
+
+    val showCosmetics get() = MeowddingLibConfig.pvCosmetic
 
     @Subscription
     fun onCostmeticLoad(event: CosmeticLoadEvent) {
@@ -33,6 +35,9 @@ object ContributorHandler {
         )
         contributors.putAll(contributorData)
     }
+
+    fun getCosmetic(uuid: UUID) = contributors[uuid].takeIf { showCosmetics }
+
 
     @IncludedCodec(named = "cosmetic_url")
     val COSMETIC_URL = CosmeticManager.COSMETIC_URL

@@ -162,7 +162,7 @@ class MainRiftScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             data.trophies.map { trophy ->
                 val ingameTrophy = rift.trophies.find { it.type == trophy.id }
                 val unlocked = ingameTrophy != null
-                val item = trophy.item.takeIf { unlocked } ?: Items.GRAY_DYE.defaultInstance
+                val item = trophy.item.takeIf { unlocked } ?: Items.DYE.gray().defaultInstance
                 val lore = TooltipBuilder(trophy.item.getTooltipLines(Item.TooltipContext.EMPTY, null, TooltipFlag.NORMAL)).apply {
                     if (!unlocked) return@apply
                     add(CommonText.EMPTY)

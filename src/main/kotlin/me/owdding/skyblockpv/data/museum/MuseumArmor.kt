@@ -2,7 +2,7 @@ package me.owdding.skyblockpv.data.museum
 
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.cleanName
 import tech.thatgravyboat.skyblockapi.utils.extentions.getRawLore
 
@@ -18,7 +18,7 @@ data class MuseumArmor(
         addAll(armorIds)
 
     }.flatMap {
-        val item = RepoItemsAPI.getItemOrNull(it) ?: return@flatMap listOf(it)
+        val item = SkyBlockItemsRepo.getItemStack(it) ?: return@flatMap listOf(it)
 
         buildList {
             add(it)

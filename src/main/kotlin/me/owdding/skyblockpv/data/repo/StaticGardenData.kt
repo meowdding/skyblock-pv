@@ -60,7 +60,7 @@ enum class GardenResource(internalName: String? = null, itemId: String? = null) 
     val internalName: String = internalName ?: name
     val itemId: String = itemId ?: this.internalName
 
-    fun getItem() = SkyBlockItemsRepo.getItemStackOrDefault(itemId.replace(":", "-"))
+    fun getItem() = SkyBlockItemsRepo.getItemStackOrDefault(itemId)
 
     companion object {
         fun getByApiId(s: String) = entries.find { it.internalName == s } ?: UNKNOWN
@@ -111,7 +111,6 @@ data class GreenhouseUpgradeData(
     }
 
     fun getTooltipForLevel(level: Int): Component {
-        //~ if >= 26.1 'parseText' -> 'parseComponent'
         return TagParser.QUICK_TEXT_SAFE.parseComponent(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }
@@ -206,7 +205,6 @@ data class StaticComposterData(
     }
 
     fun getTooltipForLevel(level: Int): Component {
-        //~ if >= 26.1 'parseText' -> 'parseComponent'
         return TagParser.QUICK_TEXT_SAFE.parseComponent(tooltip.replace("%reward%", format.format(getRewardForLevel(level))), ParserContext.of())
     }
 }

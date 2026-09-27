@@ -104,7 +104,7 @@ class MutationScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
         val baseItem = data?.id?.let { SkyBlockItemId.item(it).toItem() }
         return Displays.item(
-            baseItem.takeIf { discovered && filter != Filter.UNDISCOVERED } ?: Items.GRAY_DYE.defaultInstance.takeUnless { data == null }
+            baseItem.takeIf { discovered && filter != Filter.UNDISCOVERED } ?: Items.DYE.gray().defaultInstance.takeUnless { data == null }
             ?: ItemBuilder(Items.TEST_BLOCK) {
                 set(DataComponents.BLOCK_STATE, BlockItemStateProperties(mapOf("mode" to "fail")))
             },

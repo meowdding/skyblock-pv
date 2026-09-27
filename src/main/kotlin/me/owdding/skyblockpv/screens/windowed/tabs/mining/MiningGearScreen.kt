@@ -14,7 +14,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.defaults.Gemstone
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 
 class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseMiningScreen(gameProfile, profile) {
 
@@ -53,7 +53,7 @@ class MiningGearScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nul
                 )
 
                 val suspiciousScrapId = MiningGear.suspicious_scrap.first()
-                val scrapItem = RepoItemsAPI.getItem(suspiciousScrapId)
+                val scrapItem = SkyBlockItemsRepo.getItemStackOrDefault(suspiciousScrapId)
                 var scrapsCount = profile.inventory?.getAllItems()?.filter {
                     it.getData(DataTypes.ID) == suspiciousScrapId
                 }?.sumOf { it.count } ?: 0

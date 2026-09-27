@@ -33,8 +33,9 @@ data class PvTheme(
     @NamedCodec("identifier_map") val textures: Map<Identifier, Identifier> = mapOf(),
     val name: String,
     @FieldName("background_blur") val backgroundBlur: Boolean = true,
+    @FieldName("auto_default") val autoDefault: Boolean = false,
 ) {
-    val translation: Component = Component.translatable(name)
+    val translation: Component by lazy { Component.translatable(name) }
 
     companion object {
         val CODEC = SkyBlockPvCodecs.PvThemeCodec

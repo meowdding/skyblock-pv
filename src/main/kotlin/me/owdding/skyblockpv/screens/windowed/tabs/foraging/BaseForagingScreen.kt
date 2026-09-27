@@ -10,7 +10,7 @@ import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
 import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.remote.api.RepoAttributeAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockAttributesRepo
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 
@@ -23,8 +23,7 @@ abstract class BaseForagingScreen(gameProfile: GameProfile, profile: SkyBlockPro
 }
 
 private val attributesItem: ItemStack by lazy {
-    (RepoAttributeAPI.getAttributeByIdOrNull("r43") ?: Items.BARRIER.defaultInstance)
-        .withCatharsisId("tab/foraging/attributes")
+    SkyBlockAttributesRepo.getItemStackOrDefault("r43").withCatharsisId("tab/foraging/attributes")
 }
 
 enum class ForagingCategory(

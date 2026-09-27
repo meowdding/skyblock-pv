@@ -94,11 +94,11 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     override fun toDisplay(group: SkyBlockRarity?, data: Pair<StaticVisitorData?, Commission?>): Display {
         val (visitor, commission) = data
         val item = loadingValue(
-            visitor?.itemStack.takeUnless { commission == null && !filter.alwaysDisplay } ?: Items.GRAY_DYE.defaultInstance.takeUnless { visitor == null }
+            visitor?.itemStack.takeUnless { commission == null && !filter.alwaysDisplay } ?: Items.DYE.gray().defaultInstance.takeUnless { visitor == null }
             ?: ItemBuilder(Items.TEST_BLOCK) {
                 set(DataComponents.BLOCK_STATE, BlockItemStateProperties(mapOf("mode" to "fail")))
             },
-            Items.ORANGE_DYE.defaultInstance,
+            Items.DYE.orange().defaultInstance,
             Items.BEDROCK.defaultInstance,
         )
 

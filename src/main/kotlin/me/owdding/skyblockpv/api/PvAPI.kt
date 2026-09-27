@@ -34,7 +34,7 @@ object PvAPI {
 
     private var key: String? = null
     private var failedToAuth: Boolean = false
-    private var scheduledSendMessage: Component? = null
+    private var scheduledSendMessage: (() -> Component)? = null
     private var lastAuthTry = Instant.DISTANT_PAST
 
     private val startTime = currentInstant()
@@ -43,7 +43,7 @@ object PvAPI {
     @OnlyOnSkyBlock
     fun onTick(event: TickEvent) {
         scheduledSendMessage?.let {
-            it.sendWithPrefix()
+            it().sendWithPrefix()
             scheduledSendMessage = null
         }
     }
@@ -104,7 +104,7 @@ object PvAPI {
             failedToAuth = false
         } catch (e: Throwable) {
             SkyBlockPv.error("Failed to authenticate with PV API:", e)
-            scheduledSendMessage = +"messages.api.failed_to_authenticate"
+            scheduledSendMessage = { +"messages.api.failed_to_authenticate" }
 
             key = null
             failedToAuth = true

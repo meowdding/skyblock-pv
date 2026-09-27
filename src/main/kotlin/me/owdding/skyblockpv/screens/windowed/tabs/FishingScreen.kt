@@ -421,7 +421,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             val caught = getCaughtInformation(fishies, profile)
             val tooltip = getCaughtInformationTooltip(fishies, profile, caught)
 
-            val item = highestObtainedType?.takeIf { it.tier != TrophyFishTier.NONE }?.item ?: Items.GRAY_DYE.defaultInstance
+            val item = highestObtainedType?.takeIf { it.tier != TrophyFishTier.NONE }?.item ?: Items.DYE.gray().defaultInstance
             val stackText = caught[TrophyFishTier.NONE]?.takeIf { i -> i != 0 }?.let(numberFormatInstance::format) ?: ""
 
             Displays.item(item, customStackText = stackText)
@@ -485,7 +485,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             profile.miscFishData.trophyFrogs.hasCompleted(TrophyFrog(type, tier))
         }
         val highestFrog = highestTier?.let { TrophyFrog(type, it) }
-        val item = highestFrog?.item ?: Items.GRAY_DYE.defaultInstance
+        val item = highestFrog?.item ?: Items.DYE.gray().defaultInstance
         val display = if (highestTier == null) {
             Displays.item(item)
         } else {

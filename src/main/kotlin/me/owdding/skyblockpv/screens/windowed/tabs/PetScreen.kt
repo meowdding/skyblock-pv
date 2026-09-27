@@ -27,7 +27,7 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -177,7 +177,7 @@ class PetScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : Ba
                 }
             }
 
-            val petItemStack = activePet.heldItem?.let { RepoItemsAPI.getItem(it) } ?: return@vertical
+            val petItemStack = activePet.heldItem?.let { SkyBlockItemsRepo.getItemStack(it) } ?: return@vertical
             val itemText = ExtraDisplays.grayText("Held Item")
             val itemDisplay = Displays.item(petItemStack, showTooltip = true)
             if (listOf(itemText, itemDisplay, colon).doesFit()) {

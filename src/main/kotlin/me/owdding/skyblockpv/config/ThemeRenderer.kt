@@ -8,18 +8,18 @@ import com.teamresourceful.resourcefulconfig.client.UIConstants
 import com.teamresourceful.resourcefulconfig.client.components.ModSprites
 import com.teamresourceful.resourcefulconfig.client.components.base.ListWidget
 import com.teamresourceful.resourcefulconfig.client.components.base.SpriteButton
-import me.owdding.lib.platform.screens.BaseWidget
-import me.owdding.lib.platform.screens.MouseButtonEvent
-import me.owdding.lib.platform.screens.Overlay
+import earth.terrarium.olympus.client.components.base.BaseWidget
+import earth.terrarium.olympus.client.ui.Overlay
 import me.owdding.skyblockpv.SkyBlockPv.id
 import me.owdding.skyblockpv.utils.theme.ThemeHelper
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.navigation.ScreenRectangle
+import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
-//? < 1.21.11
-/*import tech.thatgravyboat.skyblockapi.helpers.McClient*/
+import tech.thatgravyboat.skyblockapi.helpers.McClient
+import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.platform.drawSprite
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import java.util.function.Consumer
@@ -56,7 +56,6 @@ class ThemeWidget(
     val setter: Consumer<String>,
 ) : BaseWidget(WIDTH, 16) {
 
-    //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
     override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
 
         graphics.drawSprite(
@@ -66,7 +65,6 @@ class ThemeWidget(
             getWidth(),
             getHeight(),
         )
-        //? > 1.21.10 {
         graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
             Text.translatable(
                 ThemeHelper.themes.entries.firstOrNull { (key) ->
@@ -76,18 +74,6 @@ class ThemeWidget(
             x + 4, x + getWidth() - 16,
             y + 4, y + getHeight() - 4,
         )
-        //?} else {
-        /*renderScrollingString(
-            graphics,
-            McClient.self.font,
-            Text.translatable(ThemeHelper.themes.entries.firstOrNull { (key) -> key.toString() == this.getter.get() }?.value?.name ?: "Unknown"),
-            x + 4,
-            y + 4,
-            x + getWidth() - 16,
-            y + getHeight() - 4,
-            UIConstants.TEXT_PARAGRAPH,
-        )
-        *///?}
         graphics.drawSprite(
             ModSprites.CHEVRON_DOWN,
             x + getWidth() - 12,
@@ -98,10 +84,10 @@ class ThemeWidget(
     }
 
     override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {
-        Minecraft.getInstance().setScreen(DropdownOverlay(this))
+        McClient.setScreen(DropdownOverlay(this))
     }
 
-    class DropdownOverlay(private val widget: ThemeWidget) : Overlay(Minecraft.getInstance().screen) {
+    class DropdownOverlay(private val widget: ThemeWidget) : Overlay(McScreen.self) {
         override fun init() {
             val list: DropdownList = addRenderableWidget(DropdownList.of(widget))
             for ((option, theme) in ThemeHelper.themes) {
@@ -127,7 +113,6 @@ class ThemeWidget(
     }
 
     class DropdownList(x: Int, y: Int, height: Int) : ListWidget(x + 1, y, WIDTH - 2, height) {
-        //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
         override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
             graphics.drawSprite(
                 ModSprites.ACCENT,
@@ -143,7 +128,6 @@ class ThemeWidget(
                 getWidth(),
                 getHeight(),
             )
-            //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
             super.extractWidgetRenderState(graphics, mouseX, mouseY, partialTicks)
         }
 
@@ -162,7 +146,6 @@ class ThemeWidget(
 
     private class DropdownItem(private val option: String, private val translationKey: String, private val setter: Consumer<String>) : BaseWidget(WIDTH, 12),
         ListWidget.Item {
-        //~ if >= 26.1 'renderWidget' -> 'extractWidgetRenderState'
         override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
             graphics.drawSprite(
                 ModSprites.ofButton(this.isHovered()),
@@ -171,22 +154,13 @@ class ThemeWidget(
                 getWidth() - 1,
                 getHeight(),
             )
+
             val color = if (this.isHovered()) UIConstants.TEXT_TITLE else UIConstants.TEXT_PARAGRAPH
-            //? > 1.21.10 {
             graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
                 Text.translatable(translationKey).withColor(color),
                 x + 4, x + getWidth() - 4,
                 y + 1, y + getHeight() - 1,
             )
-            //?} else {
-            /*renderScrollingString(
-                graphics, McClient.self.font, Text.translatable(translationKey),
-                x + 4, y + 1,
-                x + getWidth() - 4, y + getHeight() - 1,
-                color,
-            )
-            *///?}
-
         }
 
         override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {

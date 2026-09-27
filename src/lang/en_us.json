@@ -29,6 +29,11 @@
                 "<white>Can be upgraded at the <light_purple>Forest Essence Shop</light_purple></white>",
                 "<white>in the <gray>Murkwater Outpost</gray> on <dark_green>Galatea</dark_green></white>",
                 ""
+            ],
+            "fossil_essence_shop": [
+                "<white>Can be upgraded at the <light_purple>Fossil Essence Shop</light_purple></white>",
+                "<white>in the <dark_aqua>Dwarven Base Camp</dark_aqua> in the Glacite Tunnels</white>",
+                ""
             ]
         },
         "prefix": "skyblockpv"
@@ -187,6 +192,7 @@
         "combat": "Combat",
         "collection": "Collections",
         "mining": "Mining",
+        "loadout": "Loadouts",
         "foraging": "Foraging",
         "inventory": "Inventory",
         "fishing": "Fishing",
@@ -210,14 +216,14 @@
                     "@id": "gold_essence_shop"
                 },
                 "<white>Increases your chances of fishing up a </white>",
-                "<white><gold>Gold Trophy Fish</gold> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+                "<white><gold>GOLD</gold> tier <gold>Trophies</gold> by <green>2-20%</green>.</white>"
             ],
             "radiant_fisher": [
                 {
                     "@id": "diamond_essence_shop"
                 },
                 "<white>Increases your chances of fishing up a</white>",
-                "<white><aqua>Diamond Trophy Fish</aqua> in the <red>Crimson Isle</red> by <green>2-20%</green>.</white>"
+                "<white><aqua>DIAMOND</aqua> tier <gold>Trophies</gold> by <green>2-20%</green>.</white>"
             ]
         },
         "mining": {
@@ -274,6 +280,42 @@
                     "@id": "diamond_essence_shop"
                 },
                 "<white>Increases the chances of a <aqua>Diamond Goblin</aqua> spawning</white>"
+            ],
+            "prehistorian": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Increases the chance of the <gold>Fossil Dye</gold> spawning in the <gold>Fossil Excavator</gold></white>"
+            ],
+            "resourceful": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Grants a chance to not consume a <gray>Corpse Key</gray> when opening <gray>Corpses</gray> in a <aqua>Glacite Mineshaft</aqua></white>"
+            ],
+            "dwarven_expertise": [
+                {
+                    "@id": "fossil_essence_shop"
+                },
+                "<white>Increases your <gold>☘ Dwarven Metal Fortune</gold> while on <aqua>Mining Islands</aqua></white>"
+            ],
+            "chilled_to_the_bone": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Increases your chances of fishing up <purple>Skeleton Fish</purple> in the <red>Crimson Isle</red></white>"
+            ],
+            "cut_loose": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Killing a <aqua>❆ Glacial Mob</aqua> while inside a <aqua>Glacial Mineshaft</aqua> grants bonus <aqua>❄ Cold Resistance</aqua></white>"
+            ],
+            "sleight_of_hand": [
+                {
+                    "@id": "ice_essence_shop"
+                },
+                "<white>Start the <gold>Fossil Excavator</gold> with <green>1</green> extra charge</white>"
             ]
         }
     },
@@ -289,6 +331,10 @@
             "You can also select a theme in the config!",
             "",
             "<gray>Current Theme: </gray><0>"
+        ],
+        "pack_button": [
+            "<underline><gray>Apply Hypixel Pack</gray></underline>",
+            "Downloads and applies the current Hypixel Pack to avoid seeing missing textures."
         ],
         "error": {
             "loading": [
@@ -317,9 +363,10 @@
                 "Report this in the Discord!",
                 "",
                 "User: <1> - <2>",
+                "Version: <3> - <4>",
                 "",
-                "Exception: <4>: <5>",
-                "Stacktrace: <6>"
+                "Exception: <5>: <6>",
+                "Stacktrace: <7>"
             ]
         },
         "open_logs": "Open Logs",
@@ -334,7 +381,10 @@
                 "cookies": "<yellow>Net worth in Cookies: ",
                 "currency": "<yellow>Net worth in <0>: ",
                 "note": "<gray>Note: You can change the currency in the settings using <dark_gray>/sbpv</dark_gray>.",
-                "sources": "<gray>Source: "
+                "sources": "<gray>Source: ",
+                "museum_hint": "<gray>* Open Museum tab to include Museum net worth</gray>",
+                "stranded_museum_hint": "<gray>* Stranded players do not have museum data</gray>",
+                "not_loaded": "<red>Not loaded</red>"
             }
         },
         "socials": "<white>Socials</white>",
@@ -410,6 +460,14 @@
                     "current state of the player's accessory bag."
                 ]
             }
+        },
+        "bestiary": {
+            "level": "<gray>Bestiary Level: </gray><yellow><0></yellow>",
+            "tiers": "<gray>Tiers: </gray><yellow><0></yellow><gold>/</gold><yellow><1></yellow>",
+            "progress": "<gray>Progress: </gray><green><0>%</green>",
+            "mobs_maxed": "<gray>Mobs Maxed: </gray><yellow><0></yellow><gold>/</gold><yellow><1></yellow>",
+            "next_milestone": "<gray>Next Milestone: </gray><yellow><0></yellow><gold>/</gold><yellow>10</yellow>",
+            "milestone_progress": "<yellow><0></yellow><gold>/</gold><yellow>10</yellow>"
         }
     },
     "themes": {

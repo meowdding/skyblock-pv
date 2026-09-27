@@ -3,9 +3,8 @@ package me.owdding.skyblockpv.data.repo
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 
 @LoadData
 object RiftCodecs : DefaultedData {
@@ -34,6 +33,6 @@ object RiftCodecs : DefaultedData {
         val name: String,
     ) {
         val hypixelId = "RIFT_TROPHY_${id.uppercase()}"
-        val item by RepoItemsAPI.getItemLazy(hypixelId)
+        val item by lazy { SkyBlockItemsRepo.getItemStackOrDefault(hypixelId) }
     }
 }

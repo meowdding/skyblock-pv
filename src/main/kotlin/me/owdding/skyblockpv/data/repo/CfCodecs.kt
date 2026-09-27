@@ -2,11 +2,13 @@ package me.owdding.skyblockpv.data.repo
 
 import com.mojang.serialization.Codec
 import com.notkamui.keval.keval
+import me.owdding.ktcodecs.Compact
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.lib.extensions.ItemUtils.createSkull
+import me.owdding.skyblockpv.data.api.CfFaction
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.codecs.CodecUtils
 import me.owdding.skyblockpv.utils.codecs.DefaultedData
@@ -21,7 +23,13 @@ object CfCodecs : DefaultedData {
         emptyList(),
         emptyMap(),
         CfMiscRepo(emptyMap()),
-        emptyList()
+        emptyList(),
+        CfFactions(
+            emptyMap(),
+            emptyMap(),
+            emptyMap(),
+            emptyMap(),
+        )
     )
     private var _data: CfRepoData? = null
     val data: CfRepoData get() = _data ?: defaultData
@@ -44,7 +52,23 @@ object CfCodecs : DefaultedData {
         val rabbits: Map<SkyBlockRarity, List<String>>,
         val misc: CfMiscRepo,
         @NamedCodec("cum_long_list") @FieldName("hitman_cost") val hitmanCost: List<Long>,
+        val factions: CfFactions
     )
+
+    @GenerateCodec
+    data class CfFactions(
+        val city: Map<SkyBlockRarity, @Compact List<String>>,
+        val country: Map<SkyBlockRarity, @Compact List<String>>,
+        val beach: Map<SkyBlockRarity, @Compact List<String>>,
+        val mountain: Map<SkyBlockRarity, @Compact List<String>>,
+    ) {
+        fun select(faction: CfFaction) = when (faction) {
+            CfFaction.CITY -> city
+            CfFaction.MOUNTAIN -> mountain
+            CfFaction.COUNTRY -> country
+            CfFaction.BEACH -> beach
+        }
+    }
 
     @GenerateCodec
     data class CfEmployeeRepo(

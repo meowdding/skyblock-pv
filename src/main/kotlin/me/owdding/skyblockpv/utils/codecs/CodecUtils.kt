@@ -18,18 +18,14 @@ import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.api.remote.RepoItemsAPI
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 object CodecUtils {
-    internal fun clientAssetConverter(): (Identifier) -> ClientAsset =
-        //? if >= 1.21.9 {
-        ClientAsset::ResourceTexture
-        //?} else
-    /*::ClientAsset*/
+    internal fun clientAssetConverter(): (Identifier) -> ClientAsset = ClientAsset::ResourceTexture
 
     internal inline fun <reified K, reified V> map(): Codec<Map<K, V>> =
         Codec.unboundedMap(SkyBlockPvCodecs.getCodec<K>(), SkyBlockPvCodecs.getCodec<V>())
@@ -80,7 +76,6 @@ object CodecUtils {
 
     @IncludedCodec(named = "component_tag")
     val COMPONENT_TAG: Codec<Component> = Codec.STRING.xmap(
-        //~ if >= 26.1 'parseText' -> 'parseComponent'
         { TagParser.QUICK_TEXT_SAFE.parseComponent(it, ParserContext.of()) },
         { it.string },
     )
@@ -109,7 +104,7 @@ object CodecUtils {
         {
             lazy {
                 if (it.namespace.equals("skyblock")) {
-                    RepoItemsAPI.getItem(it.path.uppercase())
+                    SkyBlockItemsRepo.getItemStackOrDefault(it.path.uppercase())
                 } else {
                     BuiltInRegistries.ITEM.get(it).map { it.value().defaultInstance }
                         .orElseGet {
@@ -138,7 +133,7 @@ object CodecUtils {
     @IncludedCodec(named = "item")
     val ITEM: Codec<Item> = BuiltInRegistries.ITEM.byNameCodec()
 
-    @IncludedCodec
+    @IncludedCodec(keyable = true)
     val SKYBLOCK_ID: Codec<SkyBlockId> = SkyBlockId.UNKNOWN_CODEC
 
     @IncludedCodec(named = "compact_string_list")

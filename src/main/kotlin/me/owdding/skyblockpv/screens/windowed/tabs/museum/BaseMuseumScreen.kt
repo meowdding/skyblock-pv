@@ -52,7 +52,7 @@ abstract class BaseMuseumScreen<FilterType : Any, EntryType : Any>(gameProfile: 
             loaded(
                 listOf(
                     Displays.item(
-                        Items.ORANGE_DYE.defaultInstance.withTooltip {
+                        Items.DYE.orange().defaultInstance.withTooltip {
                             add("Loading...") {
                                 this.color = PvColors.GOLD
                             }
