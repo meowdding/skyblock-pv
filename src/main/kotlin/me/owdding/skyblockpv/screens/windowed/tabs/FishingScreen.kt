@@ -1,18 +1,34 @@
 package me.owdding.skyblockpv.screens.windowed.tabs
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.builder.LayoutBuilder
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asTable
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.centerIn
+import me.owdding.lib.displays.toColumn
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
+import me.owdding.lib.extensions.transpose
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
-import me.owdding.skyblockpv.data.api.skills.*
+import me.owdding.skyblockpv.data.api.skills.DolphinBracket
+import me.owdding.skyblockpv.data.api.skills.FishingGear
+import me.owdding.skyblockpv.data.api.skills.TrophyFish
+import me.owdding.skyblockpv.data.api.skills.TrophyFishType
+import me.owdding.skyblockpv.data.api.skills.TrophyFrog
+import me.owdding.skyblockpv.data.api.skills.TrophyFrogType
 import me.owdding.skyblockpv.data.repo.EssenceData.addFishingPerk
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
+import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.Utils.text
 import me.owdding.skyblockpv.utils.Utils.whiteText
@@ -25,9 +41,9 @@ import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LayoutSettings
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import tech.thatgravyboat.skyblockapi.api.area.isle.trophyfish.TrophyFishRank
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
+import tech.thatgravyboat.skyblockapi.api.datatype.defaults.trophy.TrophyRank
 import tech.thatgravyboat.skyblockapi.api.datatype.defaults.trophy.TrophyTier
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -41,24 +57,75 @@ import java.text.DecimalFormat
 class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
     BaseWindowedPvScreen("Fishing", gameProfile, profile) {
 
-    private val compactTrophyFishWidgetWidth = 180
-    private val trophyFrogWidgetWidth = 110
-    private val sideBySideTrophiesWidth = compactTrophyFishWidgetWidth + 5 + trophyFrogWidgetWidth
-    private val sideBySideTrophiesHeight = 170
-    private val stackedTrophiesHeight = 205
-
     private val numberFormatInstance = DecimalFormat.getCompactNumberInstance().apply {
         this.roundingMode = RoundingMode.FLOOR
     }
+
     override val tab: PvTab = PvTab.FISHING
+
+    private var activeTrophyTab = MonaHatesMe.FISH
 
     override fun create(bg: DisplayWidget) {
         val infoWidget = getInfoWidget(profile)
         val statWidget = getStatWidget(profile)
         val gearWidget = getGearWidget(profile)
         var trophyWidth = 0
+
         val trophyWidget by lazy {
-            getTrophyWidgets(profile, trophyWidth)
+            val innerWidth = trophyWidth - 10
+
+            PvWidgets.label(
+                "Trophies",
+                PvLayouts.vertical(alignment = 0.5f) {
+                    val useSmallTable = (trophyWidth < 480)
+
+                    horizontal {
+                        val buttonWidth = (innerWidth / 2 - 4).coerceAtMost(120)
+
+                        spacer(width = 4)
+                        button {
+                            withSize(buttonWidth, 16)
+                            withTexture(ExtraConstants.BUTTON_DARK)
+                            withRenderer(WidgetRenderers.text(Text.of("Trophy Fish", PvColors.WHITE)))
+                            withCallback {
+                                if (activeTrophyTab != MonaHatesMe.FISH) {
+                                    activeTrophyTab = MonaHatesMe.FISH
+                                    this@FishingScreen.rebuildWidgets()
+                                }
+                            }
+                        }
+                        spacer(width = 4)
+                        button {
+                            withSize(buttonWidth, 16)
+                            withTexture(ExtraConstants.BUTTON_DARK)
+                            withRenderer(WidgetRenderers.text(Text.of("Trophy Frog", PvColors.WHITE)))
+                            withCallback {
+                                if (activeTrophyTab != MonaHatesMe.FROG) {
+                                    activeTrophyTab = MonaHatesMe.FROG
+                                    this@FishingScreen.rebuildWidgets()
+                                }
+                            }
+                        }
+                    }
+
+                    spacer(height = 4)
+
+                    when (activeTrophyTab) {
+                        FISH -> {
+                            if (useSmallTable) {
+                                widget(getSmallTrophyFishTable(profile, innerWidth))
+                            } else {
+                                widget(getTrophyFishTable(profile, innerWidth))
+                            }
+                        }
+
+                        FROG -> widget(getSmallTrophyFrogTable(profile, innerWidth))
+                    }
+
+                    spacer(height = 2)
+                },
+                width = trophyWidth,
+            )
         }
 
         fun LayoutBuilder.addBottomRow(first: LayoutElement, second: LayoutElement) {
@@ -68,7 +135,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     widget(first)
                     widget(second, LayoutSettings::alignVerticallyBottom)
                 }
-                spacer(height = 5)
+                spacer(height = 10)
             }.let {
                 widget(it) {
                     alignVerticallyBottom()
@@ -81,9 +148,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             this.setPos(bg.x, bg.y).visitWidgets(this@FishingScreen::addRenderableWidget)
         }
 
-        fun trophyHeight(width: Int) = if (width >= sideBySideTrophiesWidth) sideBySideTrophiesHeight else stackedTrophiesHeight
-
-        if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + trophyHeight(bg.width) < bg.height) {
+        if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + 165 < bg.height) {
             trophyWidth = bg.width
             PvLayouts.frame {
                 spacer(bg.width, bg.height)
@@ -100,9 +165,14 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                         alignHorizontallyLeft()
                     }
                 }
-                widget(trophyWidget) {
-                    alignVerticallyBottom()
-                    alignHorizontallyLeft()
+                PvLayouts.vertical {
+                    widget(trophyWidget)
+                    spacer(height = 5)
+                }.let {
+                    widget(it) {
+                        alignVerticallyBottom()
+                        alignHorizontallyLeft()
+                    }
                 }
             }.applyLayout()
         } else if (
@@ -185,7 +255,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 )
             }
 
-            val rank = TrophyFishRank.getById((profile.trophyFish.rewards.filter { it <= TrophyFishRank.entries.count() }.maxOrNull() ?: 0) - 1)
+            val rank = TrophyRank.getById((profile.trophyFish.rewards.filter { it <= TrophyRank.entries.count() }.maxOrNull() ?: 0) - 1)
 
             string(
                 Text.join(
@@ -383,40 +453,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         ).asWidget()
     }
 
-    private fun getTrophyWidgets(profile: SkyBlockProfile, width: Int): LayoutElement {
-        if (width < sideBySideTrophiesWidth) {
-            return PvLayouts.vertical {
-                widget(getTrophyFishWidget(profile, width))
-                spacer(height = 5)
-                widget(getTrophyFrogWidget(profile, width))
-                spacer(height = 5)
-            }
-        }
-
-        val spacing = 5
-        val frogWidth = trophyFrogWidgetWidth
-        val fishWidth = width - frogWidth - spacing
-        return PvLayouts.vertical {
-            horizontal {
-                widget(getTrophyFishWidget(profile, fishWidth))
-                spacer(width = spacing)
-                widget(getTrophyFrogWidget(profile, frogWidth))
-            }
-            spacer(height = 5)
-        }
-    }
-
-    private fun getTrophyFishWidget(profile: SkyBlockProfile, width: Int): LayoutElement = PvLayouts.vertical {
-        widget(PvWidgets.getTitleWidget("Trophy Fish", width))
-        widget(PvWidgets.getMainContentWidget(getSmallTrophyTable(profile), width))
-    }
-
-    private fun getTrophyFrogWidget(profile: SkyBlockProfile, width: Int): LayoutElement = PvLayouts.vertical {
-        widget(PvWidgets.getTitleWidget("Trophy Frogs", width))
-        widget(PvWidgets.getMainContentWidget(getTrophyFrogTable(profile, width), width))
-    }
-
-    private fun getSmallTrophyTable(profile: SkyBlockProfile): LayoutElement {
+    private fun getSmallTrophyFishTable(profile: SkyBlockProfile, width: Int): LayoutElement {
         val trophyFishItems = TrophyFishType.entries.map { type ->
             val fishies = TrophyTier.entries.map { tier -> TrophyFish(type, tier) }.sortedBy { it.tier.ordinal }.reversed()
             val highestObtainedType = fishies.firstOrNull { profile.trophyFish.obtainedTypes.containsKey(it.apiName) || it.tier == TrophyTier.NONE }
@@ -435,11 +472,48 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         return ExtraDisplays.inventoryBackground(
             6, 3,
             Displays.padding(2, chunked.map { row -> row.map { Displays.padding(2, it) }.toRow() }.toColumn()),
-        ).asWidget()
+        ).centerIn(width, -1).asWidget()
     }
 
-    private fun getTrophyFrogTable(profile: SkyBlockProfile, width: Int): LayoutElement {
-        val rows = TrophyFrogType.entries.map { type -> getTrophyFrogTableEntry(type, profile) }
+    private fun getTrophyFishTable(profile: SkyBlockProfile, width: Int): LayoutElement {
+        return TrophyFishType.entries.map { type -> getTrophyFishTableColumn(type, profile) }
+            .transpose().asTable(4).centerIn(width, -1).asWidget()
+    }
+
+    private fun getTrophyFishTableColumn(types: TrophyFishType, profile: SkyBlockProfile): List<Display> {
+        val fishies = TrophyTier.entries.reversed().map { tiers -> TrophyFish(types, tiers) }
+        val caught = getCaughtInformation(fishies, profile)
+        val caughtTooltip = getCaughtInformationTooltip(fishies, profile, caught)
+
+        return fishies.map {
+            getTrophyFishTableEntry(it, profile, caught[it.tier] ?: 0).withTooltip(
+                it.displayName,
+                caughtTooltip,
+            )
+        }
+    }
+
+    private fun getTrophyFishTableEntry(trophyFish: TrophyFish, profile: SkyBlockProfile, amountCaught: Int): Display {
+        val item = if (!profile.trophyFish.obtainedTypes.containsKey(trophyFish.apiName)) {
+            Displays.item(Items.DYE.gray().defaultInstance)
+        } else {
+            val formatAmount = numberFormatInstance.format(amountCaught)
+            Displays.item(
+                trophyFish.item,
+                customStackText = if (formatAmount == "0") "" else formatAmount,
+            )
+        }
+
+        return ExtraDisplays.inventorySlot(Displays.padding(4, item)).let {
+            if (trophyFish.tier == TrophyTier.NONE) {
+                return@let Displays.padding(0, 0, 0, 0, it)
+            }
+            return it
+        }
+    }
+
+    private fun getSmallTrophyFrogTable(profile: SkyBlockProfile, width: Int): LayoutElement {
+        val rows = TrophyFrogType.entries.map { type -> getSmallTrophyFrogTableEntry(type, profile) }
             .chunked(4)
             .map { row -> row.map { Displays.padding(2, it) }.toRow() }
             .toColumn()
@@ -447,8 +521,25 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         return ExtraDisplays.inventoryBackground(
             4, 3,
             Displays.padding(2, rows),
-        ).centerIn(width, -1)
-            .asWidget()
+        ).centerIn(width, -1).asWidget()
+    }
+
+    private fun getSmallTrophyFrogTableEntry(type: TrophyFrogType, profile: SkyBlockProfile): Display {
+        val highestTier = trophyFrogTiers.reversed().firstOrNull { tier ->
+            profile.miscFishData.trophyFrogs.hasCompleted(TrophyFrog(type, tier))
+        }
+        val highestFrog = highestTier?.let { TrophyFrog(type, it) }
+        val item = highestFrog?.item ?: Items.DYE.gray().defaultInstance
+        val display = if (highestTier == null) {
+            Displays.item(item)
+        } else {
+            Displays.item(item, customStackText = Text.of("✔", highestTier.displayColor))
+        }
+
+        return display.withTooltip(
+            highestFrog?.displayName ?: type.displayName,
+            getTrophyFrogTooltip(type, profile),
+        )
     }
 
     private fun getCaughtInformation(fishies: List<TrophyFish>, profile: SkyBlockProfile): Map<TrophyTier, Int> {
@@ -480,29 +571,9 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 ),
             )
         }
+        add(CommonText.EMPTY)
+        add(Text.of("Note: Catch counts per tier are currently not provided by Hypixel.", PvColors.GRAY))
     }
-
-    private fun getTrophyFrogTableEntry(type: TrophyFrogType, profile: SkyBlockProfile): Display {
-        val highestTier = trophyFrogTiers.reversed().firstOrNull { tier ->
-            profile.miscFishData.trophyFrogs.hasCompleted(TrophyFrog(type, tier))
-        }
-        val highestFrog = highestTier?.let { TrophyFrog(type, it) }
-        val item = highestFrog?.item ?: Items.DYE.gray().defaultInstance
-        val display = if (highestTier == null) {
-            Displays.item(item)
-        } else {
-            val state = Text.of("✔") {
-                color = highestTier.displayColor
-            }
-            Displays.item(item, customStackText = state)
-        }
-
-        return display.withTooltip(
-            highestFrog?.displayName ?: type.displayName,
-            getTrophyFrogTooltip(type, profile),
-        )
-    }
-
 
     /**
      * Creates a score for a rod to determine which ones to display
@@ -542,5 +613,10 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 TrophyTier.GOLD -> PvColors.GOLD
                 TrophyTier.DIAMOND -> PvColors.AQUA
             }
+
+        enum class MonaHatesMe {
+            FISH,
+            FROG,
+        }
     }
 }
