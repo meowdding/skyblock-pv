@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.datatype.defaults.trophy.TrophyTier
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
@@ -90,10 +91,10 @@ data class TrophyFrogData(
     }
 }
 
-data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
+data class TrophyFish(val type: TrophyFishType, val tier: TrophyTier) {
     val item: ItemStack by lazy { type.getItem(tier) }
     val displayName: Component by lazy {
-        if (tier == TrophyFishTier.NONE) {
+        if (tier == TrophyTier.NONE) {
             return@lazy Component.empty().append(type.displayName)
         }
 
@@ -101,7 +102,7 @@ data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
     }
 
     val apiName by lazy {
-        if (tier == TrophyFishTier.NONE) {
+        if (tier == TrophyTier.NONE) {
             return@lazy type.internalName.lowercase()
         }
 
@@ -114,7 +115,7 @@ data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
                 return fish.split("/").let {
                     TrophyFish(
                         TrophyFishType.getByInternalName(it[0]) ?: return null,
-                        TrophyFishTier.getByName(it[1]),
+                        TrophyTier.getByName(it[1]),
                     )
                 }
             }
@@ -123,7 +124,7 @@ data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
     }
 }
 
-data class TrophyFrog(val type: TrophyFrogType, val tier: TrophyFishTier) {
+data class TrophyFrog(val type: TrophyFrogType, val tier: TrophyTier) {
     val item: ItemStack by lazy { type.getItem(tier) }
     val displayName: Component by lazy { Text.join(type.displayName, " ", tier.nameSuffix) }
     val completedTask: String by lazy { "TROPHY_${type.internalName}_${tier.name}" }
@@ -272,26 +273,13 @@ enum class TrophyFrogType(
     val gold get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_GOLD")
     val diamond get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_DIAMOND")
 
-    fun getItem(tier: TrophyFishTier): ItemStack {
+    fun getItem(tier: TrophyTier): ItemStack {
         return when (tier) {
-            TrophyFishTier.NONE -> bronze
-            TrophyFishTier.BRONZE -> bronze
-            TrophyFishTier.SILVER -> silver
-            TrophyFishTier.GOLD -> gold
-            TrophyFishTier.DIAMOND -> diamond
-        }
-    }
-}
-
-enum class TrophyFishRank(val displayName: Component) {
-    NOVICE(displayName = Text.of("Novice") { color = TextColor.DARK_GRAY }),
-    ADEPT(displayName = Text.of("Adept") { color = TextColor.GRAY }),
-    EXPERT(displayName = Text.of("Expert") { color = TextColor.GOLD }),
-    MASTER(displayName = Text.of("Master") { color = TextColor.AQUA });
-
-    companion object {
-        fun getById(id: Int): TrophyFishRank? {
-            return entries.firstOrNull { it.ordinal == id }
+            TrophyTier.NONE -> bronze
+            TrophyTier.BRONZE -> bronze
+            TrophyTier.SILVER -> silver
+            TrophyTier.GOLD -> gold
+            TrophyTier.DIAMOND -> diamond
         }
     }
 }
@@ -452,56 +440,19 @@ enum class TrophyFishType(
     val gold get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_GOLD")
     val diamond get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_DIAMOND")
 
-    fun getItem(tier: TrophyFishTier): ItemStack {
+    fun getItem(tier: TrophyTier): ItemStack {
         return when (tier) {
-            TrophyFishTier.NONE -> bronze
-            TrophyFishTier.BRONZE -> bronze
-            TrophyFishTier.SILVER -> silver
-            TrophyFishTier.GOLD -> gold
-            TrophyFishTier.DIAMOND -> diamond
+            TrophyTier.NONE -> bronze
+            TrophyTier.BRONZE -> bronze
+            TrophyTier.SILVER -> silver
+            TrophyTier.GOLD -> gold
+            TrophyTier.DIAMOND -> diamond
         }
     }
 
     companion object {
         fun getByInternalName(internalName: String): TrophyFishType? {
             return entries.firstOrNull { internalName.equals(it.internalName, ignoreCase = true) }
-        }
-    }
-}
-
-enum class TrophyFishTier(val nameSuffix: Component, val displayName: String) {
-    NONE(
-        nameSuffix = Component.empty(),
-        displayName = "Total",
-    ),
-    BRONZE(
-        nameSuffix = Text.of("BRONZE") {
-            withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.BOLD)
-        },
-        displayName = "§8Bronze",
-    ),
-    SILVER(
-        nameSuffix = Text.of("SILVER") {
-            withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD)
-        },
-        displayName = "§7Silver",
-    ),
-    GOLD(
-        nameSuffix = Text.of("GOLD") {
-            withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)
-        },
-        displayName = "§6Gold",
-    ),
-    DIAMOND(
-        nameSuffix = Text.of("DIAMOND") {
-            withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
-        },
-        displayName = "§bDiamond",
-    );
-
-    companion object {
-        fun getByName(name: String): TrophyFishTier {
-            return entries.firstOrNull { it.name.equals(name, ignoreCase = true) } ?: NONE
         }
     }
 }
