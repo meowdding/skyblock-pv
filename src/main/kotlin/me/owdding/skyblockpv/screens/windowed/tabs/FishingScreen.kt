@@ -39,6 +39,7 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LayoutSettings
+import net.minecraft.core.NonNullList.withSize
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
@@ -46,6 +47,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.defaults.trophy.TrophyRank
 import tech.thatgravyboat.skyblockapi.api.datatype.defaults.trophy.TrophyTier
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -83,28 +85,19 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                         val buttonWidth = (innerWidth / 2 - 4).coerceAtMost(120)
 
                         spacer(width = 4)
-                        button {
-                            withSize(buttonWidth, 16)
-                            withTexture(ExtraConstants.BUTTON_DARK)
-                            withRenderer(WidgetRenderers.text(Text.of("Trophy Fish", PvColors.WHITE)))
-                            withCallback {
-                                if (activeTrophyTab != TrophyType.FISH) {
-                                    activeTrophyTab = TrophyType.FISH
-                                    this@FishingScreen.rebuildWidgets()
+                        TrophyType.entries.forEachIndexed { index, type ->
+                            button {
+                                withSize(buttonWidth, 16)
+                                withTexture(ExtraConstants.BUTTON_DARK)
+                                withRenderer(WidgetRenderers.text(Text.of("Trophy $type", PvColors.WHITE)))
+                                withCallback {
+                                    if (activeTrophyTab != type) {
+                                        activeTrophyTab = type
+                                        this@FishingScreen.rebuildWidgets()
+                                    }
                                 }
                             }
-                        }
-                        spacer(width = 4)
-                        button {
-                            withSize(buttonWidth, 16)
-                            withTexture(ExtraConstants.BUTTON_DARK)
-                            withRenderer(WidgetRenderers.text(Text.of("Trophy Frog", PvColors.WHITE)))
-                            withCallback {
-                                if (activeTrophyTab != TrophyType.FROG) {
-                                    activeTrophyTab = TrophyType.FROG
-                                    this@FishingScreen.rebuildWidgets()
-                                }
-                            }
+                            if (index != TrophyType.entries.size) spacer(width = 4)
                         }
                     }
 
@@ -617,6 +610,10 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         enum class TrophyType {
             FISH,
             FROG,
+            ;
+
+            val formattedName = toFormattedName()
+            override fun toString(): String = formattedName
         }
     }
 }
