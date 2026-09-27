@@ -148,7 +148,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             this.setPos(bg.x, bg.y).visitWidgets(this@FishingScreen::addRenderableWidget)
         }
 
-        if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + 165 < bg.height) {
+        if (infoWidget.width + statWidget.width + gearWidget.width < bg.width && gearWidget.height + 165 /* Height of trophy table */ < bg.height) {
             trophyWidth = bg.width
             PvLayouts.frame {
                 spacer(bg.width, bg.height)
