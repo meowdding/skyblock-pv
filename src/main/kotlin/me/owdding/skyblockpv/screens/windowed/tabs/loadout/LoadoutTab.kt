@@ -53,7 +53,7 @@ class LoadoutTab(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             val mainViewWidth = bg.width - loadoutSelector.width - 10
             val mainViewWidget = mainView(loadouts.find { it.id == selected }, mainViewWidth, bg.height)
 
-            val seperator = Widgets.renderable(
+            val separator = Widgets.renderable(
                 WidgetRenderers.solid<BaseWidget>()
                     .withColor(CatppuccinColors.Mocha.surface0Color)
                     .withoutAlpha(),
@@ -61,7 +61,7 @@ class LoadoutTab(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
 
             PvLayouts.horizontal(spacing = 5) {
                 widget(loadoutSelector) { alignVerticallyMiddle() }
-                widget(seperator) { alignVerticallyMiddle() }
+                widget(separator) { alignVerticallyMiddle() }
                 widget(mainViewWidget) { alignVerticallyMiddle() }
             }.setPos(bg.x, bg.y).visitWidgets(this@LoadoutTab::addRenderableWidget)
         }

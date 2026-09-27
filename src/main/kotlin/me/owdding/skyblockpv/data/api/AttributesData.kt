@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.data.api
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.BackingSkyBlockProfile.Companion.future
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
@@ -50,7 +51,7 @@ data class AttributesData(
 
             owned.keys.filter { id ->
                 RepoAPI.attributes().attributes().values.none { it.shardId.lowercase().removePrefix("shard_") == id }
-            }.takeIf { it.isNotEmpty() }?.let { println(it.joinToString(", ", prefix = "[", postfix = "]")) }
+            }.takeIf { it.isNotEmpty() }?.let { SkyBlockPv.warn("Unknown Attributes found: ${it.joinToString(", ", prefix = "[", postfix = "]")}") }
 
 
             val traps = member.getPathAs<JsonArray>("shards.traps.active_traps")?.filterIsInstance<JsonObject>()?.map {

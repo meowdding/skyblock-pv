@@ -18,15 +18,14 @@ import me.owdding.lib.repo.LevelableTreeNode
 import me.owdding.lib.repo.SpacerNode
 import me.owdding.lib.repo.TierNode
 import me.owdding.lib.repo.TreeNode
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.SkillTree
 import me.owdding.skyblockpv.data.api.skills.SkillTreeType
 import me.owdding.skyblockpv.screens.windowed.elements.ExtraConstants
-import me.owdding.skyblockpv.utils.CarouselPageState
 import me.owdding.skyblockpv.utils.ExtraWidgetRenderers
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.withScrollToBottom
-import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.debugToggle
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -47,7 +46,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 val enableDebugOrdering by debugToggle("skill_tree/order_debug", "Removes the default ordering from skill tree nodes.")
@@ -178,7 +176,7 @@ data class SimpleSkillTreeVisualizer(val skillTree: SkillTree?, val type: SkillT
     override fun skillTree(): SkillTree? = skillTree
     override val showTier: Boolean = false
     override val withScrollbar: Boolean = false
-    override fun getButtons(): LayoutElement? = null
+    override fun getButtons(): Layout? = null
 
 }
 
@@ -189,7 +187,7 @@ interface LoadoutSkillTreeScreen : SkillTreeScreen {
     fun rebuildScreen()
     override fun skillTree(): SkillTree? = profile?.skillTrees?.select(skillTreeType, selected)
 
-    override fun getButtons(): LayoutElement = LayoutFactory.horizontal(spacing = 2) {
+    override fun getButtons(): Layout = LayoutFactory.horizontal(spacing = 2) {
         for (loadoutIndex in 1..5) {
             Button()
                 .withSize(20, 20)
@@ -225,7 +223,7 @@ interface SkillTreeScreen {
     fun skillTree(): SkillTree?
 
     val showTier get() = true
-    fun getButtons(): LayoutElement?
+    fun getButtons(): Layout?
 
     val withScrollbar get() = true
     val treeType: String get() = skillTreeType.treeType
@@ -241,7 +239,7 @@ interface SkillTreeScreen {
         val unknownNodes = skillTree.nodes.keys - nodes().map { it.id }.toSet()
 
         if (unknownNodes.isNotEmpty()) {
-            println("Unknown $treeType nodes: $unknownNodes")
+            SkyBlockPv.warn("Unknown $treeType nodes: $unknownNodes")
         }
         val xOffset = if (showTier) 2 else 0
 
@@ -302,7 +300,7 @@ interface SkillTreeScreen {
             gridLayout
         }
 
-        return if (bg.height > layout.height && withScrollbar) layout.asScrollable(layout.width + 15, bg.height) {
+        return if (layout.height > bg.height && withScrollbar) layout.asScrollable(layout.width + 15, bg.height) {
             withScrollToBottom()
         } else {
             layout
