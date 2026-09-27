@@ -1,7 +1,6 @@
 package me.owdding.skyblockpv.screens.windowed
 
 import com.mojang.authlib.GameProfile
-import com.mojang.blaze3d.Blaze3D
 import com.mojang.blaze3d.platform.InputConstants
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import earth.terrarium.olympus.client.components.Widgets
@@ -67,7 +66,6 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.underlined
 import tech.thatgravyboat.skyblockapi.utils.text.TextUtils.splitLines
-import java.net.URI
 import java.nio.file.Files
 import java.util.concurrent.CompletableFuture
 
@@ -139,9 +137,13 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         }
 
         // Only add the Title if theres enough width
-        val bottomRowWidth = 100 + if (Config.socials) 105 else 0
+        val maxLeft = 100 + if (Config.socials) 105 else 0
+        val maxRight = 120
+        val maxInwardsThing = maxOf(maxLeft, maxRight)
+
         val titleWidth = McFont.width(this.tabTitle)
-        if (this.uiWidth > bottomRowWidth + titleWidth + 50) {
+
+        if (this.uiWidth > (maxInwardsThing * 2) + titleWidth + 20) {
             addRenderableOnly(
                 PvWidgets.text(this.tabTitle).withCenterAlignment().withSize(this.uiWidth, 20).withPosition(bg.x, bg.bottom + 2),
             )
