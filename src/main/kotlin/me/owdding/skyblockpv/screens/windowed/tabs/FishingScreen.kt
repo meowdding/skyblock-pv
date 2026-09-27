@@ -63,7 +63,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     override val tab: PvTab = PvTab.FISHING
 
-    private var activeTrophyTab = MonaHatesMe.FISH
+    private var activeTrophyTab = TrophyType.FISH
 
     override fun create(bg: DisplayWidget) {
         val infoWidget = getInfoWidget(profile)
@@ -88,8 +88,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                             withTexture(ExtraConstants.BUTTON_DARK)
                             withRenderer(WidgetRenderers.text(Text.of("Trophy Fish", PvColors.WHITE)))
                             withCallback {
-                                if (activeTrophyTab != MonaHatesMe.FISH) {
-                                    activeTrophyTab = MonaHatesMe.FISH
+                                if (activeTrophyTab != TrophyType.FISH) {
+                                    activeTrophyTab = TrophyType.FISH
                                     this@FishingScreen.rebuildWidgets()
                                 }
                             }
@@ -100,8 +100,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                             withTexture(ExtraConstants.BUTTON_DARK)
                             withRenderer(WidgetRenderers.text(Text.of("Trophy Frog", PvColors.WHITE)))
                             withCallback {
-                                if (activeTrophyTab != MonaHatesMe.FROG) {
-                                    activeTrophyTab = MonaHatesMe.FROG
+                                if (activeTrophyTab != TrophyType.FROG) {
+                                    activeTrophyTab = TrophyType.FROG
                                     this@FishingScreen.rebuildWidgets()
                                 }
                             }
@@ -614,7 +614,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 TrophyTier.DIAMOND -> PvColors.AQUA
             }
 
-        enum class MonaHatesMe {
+        enum class TrophyType {
             FISH,
             FROG,
         }
