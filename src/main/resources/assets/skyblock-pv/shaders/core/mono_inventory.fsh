@@ -7,7 +7,7 @@ layout (std140) uniform MonoInventoryUniform {
     int Vertical;
 };
 
-#ifdef NO_LAYOUTS
+#ifdef NO_LAYOUT
 in vec2 texCoord0;
 in vec4 vertexColor;
 
