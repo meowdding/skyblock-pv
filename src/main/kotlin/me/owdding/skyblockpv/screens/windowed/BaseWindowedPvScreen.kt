@@ -246,7 +246,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
             .withCallback { McClient.clipboard = NetworthDisplay.networthDebug(profile).joinToString("\n") }
 
         val saveRawDropdown = Widgets.dropdown(
-            DropdownState<CachedApis>.empty(),
+            DropdownState.empty(),
             CachedApis.entries,
             { Text.of(it.toString()) },
             { button ->
@@ -453,7 +453,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
     private fun createProfileDropdown(bg: DisplayWidget): LayoutElement {
         val width = 100
 
-        val dropdownState = DropdownState<SkyBlockProfile>.of(profile)
+        val dropdownState = DropdownState.of(profile)
         val dropdown = Widgets.dropdown(
             dropdownState,
             profiles,
@@ -504,7 +504,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
         )
 
         val button = Widgets.dropdown(
-            DropdownState<String>.empty(),
+            DropdownState.empty(),
             entries,
             { Text.of(it.name) },
             { button ->
