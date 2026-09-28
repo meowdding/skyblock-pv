@@ -133,8 +133,10 @@ idea {
 
 tasks.withType<ProcessResources>().configureEach {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
-        filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
+    if (stonecutter.eval(stonecutter.current.version, "< 26.3")) {
+        filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
+            filter { if (it.startsWith("#include")) "#moj_import ${it.substringAfter(' ')}" else it }
+        }
     }
     with(copySpec {
         from(rootProject.file("src/lang")).include("*.json").into("assets/skyblock-pv/lang")
