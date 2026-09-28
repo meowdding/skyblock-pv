@@ -4,7 +4,6 @@
 #moj_import <minecraft:projection.glsl>
 
 #ifdef NO_LAYOUT
-
 out vec2 texCoord0;
 out vec4 vertexColor;
 
