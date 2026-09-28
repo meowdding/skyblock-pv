@@ -7,9 +7,11 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.datatype.defaults.trophy.TrophyTier
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asString
+import tech.thatgravyboat.skyblockapi.utils.extentions.asStringList
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -43,12 +45,14 @@ data class FishData(
     val treasuresCaught: Int,
     val festivalSharksKilled: Int,
     val itemsFished: ItemsFished,
+    val trophyFrogs: TrophyFrogData,
 ) {
     companion object {
-        val EMPTY = FishData(0, 0, ItemsFished(0, 0, 0, 0, 0))
+        val EMPTY = FishData(0, 0, ItemsFished(0, 0, 0, 0, 0), TrophyFrogData.EMPTY)
         fun fromJson(member: JsonObject, playerStats: JsonObject?, playerData: JsonObject?): FishData {
             val itemsFished = playerStats?.get("items_fished") as JsonObject?
             val leveling = member.get("leveling") as JsonObject?
+            val completedTasks = leveling?.get("completed_tasks").asStringList().toSet()
             return FishData(
                 treasuresCaught = playerData?.get("fishing_treasure_caught").asInt(0),
                 festivalSharksKilled = leveling?.get("fishing_festival_sharks_killed").asInt(0),
@@ -58,6 +62,10 @@ data class FishData(
                     treasure = itemsFished?.get("treasure").asInt(0),
                     largeTreasure = itemsFished?.get("large_treasure").asInt(0),
                     trophyFish = itemsFished?.get("trophy_fish").asInt(0),
+                ),
+                trophyFrogs = TrophyFrogData(
+                    totalCatches = itemsFished?.get("trophy_frog").asInt(0),
+                    completedTasks = completedTasks.filterTo(mutableSetOf()) { it.startsWith("TROPHY_") },
                 ),
             )
         }
@@ -72,10 +80,21 @@ data class ItemsFished(
     val trophyFish: Int,
 )
 
-data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
+data class TrophyFrogData(
+    val totalCatches: Int,
+    val completedTasks: Set<String>,
+) {
+    fun hasCompleted(frog: TrophyFrog) = frog.completedTask in completedTasks
+
+    companion object {
+        val EMPTY = TrophyFrogData(0, emptySet())
+    }
+}
+
+data class TrophyFish(val type: TrophyFishType, val tier: TrophyTier) {
     val item: ItemStack by lazy { type.getItem(tier) }
     val displayName: Component by lazy {
-        if (tier == TrophyFishTier.NONE) {
+        if (tier == TrophyTier.NONE) {
             return@lazy Component.empty().append(type.displayName)
         }
 
@@ -83,7 +102,7 @@ data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
     }
 
     val apiName by lazy {
-        if (tier == TrophyFishTier.NONE) {
+        if (tier == TrophyTier.NONE) {
             return@lazy type.internalName.lowercase()
         }
 
@@ -96,13 +115,19 @@ data class TrophyFish(val type: TrophyFishType, val tier: TrophyFishTier) {
                 return fish.split("/").let {
                     TrophyFish(
                         TrophyFishType.getByInternalName(it[0]) ?: return null,
-                        TrophyFishTier.getByName(it[1]),
+                        TrophyTier.getByName(it[1]),
                     )
                 }
             }
             return null
         }
     }
+}
+
+data class TrophyFrog(val type: TrophyFrogType, val tier: TrophyTier) {
+    val item: ItemStack by lazy { type.getItem(tier) }
+    val displayName: Component by lazy { Text.join(type.displayName, " ", tier.nameSuffix) }
+    val completedTask: String by lazy { "TROPHY_${type.internalName}_${tier.name}" }
 }
 
 enum class FishingGear {
@@ -157,15 +182,104 @@ enum class DolphinBracket(val killsRequired: Int, val rarity: SkyBlockRarity) {
     }
 }
 
-enum class TrophyFishRank(val displayName: Component) {
-    NOVICE(displayName = Text.of("Novice") { color = TextColor.DARK_GRAY }),
-    ADEPT(displayName = Text.of("Adept") { color = TextColor.GRAY }),
-    EXPERT(displayName = Text.of("Expert") { color = TextColor.GOLD }),
-    MASTER(displayName = Text.of("Master") { color = TextColor.AQUA });
+enum class TrophyFrogType(
+    val displayName: Component,
+    val obtaining: Component,
+    internalName: String = "",
+) {
+    COMMON_FROG(
+        displayName = Text.of("Common Frog") {
+            color = TextColor.WHITE
+        },
+        obtaining = "Caught everywhere.",
+    ),
+    LEAP_FROG(
+        displayName = Text.of("Leap Frog") {
+            color = TextColor.GREEN
+        },
+        obtaining = "Caught while midair.",
+    ),
+    WETLANDS_FROG(
+        displayName = Text.of("Wetlands Frog") {
+            color = TextColor.GREEN
+        },
+        obtaining = "Caught during rain.",
+    ),
+    REALITY_HOPPER(
+        displayName = Text.of("Reality Hopper") {
+            color = TextColor.GREEN
+        },
+        obtaining = "Caught in Wormholes on the Lotus Atoll.",
+    ),
+    EXPLODING_FROG(
+        displayName = Text.of("Exploding Frog") {
+            color = TextColor.GREEN
+        },
+        obtaining = "Obtained by combining Lily Pads until they explode.",
+    ),
+    BLESSED_FROG(
+        displayName = Text.of("Blessed Frog") {
+            color = TextColor.BLUE
+        },
+        obtaining = "Caught with an active Frogcoin blessing.",
+    ),
+    SEA_FROG(
+        displayName = Text.of("Sea Frog") {
+            color = TextColor.BLUE
+        },
+        obtaining = "Caught while underwater.",
+    ),
+    BULLFROG(
+        displayName = Text.of("Bullfrog") {
+            color = TextColor.BLUE
+        },
+        obtaining = "Caught while wearing a Red Sweater.",
+    ),
+    TREE_FROG(
+        displayName = Text.of("Tree Frog") {
+            color = TextColor.DARK_PURPLE
+        },
+        obtaining = "Caught while standing on leaves.",
+    ),
+    CAVE_FROG(
+        displayName = Text.of("Cave Frog") {
+            color = TextColor.DARK_PURPLE
+        },
+        obtaining = "Found in the Lotus Eater's Cave.",
+    ),
+    HIGHLANDS_FROG(
+        displayName = Text.of("Highlands Frog") {
+            color = TextColor.DARK_PURPLE
+        },
+        obtaining = "Found in the Lotus Highlands.",
+    ),
+    PUDDLE_JUMPER(
+        displayName = Text.of("Puddle Jumper") {
+            color = TextColor.GOLD
+        },
+        obtaining = "Caught when flying around the Lotus Atoll.",
+    );
 
-    companion object {
-        fun getById(id: Int): TrophyFishRank? {
-            return entries.firstOrNull { it.ordinal == id }
+    constructor(displayName: Component, obtaining: String, internalName: String = "") : this(
+        displayName,
+        Text.of(obtaining) { color = TextColor.GRAY },
+        internalName,
+    )
+
+    val internalName: String = internalName.takeUnless { it.isEmpty() } ?: name
+
+    val bronze get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_BRONZE")
+    val silver get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_SILVER")
+    val gold get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_GOLD")
+    val diamond get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_DIAMOND")
+
+    fun getItem(tier: TrophyTier): ItemStack {
+        return when (tier) {
+            TrophyTier.NONE -> bronze
+            TrophyTier.BRONZE -> bronze
+            TrophyTier.SILVER -> silver
+            TrophyTier.GOLD -> gold
+            TrophyTier.DIAMOND -> diamond
         }
     }
 }
@@ -326,56 +440,19 @@ enum class TrophyFishType(
     val gold get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_GOLD")
     val diamond get() = SkyBlockItemsRepo.getItemStackOrDefault("${this.internalName}_DIAMOND")
 
-    fun getItem(tier: TrophyFishTier): ItemStack {
+    fun getItem(tier: TrophyTier): ItemStack {
         return when (tier) {
-            TrophyFishTier.NONE -> bronze
-            TrophyFishTier.BRONZE -> bronze
-            TrophyFishTier.SILVER -> silver
-            TrophyFishTier.GOLD -> gold
-            TrophyFishTier.DIAMOND -> diamond
+            TrophyTier.NONE -> bronze
+            TrophyTier.BRONZE -> bronze
+            TrophyTier.SILVER -> silver
+            TrophyTier.GOLD -> gold
+            TrophyTier.DIAMOND -> diamond
         }
     }
 
     companion object {
         fun getByInternalName(internalName: String): TrophyFishType? {
             return entries.firstOrNull { internalName.equals(it.internalName, ignoreCase = true) }
-        }
-    }
-}
-
-enum class TrophyFishTier(val nameSuffix: Component, val displayName: String) {
-    NONE(
-        nameSuffix = Component.empty(),
-        displayName = "Total",
-    ),
-    BRONZE(
-        nameSuffix = Text.of("BRONZE") {
-            withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.BOLD)
-        },
-        displayName = "§8Bronze",
-    ),
-    SILVER(
-        nameSuffix = Text.of("SILVER") {
-            withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD)
-        },
-        displayName = "§7Silver",
-    ),
-    GOLD(
-        nameSuffix = Text.of("GOLD") {
-            withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)
-        },
-        displayName = "§6Gold",
-    ),
-    DIAMOND(
-        nameSuffix = Text.of("DIAMOND") {
-            withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
-        },
-        displayName = "§bDiamond",
-    );
-
-    companion object {
-        fun getByName(name: String): TrophyFishTier {
-            return entries.firstOrNull { it.name.equals(name, ignoreCase = true) } ?: NONE
         }
     }
 }

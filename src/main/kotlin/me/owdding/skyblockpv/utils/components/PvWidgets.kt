@@ -189,11 +189,11 @@ object PvWidgets {
         compoundWidget.withStretchToContentSize()
     }
 
-    fun getMainContentWidget(content: LayoutElement, width: Int): LayoutElement = Widgets.frame { compoundWidget ->
+    fun getMainContentWidget(content: LayoutElement, width: Int, padHeight: Int = 7): LayoutElement = Widgets.frame { compoundWidget ->
         val contentWithSpacer = PvLayouts.vertical {
-            spacer(height = 7)
+            spacer(height = padHeight)
             widget(content)
-            spacer(height = 7)
+            spacer(height = padHeight)
         }
         compoundWidget.withContents { contents ->
             contents.addChild(Displays.background(ThemeSupport.texture(SkyBlockPv.id("box/box")), width - 10, contentWithSpacer.height).asWidget())
