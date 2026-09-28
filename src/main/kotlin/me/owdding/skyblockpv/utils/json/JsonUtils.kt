@@ -1,3 +1,4 @@
+@file:Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 package me.owdding.skyblockpv.utils.json
 
 import com.google.gson.JsonArray

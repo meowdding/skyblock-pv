@@ -92,6 +92,6 @@ class FakePlayer(val gameProfile: GameProfile, val armor: List<ItemStack>, val c
 
     override fun isModelPartShown(part: PlayerModelPart) = part != CAPE
 
-    override fun position(): Vec3? = Minecraft.getInstance().cameraEntity?.position()
+    override fun position(): Vec3 = Minecraft.getInstance().cameraEntity?.position() ?: Vec3.ZERO
 
 }

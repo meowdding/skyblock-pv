@@ -6,7 +6,7 @@ layout (std140) uniform PolyInventoryUniform {
     ivec2 Size;
 };
 
-#ifdef NO_LAYOUTS
+#ifdef NO_LAYOUT
 in vec2 texCoord0;
 in vec4 vertexColor;
 

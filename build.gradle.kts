@@ -1,8 +1,6 @@
-import jdk.jfr.internal.JVM.include
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.ValidateAccessWidenerTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.idea.proto.com.google.protobuf.api
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -82,13 +80,15 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_25)
-    compilerOptions.optIn.add("kotlin.time.ExperimentalTime")
-    compilerOptions.freeCompilerArgs.addAll(
-        "-Xnullability-annotations=@org.jspecify.annotations:warn",
-        "-Xcontext-parameters",
-        "-Xcontext-sensitive-resolution",
-    )
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_25)
+        allWarningsAsErrors = true
+        optIn.add("kotlin.time.ExperimentalTime")
+        freeCompilerArgs.addAll(
+            "-Xnullability-annotations=@org.jspecify.annotations:warn",
+            "-Xcontext-sensitive-resolution",
+        )
+    }
 }
 
 tasks.processResources {
@@ -133,9 +133,6 @@ idea {
 
 tasks.withType<ProcessResources>().configureEach {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    filesMatching(listOf("**/*.fsh", "**/*.vsh")) {
-        filter { if (it.startsWith("//!moj_import")) "#${it.substring(3)}" else it }
-    }
     with(copySpec {
         from(rootProject.file("src/lang")).include("*.json").into("assets/skyblock-pv/lang")
     })

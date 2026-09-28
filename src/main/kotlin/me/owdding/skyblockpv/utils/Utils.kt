@@ -235,11 +235,6 @@ object Utils {
         }.toHexString()
     }
 
-    fun MutableComponent.withoutShadow(): MutableComponent = this.apply {
-        this.shadowColor = null
-        this.siblings.filterIsInstance<MutableComponent>().forEach { it.withoutShadow() }
-    }
-
     /** Translatable Component **with** shadow */
     operator fun String.unaryPlus(): MutableComponent = Component.translatable("skyblockpv.$this")
 
