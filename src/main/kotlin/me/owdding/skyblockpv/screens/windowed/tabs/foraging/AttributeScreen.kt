@@ -82,6 +82,7 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             add(repo.shardName)
             add(repo.attributeId)
             add(repo.rarity)
+            @Suppress("DEPRECATION")
             addAll(repo.lore)
         }.map { it.stripColor() }.any { it.contains(query, ignoreCase = true) }
     }
@@ -129,6 +130,7 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
                     color = rarity?.color ?: -1
                 }
+                @Suppress("DEPRECATION")
                 ListMerger(repo.lore).apply {
                     addUntil { it.stripColor().startsWith("You can Syphon this shard") }
                     skipUntil { it.endsWith("SHARD") }
