@@ -1,7 +1,7 @@
 #version 150
 
-#moj_import <minecraft:dynamictransforms.glsl>
-#moj_import <minecraft:projection.glsl>
+#include <minecraft:dynamictransforms.glsl>
+#include <minecraft:projection.glsl>
 
 #ifdef NO_LAYOUT
 out vec2 texCoord0;
