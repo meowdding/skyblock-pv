@@ -2,28 +2,146 @@ package me.owdding.skyblockpv.screens.windowed.tabs.foraging
 
 import com.mojang.authlib.GameProfile
 import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.withTooltip
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
+import me.owdding.skyblockpv.data.api.skills.SafariData
 import me.owdding.skyblockpv.data.repo.SafariCodecs
+import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.PvWidgets
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.client.gui.layouts.LayoutElement
+import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.CommonText
+import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseForagingScreen(gameProfile, profile) {
     override val type: ForagingCategory = ForagingCategory.SAFARI
 
     override fun getLayout(bg: DisplayWidget): Layout {
-        println(profile.safari?.milestone)
-        println(profile.safari?.tickets)
-        println(profile.safari?.biomeCaptures)
-        println(profile.safari?.discoveredCritters)
-
-        return PvLayouts.horizontal(alignment = 0.5f) {
-            string(profile.safari?.milestone.toString() + " levels: " + SafariCodecs.data.milestones)
-            string(profile.safari?.tickets.toString())
-            string(profile.safari?.biomeCaptures.toString())
-            string("")
-            string(profile.safari?.discoveredCritters.toString())
-            string("out of")
-            string(SafariCodecs.data.critters.toString())
+        val safari = profile.safari ?: run {
+            return PvLayouts.vertical(alignment = 0.5f) {
+                display(ExtraDisplays.text(Text.of("No Safari Data found for this profile!", PvColors.RED)))
+            }
         }
+
+        return if (uiWidth < 400) {
+            val columnWidth = uiWidth - 10
+
+            PvLayouts.vertical(10) {
+                widget(getTicketsWidget(safari, columnWidth))
+                widget(getMilestonesWidget(safari, columnWidth))
+                widget(getCrittersWidget(safari, columnWidth))
+            }
+        } else {
+            val columnWidth = (uiWidth - 30) / 2
+
+            PvLayouts.horizontal(10) {
+                spacer(width = 5)
+                vertical(5) {
+                    widget(getTicketsWidget(safari, columnWidth))
+                    widget(getMilestonesWidget(safari, columnWidth))
+                }
+                vertical(5) {
+                    widget(getCrittersWidget(safari, columnWidth))
+                }
+                spacer(width = 5)
+            }
+        }.asScrollable(uiWidth, uiHeight)
     }
+
+    private fun getTicketsWidget(safari: SafariData, width: Int): LayoutElement = PvWidgets.label(
+        "Safari Tickets",
+        PvLayouts.vertical(3) {
+            SafariCodecs.SafariTicket.entries.forEach { ticket ->
+                val amount = safari.tickets[ticket] ?: 0
+                horizontal {
+                    display(ExtraDisplays.text(Text.of("${ticket.formattedName}: ", ticket.color)))
+                    display(ExtraDisplays.text(Text.of(amount.toFormattedString(), PvColors.YELLOW)))
+                }
+            }
+        },
+        width = width,
+    )
+
+    private fun getMilestonesWidget(safari: SafariData, width: Int): LayoutElement = PvWidgets.label(
+        "Biome Captures & Milestones",
+        PvLayouts.vertical(5) {
+            SafariCodecs.CritterSafariBiome.entries.forEach { biome ->
+                val captures = safari.biomeCaptures[biome] ?: 0
+                val milestoneTier = safari.milestone[biome] ?: 0
+
+                val nextMilestoneReq = SafariCodecs.data.milestones.getOrNull(milestoneTier + 1)
+                val progressText = if (nextMilestoneReq != null) {
+                    Text.of(" ($captures/$nextMilestoneReq)", PvColors.GRAY)
+                } else {
+                    Text.of(" (Maxed)", PvColors.GOLD)
+                }
+
+                vertical(1) {
+                    display(ExtraDisplays.text(biome.component))
+                    horizontal {
+                        spacer(width = 5)
+                        display(ExtraDisplays.text(Text.of("Captures: ", PvColors.GRAY)))
+                        display(ExtraDisplays.text(Text.of(captures.toFormattedString(), PvColors.YELLOW)))
+                        display(ExtraDisplays.text(progressText))
+                    }
+                    horizontal {
+                        spacer(width = 5)
+                        display(ExtraDisplays.text(Text.of("Milestone Tier: ", PvColors.GRAY)))
+                        display(ExtraDisplays.text(Text.of(milestoneTier.toString(), PvColors.AQUA)))
+                    }
+                }
+            }
+        },
+        width = width,
+    )
+
+    private fun getCrittersWidget(safari: SafariData, width: Int): LayoutElement = PvWidgets.label(
+        "Discovered Critters",
+        PvLayouts.vertical(5) {
+            val totalDiscovered = safari.discoveredCritters.size
+            val totalAvailable = SafariCodecs.data.critters.size
+
+            display(ExtraDisplays.text(Text.of("Total Discovered: $totalDiscovered / $totalAvailable", PvColors.YELLOW)))
+            spacer(height = 2)
+
+            SafariCodecs.CritterSafariBiome.entries.forEach { biome ->
+                val crittersInBiome = SafariCodecs.data.critters.filter { it.biome == biome }
+                if (crittersInBiome.isEmpty()) return@forEach
+
+                vertical(2) {
+                    display(ExtraDisplays.text(biome.component))
+
+                    val critterDisplays = crittersInBiome.map { critter ->
+                        val isDiscovered = safari.discoveredCritters.contains(critter.id)
+
+                        val itemDisplay = Displays.padding(2, Displays.item(critter.attribute.toItem()))
+                        val inventoryDisplay = if (!isDiscovered) {
+                            ExtraDisplays.inventorySlot(itemDisplay, PvColors.DARK_GRAY)
+                        } else {
+                            ExtraDisplays.inventorySlot(itemDisplay, biome.color)
+                        }
+
+                        inventoryDisplay.withTooltip {
+                            add(Text.of(critter.name, if (isDiscovered) biome.color else PvColors.RED))
+                            add(CommonText.EMPTY)
+                            add(Text.of(if (isDiscovered) "Discovered" else "Undiscovered", PvColors.GRAY))
+                        }
+                    }
+
+                    val elementsPerRow = (width - 15) / 22
+                    critterDisplays.chunked(elementsPerRow).forEach { rowDisplays ->
+                        horizontal(2) {
+                            rowDisplays.forEach { display(it) }
+                        }
+                    }
+                }
+            }
+        },
+        width = width,
+    )
 }
