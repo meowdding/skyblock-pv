@@ -46,6 +46,8 @@ data class ForagingData(val member: JsonObject, override val json: JsonObject) :
 
 data class SafariData(override val json: JsonObject) : ParseHelper {
     val discoveredCritters by stringSet("discovered_critters")
+    val discoveredSparklingCritters by stringSet("discovered_sparkling_critters")
+    val totalSparkling by int("total_captured_sparkling_critters")
     val milestone by enumIntMap<SafariCodecs.CritterSafariBiome>("milestone_claimed_tiers")
     val tickets by enumIntMap<SafariCodecs.SafariTicket>("tickets")
     val biomeCaptures by enumIntMap<SafariCodecs.CritterSafariBiome>("biome_captures")

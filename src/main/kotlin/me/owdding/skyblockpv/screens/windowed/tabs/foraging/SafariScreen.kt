@@ -14,8 +14,10 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.CommonText
+import tech.thatgravyboat.skyblockapi.utils.text.SkyBlockColor
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
 class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseForagingScreen(gameProfile, profile) {
@@ -107,6 +109,7 @@ class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             val totalAvailable = SafariCodecs.data.critters.size
 
             display(ExtraDisplays.text(Text.of("Total Discovered: $totalDiscovered / $totalAvailable", PvColors.YELLOW)))
+            display(ExtraDisplays.text(Text.of("Total Sparkling: ${safari.totalSparkling.toFormattedString()}", PvColors.LIGHT_PURPLE)))
             spacer(height = 2)
 
             SafariCodecs.CritterSafariBiome.entries.forEach { biome ->
@@ -118,18 +121,30 @@ class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
                     val critterDisplays = crittersInBiome.map { critter ->
                         val isDiscovered = safari.discoveredCritters.contains(critter.id)
+                        val isSparkling = safari.discoveredSparklingCritters.contains(critter.id)
 
-                        val itemDisplay = Displays.padding(2, Displays.item(critter.attribute.toItem()))
-                        val inventoryDisplay = if (!isDiscovered) {
-                            ExtraDisplays.inventorySlot(itemDisplay, PvColors.DARK_GRAY)
+                        val inventoryDisplay = if (isDiscovered) {
+                            val itemDisplay = Displays.padding(2, Displays.item(critter.attribute.toItem()))
+
+                            val display = if (!isSparkling) itemDisplay
+                            else Displays.layered(
+                                Displays.padding(2, Displays.item(critter.attribute.toItem())),
+                                Displays.padding(12, 0, 0, 0, Displays.text(Text.of("★", SkyBlockColor.GOLD))),
+                            )
+
+                            ExtraDisplays.inventorySlot(display, biome.color)
                         } else {
-                            ExtraDisplays.inventorySlot(itemDisplay, biome.color)
+                            ExtraDisplays.inventorySlot(Displays.padding(2, Displays.item(Items.DYE.gray)), PvColors.DARK_GRAY)
                         }
 
                         inventoryDisplay.withTooltip {
                             add(Text.of(critter.name, if (isDiscovered) biome.color else PvColors.RED))
                             add(CommonText.EMPTY)
-                            add(Text.of(if (isDiscovered) "Discovered" else "Undiscovered", PvColors.GRAY))
+                            if (isSparkling) {
+                                add(Text.of("Discovered (Sparkling)", PvColors.LIGHT_PURPLE))
+                            } else {
+                                add(Text.of(if (isDiscovered) "Discovered" else "Undiscovered", PvColors.GRAY))
+                            }
                         }
                     }
 
