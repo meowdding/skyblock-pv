@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.screens.windowed.tabs
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.components.base.ListWidget
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.builder.LayoutBuilder
@@ -39,7 +40,6 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.LayoutSettings
-import net.minecraft.core.NonNullList.withSize
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataType
@@ -66,6 +66,8 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     override val tab: PvTab = PvTab.FISHING
 
     private var activeTrophyTab = TrophyType.FISH
+    private var listWidgetInstance: ListWidget? = null
+    private var savedScrollState: Int = 0
 
     override fun create(bg: DisplayWidget) {
         val infoWidget = getInfoWidget(profile)
@@ -93,6 +95,7 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                                 withCallback {
                                     if (activeTrophyTab != type) {
                                         activeTrophyTab = type
+                                        savedScrollState = listWidgetInstance?.scroll ?: 0
                                         this@FishingScreen.rebuildWidgets()
                                     }
                                 }
@@ -228,7 +231,10 @@ class FishingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 add(statWidget)
                 add(gearWidget)
                 add(trophyWidget)
-            }.asScrollable(bg.width, bg.height).applyLayout()
+            }.asScrollable(bg.width, bg.height) {
+                listWidgetInstance = this
+                this.mouseScrolled(0.0, 0.0, 0.0, -savedScrollState / 10.0)
+            }.applyLayout()
         }
     }
 
