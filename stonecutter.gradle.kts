@@ -1,3 +1,4 @@
+import com.sun.org.apache.xpath.internal.XPathAPI.eval
 import dev.kikugie.stonecutter.build.config.ReplacementContainer
 
 plugins {
@@ -59,12 +60,19 @@ stonecutter parameters {
         )
         dyeColors.forEach { (lower, upper) ->
             replace("DYE.$lower()", "${upper}_DYE")
+            replace("DYE.$lower", "${upper}_DYE")
             replace("WOOL.$lower()", "${upper}_WOOL")
+            replace("WOOL.$lower", "${upper}_WOOL")
             replace("CARPET.$lower()", "${upper}_CARPET")
+            replace("CARPET.$lower", "${upper}_CARPET")
             replace("STAINED_GLASS.$lower()", "${upper}_STAINED_GLASS")
+            replace("STAINED_GLASS.$lower", "${upper}_STAINED_GLASS")
             replace("STAINED_GLASS_PANE.$lower()", "${upper}_STAINED_GLASS_PANE")
+            replace("STAINED_GLASS_PANE.$lower", "${upper}_STAINED_GLASS_PANE")
             replace("DYED_TERRACOTTA.$lower()", "${upper}_TERRACOTTA")
+            replace("DYED_TERRACOTTA.$lower", "${upper}_TERRACOTTA")
             replace("HARNESS.$lower()", "${upper}_HARNESS")
+            replace("HARNESS.$lower", "${upper}_HARNESS")
         }
     }
 
