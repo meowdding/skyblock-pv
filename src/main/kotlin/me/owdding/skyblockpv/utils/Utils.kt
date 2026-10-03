@@ -73,6 +73,7 @@ object Utils {
 
     var lastTab: PvPageState? = null
 
+    fun getMinecraftItem(id: Identifier): ItemStack = BuiltInRegistries.ITEM.getValue(id).defaultInstance
     fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(id)).defaultInstance
 
     fun <K, V> MutableMap<K, V>.removeIf(predicate: (Map.Entry<K, V>) -> Boolean): MutableMap<K, V> = also { entries.removeIf(predicate) }

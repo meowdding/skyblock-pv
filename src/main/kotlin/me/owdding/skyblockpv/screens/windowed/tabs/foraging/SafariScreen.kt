@@ -6,6 +6,7 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.withTooltip
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.SafariData
+import me.owdding.skyblockpv.data.repo.EssenceData.addSafariPerk
 import me.owdding.skyblockpv.data.repo.SafariCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.components.PvLayouts
@@ -37,6 +38,7 @@ class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
                 widget(getTicketsWidget(safari, columnWidth))
                 widget(getMilestonesWidget(safari, columnWidth))
                 widget(getCrittersWidget(safari, columnWidth))
+                widget(getEssenceWidget(columnWidth))
             }
         } else {
             val columnWidth = (uiWidth - 30) / 2
@@ -44,16 +46,32 @@ class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             PvLayouts.horizontal(10) {
                 spacer(width = 5)
                 vertical(5) {
-                    widget(getTicketsWidget(safari, columnWidth))
+                    widget(getEssenceWidget(columnWidth))
                     widget(getMilestonesWidget(safari, columnWidth))
                 }
                 vertical(5) {
+                    widget(getTicketsWidget(safari, columnWidth))
                     widget(getCrittersWidget(safari, columnWidth))
                 }
                 spacer(width = 5)
             }
         }.asScrollable(uiWidth, uiHeight)
     }
+
+    private fun getEssenceWidget(width: Int): LayoutElement = PvWidgets.label(
+        "Essence Perks",
+        PvLayouts.vertical(3) {
+            val perks = listOf(
+                "critter_catcher", "critter_master", "floortunate", "fresh_footprints",
+                "head_start", "hunting_hotspot", "thawing", "deep_diver",
+                "quickdraw", "amateur_hour", "sparkling_specialist",
+            )
+            perks.forEach { perk ->
+                addSafariPerk(profile, perk)
+            }
+        },
+        width = width,
+    )
 
     private fun getTicketsWidget(safari: SafariData, width: Int): LayoutElement = PvWidgets.label(
         "Safari Tickets",
