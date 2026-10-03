@@ -73,10 +73,10 @@ data class PotionEssenceStack(@FieldName("potion_contents") val potionContents: 
 }
 
 @GenerateCodec
-data class SkullEssenceStack(val skin: String) : EssenceStack {
+data class SkullEssenceStack(val texture: String) : EssenceStack {
     override val display: EssenceStackType = EssenceStackType.SKULL
 
-    override fun getStack(): ItemStack = createSkull(skin)
+    override fun getStack(): ItemStack = createSkull(texture)
 }
 
 @GenerateCodec
@@ -106,16 +106,19 @@ object EssenceData : DefaultedData {
         val perkLevel = profile.essenceUpgrades[id] ?: 0
         val perk = allPerks.entries.find { it.key == id }?.value
         val maxLevel = perk?.maxLevel ?: 0
+        val isMaxed = perkLevel == maxLevel
 
         val name = Text.join(
             perk?.name ?: "Unknown",
             ": ",
-            Text.of("$perkLevel") { this.color = if (perkLevel == maxLevel) PvColors.GREEN else PvColors.RED },
+            Text.of("$perkLevel", if (isMaxed) PvColors.GREEN else PvColors.RED),
             "/$maxLevel",
         )
 
         if (showItemStack && perk?.display != null) {
-            val display = Displays.item(perk.display.getStack()).withTooltip {
+            val stackSize = Text.of(perkLevel.toString(), if (isMaxed) PvColors.GOLD else PvColors.RED)
+            val itemDisplay = Displays.padding(2, Displays.item(perk.display.getStack(), customStackText = stackSize))
+            val display = ExtraDisplays.inventorySlot(itemDisplay).withTooltip {
                 add {
                     color = TextColor.GREEN
                     append(name)

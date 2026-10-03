@@ -46,12 +46,12 @@ class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
             PvLayouts.horizontal(10) {
                 spacer(width = 5)
                 vertical(5) {
-                    widget(getEssenceWidget(columnWidth))
+                    widget(getTicketsWidget(safari, columnWidth))
                     widget(getMilestonesWidget(safari, columnWidth))
                 }
                 vertical(5) {
-                    widget(getTicketsWidget(safari, columnWidth))
                     widget(getCrittersWidget(safari, columnWidth))
+                    widget(getEssenceWidget(columnWidth))
                 }
                 spacer(width = 5)
             }
@@ -60,14 +60,20 @@ class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
 
     private fun getEssenceWidget(width: Int): LayoutElement = PvWidgets.label(
         "Essence Perks",
-        PvLayouts.vertical(3) {
+        PvLayouts.vertical(2) {
             val perks = listOf(
                 "critter_catcher", "critter_master", "floortunate", "fresh_footprints",
                 "head_start", "hunting_hotspot", "thawing", "deep_diver",
                 "quickdraw", "amateur_hour", "sparkling_specialist",
             )
-            perks.forEach { perk ->
-                addSafariPerk(profile, perk)
+
+            val elementsPerRow = (width - 15) / 22
+            perks.chunked(elementsPerRow).forEach { rowPerks ->
+                horizontal(2) {
+                    rowPerks.forEach { perk ->
+                        addSafariPerk(profile, perk)
+                    }
+                }
             }
         },
         width = width,
