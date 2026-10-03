@@ -67,6 +67,7 @@ interface SkyBlockProfile {
     val mining: MiningCore? get() = backingProfile.mining.getNowOrElse(null)
     val foragingCore: ForagingCore? get() = backingProfile.foragingCore.getNowOrElse(null)
     val foraging: ForagingData? get() = backingProfile.foraging.getNowOrElse(null)
+    val safari: SafariData? get() = backingProfile.safari.getNowOrElse(null)
     val skillTrees: SkillTrees? get() = backingProfile.skillTrees.getNowOrElse(null)
     val attributeData: AttributesData get() = backingProfile.attributeData.getNowOrElse(AttributesData.EMPTY)
     val forge: Forge? get() = backingProfile.forge.getNowOrElse(null)
@@ -141,6 +142,7 @@ data class BackingSkyBlockProfile(
     val mining: CompletableFuture<MiningCore?> = emptyFuture(),
     val foragingCore: CompletableFuture<ForagingCore?> = emptyFuture(),
     val foraging: CompletableFuture<ForagingData?> = emptyFuture(),
+    val safari: CompletableFuture<SafariData?> = emptyFuture(),
     val skillTrees: CompletableFuture<SkillTrees?> = emptyFuture(),
     val attributeData: CompletableFuture<AttributesData> = emptyFuture(),
     val forge: CompletableFuture<Forge?> = emptyFuture(),
@@ -194,6 +196,7 @@ data class BackingSkyBlockProfile(
         attributeData,
         foragingCore,
         foraging,
+        safari,
     )
 
     companion object {
@@ -279,6 +282,7 @@ data class BackingSkyBlockProfile(
                     mining = future { member.getAs<JsonObject>("mining_core")?.let { MiningCore(it) } },
                     foragingCore = future { member.getAs<JsonObject>("foraging_core")?.let { ForagingCore(it) } },
                     foraging = future { ForagingData(member, member.getAs<JsonObject>("foraging") ?: JsonObject()) },
+                    safari = future { member.getAs<JsonObject>("safari")?.let { SafariData(it) } },
                     forge = future { member.getAs<JsonObject>("forge")?.let { Forge(it) } },
                     glacite = future { member.getAs<JsonObject>("glacite_player_data")?.let { GlaciteData(it) } },
                     tamingLevelPetsDonated = future { member.getPath("pets_data.pet_care.pet_types_sacrificed").asStringList().filter { it.isNotBlank() } },

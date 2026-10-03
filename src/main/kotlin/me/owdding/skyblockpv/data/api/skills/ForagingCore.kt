@@ -1,7 +1,9 @@
 package me.owdding.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.data.repo.SafariCodecs
 import me.owdding.skyblockpv.utils.ParseHelper
+import me.owdding.skyblockpv.utils.ParseHelper.Companion.enumIntMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 
@@ -40,4 +42,13 @@ data class ForagingData(val member: JsonObject, override val json: JsonObject) :
     val fishFamily: Set<String> by stringSet("fish_family")
     val treeGifts by obj("tree_gifts", transform = ::TreeGifts)
     val foragingLevelCap: Int = member.getPath("player_data.experience.SKILL_FORAGING_extra_level_cap").asInt(0)
+}
+
+data class SafariData(override val json: JsonObject) : ParseHelper {
+    val discoveredCritters by stringSet("discovered_critters")
+    val discoveredSparklingCritters by stringSet("discovered_sparkling_critters")
+    val totalSparkling by int("total_captured_sparkling_critters")
+    val milestone by enumIntMap<SafariCodecs.CritterSafariBiome>("milestone_claimed_tiers")
+    val tickets by enumIntMap<SafariCodecs.SafariTicket>("tickets")
+    val biomeCaptures by enumIntMap<SafariCodecs.CritterSafariBiome>("biome_captures")
 }
