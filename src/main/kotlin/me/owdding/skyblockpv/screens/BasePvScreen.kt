@@ -1,12 +1,15 @@
 package me.owdding.skyblockpv.screens
 
-import com.google.gson.*
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.google.gson.JsonNull
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
 import com.mojang.authlib.GameProfile
-import com.mojang.blaze3d.Blaze3D
 import com.mojang.serialization.JsonOps
 import earth.terrarium.olympus.client.components.Widgets
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
-import earth.terrarium.olympus.client.dialog.OlympusDialogs
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.asWidget
@@ -23,7 +26,6 @@ import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.util.Util
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
@@ -62,9 +64,9 @@ abstract class BasePvScreen(val name: String, val gameProfile: GameProfile, init
                 return@getProfiles
             }
             if (initedWithProfile) return@getProfiles
-            val selected = initProfile ?: profiles.find { it.id.id == Utils.preferedProfileId } ?: profiles.find { it.selected } ?: return@getProfiles
+            val selected = initProfile ?: profiles.find { it.id.id == Utils.preferredProfileId } ?: profiles.find { it.selected } ?: return@getProfiles
             onProfileSwitch(selected)
-            Utils.preferedProfileId = null
+            Utils.preferredProfileId = null
             profile = selected
             requireRebuild = true
             selected.dataFuture.whenComplete { _, throwable ->

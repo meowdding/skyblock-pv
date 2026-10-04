@@ -8,7 +8,6 @@ import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.withTooltip
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.withTranslatedTooltip
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -16,6 +15,7 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.shadowColor

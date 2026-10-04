@@ -17,7 +17,6 @@ import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.StaticGardenData
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -30,6 +29,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.bold
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color

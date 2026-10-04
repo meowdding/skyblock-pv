@@ -11,7 +11,6 @@ import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.config.CurrenciesAPI
 import me.owdding.skyblockpv.feature.networth.Networth
 import me.owdding.skyblockpv.feature.networth.NetworthCategory
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -19,6 +18,7 @@ import me.owdding.skyblockpv.utils.theme.PvColors
 import tech.thatgravyboat.skyblockapi.api.remote.hypixel.pricing.BazaarAPI
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import kotlin.math.roundToLong
 

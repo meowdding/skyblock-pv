@@ -9,12 +9,12 @@ import me.owdding.lib.extensions.shorten
 import me.owdding.lib.extensions.withTooltip
 import me.owdding.lib.repo.SacksRepoData
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
