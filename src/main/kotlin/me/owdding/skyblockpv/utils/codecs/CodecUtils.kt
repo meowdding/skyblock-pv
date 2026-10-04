@@ -16,6 +16,7 @@ import net.minecraft.util.ExtraCodecs
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.alchemy.PotionContents
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
@@ -40,7 +41,13 @@ object CodecUtils {
     }
 
     @IncludedCodec
+    val IDENTIFIER: Codec<Identifier> = Identifier.CODEC
+
+    @IncludedCodec
     val COMPONENT: Codec<Component> = ComponentSerialization.CODEC
+
+    @IncludedCodec
+    val POTION_CONTENTS: Codec<PotionContents> = PotionContents.CODEC
 
     @IncludedCodec
     val CLIENT_ASSET: Codec<ClientAsset> = Identifier.CODEC.xmap(clientAssetConverter()) { it.id() }

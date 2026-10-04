@@ -7,10 +7,12 @@ import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
+import me.owdding.skyblockpv.screens.windowed.tabs.mining.MiningCategory.GLACITE
 import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockAttributesRepo
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 
@@ -22,9 +24,8 @@ abstract class BaseForagingScreen(gameProfile: GameProfile, profile: SkyBlockPro
     override val categories: List<Category> get() = Category.getCategories<ForagingCategory>(profile)
 }
 
-private val attributesItem: ItemStack by lazy {
-    SkyBlockAttributesRepo.getItemStackOrDefault("r43").withCatharsisId("tab/foraging/attributes")
-}
+private val attributesItem: ItemStack by lazy { SkyBlockAttributesRepo.getItemStackOrDefault("r43").withCatharsisId("tab/foraging/attributes") }
+private val capsulesItem: ItemStack by lazy { SkyBlockItemsRepo.getItemStackOrDefault("critter_capsule").withCatharsisId("tab/foraging/safari") }
 
 enum class ForagingCategory(
     val screen: (GameProfile, SkyBlockProfile?) -> BaseForagingScreen,
@@ -35,6 +36,7 @@ enum class ForagingCategory(
     MAIN(::MainForagingScreen, Items.OAK_WOOD.withCatharsisId("tab/foraging/main")),
     HOTF(::ForagingSkillTreeScreen, SkullTextures.HOTF.skull.withCatharsisId("tab/foraging/hotf"), "HotF Tree", true),
     ATTRIBUTES(::AttributeScreen, attributesItem, "Attributes", true),
+    SAFARI(::SafariScreen, capsulesItem, "Safari", true),
     ;
 
     override val hover: String = hoverName ?: name.toTitleCase()
@@ -45,6 +47,7 @@ enum class ForagingCategory(
     override fun canDisplay(profile: SkyBlockProfile?): Boolean {
         if (!super.canDisplay(profile)) return false
         return when (this) {
+            SAFARI -> profile?.safari != null
             else -> true
         }
     }

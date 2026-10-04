@@ -34,6 +34,11 @@
                 "<white>Can be upgraded at the <light_purple>Fossil Essence Shop</light_purple></white>",
                 "<white>in the <dark_aqua>Dwarven Base Camp</dark_aqua> in the Glacite Tunnels</white>",
                 ""
+            ],
+            "safari_essence_shop": [
+                "<white>Can be used in the <light_purple>Safari Essence Shop</light_purple></white>",
+                "<white>by talking to <gold>Archie</gold> in the <green>Critter Safari Entrance</green></white>",
+                ""
             ]
         },
         "prefix": "skyblockpv"
@@ -316,6 +321,77 @@
                     "@id": "ice_essence_shop"
                 },
                 "<white>Start the <gold>Fossil Excavator</gold> with <green>1</green> extra charge</white>"
+            ]
+        },
+        "safari": {
+            "critter_catcher": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Start the <green>Critter Safari</green> with <green>x</green> additional <red>Critter Capsules</red>.</white>"
+            ],
+            "critter_master": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Start the <green>Critter Safari</green> with a <red>Masterful Critter Capsule</red>, which will</white>",
+                "<white>always catch the critter it's used on.</white>"
+            ],
+            "floortunate": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>An additional <green>+x</green> <gold>Floor Drops</gold> will spawn in the <green>Critter Safari</green>.</white>"
+            ],
+            "fresh_footprints": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Grants <green>+x</green> <light_purple>Tracking</light_purple> while in the <green>Critter Safari</green>.</white>"
+            ],
+            "head_start": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Start the <green>Critter Safari</green> with a random <red>Quest Item</red>.</white>"
+            ],
+            "hunting_hotspot": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Highlight a random zone each time you enter the <green>Critter Safari</green>.</white>",
+                "<white>Gain <green>+x</green> <light_purple>Hunting Fortune</light_purple> while in it.</white>"
+            ],
+            "thawing": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Grants <green>+x</green> <aqua>❄ Cold Resistance</aqua> while in the <green>Critter Safari</green>.</white>"
+            ],
+            "deep_diver": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Grants <green>+x</green> <dark_aqua>Respiration</dark_aqua> while in the <green>Critter Safari</green>.</white>"
+            ],
+            "quickdraw": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Your <red>Critter Capsules</red> catch <green>Critters</green> <green>x%</green> faster.</white>"
+            ],
+            "amateur_hour": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Grants <green>+x</green> <dark_aqua>☯ Hunting Wisdom</dark_aqua> while in the <green>Critter Safari</green>.</white>"
+            ],
+            "sparkling_specialist": [
+                {
+                    "@id": "safari_essence_shop"
+                },
+                "<white>Start the <green>Critter Safari</green> with a Sparkling Amulet, which increases the chance of <green>Critter</green> being <gold>SPARKLING</gold> by <green>2x</green>.</white>",
+                "<white>Sparkling Amulet bonuses do not stack.</white>"
             ]
         }
     },

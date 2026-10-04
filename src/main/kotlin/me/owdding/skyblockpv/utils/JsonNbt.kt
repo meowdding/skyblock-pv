@@ -6,12 +6,15 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtAccounter
 import net.minecraft.nbt.NbtIo
 import org.intellij.lang.annotations.Language
-import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.extentions.asBoolean
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toJson
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.io.ByteArrayInputStream
 import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.reflect.KProperty
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -19,7 +22,6 @@ import kotlin.time.Duration.Companion.milliseconds
 fun JsonObject.getNbt(): CompoundTag = this.asString.getNbt()
 fun JsonElement.getNbt(): CompoundTag = this.asString.getNbt()
 
-@OptIn(ExperimentalEncodingApi::class)
 fun String.getNbt(): CompoundTag {
     return NbtIo.readCompressed(ByteArrayInputStream(Base64.decode(this)), NbtAccounter.unlimitedHeap())
 }
@@ -61,8 +63,11 @@ interface ParseHelper {
     val json: JsonObject
 
     fun <T> parse(@Language("JSONPath") key: String? = null, transform: (JsonElement?) -> T): JsonDelegate<T> = JsonDelegate(json, key.orEmpty(), transform)
-    fun <T> nullableObj(@Language("JSONPath") key: String? = null, transform: (JsonObject?) -> T): DelegateProvider<T> = parse(key) { transform(it as? JsonObject) }
-    fun <T> obj(@Language("JSONPath") key: String? = null, transform: (JsonObject) -> T): DelegateProvider<T> = parse(key) { transform(it as? JsonObject ?: JsonObject()) }
+    fun <T> nullableObj(@Language("JSONPath") key: String? = null, transform: (JsonObject?) -> T): DelegateProvider<T> =
+        parse(key) { transform(it as? JsonObject) }
+
+    fun <T> obj(@Language("JSONPath") key: String? = null, transform: (JsonObject) -> T): DelegateProvider<T> =
+        parse(key) { transform(it as? JsonObject ?: JsonObject()) }
 
     fun int(@Language("JSONPath") key: String? = null, default: Int = 0): JsonDelegate<Int> = parse(key) { it.asInt(default) }
     fun long(@Language("JSONPath") key: String? = null, default: Long = 0L): JsonDelegate<Long> = parse(key) { it.asLong(default) }
@@ -86,6 +91,17 @@ interface ParseHelper {
     fun <K, V> map(@Language("JSONPath") key: String? = null, transform: (id: String, obj: JsonElement) -> Pair<K, V>): JsonDelegate<Map<K, V>> =
         parse(key) { it?.asJsonObject.asMap(transform) }
 
+    fun <K, V> mapNotNull(@Language("JSONPath") key: String? = null, transform: (id: String, obj: JsonElement) -> Pair<K, V>?): JsonDelegate<Map<K, V>> =
+        parse(key) { runCatching { it?.asJsonObject?.entrySet()?.mapNotNull { transform(it.key, it.value) }?.toMap() }.getOrNull() ?: emptyMap() }
+
     fun stringIntMap(@Language("JSONPath") key: String? = null): JsonDelegate<Map<String, Int>> = map(key) { id, obj -> id to obj.asInt(0) }
     fun stringLongMap(@Language("JSONPath") key: String? = null): JsonDelegate<Map<String, Long>> = map(key) { id, obj -> id to obj.asLong(0) }
+
+    companion object {
+        inline fun <reified T : Enum<*>> ParseHelper.enumIntMap(@Language("JSONPath") key: String? = null): JsonDelegate<Map<T, Int>> =
+            mapNotNull(key) { id, obj ->
+                val thing = T::class.java.enumConstants.find { it.name.equals(id, ignoreCase = true) } ?: return@mapNotNull null
+                thing to obj.asInt(0)
+            }
+    }
 }
