@@ -5,10 +5,8 @@ import me.owdding.ktcodecs.GenerateDispatchCodec
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.generated.DispatchHelper
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.removeIf
 import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.ExtraData
 import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -19,6 +17,7 @@ import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId.Companion.getSkyBlockId
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.util.concurrent.CompletableFuture
@@ -29,7 +28,7 @@ import kotlin.reflect.KClass
 object MagicalPowerCodecs : DefaultedData {
     private val defaultData = MagicalPowerRepoData(
         mapOf(),
-        mapOf()
+        mapOf(),
     )
     private var _data: MagicalPowerRepoData? = null
     val data: MagicalPowerRepoData get() = _data ?: defaultData
@@ -60,7 +59,7 @@ object MagicalPowerCodecs : DefaultedData {
             val abicase = if (hasAbicase) profile.maxwell?.abiphoneContacts?.floorDiv(2) ?: 0 else 0
 
             val lore = TooltipBuilder.multiline {
-                add("Magical Power Breakdown:") { color = TextColor.GRAY }
+                add("Magical Power Breakdown:", TextColor.GRAY)
                 base.toList()
                     .sortedByDescending { it.first.getData(DataTypes.RARITY) }
                     .groupBy { it.first.getData(DataTypes.RARITY) }
@@ -72,18 +71,18 @@ object MagicalPowerCodecs : DefaultedData {
 
                             append(rarity.displayText)
                             append(": +${totalPower.toFormattedString()}")
-                            append(" (${items.size})") { color = TextColor.GRAY }
+                            append(" (${items.size})", TextColor.GRAY)
                         }
                     }
 
                 space()
                 add("Rift Prism:") {
                     color = TextColor.BLUE
-                    append(" +${11.takeIf { profile.maxwell?.consumedRiftPrism == true } ?: 0}") { color = TextColor.GOLD }
+                    append(" +${11.takeIf { profile.maxwell?.consumedRiftPrism == true } ?: 0}", TextColor.GOLD)
                 }
                 add("Abiphone Case:") {
                     color = TextColor.BLUE
-                    append(" +${abicase}") { color = TextColor.GOLD }
+                    append(" +${abicase}", TextColor.GOLD)
                 }
 
             }

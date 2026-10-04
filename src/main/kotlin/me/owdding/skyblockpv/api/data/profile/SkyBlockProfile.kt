@@ -13,10 +13,28 @@ import me.owdding.skyblockpv.api.data.ProfileId
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToCollectionsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSkillsOrder
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToSlayerOrder
-import me.owdding.skyblockpv.data.api.*
+import me.owdding.skyblockpv.data.api.AttributesData
+import me.owdding.skyblockpv.data.api.Bank
+import me.owdding.skyblockpv.data.api.CfData
+import me.owdding.skyblockpv.data.api.CollectionItem
 import me.owdding.skyblockpv.data.api.Currency
-import me.owdding.skyblockpv.data.api.skills.*
-import me.owdding.skyblockpv.data.api.skills.combat.*
+import me.owdding.skyblockpv.data.api.Maxwell
+import me.owdding.skyblockpv.data.api.RiftData
+import me.owdding.skyblockpv.data.api.SkyBlockXpData
+import me.owdding.skyblockpv.data.api.skills.FishData
+import me.owdding.skyblockpv.data.api.skills.ForagingCore
+import me.owdding.skyblockpv.data.api.skills.ForagingData
+import me.owdding.skyblockpv.data.api.skills.Forge
+import me.owdding.skyblockpv.data.api.skills.GlaciteData
+import me.owdding.skyblockpv.data.api.skills.MiningCore
+import me.owdding.skyblockpv.data.api.skills.Pet
+import me.owdding.skyblockpv.data.api.skills.SkillTrees
+import me.owdding.skyblockpv.data.api.skills.TrophyFishData
+import me.owdding.skyblockpv.data.api.skills.combat.BestiaryMobData
+import me.owdding.skyblockpv.data.api.skills.combat.CrimsonIsleData
+import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
+import me.owdding.skyblockpv.data.api.skills.combat.MobData
+import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
@@ -39,7 +57,12 @@ import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
-import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
+import tech.thatgravyboat.skyblockapi.utils.extentions.asList
+import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
+import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
+import tech.thatgravyboat.skyblockapi.utils.extentions.asString
+import tech.thatgravyboat.skyblockapi.utils.extentions.asStringList
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -53,9 +76,7 @@ interface SkyBlockProfile {
     val currency: Currency? get() = backingProfile.currency.getNowOrElse(null)
     val bank: Bank? get() = backingProfile.bank.getNowOrElse(null)
     val inventory: InventoryData? get() = backingProfile.inventory.getNowOrElse(null)
-
-    /**Level to Progress*/
-    val skyBlockLevel: Pair<Int, Int> get() = backingProfile.skyBlockLevel.getNowOrElse(0 to 0)
+    val leveling: SkyBlockXpData? get() = backingProfile.leveling.getNowOrElse(null)
     val firstJoin: Long get() = backingProfile.firstJoin
     val fairySouls: Int get() = backingProfile.fairySouls
     val skill: Map<String, Long> get() = backingProfile.skill.getNowOrElse(emptyMap())
@@ -129,8 +150,7 @@ data class BackingSkyBlockProfile(
     val currency: CompletableFuture<Currency?> = emptyFuture(),
     val bank: CompletableFuture<Bank?> = emptyFuture(),
     val inventory: CompletableFuture<InventoryData?> = emptyFuture(),
-    /**Level to Progress*/
-    val skyBlockLevel: CompletableFuture<Pair<Int, Int>> = emptyFuture(),
+    val leveling: CompletableFuture<SkyBlockXpData?> = emptyFuture(),
     val firstJoin: Long = 0,
     val fairySouls: Int = 0,
     val skill: CompletableFuture<Map<String, Long>> = emptyFuture(),
@@ -168,7 +188,7 @@ data class BackingSkyBlockProfile(
         currency,
         bank,
         inventory,
-        skyBlockLevel,
+        leveling,
         skill,
         collections,
         mobData,
@@ -257,11 +277,7 @@ data class BackingSkyBlockProfile(
                     bank = future { Bank(json, member) },
                     firstJoin = profile.getAs<Long>("first_join", 0L),
                     fairySouls = member.getPathAs<Int>("fairy_soul.total_collected", 0),
-                    skyBlockLevel = future {
-                        val experience = member.getPathAs<Int>("leveling.experience", 0)
-
-                        experience / 100 to (experience % 100)
-                    },
+                    leveling = future { member.getPathAs<JsonObject>("leveling")?.let { SkyBlockXpData(it) } },
                     skill = playerData.getSkillData(
                         allMembers {
                             it.getPathAs<Long>("player_data.experience." + SkillAPI.Skills.SOCIAL.skillApiId) ?: 0

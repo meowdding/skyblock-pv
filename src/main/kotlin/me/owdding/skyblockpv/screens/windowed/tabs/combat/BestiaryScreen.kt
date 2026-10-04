@@ -10,19 +10,21 @@ import me.owdding.lib.displays.asTable
 import me.owdding.lib.displays.asWidget
 import me.owdding.lib.displays.toColumn
 import me.owdding.lib.displays.toRow
-import me.owdding.lib.displays.withTooltip as withDisplayTooltip
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.withTooltip
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
-import me.owdding.skyblockpv.data.repo.*
+import me.owdding.skyblockpv.data.repo.BestiaryCategoryEntry
+import me.owdding.skyblockpv.data.repo.BestiaryCodecs
+import me.owdding.skyblockpv.data.repo.BestiaryIcon
+import me.owdding.skyblockpv.data.repo.BestiaryMobEntry
+import me.owdding.skyblockpv.data.repo.ComplexBestiaryCategoryEntry
 import me.owdding.skyblockpv.utils.CarouselPage
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fixBase64Padding
 import me.owdding.skyblockpv.utils.components.CarouselWidget
@@ -35,8 +37,10 @@ import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.italic
+import me.owdding.lib.displays.withTooltip as withDisplayTooltip
 
 class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile), CarouselPage {
     private var carousel: CarouselWidget? = null

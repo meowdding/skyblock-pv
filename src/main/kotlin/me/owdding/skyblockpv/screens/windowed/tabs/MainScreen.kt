@@ -8,7 +8,11 @@ import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import kotlinx.coroutines.runBlocking
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.floor
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.shorten
@@ -31,7 +35,6 @@ import me.owdding.skyblockpv.screens.windowed.tabs.general.NetworthDisplay
 import me.owdding.skyblockpv.utils.FakePlayer
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.centerHorizontally
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.plus
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
@@ -58,11 +61,15 @@ import tech.thatgravyboat.skyblockapi.platform.pushPop
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
+import tech.thatgravyboat.skyblockapi.utils.text.CommonText
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import java.text.SimpleDateFormat
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI as SbApiProfileAPI
 
 class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseWindowedPvScreen("MAIN", gameProfile, profile) {
 
@@ -192,7 +199,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     +"screens.main.info.cookie.${if (profile.currency?.cookieBuffActive == true) "active" else "inactive"}",
                 ),
             )
-            profile.skyBlockLevel.let { (level, progress) ->
+            profile.leveling?.let { leveling ->
+                val level = leveling.getLevel
+                val progress = leveling.getProgress
                 val skyblockLevel = if (progress == 0) "$level" else "$level.${progress.toString().padStart(2, '0')}"
                 display(
                     grayText("screens.main.info.sb_lvl".asTranslated(skyblockLevel))
@@ -220,9 +229,19 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
     private fun getPlayerDisplay(profile: SkyBlockProfile, width: Int): LinearLayout {
         val height = (width * 1.1).toInt()
         val armor = profile.inventory?.armorItems ?: List(4) { ItemStack.EMPTY }
-        val skyblockLvl = profile.skyBlockLevel.first
-        val skyblockLvlColor = tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI.getLevelColor(skyblockLvl)
-        val name = Text.join("§8[", Text.of("$skyblockLvl").withColor(skyblockLvlColor), "§8] §f", gameProfile.name)
+        val skyblockLvl = profile.leveling?.getLevel ?: 0
+        val name = Text.of {
+            append("[", TextColor.DARK_GRAY)
+            append("$skyblockLvl", SbApiProfileAPI.getLevelColor(skyblockLvl))
+            append("]", TextColor.DARK_GRAY)
+            append(CommonText.SPACE)
+            append(gameProfile.name)
+
+            profile.leveling?.emblem?.let {
+                append(CommonText.SPACE)
+                append(it.icon)
+            }
+        }
         val fakePlayer = FakePlayer(gameProfile, name, armor)
         val nakedFakePlayer = FakePlayer(gameProfile, name)
         val playerWidget = Displays.background(ThemeSupport.texture(SkyBlockPv.id("buttons/disabled")), width, height).asWidget().withRenderer { gr, ctx, _ ->
@@ -303,7 +322,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         fun getStatusDisplay(status: PlayerStatus): WidgetRenderer<Button> {
             val statusText = +"screens.main.status.${status.status.name.lowercase()}"
             val location = SkyBlockIsland.entries.find { it.id == status.location }?.toString() ?: status.location
-            val locationText = location?.let { Text.of(it).withColor(PvColors.GREEN) } ?: +"screens.main.status.unknown"
+            val locationText = location?.let { Text.of(it, PvColors.GREEN) } ?: +"screens.main.status.unknown"
             return WidgetRenderers.text(statusText + locationText)
         }
 
@@ -337,8 +356,8 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         getToolTip = { skill, num ->
             SkillAPI.getProgressToNextLevel(skill, num, profile).let { progress ->
                 TooltipBuilder().apply {
-                    add(skill.data.name) { this.color = PvColors.YELLOW }
-                    add("Exp: ${num.shorten()}") { this.color = PvColors.GRAY }
+                    add(skill.data.name, PvColors.YELLOW)
+                    add("Exp: ${num.shorten()}", PvColors.GRAY)
                     add {
                         append(+"screens.main.skills.progress")
                         this.color = PvColors.GRAY
@@ -360,9 +379,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                                 return@add
                             }
 
-                            append(num.toFormattedString()) { this.color = PvColors.YELLOW }
-                            append("/") { this.color = PvColors.GOLD }
-                            append(expRequired.shorten()) { this.color = PvColors.YELLOW }
+                            append(num.toFormattedString(), PvColors.YELLOW)
+                            append("/", PvColors.GOLD)
+                            append(expRequired.shorten(), PvColors.YELLOW)
                             append(
                                 Text.of(((num.toFloat() / expRequired) * 100).round()) {
                                     append("%")
@@ -387,7 +406,7 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
             title = +"screens.main.essence",
             data = essence,
             width = width,
-            getIcon = { SkyBlockItemsRepo.getItemStackOrDefault("ESSENCE_${it.uppercase()}")},
+            getIcon = { SkyBlockItemsRepo.getItemStackOrDefault("ESSENCE_${it.uppercase()}") },
         ) { _, amount -> amount.shorten() }
     }
 
@@ -402,29 +421,29 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
         getToolTip = { name, pair ->
             val (repo, data) = pair
             TooltipBuilder().apply {
-                add(name.toTitleCase()) { this.color = PvColors.YELLOW }
+                add(name.toTitleCase(), PvColors.YELLOW)
                 add {
                     append(+"screens.main.slayer.kills")
                     this.color = PvColors.GRAY
                     Text.join(
                         (0 until repo.maxBossTier).map {
-                            Text.of(data.bossKillsTier[it]?.toFormattedString() ?: "0") { this.color = PvColors.GRAY }
+                            Text.of(data.bossKillsTier[it]?.toFormattedString() ?: "0", PvColors.GRAY)
                         },
-                        separator = Text.of("/") { this.color = PvColors.DARK_GRAY },
+                        separator = Text.of("/", PvColors.DARK_GRAY),
                     ).let { append(it) }
                 }
                 add {
                     append(+"screens.main.slayer.exp")
                     this.color = PvColors.GRAY
-                    append(data.exp.toFormattedString()) { this.color = PvColors.YELLOW }
+                    append(data.exp.toFormattedString(), PvColors.YELLOW)
 
                     val percentage = data.exp / repo.leveling.last().toDouble() * 100
                     if (percentage >= 100) {
                         append(CommonComponents.SPACE)
                         append(+"misc.maxed")
                     } else {
-                        append("/") { this.color = PvColors.GOLD }
-                        append(repo.leveling.last().toFormattedString()) { this.color = PvColors.YELLOW }
+                        append("/", PvColors.GOLD)
+                        append(repo.leveling.last().toFormattedString(), PvColors.YELLOW)
                         append(
                             Text.of(((data.exp.toFloat() / repo.leveling.last()) * 100).round()) {
                                 append("%")
@@ -438,9 +457,9 @@ class MainScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     add {
                         append(+"screens.main.slayer.next_level")
                         this.color = PvColors.GRAY
-                        append(data.exp.toFormattedString()) { this.color = PvColors.YELLOW }
-                        append("/") { this.color = PvColors.GOLD }
-                        append(repo.leveling[repo.getLevel(data.exp)].toFormattedString()) { this.color = PvColors.YELLOW }
+                        append(data.exp.toFormattedString(), PvColors.YELLOW)
+                        append("/", PvColors.GOLD)
+                        append(repo.leveling[repo.getLevel(data.exp)].toFormattedString(), PvColors.YELLOW)
                         append(
                             Text.of(((data.exp.toFloat() / repo.leveling[repo.getLevel(data.exp)]) * 100).round()) {
                                 append("%")

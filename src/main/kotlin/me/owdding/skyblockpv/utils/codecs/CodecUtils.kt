@@ -10,6 +10,7 @@ import net.minecraft.core.ClientAsset
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.resources.Identifier
 import net.minecraft.util.ExtraCodecs
 import net.minecraft.world.item.Item
@@ -41,6 +42,9 @@ object CodecUtils {
 
     @IncludedCodec
     val IDENTIFIER: Codec<Identifier> = Identifier.CODEC
+
+    @IncludedCodec
+    val COMPONENT: Codec<Component> = ComponentSerialization.CODEC
 
     @IncludedCodec
     val POTION_CONTENTS: Codec<PotionContents> = PotionContents.CODEC

@@ -1,7 +1,12 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.combat
 
 import com.mojang.authlib.GameProfile
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asTable
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.round
 import me.owdding.lib.extensions.toReadableTime
 import me.owdding.skyblockpv.SkyBlockPv
@@ -11,7 +16,6 @@ import me.owdding.skyblockpv.data.api.skills.combat.DungeonData
 import me.owdding.skyblockpv.data.api.skills.combat.DungeonFloor
 import me.owdding.skyblockpv.data.repo.CatacombsCodecs
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -21,6 +25,7 @@ import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.client.gui.layouts.LayoutElement
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
@@ -126,22 +131,21 @@ class DungeonScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             buildList {
                 fun getFloorWidget(floorData: DungeonFloor?) = grayText((floorData?.completions ?: 0).toString()).withTooltip {
                     val data = floorData ?: DungeonFloor.EMPTY
-                    add("Completions: ") { color = TextColor.GRAY; append(data.completions.toString()) { color = TextColor.WHITE } }
-                    add("Fastest Time: ") {
-                        color = TextColor.GRAY; append(if (data.fastestTime.isPositive()) data.fastestTime.toReadableTime(allowMs = true) else "N/A") {
-                        color = TextColor.WHITE
+                    add("Completions: ") {
+                        color = TextColor.GRAY
+                        append(data.completions.toString(), TextColor.WHITE)
                     }
+                    add("Fastest Time: ") {
+                        color = TextColor.GRAY
+                        append(if (data.fastestTime.isPositive()) data.fastestTime.toReadableTime(allowMs = true) else "N/A", TextColor.WHITE)
                     }
                     add("Fastest S+: ") {
-                        color =
-                            TextColor.GRAY; append(if (data.fastestTimeSplus.isPositive()) data.fastestTimeSplus.toReadableTime(allowMs = true) else "N/A") {
-                        color = TextColor.WHITE
-                    }
+                        color = TextColor.GRAY
+                        append(if (data.fastestTimeSplus.isPositive()) data.fastestTimeSplus.toReadableTime(allowMs = true) else "N/A", TextColor.WHITE)
                     }
                     add("Best Score: ") {
-                        color = TextColor.GRAY; append(if (data.bestScore > 0) data.bestScore.toString() else "N/A") {
-                        color = TextColor.WHITE
-                    }
+                        color = TextColor.GRAY
+                        append(if (data.bestScore > 0) data.bestScore.toString() else "N/A", TextColor.WHITE)
                     }
                 }
 

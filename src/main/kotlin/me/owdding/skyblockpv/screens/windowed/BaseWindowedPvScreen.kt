@@ -21,7 +21,13 @@ import me.owdding.lib.displays.asWidget
 import me.owdding.lib.extensions.getStackTraceString
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.api.*
+import me.owdding.skyblockpv.api.CachedApis
+import me.owdding.skyblockpv.api.GardenAPI
+import me.owdding.skyblockpv.api.MuseumAPI
+import me.owdding.skyblockpv.api.PlayerAPI
+import me.owdding.skyblockpv.api.ProfileAPI
+import me.owdding.skyblockpv.api.PvAPI
+import me.owdding.skyblockpv.api.StatusAPI
 import me.owdding.skyblockpv.api.data.SocialEntry
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile
 import me.owdding.skyblockpv.api.data.profile.EmptySkyBlockProfile.Reason
@@ -384,7 +390,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
                         val gameProfile = profile.getNow(null)
                         if (gameProfile != null) {
-                            Utils.preferedProfileId = this@BaseWindowedPvScreen.profile.id.id
+                            Utils.preferredProfileId = this@BaseWindowedPvScreen.profile.id.id
                             Utils.openPv(gameProfile)
                         } else if (profile.isCompletedExceptionally) {
                             Text.of("Failed to fetch username!").sendWithPrefix()

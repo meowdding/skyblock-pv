@@ -24,7 +24,7 @@ object LobbyParseTest {
     fun onCommand(event: RegisterCommandsEvent) {
         if (!SkyBlockPv.isSuperUser) return
 
-        event.registerWithCallback("sbpv testlobby") {
+        event.registerWithCallback("sbpv dev testlobby") {
             var successfulParses = 0
             var failedParses = 0
             val startTime = currentInstant()
@@ -51,7 +51,7 @@ object LobbyParseTest {
                             successfulParses++
                         }
 
-                        Thread.sleep(100)
+                        Thread.sleep(1000)
                     }
 
                     val diff = startTime.since().toReadableTime(allowMs = true)

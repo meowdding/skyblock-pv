@@ -10,7 +10,6 @@ import me.owdding.skyblockpv.data.api.skills.farming.Commission
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.data.repo.StaticVisitorData
 import me.owdding.skyblockpv.screens.windowed.tabs.base.GroupedScreen
-import me.owdding.skyblockpv.utils.Utils.append
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.core.component.DataComponents
@@ -19,6 +18,7 @@ import net.minecraft.world.item.component.BlockItemStateProperties
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.utils.builders.ItemBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile),
