@@ -10,6 +10,7 @@ import net.minecraft.core.ClientAsset
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.resources.Identifier
 import net.minecraft.util.ExtraCodecs
 import net.minecraft.world.item.Item
@@ -37,6 +38,9 @@ object CodecUtils {
     internal inline fun <reified T> list(): Codec<List<T>> {
         return SkyBlockPvCodecs.getCodec<T>().listOf()
     }
+
+    @IncludedCodec
+    val COMPONENT: Codec<Component> = ComponentSerialization.CODEC
 
     @IncludedCodec
     val CLIENT_ASSET: Codec<ClientAsset> = Identifier.CODEC.xmap(clientAssetConverter()) { it.id() }

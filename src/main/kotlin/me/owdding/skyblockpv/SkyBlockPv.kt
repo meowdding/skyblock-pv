@@ -189,7 +189,7 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
         event.register("sbpv") {
             then("pv") { pvCommand() }
 
-            thenCallback("displaytest") {
+            thenCallback("dev displaytest") {
                 McClient.setScreenAsync { DisplayTest }
             }
 
@@ -204,7 +204,7 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
                 }.sendWithPrefix()
             }
 
-            thenCallback("pfjoin player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
+            thenCallback("dev pfjoin player", StringArgumentType.string(), SkyBlockPlayerSuggestionProvider) {
                 fetchGameProfile(this.getArgument("player", String::class.java)) { profile ->
                     Utils.validateGameProfile(profile) {
                         getDungeonData(profile!!)
