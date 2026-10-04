@@ -28,6 +28,7 @@ import me.owdding.skyblockpv.data.api.skills.Forge
 import me.owdding.skyblockpv.data.api.skills.GlaciteData
 import me.owdding.skyblockpv.data.api.skills.MiningCore
 import me.owdding.skyblockpv.data.api.skills.Pet
+import me.owdding.skyblockpv.data.api.skills.SafariData
 import me.owdding.skyblockpv.data.api.skills.SkillTrees
 import me.owdding.skyblockpv.data.api.skills.TrophyFishData
 import me.owdding.skyblockpv.data.api.skills.combat.BestiaryMobData
