@@ -53,10 +53,7 @@ object SkillAPI {
         COMBAT,
         FISHING,
         MINING,
-        FORAGING {
-            override fun hasFloatingLevelCap() = true
-            override fun maxLevel(profile: SkyBlockProfile) = (profile.foraging?.foragingLevelCap ?: 0) + 50
-        },
+        FORAGING,
         ENCHANTING,
         ALCHEMY,
         HUNTING,
