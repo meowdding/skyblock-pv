@@ -1,6 +1,7 @@
 package me.owdding.skyblockpv.api
 
 import com.google.gson.JsonObject
+import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.CollectionCategory
 import me.owdding.skyblockpv.data.api.CollectionEntry
 import me.owdding.skyblockpv.utils.codecs.DefaultedData
@@ -32,6 +33,12 @@ object CollectionAPI : DefaultedData {
     fun CollectionEntry.getProgressToMax(amount: Long): Float {
         val maxAmount = tiers.entries.maxOf { it.value }
         return (amount.toFloat() / maxAmount).coerceAtMost(1.0f)
+    }
+
+    fun hasCollectionTier(profile: SkyBlockProfile, id: String, tier: Int): Boolean {
+        val amount = profile.collections?.find { it.itemId.equals(id, ignoreCase = true) }?.amount ?: return false
+        val requiredAmount = getCollectionEntry(id)?.tiers[tier.toString()] ?: return false
+        return amount >= requiredAmount
     }
 
     private fun JsonObject.toCollectionCategory() = CollectionCategory(
