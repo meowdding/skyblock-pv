@@ -10,6 +10,7 @@
     "mixins": [
         "skyblockpv.mixins.json"
     ],
+    "environment": "client",
     "entrypoints": {
         "client": [
             {
