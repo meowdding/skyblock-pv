@@ -29,6 +29,7 @@ import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
+import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
@@ -36,6 +37,8 @@ import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.util.Util
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import net.minecraft.world.item.component.BlockItemStateProperties
 import org.joml.Matrix3x2f
 import org.joml.Matrix3x2fStack
 import tech.thatgravyboat.repolib.api.RepoAPI
@@ -74,6 +77,10 @@ object Utils {
 
     fun getMinecraftItem(id: Identifier): ItemStack = BuiltInRegistries.ITEM.getValue(id).defaultInstance
     fun getMinecraftItem(id: String): ItemStack = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(id)).defaultInstance
+
+    fun failedTestBlockStack(): ItemStack = Items.TEST_BLOCK.defaultInstance.apply {
+        set(DataComponents.BLOCK_STATE, BlockItemStateProperties(mapOf("mode" to "fail")))
+    }
 
     fun <K, V> MutableMap<K, V>.removeIf(predicate: (Map.Entry<K, V>) -> Boolean): MutableMap<K, V> = also { entries.removeIf(predicate) }
 

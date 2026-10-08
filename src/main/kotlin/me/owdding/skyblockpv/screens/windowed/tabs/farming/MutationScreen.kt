@@ -9,14 +9,12 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.MutationData
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.screens.windowed.tabs.base.GroupedScreen
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
-import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.component.BlockItemStateProperties
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockItemId
-import tech.thatgravyboat.skyblockapi.utils.builders.ItemBuilder
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
@@ -105,9 +103,7 @@ class MutationScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         val baseItem = data?.id?.let { SkyBlockItemId.item(it).toItem() }
         return Displays.item(
             baseItem.takeIf { discovered && filter != Filter.UNDISCOVERED } ?: Items.DYE.gray().defaultInstance.takeUnless { data == null }
-            ?: ItemBuilder(Items.TEST_BLOCK) {
-                set(DataComponents.BLOCK_STATE, BlockItemStateProperties(mapOf("mode" to "fail")))
-            },
+            ?: Utils.failedTestBlockStack(),
         ).withTooltip {
             add(baseItem?.hoverName ?: Text.of(id))
             space()

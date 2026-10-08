@@ -10,13 +10,13 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.Attribute
 import me.owdding.skyblockpv.data.repo.AttributesData
 import me.owdding.skyblockpv.screens.windowed.tabs.base.GroupedScreen
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.skipUntil
 import me.owdding.skyblockpv.utils.Utils.toDateTime
 import net.minecraft.client.gui.layouts.Layout
 import net.minecraft.network.chat.CommonComponents.space
 import net.minecraft.util.ARGB
 import net.minecraft.world.item.Items
-import sun.management.MemoryUsageCompositeData.getMax
 import tech.thatgravyboat.repolib.api.AttributesAPI
 import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
@@ -104,7 +104,7 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         return Displays.item(
             when {
                 repo?.let(::getMax) != 0 && (api == null || api.syphoned <= 0) && filter != Filter.LOCKED -> Items.DYE.gray().defaultInstance
-                else -> item ?: Items.BARRIER.defaultInstance
+                else -> item ?: Utils.failedTestBlockStack()
             },
         ).withTooltip { getAttributeTooltip(group, repo, api) }
     }

@@ -10,13 +10,11 @@ import me.owdding.skyblockpv.data.api.skills.farming.Commission
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.data.repo.StaticVisitorData
 import me.owdding.skyblockpv.screens.windowed.tabs.base.GroupedScreen
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.layouts.Layout
-import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.component.BlockItemStateProperties
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
-import tech.thatgravyboat.skyblockapi.utils.builders.ItemBuilder
 import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
@@ -95,9 +93,7 @@ class VisitorScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val (visitor, commission) = data
         val item = loadingValue(
             visitor?.itemStack.takeUnless { commission == null && !filter.alwaysDisplay } ?: Items.DYE.gray().defaultInstance.takeUnless { visitor == null }
-            ?: ItemBuilder(Items.TEST_BLOCK) {
-                set(DataComponents.BLOCK_STATE, BlockItemStateProperties(mapOf("mode" to "fail")))
-            },
+            ?: Utils.failedTestBlockStack(),
             Items.DYE.orange().defaultInstance,
             Items.BEDROCK.defaultInstance,
         )
