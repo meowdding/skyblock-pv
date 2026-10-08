@@ -63,8 +63,8 @@ class SafariScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
         PvLayouts.vertical(2) {
             val perks = listOf(
                 "critter_catcher", "critter_master", "floortunate", "fresh_footprints",
-                "head_start", "hunting_hotspot", "thawing", "deep_diver",
-                "quickdraw", "amateur_hour", "sparkling_specialist",
+                "head_start", "hunting_hotspot", "thawing", "deep_diver", "quickdraw",
+                "amateur_hour", "eagles_advantage", "sparkling_specialist",
             )
 
             val elementsPerRow = (width - 15) / 22
