@@ -6,7 +6,13 @@ import earth.terrarium.olympus.client.components.base.BaseWidget
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers
 import me.owdding.lib.builder.LayoutFactory
 import me.owdding.lib.builder.MIDDLE
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asButtonLeft
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withPadding
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.layouts.setPos
 import me.owdding.skyblockpv.SkyBlockPv
@@ -28,6 +34,7 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.FrameLayout
 import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -86,13 +93,15 @@ class LoadoutTab(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                             Displays.item(entry.getIcon(inventory)).withTooltip {
                                 this.add(entry.getName(index))
 
-                                fun MutableComponent.appendValue(value: String?) {
+                                fun MutableComponent.appendValue(value: Component?) {
                                     if (value != null) {
-                                        append(value, CatppuccinColors.Mocha.sapphire)
+                                        append(value)
                                     } else {
                                         append("None", CatppuccinColors.Mocha.red)
                                     }
                                 }
+
+                                fun MutableComponent.appendValue(value: String?) = appendValue(value?.asComponent())
 
                                 this.add {
                                     append("Id - ", CatppuccinColors.Mocha.text)
@@ -146,6 +155,11 @@ class LoadoutTab(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                                 add("Hotf Preset - ") {
                                     this.color = CatppuccinColors.Mocha.text
                                     appendValue(entry?.foragingCoreSelectedSlot?.toString())
+                                }
+
+                                add("Favored Bait - ") {
+                                    this.color = CatppuccinColors.Mocha.text
+                                    appendValue(entry?.favoredBait?.toItem()?.hoverName)
                                 }
                             }.withPadding(2).asButtonLeft {
                                 selected = entry?.id ?: (index + 1)
@@ -264,13 +278,16 @@ class LoadoutTab(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : B
                     ),
                 ),
             )
-            display(
-                ExtraDisplays.inventorySlot(
-                    (pet?.itemStack?.let {
-                        Displays.item(it, showTooltip = true, customStackText = pet.level)
-                    } ?: Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/bone")), Displays.empty(16, 16))).withPadding(2),
-                ),
-            )
+
+            val petDisplay = pet?.itemStack?.let {
+                Displays.item(it, showTooltip = true, customStackText = pet.level)
+            } ?: Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/bone")), Displays.empty(16, 16)).withTooltip("Selected Pet")
+            display(ExtraDisplays.inventorySlot(petDisplay.withPadding(2)))
+
+            val baitDisplay = loadout?.favoredBait?.let {
+                Displays.item(it.toItem(), showTooltip = true, showStackSize = true)
+            } ?: Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/bait")), Displays.empty(16, 16)).withTooltip("Favored Bait")
+            display(ExtraDisplays.inventorySlot(baitDisplay.withPadding(2)))
         }.withLabel("Equipment")
 
         val treeHeight = (height - 25).coerceAtLeast(100)

@@ -17,12 +17,13 @@ import net.minecraft.nbt.NbtAccounter
 import net.minecraft.nbt.NbtIo
 import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
+import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
 import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
 import tech.thatgravyboat.skyblockapi.utils.extentions.asUUID
 import java.io.ByteArrayInputStream
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.io.encoding.Base64
@@ -44,7 +45,7 @@ data class InventoryData(
     val personalVault: Inventory?,
     val candy: Inventory?,
     val carnivalMaskBag: Inventory?,
-    val loadouts: LoadoutData?
+    val loadouts: LoadoutData?,
 ) {
 
     data class LoadoutData(
@@ -52,7 +53,7 @@ data class InventoryData(
         val armorSets: Map<Int, ArmorSet>,
         val equippedEquipmentSet: Int,
         val equipmentSets: Map<Int, EquipmentSet>,
-        val savedLoadouts: Map<Int, SavedLoadout>
+        val savedLoadouts: Map<Int, SavedLoadout>,
     )
 
     interface ItemSet {
@@ -65,7 +66,7 @@ data class InventoryData(
         val helmet: ItemStack,
         val chestplate: ItemStack,
         val leggings: ItemStack,
-        val boots: ItemStack
+        val boots: ItemStack,
     ) : ItemSet {
         override fun getStacks() = listOf(helmet, chestplate, leggings, boots)
     }
@@ -75,7 +76,7 @@ data class InventoryData(
         val slot1: ItemStack,
         val slot2: ItemStack,
         val slot3: ItemStack,
-        val slot4: ItemStack
+        val slot4: ItemStack,
     ) : ItemSet {
         override fun getStacks() = listOf(slot1, slot2, slot3, slot4)
     }
@@ -89,9 +90,13 @@ data class InventoryData(
         val foragingCoreSelectedSlot: Int?,
         val powerStone: String?,
         val tuningPointsSlot: Int?,
-        val pet: UUID?
+        val pet: UUID?,
+        val favoredBait: SkyBlockId?,
     ) {
-        val isEmpty get() = armorSetId == null && equipmentSlotId == null && miningCoreSelectedSlot == null && foragingCoreSelectedSlot == null && powerStone == null && tuningPointsSlot == null && pet == null && name == "Loadout $id"
+        val isEmpty
+            get() = armorSetId == null && equipmentSlotId == null && miningCoreSelectedSlot == null &&
+                foragingCoreSelectedSlot == null && powerStone == null && tuningPointsSlot == null && pet == null && favoredBait == null &&
+                name == "Loadout $id"
     }
 
     /** Get all items from all sources, **EXCEPT** for sacks.*/
@@ -238,7 +243,8 @@ data class InventoryData(
 
             savedObj?.entrySet()?.forEach { (key, element) ->
                 val setObj = element.asJsonObject
-                    savedLoadouts[key.toInt()] = BackingSkyBlockProfile.future {SavedLoadout(
+                savedLoadouts[key.toInt()] = BackingSkyBlockProfile.future {
+                    SavedLoadout(
                         id = setObj.get("id")?.asInt!!,
                         name = setObj.get("name")?.asString!!,
                         armorSetId = setObj.getAs<JsonElement>("armor_set_id")?.asInt,
@@ -248,7 +254,9 @@ data class InventoryData(
                         powerStone = setObj.getAs<JsonElement>("power_stone")?.asString,
                         tuningPointsSlot = setObj.getAs<JsonElement>("tuning_points_slot")?.asInt,
                         pet = setObj.getAs<JsonElement>("pet")?.asUUID(),
-                    )}
+                        favoredBait = setObj.getAs<String>("favoredBait")?.let { SkyBlockId.item(it) },
+                    )
+                }
             }
 
             val allFutures = armorSetFutures.values + equipmentSetFutures.values + savedLoadouts.values
@@ -258,7 +266,7 @@ data class InventoryData(
                     armorSets = armorSetFutures.mapValues { it.value.get() },
                     equippedEquipmentSet = equippedEquipment,
                     equipmentSets = equipmentSetFutures.mapValues { it.value.get() },
-                    savedLoadouts = savedLoadouts.mapValues { (_, value) -> value.get() }
+                    savedLoadouts = savedLoadouts.mapValues { (_, value) -> value.get() },
                 )
             }
         }
