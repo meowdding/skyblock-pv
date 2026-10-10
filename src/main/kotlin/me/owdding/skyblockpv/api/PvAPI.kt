@@ -80,6 +80,7 @@ object PvAPI {
     fun isAuthenticated(): Boolean = key != null && !failedToAuth
 
     suspend fun authenticate(bypassCaches: Boolean = false) {
+        SkyBlockPv.info("Authenticating with the API.")
         try {
             val server = UUID.randomUUID().toString()
             val user = McClient.self.user
