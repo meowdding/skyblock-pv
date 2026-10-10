@@ -27,7 +27,7 @@ object PageIssueManager {
     }
 
     @Subscription
-    fun onRemote(event: FinishRepoLoadingEvent) {
+    private fun onRemote(event: FinishRepoLoadingEvent) {
         issues = Utils.loadRemoteRepoData("pv/issues", SkyBlockPvCodecs.getCodec<PageIssue>())
     }
 

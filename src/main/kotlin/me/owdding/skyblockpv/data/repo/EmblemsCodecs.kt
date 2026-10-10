@@ -43,7 +43,7 @@ object EmblemsCodecs : DefaultedData {
     )
 
     @Subscription
-    fun onCommand(event: RegisterCommandsEvent) {
+    private fun onCommand(event: RegisterCommandsEvent) {
         event.registerWithCallback("sbpv dev emblems") {
             emblems.groupBy { it.family }.map {
                 Text.of("${it.key}: ") {

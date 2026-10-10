@@ -26,7 +26,7 @@ object ContributorHandler {
     val showCosmetics get() = MeowddingLibConfig.pvCosmetic
 
     @Subscription
-    fun onCostmeticLoad(event: CosmeticLoadEvent) {
+    private fun onCostmeticLoad(event: CosmeticLoadEvent) {
         val contributorData = CosmeticManager.playerList.associateNotNull(
             keySelector = { it.uuid },
             valueSelector = { playerEntry ->

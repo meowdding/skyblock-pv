@@ -54,7 +54,7 @@ object PartyFinderJoin {
     }
 
     @Subscription
-    fun onChat(event: ChatReceivedEvent.Pre) {
+    private fun onChat(event: ChatReceivedEvent.Pre) {
         if (Config.partyFinderMessage == State.OFF) return
 
         joinMessageRegex.match(event.text, "username") { (username) ->

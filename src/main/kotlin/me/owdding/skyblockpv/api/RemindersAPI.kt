@@ -48,7 +48,7 @@ object RemindersAPI {
     }
 
     @Subscription
-    fun onTick(event: TickEvent) {
+    private fun onTick(event: TickEvent) {
         if (reminders.isEmpty()) return
 
         val now = System.currentTimeMillis()

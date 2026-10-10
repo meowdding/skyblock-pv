@@ -25,7 +25,7 @@ object ClickableChatMessages {
 
     @Subscription
     @OnlyOnSkyBlock
-    fun onAllChat(event: ChatReceivedEvent.Post) {
+    private fun onAllChat(event: ChatReceivedEvent.Post) {
         if (!Config.profileChatClick) return
 
         // Copy the Component to not skip the main text
@@ -68,7 +68,7 @@ object ClickableChatMessages {
 
     @Subscription
     @OnlyOnSkyBlock
-    fun onOtherChat(event: ChatReceivedEvent.Post) {
+    private fun onOtherChat(event: ChatReceivedEvent.Post) {
         if (!Config.profileChatClickOther) return
 
         otherChatRegex.match(event.text, "username") { (username) ->

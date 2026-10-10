@@ -158,14 +158,14 @@ object SkyBlockPv : ClientModInitializer, MeowddingLogger by MeowddingLogger.aut
     }
 
     @Subscription
-    fun screenEvent(event: ScreenInitializedEvent) {
+    private fun screenEvent(event: ScreenInitializedEvent) {
         if (!dataFailed || hasNotifiedAboutFailure) return
         PvToast.addFailedToLoadDataToast()
         hasNotifiedAboutFailure = true
     }
 
     @Subscription
-    fun onRegisterCommands(event: RegisterCommandsEvent) {
+    private fun onRegisterCommands(event: RegisterCommandsEvent) {
         val pvCommand: (LiteralCommandBuilder.() -> Unit) = {
             callback {
                 if (!PvAPI.isAuthenticated()) {

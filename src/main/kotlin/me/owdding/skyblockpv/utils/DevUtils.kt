@@ -77,5 +77,5 @@ internal object SkyblockPvDevUtils : DevUtils() {
     }
 
     @Subscription
-    fun commandRegister(event: RegisterCommandsEvent) = super.onCommandRegister(event)
+    private fun commandRegister(event: RegisterCommandsEvent) = super.onCommandRegister(event)
 }

@@ -22,7 +22,7 @@ object ProfileViewerButton {
     private val titleRegex = "(?<name>.*)'s? Profile(?: \\[GUEST])?".toRegex()
 
     @Subscription
-    fun onInventoryChange(event: InventoryChangeEvent) {
+    private fun onInventoryChange(event: InventoryChangeEvent) {
         if (!Config.profileSpying) return
         if (event.slot.index != 13) return
 

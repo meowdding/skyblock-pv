@@ -24,7 +24,7 @@ object RabbitParser {
     )
 
     @Subscription
-    fun onInv(event: InventoryChangeEvent) {
+    private fun onInv(event: InventoryChangeEvent) {
         if (!shouldParse()) return
         if (!event.title.contains("Hoppity's Collection")) return
         if (event.slot.index !in 9..44) return
@@ -39,7 +39,7 @@ object RabbitParser {
     }
 
     @Subscription
-    fun onInvGone(event: ContainerCloseEvent) {
+    private fun onInvGone(event: ContainerCloseEvent) {
         if (!shouldParse()) return
         if (data.isEmpty()) return
         Text.of("Storing Rabbit Data in config").sendWithPrefix()

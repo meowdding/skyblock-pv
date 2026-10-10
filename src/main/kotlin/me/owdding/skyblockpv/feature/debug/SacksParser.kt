@@ -24,7 +24,7 @@ object SacksParser {
     private var titleRegex = "(?<name>.*) Sack".toRegex()
 
     @Subscription
-    fun onInv(event: InventoryChangeEvent) {
+    private fun onInv(event: InventoryChangeEvent) {
         if (!shouldParse()) return
         if (event.item in ItemTag.GLASS_PANES) return
         if (event.isInBottomRow) return
@@ -53,7 +53,7 @@ object SacksParser {
     }
 
     @Subscription(event = [ContainerCloseEvent::class])
-    fun onInvGone() {
+    private fun onInvGone() {
         if (!shouldParse()) return
         if (data.isEmpty()) return
         Text.of("Storing Sacks Data in config").sendWithPrefix()

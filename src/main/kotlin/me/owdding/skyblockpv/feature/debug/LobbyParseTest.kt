@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture
 object LobbyParseTest {
 
     @Subscription
-    fun onCommand(event: RegisterCommandsEvent) {
+    private fun onCommand(event: RegisterCommandsEvent) {
         if (!SkyBlockPv.isSuperUser) return
 
         event.registerWithCallback("sbpv dev testlobby") {

@@ -41,7 +41,7 @@ object PvAPI {
 
     @Subscription
     @OnlyOnSkyBlock
-    fun onTick(event: TickEvent) {
+    private fun onTick(event: TickEvent) {
         scheduledSendMessage?.let {
             it().sendWithPrefix()
             scheduledSendMessage = null
@@ -49,7 +49,7 @@ object PvAPI {
     }
 
     @Subscription
-    fun onCommand(event: RegisterCommandsEvent) {
+    private fun onCommand(event: RegisterCommandsEvent) {
         event.registerWithCallback("sbpv refreshauth") {
             val now = currentInstant()
             if (now - lastAuthTry < 1.minutes) {
