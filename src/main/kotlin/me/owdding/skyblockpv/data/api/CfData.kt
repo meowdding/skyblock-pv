@@ -5,8 +5,7 @@ import com.google.gson.JsonPrimitive
 import me.owdding.skyblockpv.utils.json.getAs
 import me.owdding.skyblockpv.utils.json.getPathAs
 import me.owdding.skyblockpv.utils.theme.PvColors
-import tech.thatgravyboat.skyblockapi.api.datetime.SkyBlockInstant
-import tech.thatgravyboat.skyblockapi.utils.extentions.asEnum
+import tech.thatgravyboat.skyblockapi.api.environmental.SkyBlockInstant
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asList
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
