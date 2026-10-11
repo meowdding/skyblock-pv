@@ -10,6 +10,6 @@ import net.minecraft.world.item.Items
 class EnderChestScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BasePagedInventoryScreen<List<Inventory>>(gameProfile, profile) {
     override fun getRawInventory(): List<Inventory>? = profile.inventory?.enderChestPages
     override fun List<Inventory>.getInventories(): List<Display> = map { PvWidgets.createInventory(it) }
-
     override fun List<Inventory>.getIcons() = List(size) { Items.ENDER_CHEST.defaultInstance }
+    override val showArmorHexWarning: Boolean = true
 }

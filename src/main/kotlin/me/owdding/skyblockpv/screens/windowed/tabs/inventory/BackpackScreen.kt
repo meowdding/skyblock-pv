@@ -11,4 +11,5 @@ class BackpackScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     override fun getRawInventory(): List<Backpack>? = profile.inventory?.backpacks
     override fun List<Backpack>.getInventories(): List<Display> = map { PvWidgets.createInventory(it.items) }
     override fun List<Backpack>.getIcons(): List<ItemStack> = map { it.icon }
+    override val showArmorHexWarning: Boolean = true
 }

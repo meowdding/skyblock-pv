@@ -1,11 +1,13 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.inventory
 
 import com.mojang.authlib.GameProfile
+import earth.terrarium.olympus.client.components.Widgets
 import me.owdding.lib.builder.MIDDLE
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.asWidget
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.repo.SkullTextures
 import me.owdding.skyblockpv.screens.PvTab
@@ -17,10 +19,14 @@ import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
+import net.minecraft.client.gui.components.WidgetSprites
+import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -45,10 +51,30 @@ enum class InventoryCategory(val screen: KClass<out BaseWindowedPvScreen>, overr
     override fun create(gameProfile: GameProfile, profile: SkyBlockProfile?) = screen.constructors.first().call(gameProfile, profile)
 }
 
-abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : AbstractCategorizedScreen("INVENTORY", gameProfile, profile) {
+abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
+    AbstractCategorizedScreen("INVENTORY", gameProfile, profile) {
     override val tab: PvTab = PvTab.INVENTORY
     override val categories get() = InventoryCategory.entries
     protected fun List<ItemStack>?.orEmpty(size: Int) = this ?: List(size) { ItemStack.EMPTY }
+    open val showArmorHexWarning: Boolean = false
+
+    override fun init() {
+        super.init()
+        if (showArmorHexWarning) noArmorColor().visitWidgets(::addRenderableWidget)
+    }
+
+    protected fun noArmorColor(): LayoutElement = Widgets.button {
+        it.withTexture(WidgetSprites(SkyBlockPv.id("icon/info")))
+        it.withSize(12, 12)
+        it.withTooltip(
+            Text.multiline(
+                "To stop abuse, all dyed armor",
+                "uses the default colors.",
+            ).withColor(TextColor.RED),
+        )
+    }.apply {
+        withPosition(uiX + uiWidth - 22, uiY + 10)
+    }
 }
 
 abstract class BasePagedInventoryScreen<T>(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile),

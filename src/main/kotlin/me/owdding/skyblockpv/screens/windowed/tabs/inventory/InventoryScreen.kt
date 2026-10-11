@@ -11,6 +11,8 @@ import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 
 class InventoryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseInventoryScreen(gameProfile, profile) {
+    override val showArmorHexWarning: Boolean = true
+
     override fun getLayout(bg: DisplayWidget) = PvLayouts.horizontal(10) {
         val inventory = profile.inventory ?: return@horizontal
         val armor = inventory.armorItems.orEmpty(4)

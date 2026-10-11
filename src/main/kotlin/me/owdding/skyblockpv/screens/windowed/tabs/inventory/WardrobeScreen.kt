@@ -5,7 +5,6 @@ import me.owdding.lib.displays.Display
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
-import me.owdding.skyblockpv.utils.itemStack
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
@@ -15,6 +14,8 @@ class WardrobeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
     private val loadouts get() = inventory?.loadouts
     private val selected get() = loadouts?.equippedArmorSet?.takeUnless { it == -1 }?.minus(1) ?: -1
+
+    override val showArmorHexWarning: Boolean = true
 
     override fun getRawInventory(): List<List<ItemStack>>? {
         val armorSets = loadouts?.armorSets ?: return null

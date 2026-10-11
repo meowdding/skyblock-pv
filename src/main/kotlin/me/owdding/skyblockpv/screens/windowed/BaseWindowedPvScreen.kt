@@ -84,6 +84,10 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
     override val uiWidth get() = (uiHeight * ASPECT_RATIO).toInt()
     override val uiHeight get() = (this.height * 0.65).toInt()
+    var uiX: Int = 0
+        private set
+    var uiY: Int = 0
+        private set
     abstract val tab: PvTab
 
     override fun init() {
@@ -91,6 +95,9 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
 
         FrameLayout.centerInRectangle(bg, 0, 0, this.width, this.height)
         bg.applyLayout()
+
+        uiX = bg.x
+        uiY = bg.y
 
         when (val profile = profile) {
             is EmptySkyBlockProfile if profile.reason == Reason.LOADING -> addLoader()
