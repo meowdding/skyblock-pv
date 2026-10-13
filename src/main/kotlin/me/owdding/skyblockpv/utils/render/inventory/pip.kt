@@ -171,6 +171,8 @@ class MonoInventoryPipRenderer : PictureInPictureRenderer<MonoInventoryPipState>
             //? >= 26.2
             submitNodeCollector,
         )
+
+        lastState = state
     }
 
     override fun getTextureLabel() = "skyblockpv_mono_inventory"
@@ -208,6 +210,8 @@ class PolyInventoryPipRenderer : PictureInPictureRenderer<PolyInventoryPipState>
             //? >= 26.2
             submitNodeCollector,
         )
+
+        lastState = state
     }
 
     override fun getTextureLabel() = "skyblockpv_poly_inventory"
