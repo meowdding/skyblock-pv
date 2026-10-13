@@ -169,11 +169,12 @@ data class DefaultBarnSkin(
     fun getItem(): LazyItemStack = SkyBlockItemsRepo.getLazyItemStack(item)?.withComponents {
         this.set(DataComponents.CUSTOM_NAME, this@DefaultBarnSkin.displayName)
     } ?: LazyItemStack(Items.BARRIER, 1) {
-        this[DataComponents.ITEM_NAME] = Text.of("Could not find item for key '$item' in items")
+        this[DataComponents.CUSTOM_NAME] = displayName
     }
 
     companion object {
-        val UNKNOWN = DefaultBarnSkin(Text.of("Unknown") { this.color = PvColors.RED }, "barrier")
+        fun unknown(key: String) = DefaultBarnSkin(Text.of("Unknown Barn Skin ($key)", PvColors.RED), key)
+        val UNKNOWN = unknown("unknown")
     }
 }
 
@@ -292,9 +293,10 @@ data class StaticVisitorData(
     val skin: String?,
 ) {
 
-    val itemStack: ItemStack get()= skin?.let {
-        createSkull(it)
-    } ?: SkyBlockItemsRepo.getItemStack(item) ?: Utils.getMinecraftItem(item)
+    val itemStack: ItemStack
+        get() = skin?.let {
+            createSkull(it)
+        } ?: SkyBlockItemsRepo.getItemStack(item) ?: Utils.getMinecraftItem(item)
 
 }
 

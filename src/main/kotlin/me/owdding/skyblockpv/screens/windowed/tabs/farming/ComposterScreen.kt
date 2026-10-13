@@ -50,6 +50,8 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 PvLayouts.vertical {
                     widget(getInformation())
                     spacer(0, 10)
+                    widget(getGreenhouse())
+                    spacer(0, 10)
                     widget(getUpgrades())
                 },
             )
@@ -60,6 +62,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         return PvLayouts.vertical(spacing = 5, alignment = 0.5f) {
             widget(getPlots())
             widget(getUpgrades())
+            widget(getGreenhouse())
             widget(getInformation())
         }.asScrollable(bg.width - 10, bg.height)
     }
@@ -68,48 +71,27 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         "Information",
         PvLayouts.vertical {
             string("Organic Matter Stored: ") {
-                append(
-                    loadingComponent {
-                        Text.of(it.composterData.organicMatter.toFormattedString()) {
-                            this.color = PvColors.GREEN
-                        }
-                    },
-                )
+                append(loadingComponent { Text.of(it.composterData.organicMatter.toFormattedString(), PvColors.GREEN) })
             }
             string("Fuel Stored: ") {
-                append(
-                    loadingComponent {
-                        Text.of(it.composterData.fuel.toFormattedString()) {
-                            this.color = PvColors.DARK_GREEN
-                        }
-                    },
-                )
+                append(loadingComponent { Text.of(it.composterData.fuel.toFormattedString(), PvColors.DARK_GREEN) })
             }
             string("Compost Stored: ") {
-                append(
-                    loadingComponent {
-                        Text.of(it.composterData.compostItems.toFormattedString()) {
-                            this.color = PvColors.RED
-                        }
-                    },
-                )
+                append(loadingComponent { Text.of(it.composterData.compostItems.toFormattedString(), PvColors.RED) })
             }
             string("Last Update: ") {
-                append(
-                    loadingComponent {
-                        Text.of(Instant.ofEpochMilli(it.composterData.lastUpdateTimestamp).toReadableString()) {
-                            this.color = PvColors.DARK_GRAY
-                        }
-                    },
-                )
+                append(loadingComponent { Text.of(Instant.ofEpochMilli(it.composterData.lastUpdateTimestamp).toReadableString(), PvColors.DARK_GRAY) })
             }
-            string("Greenhouse spaces: ") {
-                append(
-                    loadingComponent {
-                        Text.of((it.greenhouseSlots.size + 12).toString())
-                    },
-                )
-                append("/100")
+        },
+    )
+
+    private fun getGreenhouse() = PvWidgets.label(
+        "Greenhouse",
+        PvLayouts.vertical {
+            string("Spaces: ") {
+                append(loadingComponent { Text.of((it.greenhouseSlots.size + 12).toString(), PvColors.GREEN) })
+                append("/", PvColors.DARK_GREEN)
+                append("100", PvColors.GREEN)
             }
 
             fun createEntry(key: GreenhouseUpgrade) = display(
@@ -121,12 +103,12 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     val data = StaticGardenData.greenhouseUpgrades[key]!!
                     Displays.text(
                         Text.of {
-                            append(data.name.stripped)
                             this.color = PvColors.GRAY
+                            append(data.name.stripped)
                             append(": ")
-                            append(level)
-                            append("/")
-                            append(data.upgrade.size)
+                            append(level.toString(), PvColors.GREEN)
+                            append("/", PvColors.DARK_GREEN)
+                            append(data.upgrade.size.toString(), PvColors.GREEN)
                         },
                         shadow = false,
                     ).withTooltip {
@@ -167,8 +149,8 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     fun getComposterUpgrade(upgrade: ComposterUpgrade, data: StaticComposterData?): Display {
         return loaded(
-            onError = Displays.item(Items.BEDROCK).withTooltip { add("Error") { this.color = PvColors.RED } },
-            whileLoading = Displays.item(Items.DYE.orange()).withTooltip { add("Loading...") { this.color = PvColors.GOLD } },
+            onError = Displays.item(Items.BEDROCK).withTooltip { add("Error", PvColors.RED) },
+            whileLoading = Displays.item(Items.DYE.orange()).withTooltip { add("Loading...", PvColors.GOLD) },
         ) { createComposterUpgradeDisplay(it, upgrade, data) }
     }
 
@@ -184,7 +166,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
         if (data == null) {
             return Displays.item(Items.BARRIER).withTooltip {
-                add("Error") { this.color = PvColors.RED }
+                add("Error", PvColors.RED)
                 add("Data for $upgrade was null which shouldn't have happened")
             }
         }
@@ -199,11 +181,9 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             space()
             add("Level ") {
                 this.color = PvColors.GRAY
-                append(level.toString()) { this.color = PvColors.GREEN }
-                append("/") { this.color = PvColors.DARK_GREEN }
-                append(data.upgrade.size.toString()) {
-                    this.color = PvColors.GREEN
-                }
+                append(level.toString(), PvColors.GREEN)
+                append("/", PvColors.DARK_GREEN)
+                append(data.upgrade.size.toString(), PvColors.GREEN)
             }
             space()
 
@@ -211,19 +191,13 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             val rareCrops = map.filter { (key, _) -> StaticGardenData.RARE_CROPS.contains(key) }
             val copper = map["copper"] ?: Text.of(":(")
             val remaining = map.filterNot { rareCrops.containsKey(it.key) || it.key.equals(StaticGardenData.COPPER, ignoreCase = true) }
-            add("Copper needed") {
-                this.color = PvColors.GRAY
-            }
+            add("Copper needed", PvColors.GRAY)
             add(copper)
             space()
-            add("Crops needed") {
-                this.color = PvColors.GRAY
-            }
+            add("Crops needed", PvColors.GRAY)
             remaining.values.forEach(::add)
             space()
-            add("Rare Crops needed") {
-                this.color = PvColors.GRAY
-            }
+            add("Rare Crops needed", PvColors.GRAY)
             rareCrops.values.forEach(::add)
         }
     }
@@ -240,20 +214,14 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             Text.of("") {
                 this.color = PvColors.GRAY
                 if (key.equals(StaticGardenData.COPPER, ignoreCase = true)) {
-                    append("Copper") {
-                        this.color = PvColors.RED
-                    }
+                    append("Copper", PvColors.RED)
                 } else {
                     append(SkyBlockItemsRepo.getLazyItemStack(key)?.getDisplayName() ?: Text.of("Unknown Item"))
                 }
                 append(CommonText.SPACE)
-                append(used.toFormattedString()) {
-                    this.color = PvColors.YELLOW
-                }
-                append("/") { this.color = PvColors.GOLD }
-                append(neededMax.toFormattedString()) {
-                    this.color = PvColors.YELLOW
-                }
+                append(used.toFormattedString(), PvColors.YELLOW)
+                append("/", PvColors.GOLD)
+                append(neededMax.toFormattedString(), PvColors.YELLOW)
                 append(CommonText.SPACE)
                 append(
                     Text.of(percentage.times(100).round()) {
@@ -299,7 +267,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                         val plotCost = cost[plots]
                         map[it.location] = Displays.item(Items.STAINED_GLASS_PANE.black()).withTooltip(
                             it.getName(),
-                            plotCost.getDisplay().copy().apply { append(Text.of(" x${plotCost.amount}") { color = PvColors.DARK_GRAY }) },
+                            plotCost.getDisplay().copy().apply { append(" x${plotCost.amount}", PvColors.DARK_GRAY) },
                         )
                     }
                 },
@@ -307,7 +275,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     fillMap(
                         Displays.tooltip(
                             Displays.item(Items.STAINED_GLASS_PANE.orange()),
-                            Text.of("Loading...") { this.color = PvColors.GOLD },
+                            Text.of("Loading...", PvColors.GOLD),
                         ),
                     )
                 },
@@ -315,7 +283,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     fillMap(
                         Displays.tooltip(
                             Displays.item(Items.BEDROCK),
-                            Text.of("Error!") { this.color = PvColors.RED },
+                            Text.of("Error!", PvColors.RED),
                         ),
                     )
                 },
@@ -332,8 +300,6 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             )
 
             val plots = map.map { it.reversed().map { Displays.padding(2, it) } }.transpose().asTable()
-
-
 
             display(
                 ExtraDisplays.inventoryBackground(

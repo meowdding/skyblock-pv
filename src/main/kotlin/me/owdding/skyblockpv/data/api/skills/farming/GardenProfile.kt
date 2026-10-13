@@ -47,7 +47,7 @@ data class GardenProfile(
     val resourcesCollected: Map<GardenResource, Long>,
     val cropUpgradeLevels: Map<GardenResource, Short>,
     val greenhouseSlots: List<Vector2i>,
-    val greenhouseUpgrades: Map<GreenhouseUpgrade, Int>
+    val greenhouseUpgrades: Map<GreenhouseUpgrade, Int>,
 ) {
     @FeatureName("GardenProfileParser")
     companion object : MeowddingLogger by SkyBlockPv.featureLogger() {
@@ -74,7 +74,7 @@ data class GardenProfile(
                 } ?: emptyList(),
                 greenhouseUpgrades = result.getAs<JsonObject>("garden_upgrades").asMap { string, element ->
                     runCatching { GreenhouseUpgrade.valueOf(string) }.getOrNull() to element.asInt(0)
-                }.filterKeysNotNull()
+                }.filterKeysNotNull(),
             )
         }
 
@@ -98,8 +98,10 @@ data class GardenProfile(
         }
 
         private fun JsonElement?.toBarnSkin(): LazyItemStack {
-            val string = this?.asString ?: return DefaultBarnSkin.UNKNOWN.getItem()
-            return StaticGardenData.barnSkins[string]?.getItem() ?: SkyBlockItemsRepo.getLazyItemStack("${string}_BARN_SKIN") ?: DefaultBarnSkin.UNKNOWN.getItem()
+            val string = this?.asString ?: return DefaultBarnSkin.unknown("null").getItem()
+            return StaticGardenData.barnSkins[string]?.getItem()
+                ?: SkyBlockItemsRepo.getLazyItemStack("${string}_BARN_SKIN")
+                ?: DefaultBarnSkin.unknown(string).getItem()
         }
 
         private fun JsonObject?.toCommissionData(): CommissionData {
