@@ -159,8 +159,14 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
         if (upgrade == ComposterUpgrade.COMPOST_SPEED_ATTRIBUTE) {
             val id = "compost_speed"
-            return Displays.item(SkyBlockId.attribute(id).toItem(), customStackText = level.toString()).withTooltip {
-                AttributeScreen.getAttributeTooltip(SkyBlockRarity.UNCOMMON, SkyBlockAttributesRepo.get(id), profile.attributeData.data.find { it.id == id })
+            val item = SkyBlockId.attribute(id).toItem()
+            return Displays.item(item, customStackText = level.toString()).withTooltip {
+                AttributeScreen.getAttributeTooltip(
+                    SkyBlockRarity.UNCOMMON,
+                    SkyBlockAttributesRepo.get(id),
+                    profile.attributeData.data.find { it.id == id },
+                    item,
+                )
             }
         }
 
