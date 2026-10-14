@@ -134,7 +134,7 @@ object PvAPI {
         } else if (response.statusCode == 401) {
             authenticate()
             if (this.key != null) {
-                return get(endpoint)
+                return get(endpoint, intent)
             } else {
                 failedToAuth = true
                 SkyBlockPv.error(AUTHENTICATION_FAILED_MESSAGE)

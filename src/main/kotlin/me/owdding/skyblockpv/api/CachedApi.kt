@@ -53,12 +53,12 @@ abstract class CachedApi<D, V, K>(val maxCache: Long = CACHE_TIME) {
         }
 
         val (result, expire) = try {
-             PvAPI.get(path, intent) ?: run {
+            PvAPI.get(path, intent) ?: run {
                 (+"messages.api.something_went_wrong").sendWithPrefix()
                 return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong for $path")))
             }
         } catch (exception: Exception) {
-            return@getOrPut CacheEntry(Result.failure(RuntimeException("Something went wrong for $path", exception)))
+            return@getOrPut CacheEntry(Result.failure(RuntimeException("Request failed for $path: ${exception.message}", exception)))
         }
 
         if (SkyBlockPv.isDevMode) {
