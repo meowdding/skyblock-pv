@@ -142,28 +142,30 @@ class CarouselWidget(
 
     fun getIcons(perRow: Int = 9, page: PvPageState, displays: () -> List<Display>): Layout {
         val buttons = displays.invoke().mapIndexed { index, display ->
-            Button()
-                .withSize(20, 20)
-                .withTexture(null)
-                .withRenderer(
-                    WidgetRenderers.layered(
-                        ExtraWidgetRenderers.conditional(
-                            WidgetRenderers.sprite(ExtraConstants.BUTTON_PRIMARY_OPAQUE),
-                            WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK_OPAQUE),
-                        ) { this.index == index },
-                        WidgetRenderers.center(20, 20, WidgetRenderers.padded(1, 2, 3, 2, DisplayWidget.displayRenderer(display))),
-                    ),
-                ).withCallback {
-                    this.index = index
-                    Utils.lastTab = CarouselPageState(page, index)
-                }
+            carouselIconButton(display, { this.index == index }) {
+                this.index = index
+                Utils.lastTab = CarouselPageState(page, index)
+            }
         }
 
         val rows = buttons.chunked(perRow).map { PvLayouts.horizontal(1) { widget(it) } }
         return PvLayouts.vertical(1) {
             rows.forEach {
                 widget(it, LayoutSettings::alignHorizontallyCenter)
-            }
-        }
+                 }
+             }
+         }
     }
-}
+
+    fun carouselIconButton(display: Display, selected: () -> Boolean, onClick: () -> Unit): Button = Button()
+     .withSize(20, 20)
+      .withTexture(null)
+         .withRenderer(
+           WidgetRenderers.layered(
+            ExtraWidgetRenderers.conditional(
+                WidgetRenderers.sprite(ExtraConstants.BUTTON_PRIMARY_OPAQUE),
+                WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK_OPAQUE),
+            ) { selected() },
+            WidgetRenderers.center(20, 20, WidgetRenderers.padded(1, 2, 3, 2, DisplayWidget.displayRenderer(display))),
+        ),
+    ).withCallback(onClick)

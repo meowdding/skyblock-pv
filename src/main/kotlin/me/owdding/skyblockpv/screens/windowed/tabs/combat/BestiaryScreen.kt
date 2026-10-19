@@ -2,6 +2,8 @@ package me.owdding.skyblockpv.screens.windowed.tabs.combat
 
 import com.mojang.authlib.GameProfile
 import com.mojang.datafixers.util.Either
+import earth.terrarium.olympus.client.components.base.BaseWidget
+import earth.terrarium.olympus.client.components.buttons.Button
 import me.owdding.lib.displays.Alignment
 import me.owdding.lib.displays.Display
 import me.owdding.lib.displays.DisplayWidget
@@ -29,8 +31,11 @@ import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fixBase64Padding
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
+import me.owdding.skyblockpv.utils.components.carouselIconButton
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
+import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -46,6 +51,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private var carousel: CarouselWidget? = null
     private val MOBS_PER_ROW_SIMPLE = 5
     private val MOBS_PER_ROW_COMPLEX = 8
+    private val selectedSubcategories = mutableMapOf<String, Int>()
 
     override var carouselStart: Int = 0
 
@@ -55,9 +61,9 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             .distinct()
 
         val overview = getOverview()
-        val categories = getCategories()
-        val inventories = categories.values.toList()
-        val icons = categories.keys.toList()
+        val pages = getPages()
+        val inventories = pages.map { it.display }
+        val icons = pages.map { it.icon }
 
         carousel = CarouselWidget(
             inventories,
@@ -71,6 +77,9 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             PvLayouts.vertical(5) {
                 widget(overview.asWidget().centerHorizontally(uiWidth))
                 widget(buttonContainer.centerHorizontally(uiWidth))
+                if (pages.any { it.tabs.isNotEmpty() }) {
+                    widget(SubcategoryTabs(pages, 246) { carousel?.index ?: 0 }.centerHorizontally(uiWidth))
+                }
                 widget(carousel!!.centerHorizontally(uiWidth))
             }.asScrollable(uiWidth, uiHeight),
         )
@@ -144,18 +153,40 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         }
     }
 
-    private fun getCategories(): Map<ItemStack, Display> = BestiaryCodecs.data.categories.map { (_, v) ->
+    private fun getPages(): List<CategoryPage> = BestiaryCodecs.data.categories.map { (key, v) ->
         Either.unwrap(
             v.mapBoth(
-                { it.icon.getItem(it.name).withCategoryTooltip(it.name, it.mobs) to it.getCategory() }, // Simple
-                { it.icon.getItem(it.name).withCategoryTooltip(it.name, it.subcategories.values.flatMap { it.mobs }) to it.getCategory() }, // Complex
+                { CategoryPage(it.icon.getItem(it.name).withCategoryTooltip(it.name, it.mobs), it.getCategory(), emptyList()) }, // Simple
+                { it.getComplexCategory(key) }, // Complex
             ),
         )
-    }.toMap()
+    }
 
     private fun BestiaryCategoryEntry.getCategory() = mobs.map { it.getItem() }.format(MOBS_PER_ROW_SIMPLE)
 
-    private fun ComplexBestiaryCategoryEntry.getCategory() = subcategories.flatMap { it.value.mobs.map { it.getItem() } }.format(MOBS_PER_ROW_COMPLEX)
+    private fun ComplexBestiaryCategoryEntry.getComplexCategory(key: String): CategoryPage {
+        val subs = subcategories.values.toList()
+        val grids = subs.map { sub -> sub.mobs.map { it.getItem() }.format(MOBS_PER_ROW_COMPLEX) }
+        val selected = { selectedSubcategories[key] ?: 0 }
+
+        val tabs = subs.mapIndexed { index, sub ->
+            val item = Displays.item(sub.icon.getItem(sub.name).withCategoryTooltip(sub.name, sub.mobs), showTooltip = true)
+            carouselIconButton(item, { selected() == index }) {
+                selectedSubcategories[key] = index
+            }
+        }
+
+        val display = object : Display {
+            override fun getWidth() = grids.maxOfOrNull { it.getWidth() } ?: 0
+            override fun getHeight() = grids.maxOfOrNull { it.getHeight() } ?: 0
+
+            override fun extract(graphics: GuiGraphicsExtractor) {
+                grids.getOrNull(selected())?.extract(graphics)
+            }
+        }
+
+        return CategoryPage(icon.getItem(name).withCategoryTooltip(name, subs.flatMap { it.mobs }), display, tabs)
+    }
 
     private fun List<Display>.format(mobsPerRow: Int) = toMutableList()
         .rightPad(mobsPerRow * 2, Displays.empty(16, 16))
@@ -273,4 +304,35 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         )
     }
 }
+//bestiary subcategories
+    private class CategoryPage(val icon: ItemStack, val display: Display, val tabs: List<Button>)
 
+    private class SubcategoryTabs(
+          private val pages: List<CategoryPage>,
+          width: Int,
+        private val currentIndex: () -> Int,
+            ) : BaseWidget() {
+
+                init {
+                      this.width = width
+                      this.height = 20
+                 }
+
+    private fun placeTabs(): List<Button> {
+        val tabs = pages.getOrNull(currentIndex())?.tabs ?: return emptyList()
+        val startX = x + (width - (tabs.size * 21 - 1)) / 2
+        tabs.forEachIndexed { index, button ->
+            button.x = startX + index * 21
+            button.y = y
+        }
+        return tabs
+    }
+
+    override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        placeTabs().forEach { it.extractRenderState(graphics, mouseX, mouseY, partialTicks) }
+    }
+
+    override fun onClick(event: MouseButtonEvent, doubleClick: Boolean) {
+        placeTabs().forEach { it.mouseClicked(event, doubleClick) }
+    }
+}
