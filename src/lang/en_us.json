@@ -117,7 +117,7 @@
         },
         "show_pronouns": {
             "@value": "Show Pronouns",
-            "desc": "Show the pronouns of the player in the profile viewer if available."
+            "desc": "Show the pronouns of the player in the profile viewer if available. (Loaded from pronoundb.org)"
         },
         "party_finder_message": {
             "@value": "Party Finder Message",
