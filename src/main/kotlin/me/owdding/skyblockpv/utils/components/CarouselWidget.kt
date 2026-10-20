@@ -47,6 +47,15 @@ class CarouselWidget(
         }
     }
 
+    private fun GuiGraphicsExtractor.isVisible(left: Int, top: Int, right: Int, bottom: Int): Boolean {
+        for (px in left until right step 4) {
+            for (py in top until bottom step 4) {
+                if (containsPointInScissor(px, py)) return true
+            }
+        }
+        return false
+    }
+
     override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTicks: Float) {
         graphics.requestCursor(CursorType.DEFAULT)
 
@@ -64,7 +73,7 @@ class CarouselWidget(
         val lastDiff = curr.getHeight() - 10 - (curr.getHeight() - (last?.getHeight() ?: 0)).coerceAtLeast(0)
         val lastY = midY + sideHeight - lastDiff
         val lastBottom = lastY + lastDiff
-        graphics.scissor(x..left, lastY..lastBottom) {
+        if (graphics.isVisible(x, lastY, left, lastBottom)) graphics.scissor(x..left, lastY..lastBottom) {
 
             Displays.disableTooltips {
                 last?.extract(graphics, x, lastY)
@@ -73,7 +82,7 @@ class CarouselWidget(
             graphics.renderCarouselOverlay {
                 graphics.fill(x, lastY, left, lastBottom, 0x7F000000)
 
-                if (mouseX in x..left && mouseY in lastY..lastBottom) {
+                if (mouseX in x..left && mouseY in y..bottom) {
                     graphics.pushPop {
                         graphics.translate(x + (left - x) / 2f, lastY + lastDiff / 2f - 7.5f)
                         graphics.scale(2f, 2f)
@@ -88,7 +97,7 @@ class CarouselWidget(
         val nextY = midY + sideHeight - nextDiff
         val nextBottom = nextY + nextDiff
 
-        graphics.scissor(right..(x + width), nextY..nextBottom) {
+        if (graphics.isVisible(right, nextY, x + width, nextBottom)) graphics.scissor(right..(x + width), nextY..nextBottom) {
             Displays.disableTooltips {
                 next?.extract(graphics, x + width, nextY, alignmentX = 1f)
             }
@@ -96,7 +105,7 @@ class CarouselWidget(
             graphics.renderCarouselOverlay {
                 graphics.fill(right, nextY, x + width, nextBottom, 0x7F000000)
 
-                if (mouseX in right..(x + width) && mouseY in nextY..nextBottom) {
+                if (mouseX in right..(x + width) && mouseY in y..bottom) {
                     graphics.pushPop {
                         graphics.translate(right + (x + width - right) / 2f, nextY + nextDiff / 2f - 7.5f)
                         graphics.scale(2f, 2f)
@@ -128,7 +137,7 @@ class CarouselWidget(
         val lastY = midY + sideHeight - lastDiff
         val lastBottom = lastY + lastDiff
 
-        if (mouseX.toInt() in x..left && mouseY.toInt() in lastY..lastBottom) {
+        if (mouseX.toInt() in x..left && mouseY.toInt() in y..bottom) {
             if (!onStep(index, -1)) index = (index - 1 + displays.size) % displays.size
         }
 
@@ -136,7 +145,7 @@ class CarouselWidget(
         val nextY = midY + sideHeight - nextDiff
         val nextBottom = nextY + nextDiff
 
-        if (mouseX.toInt() in right..(x + width) && mouseY.toInt() in nextY..nextBottom) {
+        if (mouseX.toInt() in right..(x + width) && mouseY.toInt() in y..bottom) {
             if (!onStep(index, 1)) index = (index + 1) % displays.size
         }
     }
