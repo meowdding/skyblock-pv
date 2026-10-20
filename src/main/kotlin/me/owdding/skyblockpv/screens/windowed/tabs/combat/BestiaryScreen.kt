@@ -67,7 +67,10 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             inventories,
             carousel?.index ?: carouselStart,
             246,
-        ) { index, direction -> stepSubcategory(pages, index, direction) }
+            minHeight = pages.maxOfOrNull { it.maxHeight } ?: 0,
+            preview = { index, direction -> previewDisplay(pages, index, direction) },
+            onStep = { index, direction -> stepSubcategory(pages, index, direction) },
+        )
 
         val buttonContainer = carousel!!.getIcons(page = toTabState()) { icons.map { Displays.item(it, showTooltip = true) } }
 
@@ -165,7 +168,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private fun ComplexBestiaryCategoryEntry.getComplexCategory(key: String): CategoryPage {
         val subs = subcategories.values.toList()
         val grids = subs.map { sub -> sub.mobs.map { it.getItem() }.format(MOBS_PER_ROW) }
-        val selected = { selectedSubcategories[key] ?: 0 }
+        val selected = { (selectedSubcategories[key] ?: 0).coerceIn(0, maxOf(grids.lastIndex, 0)) }
 
         val tabs = subs.mapIndexed { index, sub ->
             val item = Displays.item(sub.icon.getItem(sub.name).withCategoryTooltip(sub.name, sub.mobs), showTooltip = true)
@@ -175,30 +178,41 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         }
 
         val display = object : Display {
-            override fun getWidth() = grids.maxOfOrNull { it.getWidth() } ?: 0
-            override fun getHeight() = grids.maxOfOrNull { it.getHeight() } ?: 0
+            override fun getWidth() = grids.getOrNull(selected())?.getWidth() ?: 0
+            override fun getHeight() = grids.getOrNull(selected())?.getHeight() ?: 0
 
             override fun extract(graphics: GuiGraphicsExtractor) {
                 grids.getOrNull(selected())?.extract(graphics)
             }
         }
 
-        return CategoryPage(key, icon.getItem(name).withCategoryTooltip(name, subs.flatMap { it.mobs }), display, tabs)
+        return CategoryPage(key, icon.getItem(name).withCategoryTooltip(name, subs.flatMap { it.mobs }), display, tabs, grids)
+    }
+
+    private fun stepTarget(pages: List<CategoryPage>, index: Int, direction: Int): Pair<Int, Int> {
+        val page = pages.getOrNull(index) ?: return index to 0
+        val next = (selectedSubcategories[page.key] ?: 0) + direction
+        if (next in page.tabs.indices) return index to next
+
+        val targetIndex = (index + direction + pages.size) % pages.size
+        val target = pages[targetIndex]
+        val sub = if (target.tabs.isEmpty() || direction > 0) 0 else target.tabs.lastIndex
+        return targetIndex to sub
+    }
+
+    private fun previewDisplay(pages: List<CategoryPage>, index: Int, direction: Int): Display? {
+        val (targetIndex, sub) = stepTarget(pages, index, direction)
+        val page = pages.getOrNull(targetIndex) ?: return null
+        return page.grids.getOrNull(sub) ?: page.display
     }
 
     private fun stepSubcategory(pages: List<CategoryPage>, index: Int, direction: Int): Boolean {
-        val page = pages.getOrNull(index) ?: return false
-        val next = (selectedSubcategories[page.key] ?: 0) + direction
-        if (next in page.tabs.indices) {
-            selectedSubcategories[page.key] = next
-            return true
-        }
-
-        val target = pages[(index + direction + pages.size) % pages.size]
+        val (targetIndex, sub) = stepTarget(pages, index, direction)
+        val target = pages.getOrNull(targetIndex) ?: return false
         if (target.tabs.isNotEmpty()) {
-            selectedSubcategories[target.key] = if (direction > 0) 0 else target.tabs.lastIndex
+            selectedSubcategories[target.key] = sub
         }
-        return false
+        return targetIndex == index
     }
 
     private fun List<Display>.format(mobsPerRow: Int) = toMutableList()
@@ -318,7 +332,15 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     }
 }
 
-private class CategoryPage(val key: String, val icon: ItemStack, val display: Display, val tabs: List<Button> = emptyList())
+private class CategoryPage(
+    val key: String,
+    val icon: ItemStack,
+    val display: Display,
+    val tabs: List<Button> = emptyList(),
+    val grids: List<Display> = emptyList(),
+) {
+    val maxHeight: Int get() = maxOf(display.getHeight(), grids.maxOfOrNull { it.getHeight() } ?: 0)
+}
 
 private class SubcategoryTabs(
     private val pages: List<CategoryPage>,
