@@ -30,6 +30,7 @@ class CarouselWidget(
     private val displays: List<Display>,
     var index: Int = 0,
     width: Int,
+    private val onStep: (index: Int, direction: Int) -> Boolean = { _, _ -> false },
 ) : BaseWidget() {
 
     val leftWidth = McFont.self.width("<")
@@ -128,7 +129,7 @@ class CarouselWidget(
         val lastBottom = lastY + lastDiff
 
         if (mouseX.toInt() in x..left && mouseY.toInt() in lastY..lastBottom) {
-            index = (index - 1 + displays.size) % displays.size
+            if (!onStep(index, -1)) index = (index - 1 + displays.size) % displays.size
         }
 
         val nextDiff = curr.getHeight() - 10 - (curr.getHeight() - (next?.getHeight() ?: 0)).coerceAtLeast(0)
@@ -136,7 +137,7 @@ class CarouselWidget(
         val nextBottom = nextY + nextDiff
 
         if (mouseX.toInt() in right..(x + width) && mouseY.toInt() in nextY..nextBottom) {
-            index = (index + 1) % displays.size
+            if (!onStep(index, 1)) index = (index + 1) % displays.size
         }
     }
 
@@ -152,20 +153,22 @@ class CarouselWidget(
         return PvLayouts.vertical(1) {
             rows.forEach {
                 widget(it, LayoutSettings::alignHorizontallyCenter)
-                 }
-             }
-         }
+            }
+        }
     }
 
-    fun carouselIconButton(display: Display, selected: () -> Boolean, onClick: () -> Unit): Button = Button()
-     .withSize(20, 20)
-      .withTexture(null)
-         .withRenderer(
-           WidgetRenderers.layered(
-            ExtraWidgetRenderers.conditional(
-                WidgetRenderers.sprite(ExtraConstants.BUTTON_PRIMARY_OPAQUE),
-                WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK_OPAQUE),
-            ) { selected() },
-            WidgetRenderers.center(20, 20, WidgetRenderers.padded(1, 2, 3, 2, DisplayWidget.displayRenderer(display))),
-        ),
-    ).withCallback(onClick)
+    companion object {
+        fun carouselIconButton(display: Display, selected: () -> Boolean, onClick: () -> Unit): Button = Button()
+            .withSize(20, 20)
+            .withTexture(null)
+            .withRenderer(
+                WidgetRenderers.layered(
+                    ExtraWidgetRenderers.conditional(
+                        WidgetRenderers.sprite(ExtraConstants.BUTTON_PRIMARY_OPAQUE),
+                        WidgetRenderers.sprite(ExtraConstants.BUTTON_DARK_OPAQUE),
+                    ) { selected() },
+                    WidgetRenderers.center(20, 20, WidgetRenderers.padded(1, 2, 3, 2, DisplayWidget.displayRenderer(display))),
+                ),
+            ).withCallback(onClick)
+    }
+}

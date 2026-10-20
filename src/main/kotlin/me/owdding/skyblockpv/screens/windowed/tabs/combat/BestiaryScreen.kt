@@ -31,7 +31,6 @@ import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.fixBase64Padding
 import me.owdding.skyblockpv.utils.components.CarouselWidget
 import me.owdding.skyblockpv.utils.components.PvLayouts
-import me.owdding.skyblockpv.utils.components.carouselIconButton
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.client.gui.GuiGraphicsExtractor
@@ -49,8 +48,7 @@ import me.owdding.lib.displays.withTooltip as withDisplayTooltip
 
 class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile), CarouselPage {
     private var carousel: CarouselWidget? = null
-    private val MOBS_PER_ROW_SIMPLE = 5
-    private val MOBS_PER_ROW_COMPLEX = 8
+    private val MOBS_PER_ROW = 8
     private val selectedSubcategories = mutableMapOf<String, Int>()
 
     override var carouselStart: Int = 0
@@ -69,7 +67,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             inventories,
             carousel?.index ?: carouselStart,
             246,
-        )
+        ) { index, direction -> stepSubcategory(pages, index, direction) }
 
         val buttonContainer = carousel!!.getIcons(page = toTabState()) { icons.map { Displays.item(it, showTooltip = true) } }
 
@@ -156,22 +154,22 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
     private fun getPages(): List<CategoryPage> = BestiaryCodecs.data.categories.map { (key, v) ->
         Either.unwrap(
             v.mapBoth(
-                { CategoryPage(it.icon.getItem(it.name).withCategoryTooltip(it.name, it.mobs), it.getCategory(), emptyList()) }, // Simple
+                { CategoryPage(key, it.icon.getItem(it.name).withCategoryTooltip(it.name, it.mobs), it.getCategory()) }, // Simple
                 { it.getComplexCategory(key) }, // Complex
             ),
         )
     }
 
-    private fun BestiaryCategoryEntry.getCategory() = mobs.map { it.getItem() }.format(MOBS_PER_ROW_SIMPLE)
+    private fun BestiaryCategoryEntry.getCategory() = mobs.map { it.getItem() }.format(MOBS_PER_ROW)
 
     private fun ComplexBestiaryCategoryEntry.getComplexCategory(key: String): CategoryPage {
         val subs = subcategories.values.toList()
-        val grids = subs.map { sub -> sub.mobs.map { it.getItem() }.format(MOBS_PER_ROW_COMPLEX) }
+        val grids = subs.map { sub -> sub.mobs.map { it.getItem() }.format(MOBS_PER_ROW) }
         val selected = { selectedSubcategories[key] ?: 0 }
 
         val tabs = subs.mapIndexed { index, sub ->
             val item = Displays.item(sub.icon.getItem(sub.name).withCategoryTooltip(sub.name, sub.mobs), showTooltip = true)
-            carouselIconButton(item, { selected() == index }) {
+            CarouselWidget.carouselIconButton(item, { selected() == index }) {
                 selectedSubcategories[key] = index
             }
         }
@@ -185,7 +183,22 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             }
         }
 
-        return CategoryPage(icon.getItem(name).withCategoryTooltip(name, subs.flatMap { it.mobs }), display, tabs)
+        return CategoryPage(key, icon.getItem(name).withCategoryTooltip(name, subs.flatMap { it.mobs }), display, tabs)
+    }
+
+    private fun stepSubcategory(pages: List<CategoryPage>, index: Int, direction: Int): Boolean {
+        val page = pages.getOrNull(index) ?: return false
+        val next = (selectedSubcategories[page.key] ?: 0) + direction
+        if (next in page.tabs.indices) {
+            selectedSubcategories[page.key] = next
+            return true
+        }
+
+        val target = pages[(index + direction + pages.size) % pages.size]
+        if (target.tabs.isNotEmpty()) {
+            selectedSubcategories[target.key] = if (direction > 0) 0 else target.tabs.lastIndex
+        }
+        return false
     }
 
     private fun List<Display>.format(mobsPerRow: Int) = toMutableList()
@@ -304,19 +317,19 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         )
     }
 }
-//bestiary subcategories
-    private class CategoryPage(val icon: ItemStack, val display: Display, val tabs: List<Button>)
 
-    private class SubcategoryTabs(
-          private val pages: List<CategoryPage>,
-          width: Int,
-        private val currentIndex: () -> Int,
-            ) : BaseWidget() {
+private class CategoryPage(val key: String, val icon: ItemStack, val display: Display, val tabs: List<Button> = emptyList())
 
-                init {
-                      this.width = width
-                      this.height = 20
-                 }
+private class SubcategoryTabs(
+    private val pages: List<CategoryPage>,
+    width: Int,
+    private val currentIndex: () -> Int,
+) : BaseWidget() {
+
+    init {
+        this.width = width
+        this.height = 20
+    }
 
     private fun placeTabs(): List<Button> {
         val tabs = pages.getOrNull(currentIndex())?.tabs ?: return emptyList()
