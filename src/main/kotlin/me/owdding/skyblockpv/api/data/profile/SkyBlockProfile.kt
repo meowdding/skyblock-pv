@@ -55,6 +55,8 @@ import net.minecraft.util.Util
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvOpenedEvent
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
+import tech.thatgravyboat.skyblockapi.api.location.LocationAPI
+import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McPlayer
@@ -244,17 +246,22 @@ data class BackingSkyBlockProfile(
             fun <T> allMembers(extractor: (member: JsonObject) -> T) = allMembers(extractor) { members -> members }
 
             val selected = json.getAs<Boolean>("selected", false)
+            val profileName = json.getAs("cute_name", "Unknown")
+
             if (selected && user == McPlayer.uuid) {
-                McClient.runOrNextTick {
-                    SkyBlockPv.runCatching("Publishing profile data to sbapi") {
-                        SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
+                // api can say the currently selected profile is a profile we already switched from
+                if (LocationAPI.isOnSkyBlock && ProfileAPI.isLoaded && ProfileAPI.profileName == profileName) {
+                    McClient.runOrNextTick {
+                        SkyBlockPv.runCatching("Publishing profile data to SkyBlockAPI") {
+                            SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
+                        }
                     }
                 }
             }
 
             val profileId = ProfileId(
                 id = json.getAs("profile_id", Util.NIL_UUID),
-                name = json.getAs("cute_name", "Unknown"),
+                name = profileName,
                 user = user,
             )
 
