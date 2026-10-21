@@ -261,23 +261,21 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
             add("Level: ") {
                 color = PvColors.GRAY
-                append("$currentLevel") { color = PvColors.YELLOW }
-                append("/") { color = PvColors.GOLD }
-                append("$maxLevel") { color = PvColors.YELLOW }
+                append("$currentLevel", PvColors.YELLOW)
+                append("/", PvColors.GOLD)
+                append("$maxLevel", PvColors.YELLOW)
             }
 
             add("Kills: ") {
                 color = PvColors.GRAY
-                append(kills.toFormattedString()) { color = PvColors.YELLOW }
+                append(kills.toFormattedString(), PvColors.YELLOW)
 
                 val percentage = kills / requiredKills.toDouble() * 100
                 if (percentage >= 100) {
-                    append(" Maxed!") {
-                        color = PvColors.RED
-                    }
+                    append(" Maxed!", PvColors.RED)
                 } else {
-                    append("/") { color = PvColors.GOLD }
-                    append(requiredKills.toFormattedString()) { color = PvColors.YELLOW }
+                    append("/", PvColors.GOLD)
+                    append(requiredKills.toFormattedString(), PvColors.YELLOW)
 
                     append(" (")
                     append(percentage.round()) {
@@ -291,9 +289,9 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
             if (currentLevel != maxLevel) {
                 add("Next Level: ") {
                     color = PvColors.GRAY
-                    append(kills.toFormattedString()) { color = PvColors.YELLOW }
-                    append("/") { color = PvColors.GOLD }
-                    append(tiers[currentLevel].toFormattedString()) { color = PvColors.YELLOW }
+                    append(kills.toFormattedString(), PvColors.YELLOW)
+                    append("/", PvColors.GOLD)
+                    append(tiers[currentLevel].toFormattedString(), PvColors.YELLOW)
 
                     append(" (")
                     append((kills / tiers[currentLevel].toDouble() * 100).round()) {
@@ -306,9 +304,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         }
         return Displays.item(
             item,
-            customStackText = Text.of(currentLevel.toString()) {
-                color = if (currentLevel == maxLevel) PvColors.GOLD else PvColors.WHITE
-            },
+            customStackText = Text.of(currentLevel.toString(), if (currentLevel == maxLevel) PvColors.GOLD else PvColors.WHITE),
             showTooltip = true,
         )
     }
