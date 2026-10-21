@@ -48,7 +48,6 @@ import me.owdding.lib.displays.withTooltip as withDisplayTooltip
 
 class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseCombatScreen(gameProfile, profile), CarouselPage {
     private var carousel: CarouselWidget? = null
-    private val MOBS_PER_ROW = 8
     private val selectedSubcategories = mutableMapOf<String, Int>()
 
     override var carouselStart: Int = 0
@@ -329,6 +328,8 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
         private val BRACKET_TYPE_ALIASES = mapOf(
             "CRITTER" to "CRITTERS",
         )
+
+        private const val MOBS_PER_ROW = 8
     }
 }
 
