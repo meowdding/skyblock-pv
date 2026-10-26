@@ -300,19 +300,19 @@
             ],
             "chilled_to_the_bone": [
                 {
-                    "@id": "ice_essence_shop"
+                    "@id": "fossil_essence_shop"
                 },
                 "<white>Verhoogt je kans om een <purple>Skeleton Fish</purple> te vangen in de <red>Crimson Isle</red></white>"
             ],
             "cut_loose": [
                 {
-                    "@id": "ice_essence_shop"
+                    "@id": "fossil_essence_shop"
                 },
                 "<white>Een <aqua>❆ Glacial Mob</aqua> doden terwijl je in een <aqua>Glacial Mineshaft</aqua> bent geeft bonus <aqua>❄ Cold Resistance</aqua></white>"
             ],
             "sleight_of_hand": [
                 {
-                    "@id": "ice_essence_shop"
+                    "@id": "fossil_essence_shop"
                 },
                 "<white>Start de <gold>Fossil Excavator</gold> met <green>1</green> extra poging</white>"
             ]
