@@ -1,6 +1,6 @@
 [versions]
 
-fabric-loader = "0.19.3"
+fabric-loader = "0.20.1"
 fabric-language-kotlin = "1.13.12+kotlin.2.4.0"
 
 keval = "1.1.1"
@@ -10,23 +10,21 @@ kotlin-gradle-plugin = "2.4.0"
 kotlin-symbol-processor = "2.3.5"
 
 # Dependencies
-skyblockapi = "4.2.36"
-repolib = "2.0.2"
+skyblockapi = "4.2.43"
 
 resourceful-configkt = "4.0.0-beta.1"
 
 hypixelapi = "1.0.1+build.1+mc1.21"
 mixinconstraints = "1.0.7"
 
-meowdding-lib = "4.2.35"
-meowdding-ktmodules = "1.0.5"
-meowdding-ktcodecs = "1.1.16"
+meowdding-lib = "4.2.38"
+meowdding-ktmodules = "1.0.9"
+meowdding-ktcodecs = "1.1.18"
 meowdding-resources = "1.0.17"
 meowdding-remote-repo = "1.0.4"
 meowdding-auto-mixins = "1.0.5"
-meowdding-item-dfu = "1.0.5"
 
-fabric-loom = "1.16-SNAPSHOT"
+fabric-loom = "1.19-SNAPSHOT"
 
 # Build src dependencies
 gson = "2.12.1"
@@ -38,7 +36,6 @@ fabric-language-kotlin = { module = "net.fabricmc:fabric-language-kotlin", versi
 
 skyblockapi = { module = "tech.thatgravyboat:skyblock-api", version.ref = "skyblockapi" }
 hypixelapi = { module = "maven.modrinth:hypixel-mod-api", version.ref = "hypixelapi" }
-repolib = { module = "tech.thatgravyboat.repo-lib:repo-lib", version.ref = "repolib" }
 mixinconstraints = { module = "com.moulberry:mixinconstraints", version.ref = "mixinconstraints" }
 
 keval = { module = "com.notkamui.libs:keval", version.ref = "keval" }
@@ -50,7 +47,6 @@ meowdding-ktcodecs = { module = "me.owdding.ktcodecs:KtCodecs", version.ref = "m
 meowdding-lib = { module = "me.owdding.meowdding-lib:meowdding-lib", version.ref = "meowdding-lib" }
 meowdding-remote-repo = { module = "me.owdding.repo:remote-repo", version.ref = "meowdding-remote-repo" }
 meowdding-resources = { module = "me.owdding.repo:compacting-resources", version.ref = "meowdding-resources" }
-meowdding-item-dfu = { module = "me.owdding:item-data-fixer", version.ref = "meowdding-item-dfu" }
 
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }

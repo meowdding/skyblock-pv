@@ -43,9 +43,9 @@ loom.apply {
     log4jConfigs.from(rootProject.layout.projectDirectory.file("gradle/log4j.config.xml"))
 
     runConfigs["client"].apply {
-        ideConfigGenerated(true)
-        runDir = "../../run"
-        vmArg("-Dfabric.modsFolder=${mcVersion}Mods")
+        generateRunConfig = true
+        runDirectory = project.file("../../run")
+        jvmArguments.addAll("-Dfabric.modsFolder=${mcVersion}Mods", "-XX:StackShadowPages=32")
     }
 
     if (accessWidenerFile.exists()) {
