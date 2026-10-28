@@ -60,7 +60,7 @@ abstract class BaseInventoryScreen(gameProfile: GameProfile, profile: SkyBlockPr
 
     override fun init() {
         super.init()
-        if (showArmorHexWarning) noArmorColor().visitWidgets(::addRenderableWidget)
+        if (false && showArmorHexWarning) noArmorColor().visitWidgets(::addRenderableWidget)
     }
 
     protected fun noArmorColor(): LayoutElement = Widgets.button {
