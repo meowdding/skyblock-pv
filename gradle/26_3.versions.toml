@@ -3,7 +3,7 @@ minecraft-range = "26.3.x"
 minecraft = "26.3"
 
 sbapi-mc-version = "26.3"
-fabric-api = "0.160.4+26.3"
+fabric-api = "0.165.0+26.3"
 
 resourceful-lib = "6.0.0"
 resourceful-config = "6.0.1"
