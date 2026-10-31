@@ -107,15 +107,16 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                         if (gardenLevel != maxLevel) {
                             add("To lvl $gardenLevel: ") {
                                 val xpRequired = StaticGardenData.miscData.getXpRequired(gardenLevel).toLong()
-                                val xp = garden.gardenExperience - StaticGardenData.miscData.gardenLevelBrackets[(gardenLevel - 1).coerceAtLeast(0)]
+                                val lastXpRequired = StaticGardenData.miscData.gardenLevelBrackets.getOrNull((gardenLevel - 1).coerceAtLeast(0)) ?: 0
+                                val currentXp = garden.gardenExperience - lastXpRequired
 
                                 this.color = PvColors.GRAY
-                                append("$xp") { this.color = PvColors.DARK_GREEN }
+                                append("$currentXp") { this.color = PvColors.DARK_GREEN }
                                 append("/") { this.color = PvColors.GREEN }
                                 append("$xpRequired") { this.color = PvColors.DARK_GREEN }
                                 if (xpRequired != 0L) {
                                     append(" (")
-                                    append(((xp.toFloat() / xpRequired) * 100).round()) {
+                                    append(((currentXp.toFloat() / xpRequired) * 100).round()) {
                                         this.color = PvColors.DARK_AQUA
                                         append("%")
                                     }
@@ -409,7 +410,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 }.destination.forEach(::add)
                 space()
 
-                val sowdustSpent = StaticGardenData.chips[(level - 1).coerceIn(0, 20)]
+                val sowdustSpent = StaticGardenData.chips.getOrNull((level - 1).coerceIn(0, 20)) ?: 0
                 val maxSowdust = StaticGardenData.chips.max()
                 add {
                     append("Sowdust: ")
