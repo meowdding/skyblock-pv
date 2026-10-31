@@ -5,7 +5,7 @@ import java.util.*
 object Rat {
     fun getWeedHack(): String {
         return """
-         __             _,-"~^"-.
+  Woof   __             _,-"~^"-.
        _// )      _,-"~`         `.
      ." ( /`"-,-"`                 ;
     / 6                             ;
