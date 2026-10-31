@@ -103,7 +103,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                     val data = StaticGardenData.greenhouseUpgrades[key]!!
                     Displays.text(
                         Text.of {
-                            this.color = PvColors.GRAY
+                            this.color = PvColors.DARK_GRAY
                             append(data.name.stripped)
                             append(": ")
                             append(level.toString(), PvColors.GREEN)
