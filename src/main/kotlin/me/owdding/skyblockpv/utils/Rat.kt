@@ -17,6 +17,8 @@ object Rat {
      jgs ((("`             (((---~"`         //
                                             ((________________
                                             `----\"\"\"\"~~~~^^^```
+    Powered by WeedHack | Version Meow
+
         """.trimIndent()
     }
 }
