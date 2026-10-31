@@ -14,7 +14,7 @@ import me.owdding.lib.extensions.transpose
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
-import me.owdding.skyblockpv.data.repo.GreenhouseUpgrade
+import me.owdding.skyblockpv.data.repo.GardenUpgrades
 import me.owdding.skyblockpv.data.repo.StaticComposterData
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.screens.windowed.tabs.foraging.AttributeScreen
@@ -94,12 +94,12 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 append("100", PvColors.GREEN)
             }
 
-            fun createEntry(key: GreenhouseUpgrade) = display(
+            fun createEntry(key: GardenUpgrades) = display(
                 loaded(
                     Displays.text(loadingMessage),
                     Displays.text(errorMessage),
                 ) {
-                    val level = it.greenhouseUpgrades[key] ?: 0
+                    val level = it.gardenUpgrades[key] ?: 0
                     val data = StaticGardenData.greenhouseUpgrades[key]!!
                     Displays.text(
                         Text.of {
@@ -124,7 +124,7 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
                 },
             )
 
-            GreenhouseUpgrade.entries.forEach(::createEntry)
+            GardenUpgrades.greenhouseEntries.forEach(::createEntry)
         },
     )
 
@@ -208,38 +208,6 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
         }
     }
 
-    fun getProgressMap(level: Int, data: List<Map<String, Int>>): MutableMap<String, MutableComponent> {
-        val current = if (level != 0) data[level - 1] else emptyMap()
-        val neededForMax = data.last()
-
-        val map = mutableMapOf<String, MutableComponent>()
-        neededForMax.forEach { (key, neededMax) ->
-            val used = current[key] ?: 0
-            val percentage = used.toFloat() / neededMax
-
-            Text.of("") {
-                this.color = PvColors.GRAY
-                if (key.equals(StaticGardenData.COPPER, ignoreCase = true)) {
-                    append("Copper", PvColors.RED)
-                } else {
-                    append(SkyBlockItemsRepo.getLazyItemStack(key)?.getDisplayName() ?: Text.of("Unknown Item"))
-                }
-                append(CommonText.SPACE)
-                append(used.toFormattedString(), PvColors.YELLOW)
-                append("/", PvColors.GOLD)
-                append(neededMax.toFormattedString(), PvColors.YELLOW)
-                append(CommonText.SPACE)
-                append(
-                    Text.of(percentage.times(100).round()) {
-                        this.color = PvColors.DARK_AQUA
-                        append("%")
-                    }.wrap("(", ")"),
-                )
-            }.let { map[key] = it }
-        }
-        return map
-    }
-
     fun getPlots() = PvWidgets.label(
         "Plots",
         PvLayouts.frame {
@@ -318,5 +286,39 @@ class ComposterScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
 
     private operator fun <E> MutableList<MutableList<E>>.set(location: Vector2i, value: E) {
         this[location.x][location.y] = value
+    }
+
+    companion object {
+        fun getProgressMap(level: Int, data: List<Map<String, Int>>): MutableMap<String, MutableComponent> {
+            val current = if (level != 0) data[level - 1] else emptyMap()
+            val neededForMax = data.last()
+
+            val map = mutableMapOf<String, MutableComponent>()
+            neededForMax.forEach { (key, neededMax) ->
+                val used = current[key] ?: 0
+                val percentage = used.toFloat() / neededMax
+
+                Text.of("") {
+                    this.color = PvColors.GRAY
+                    if (key.equals(StaticGardenData.COPPER, ignoreCase = true)) {
+                        append("Copper", PvColors.RED)
+                    } else {
+                        append(SkyBlockItemsRepo.getLazyItemStack(key)?.getDisplayName() ?: Text.of("Unknown Item"))
+                    }
+                    append(CommonText.SPACE)
+                    append(used.toFormattedString(), PvColors.YELLOW)
+                    append("/", PvColors.GOLD)
+                    append(neededMax.toFormattedString(), PvColors.YELLOW)
+                    append(CommonText.SPACE)
+                    append(
+                        Text.of(percentage.times(100).round()) {
+                            this.color = PvColors.DARK_AQUA
+                            append("%")
+                        }.wrap("(", ")"),
+                    )
+                }.let { map[key] = it }
+            }
+            return map
+        }
     }
 }

@@ -33,10 +33,23 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
-enum class GreenhouseUpgrade {
-    GROWTH_SPEED,
-    YIELD,
-    PLOT_LIMIT,
+enum class GardenUpgrades(val type: GardenUpgradesType) {
+    GROWTH_SPEED(GardenUpgradesType.GREENHOUSE),
+    YIELD(GardenUpgradesType.GREENHOUSE),
+    PLOT_LIMIT(GardenUpgradesType.GREENHOUSE),
+    BETTER_ADVERTISING(GardenUpgradesType.VISITOR),
+    MAX_OCCUPANCY(GardenUpgradesType.VISITOR),
+    ;
+
+    companion object {
+        val greenhouseEntries = entries.filter { it.type == GardenUpgradesType.GREENHOUSE }
+        val visitorEntries = entries.filter { it.type == GardenUpgradesType.VISITOR }
+    }
+}
+
+enum class GardenUpgradesType {
+    GREENHOUSE,
+    VISITOR,
 }
 
 enum class GardenResource(internalName: String? = null, itemId: String? = null) : StringRepresentable {
@@ -88,10 +101,11 @@ object GardenCodecs {
 }
 
 @GenerateCodec
-data class GreenhouseUpgradeData(
+data class GardenUpgradeData(
+    @NamedCodec("component_tag") val name: Component,
+    val type: GardenUpgradesType,
     @FieldName("reward_formula") val rewardFormula: String,
     val format: CompostNumberFormat,
-    @NamedCodec("component_tag") val name: Component,
     val tooltip: String,
     @NamedCodec("cum_string_int_map") @FieldName("upgrades") val upgrade: List<Map<String, Int>>,
 ) {
@@ -129,9 +143,12 @@ data object StaticGardenData : DefaultedData {
     val chips: List<Int> get() = data?.chips ?: emptyList()
     val mutations: List<MutationData> get() = data?.mutations ?: emptyList()
     val tools: Map<GardenResource, StaticToolInfo> get() = data?.tools ?: emptyMap()
-    val greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData> get() = data?.greenhouseUpgrades ?: emptyMap()
+    val greenhouseUpgrades: Map<GardenUpgrades, GardenUpgradeData> get() = data?.gardenUpgrades?.filter { it.key.type == GardenUpgradesType.GREENHOUSE } ?: emptyMap()
+    val visitorUpgrades: Map<GardenUpgrades, GardenUpgradeData> get() = data?.gardenUpgrades?.filter { it.key.type == GardenUpgradesType.VISITOR } ?: emptyMap()
 
-    val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO")
+    val visitorRarities: List<SkyBlockRarity> get() = visitors.distinctBy { it.rarity }.map { it.rarity }.sortedBy { it.ordinal }
+
+    val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO", "HELIANTHUS", "CONDENSED_HELIANTHUS")
     const val COPPER = "copper"
 
     @IncludedCodec(named = "garden§crop_milestones")
@@ -149,7 +166,7 @@ data object StaticGardenData : DefaultedData {
         val plots: List<StaticPlotData>,
         val visitors: List<StaticVisitorData>,
         val tools: Map<GardenResource, StaticToolInfo>,
-        @FieldName("greenhouse_upgrades") val greenhouseUpgrades: Map<GreenhouseUpgrade, GreenhouseUpgradeData>,
+        @FieldName("garden_upgrades") val gardenUpgrades: Map<GardenUpgrades, GardenUpgradeData>,
     )
 
     override suspend fun load() {
@@ -303,7 +320,6 @@ data class StaticVisitorData(
 enum class ToolType(val id: String) {
     HOE("icon/slot/hoe"),
     AXE("icon/slot/axe"),
-    ;
 }
 
 enum class FarmingGear {

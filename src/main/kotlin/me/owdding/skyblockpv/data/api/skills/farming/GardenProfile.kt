@@ -9,7 +9,7 @@ import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.data.repo.DefaultBarnSkin
 import me.owdding.skyblockpv.data.repo.GardenResource
-import me.owdding.skyblockpv.data.repo.GreenhouseUpgrade
+import me.owdding.skyblockpv.data.repo.GardenUpgrades
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.data.repo.StaticPlotData
 import me.owdding.skyblockpv.data.repo.StaticVisitorData
@@ -47,7 +47,7 @@ data class GardenProfile(
     val resourcesCollected: Map<GardenResource, Long>,
     val cropUpgradeLevels: Map<GardenResource, Short>,
     val greenhouseSlots: List<Vector2i>,
-    val greenhouseUpgrades: Map<GreenhouseUpgrade, Int>,
+    val gardenUpgrades: Map<GardenUpgrades, Int>,
 ) {
     @FeatureName("GardenProfileParser")
     companion object : MeowddingLogger by SkyBlockPv.featureLogger() {
@@ -72,8 +72,8 @@ data class GardenProfile(
                 greenhouseSlots = result.getAs<JsonArray>("greenhouse_slots")?.filterIsInstance<JsonObject>()?.map {
                     Vector2i(it.get("x").asInt(0), it.get("z").asInt(0))
                 } ?: emptyList(),
-                greenhouseUpgrades = result.getAs<JsonObject>("garden_upgrades").asMap { string, element ->
-                    runCatching { GreenhouseUpgrade.valueOf(string) }.getOrNull() to element.asInt(0)
+                gardenUpgrades = result.getAs<JsonObject>("garden_upgrades").asMap { string, element ->
+                    runCatching { GardenUpgrades.valueOf(string) }.getOrNull() to element.asInt(0)
                 }.filterKeysNotNull(),
             )
         }

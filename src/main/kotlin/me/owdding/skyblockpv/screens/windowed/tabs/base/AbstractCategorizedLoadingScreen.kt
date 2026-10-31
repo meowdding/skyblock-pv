@@ -1,6 +1,8 @@
 package me.owdding.skyblockpv.screens.windowed.tabs.base
 
 import com.mojang.authlib.GameProfile
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.Displays
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.CachedApi
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
@@ -10,7 +12,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.Scheduling
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
 abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: GameProfile, profile: SkyBlockProfile? = null) :
@@ -48,7 +50,10 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
                 lastProfileId = profile.id.id
                 api.getDataAsync(profile, "screen") { result ->
                     this@AbstractCategorizedLoadingScreen.data = result.onFailure { exception ->
-                        SkyBlockPv.error("Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}", exception)
+                        SkyBlockPv.error(
+                            "Failed to get data for ${gameProfile.name} on profile (${profile.id.name}) for ${api::class.java.simpleName}",
+                            exception,
+                        )
                     }
 
                     isDoneLoading = true
@@ -91,6 +96,8 @@ abstract class AbstractCategorizedLoadingScreen<V>(name: String, gameProfile: Ga
             else -> onSuccess(data.getOrThrow())
         }
     }
+
+    protected fun loadedDisplay(onSuccess: (V) -> Display): Display = loaded(Displays.text(loadingMessage), Displays.text(errorMessage), onSuccess)
 
     protected fun <T> loadingValue(
         successValue: T,

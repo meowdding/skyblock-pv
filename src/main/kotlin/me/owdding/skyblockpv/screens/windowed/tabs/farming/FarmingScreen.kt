@@ -2,13 +2,8 @@ package me.owdding.skyblockpv.screens.windowed.tabs.farming
 
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
-import me.owdding.lib.displays.Display
-import me.owdding.lib.displays.DisplayWidget
-import me.owdding.lib.displays.Displays
-import me.owdding.lib.displays.asWidget
-import me.owdding.lib.displays.toColumn
-import me.owdding.lib.displays.toRow
-import me.owdding.lib.displays.withTooltip
+import me.owdding.lib.builder.MIDDLE
+import me.owdding.lib.displays.*
 import me.owdding.lib.extensions.ListMerger
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
@@ -18,11 +13,10 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.api.skills.Pet
-import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
-import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
-import me.owdding.skyblockpv.data.api.skills.farming.MedalType
+import me.owdding.skyblockpv.data.api.skills.farming.*
 import me.owdding.skyblockpv.data.repo.FarmingGear
 import me.owdding.skyblockpv.data.repo.GardenResource
+import me.owdding.skyblockpv.data.repo.GardenUpgrades
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
@@ -33,8 +27,10 @@ import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.area.farming.garden.GardenChip
+import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
@@ -51,11 +47,14 @@ import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) : BaseFarmingScreen(gameProfile, profile) {
     override fun getLayout(bg: DisplayWidget): Layout {
         val baseLayout = PvLayouts.frame {
-            horizontal {
+            horizontal(alignment = MIDDLE) {
                 widget(getGear(profile))
                 widget(getContests(profile.farmingData))
                 widget(getChips(profile.gardenChips))
-                widget(getInfoWidget(profile))
+                vertical(spacing = 10, alignment = MIDDLE) {
+                    widget(getInfoWidget(profile))
+                    widget(getVisitors())
+                }
             }
         }
 
@@ -73,6 +72,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 widget(getChips(profile.gardenChips))
                 widget(getInfoWidget(profile))
             }
+            widget(getVisitors())
         }.asScrollable(bg.width - 10, bg.height)
     }
 
@@ -227,16 +227,11 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         icon = SkyBlockPv.id("icon/item/clipboard"),
     )
 
-    private fun getPets(profile: SkyBlockProfile) = profile.pets.asSequence()
-        .filter { FarmingGear.pets.contains(it.type) }
-        .sortedWith(Comparator.comparingInt<Pet> { it.rarity.ordinal }.thenByDescending { pet -> pet.exp })
-        .distinctBy { it.type }
-        .take(4)
+    private fun getPets(profile: SkyBlockProfile) = profile.pets.asSequence().filter { FarmingGear.pets.contains(it.type) }
+        .sortedWith(Comparator.comparingInt<Pet> { it.rarity.ordinal }.thenByDescending { pet -> pet.exp }).distinctBy { it.type }.take(4)
         .mapTo(mutableListOf()) { Displays.item(it.itemStack, showTooltip = true, customStackText = it.level) }
-        .rightPad(4, Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/bone")), Displays.empty(16, 16)))
-        .map { Displays.padding(2, it) }
-        .toColumn()
-        .let { ExtraDisplays.inventoryBackground(4, Orientation.VERTICAL, Displays.padding(2, it)) }
+        .rightPad(4, Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/bone")), Displays.empty(16, 16))).map { Displays.padding(2, it) }
+        .toColumn().let { ExtraDisplays.inventoryBackground(4, Orientation.VERTICAL, Displays.padding(2, it)) }
 
     private fun getGear(profile: SkyBlockProfile) = PvWidgets.label(
         "Gear",
@@ -264,7 +259,10 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val vacuums = ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(FarmingGear.vacuum)) ?: emptyList()
 
         val vacuum = vacuums.sortedBy { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }.reversed().firstOrNull()
-            ?: return Displays.padding(4, Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/minecart")), Displays.empty(16, 16)))
+            ?: return Displays.padding(
+                4,
+                Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/minecart")), Displays.empty(16, 16)),
+            )
 
         return Displays.padding(4, Displays.item(vacuum, showTooltip = true))
     }
@@ -273,7 +271,10 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val wateringCans = ItemPredicateHelper.getItemsMatching(profile, ItemPredicates.AnySkyblockID(FarmingGear.watering_can)) ?: emptyList()
 
         val vacuum = wateringCans.sortedBy { it.getData(DataTypes.RARITY)?.ordinal ?: 0 }.reversed().firstOrNull()
-            ?: return Displays.padding(4, Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/watering_can")), Displays.empty(16, 16)))
+            ?: return Displays.padding(
+                4,
+                Displays.background(ThemeSupport.texture(SkyBlockPv.id("icon/slot/watering_can")), Displays.empty(16, 16)),
+            )
 
         return Displays.padding(4, Displays.item(vacuum, showTooltip = true))
     }
@@ -314,10 +315,9 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                         }
                     }
 
-                    val medals = contests.groupByTo(mutableMapOf()) { it.claimedMedal }
-                        .apply { remove(null) }
-                        .mapKeys { MedalType.valueOf(it.key?.uppercase() ?: "") }
-                        .toSortedMap(MedalType::compareTo)
+                    val medals =
+                        contests.groupByTo(mutableMapOf()) { it.claimedMedal }.apply { remove(null) }.mapKeys { MedalType.valueOf(it.key?.uppercase() ?: "") }
+                            .toSortedMap(MedalType::compareTo)
 
                     if (medals.isNotEmpty()) {
                         medals.map { (key, value) ->
@@ -326,9 +326,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                             }
                         }.let {
                             Text.join(it, separator = Text.of("/") { this.color = PvColors.DARK_GRAY })
-                        }
-                            .wrap(" (", ")")
-                            .let { append(it) }
+                        }.wrap(" (", ")").let { append(it) }
                     }
                 }
 
@@ -374,9 +372,8 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                     }
                 }
             }
-        }.map { Displays.padding(2, it) }.chunked(5)
-            .map { it.toColumn() }
-            .toRow().let { ExtraDisplays.inventoryBackground(3, 5, Displays.padding(2, it)) }.asWidget(),
+        }.map { Displays.padding(2, it) }.chunked(5).map { it.toColumn() }.toRow().let { ExtraDisplays.inventoryBackground(3, 5, Displays.padding(2, it)) }
+            .asWidget(),
     )
 
     private fun getChips(data: ChipsData) = PvWidgets.label(
@@ -438,10 +435,99 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
             }
         }.map {
             Displays.padding(2, it)
-        }.chunked(5)
-            .map { it.toColumn() }.toRow()
-            .let { ExtraDisplays.inventoryBackground(2, 5, Displays.padding(2, it)) }
-            .asWidget(),
+        }.chunked(5).map { it.toColumn() }.toRow().let { ExtraDisplays.inventoryBackground(2, 5, Displays.padding(2, it)) }.asWidget(),
+    )
+
+    private fun getVisitors() = PvWidgets.label(
+        "Visitors",
+        PvLayouts.vertical {
+            loadedDisplay {
+                Displays.text(
+                    Text.of("Unique Served: ") {
+                        color = PvColors.DARK_GRAY
+                        append(it.commissionData.uniqueVisitorsServed.toFormattedString(), PvColors.GREEN)
+                        append("/")
+                        append(StaticGardenData.visitors.filter { it.rarity != SkyBlockRarity.SPECIAL }.size.toFormattedString(), PvColors.GREEN)
+                    },
+                ).withTooltip {
+                    add("Excluding ") {
+                        color = TextColor.GRAY
+                        append(SkyBlockRarity.SPECIAL.displayText)
+                        append(" Visitors.")
+                    }
+                }
+            }.add()
+            spacer(height = 5)
+            fun visitor(prefix: Component, getter: (GardenProfile) -> Pair<Int, Int>) = loadedDisplay {
+                val (offersAccepted, timesVisited) = getter(it)
+
+                Displays.text(
+                    Text.of {
+                        append(prefix)
+                        append(": ")
+                        color = PvColors.DARK_GRAY
+                        append(offersAccepted.toFormattedString(), PvColors.GREEN)
+                        append("/")
+                        append(timesVisited.toFormattedString(), PvColors.GREEN)
+                    },
+                ).withTooltip {
+                    add {
+                        append("Offers Accepted: ", TextColor.GRAY)
+                        append(offersAccepted.toFormattedString(), TextColor.GREEN)
+                    }
+                    add {
+                        append("Times Visited: ", TextColor.GRAY)
+                        append(timesVisited.toFormattedString(), TextColor.GREEN)
+                    }
+                }
+            }.add()
+
+            visitor(Text.of("Total")) {
+                it.commissionData.commissions.let { coms ->
+                    coms.sumOf(Commission::accepted) to coms.sumOf(Commission::total)
+                }
+            }
+
+            StaticGardenData.visitorRarities.forEach { rarity ->
+                visitor(rarity.displayText) {
+                    it.commissionData.commissions.filter { com -> com.visitor?.rarity == rarity }.let { coms ->
+                        coms.sumOf(Commission::accepted) to coms.sumOf(Commission::total)
+
+                    }
+                }
+            }
+
+            spacer(height = 5)
+
+            fun createEntry(key: GardenUpgrades) = display(
+                loadedDisplay {
+                    val level = it.gardenUpgrades[key] ?: 0
+                    val data = StaticGardenData.visitorUpgrades[key]!!
+                    Displays.text(
+                        Text.of {
+                            this.color = PvColors.DARK_GRAY
+                            append(data.name.stripped)
+                            append(": ")
+                            append(level.toString(), PvColors.GREEN)
+                            append("/", PvColors.DARK_GREEN)
+                            append(data.upgrade.size.toString(), PvColors.GREEN)
+                        },
+                        shadow = false,
+                    ).withTooltip {
+                        add(data.name)
+                        space()
+                        add(data.getTooltipForLevel(level))
+                        space()
+                        val map = ComposterScreen.getProgressMap(level, data.upgrade)
+                        map.values.forEach { entry ->
+                            add(entry)
+                        }
+                    }
+                },
+            )
+
+            GardenUpgrades.visitorEntries.forEach(::createEntry)
+        },
     )
 }
 
