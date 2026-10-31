@@ -83,7 +83,10 @@ tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_25)
         allWarningsAsErrors = true
-        optIn.add("kotlin.time.ExperimentalTime")
+        optIn.addAll(
+            "tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired",
+            "kotlin.time.ExperimentalTime"
+        )
         freeCompilerArgs.addAll(
             "-Xnullability-annotations=@org.jspecify.annotations:warn",
             "-Xcontext-sensitive-resolution",

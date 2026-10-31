@@ -12,7 +12,6 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.remote.MuseumEntry
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvMuseumOpenedEvent
-import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 
@@ -22,7 +21,6 @@ data class MuseumData(
     val borrowingItemIds: Set<String> = emptySet(),
 ) {
     companion object {
-        @OptIn(SkyBlockPvRequired::class)
         fun fromJson(profile: SkyBlockProfile, members: JsonObject?): MuseumData {
             val asJsonObject = members?.getPathAs<JsonObject>(profile.userId.toDashlessString()) ?: return MuseumData(emptyList(), emptyList())
 

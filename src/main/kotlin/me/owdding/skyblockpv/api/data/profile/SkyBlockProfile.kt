@@ -54,12 +54,8 @@ import net.minecraft.network.chat.Component
 import net.minecraft.util.Util
 import tech.thatgravyboat.skyblockapi.api.SkyBlockAPI
 import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvOpenedEvent
-import tech.thatgravyboat.skyblockapi.api.events.remote.SkyBlockPvRequired
-import tech.thatgravyboat.skyblockapi.api.location.LocationAPI
-import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileAPI
 import tech.thatgravyboat.skyblockapi.api.profile.profile.ProfileType
 import tech.thatgravyboat.skyblockapi.helpers.McClient
-import tech.thatgravyboat.skyblockapi.helpers.McPlayer
 import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
 import tech.thatgravyboat.skyblockapi.utils.extentions.asList
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
@@ -119,7 +115,7 @@ interface SkyBlockProfile {
     val magicalPower: CompletableFuture<Pair<Int, Component>>
 
     val onStranded: Boolean get() = profileType == ProfileType.STRANDED
-    val isOwnProfile get() = userId == McPlayer.uuid && selected
+    val isOwnProfile get() = selected && id.ensureSelectedProfile()
 
     val coopMembers: Map<UUID, CompletableFuture<GameProfile?>> get() = backingProfile.coopMembers
 
@@ -226,7 +222,6 @@ data class BackingSkyBlockProfile(
 
         private fun <T> emptyFuture(): CompletableFuture<T> = CompletableFuture()
 
-        @OptIn(SkyBlockPvRequired::class)
         fun fromJson(json: JsonObject, user: UUID): BackingSkyBlockProfile? {
             val member = json.getPath("members.${user.toDashlessString()}")?.asJsonObject ?: return null
             val playerStats = member.getAs<JsonObject>("player_stats")
@@ -246,11 +241,15 @@ data class BackingSkyBlockProfile(
             fun <T> allMembers(extractor: (member: JsonObject) -> T) = allMembers(extractor) { members -> members }
 
             val selected = json.getAs<Boolean>("selected", false)
-            val profileName = json.getAs("cute_name", "Unknown")
 
-            if (selected && user == McPlayer.uuid) {
-                // api can say the currently selected profile is a profile we already switched from
-                if (LocationAPI.isOnSkyBlock && ProfileAPI.isLoaded && ProfileAPI.profileName == profileName) {
+            val profileId = ProfileId(
+                id = json.getAs("profile_id", Util.NIL_UUID),
+                name = json.getAs("cute_name", "Unknown"),
+                user = user,
+            )
+
+            if (selected) {
+                if (profileId.ensureSelectedProfile()) {
                     McClient.runOrNextTick {
                         SkyBlockPv.runCatching("Publishing profile data to SkyBlockAPI") {
                             SkyBlockPvOpenedEvent(json).post(SkyBlockAPI.eventBus)
@@ -258,12 +257,6 @@ data class BackingSkyBlockProfile(
                     }
                 }
             }
-
-            val profileId = ProfileId(
-                id = json.getAs("profile_id", Util.NIL_UUID),
-                name = profileName,
-                user = user,
-            )
 
             context(profileId) {
                 return BackingSkyBlockProfile(
