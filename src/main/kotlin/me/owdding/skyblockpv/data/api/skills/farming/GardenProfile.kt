@@ -3,27 +3,21 @@ package me.owdding.skyblockpv.data.api.skills.farming
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import me.owdding.ktcodecs.FieldName
 import me.owdding.lib.utils.FeatureName
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.data.repo.DefaultBarnSkin
-import me.owdding.skyblockpv.data.repo.GardenResource
-import me.owdding.skyblockpv.data.repo.GardenUpgrades
-import me.owdding.skyblockpv.data.repo.StaticGardenData
-import me.owdding.skyblockpv.data.repo.StaticPlotData
-import me.owdding.skyblockpv.data.repo.StaticVisitorData
+import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.world.item.ItemStack
 import org.joml.Vector2i
+import tech.thatgravyboat.skyblockapi.api.data.Essence as EssenceEnum
+import tech.thatgravyboat.skyblockapi.api.profile.hotm.PowderType
+import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.api.repo.LazyItemStack
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
-import tech.thatgravyboat.skyblockapi.utils.extentions.asDouble
-import tech.thatgravyboat.skyblockapi.utils.extentions.asInt
-import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
-import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
-import tech.thatgravyboat.skyblockapi.utils.extentions.asShort
-import tech.thatgravyboat.skyblockapi.utils.extentions.filterKeysNotNull
+import tech.thatgravyboat.skyblockapi.utils.extentions.*
 
 data class GardenData(
     val copper: Int,
@@ -41,6 +35,7 @@ data class GardenProfile(
     val unlockedPlots: List<StaticPlotData>,
     val selectedBarnSkin: ItemStack,
     val commissionData: CommissionData,
+    val activeCommission: Map<String, ActiveCommission>,
     val gardenExperience: Long,
     val unlockedBarnSkins: List<ItemStack>,
     val composterData: ComposterData,
@@ -64,6 +59,7 @@ data class GardenProfile(
                 } ?: emptyList(),
                 selectedBarnSkin = result.get("selected_barn_skin").toBarnSkin().create(),
                 commissionData = result.getAs<JsonObject>("commission_data").toCommissionData(),
+                activeCommission = result.getAs<JsonObject>("active_commissions").toActiveCommissionData(),
                 gardenExperience = result.get("garden_experience").asLong(0),
                 unlockedBarnSkins = result.getAs<JsonArray>("unlocked_barn_skins")?.map { it.toBarnSkin().create() } ?: emptyList(),
                 composterData = result.getAs<JsonObject>("composter_data").toComposterData(),
@@ -124,6 +120,77 @@ data class GardenProfile(
                 uniqueVisitorsServed = this?.get("unique_npcs_served").asInt(0),
             )
         }
+
+        private fun JsonObject?.toActiveCommissionData(): Map<String, ActiveCommission> {
+            val json = this ?: return emptyMap()
+            return json.entrySet().associate { (id, el) ->
+                val obj = el.asJsonObject
+                val visitor = StaticGardenData.visitors.find { it.id == id }
+
+                val requirements = obj.getAsJsonArray("requirement")?.map { el ->
+                    val obj = el.asJsonObject
+                    CommissionRequirement(
+                        SkyBlockId.item(obj.get("original_item").asString),
+                        obj.get("original_amount").asInt,
+                        SkyBlockId.item( obj.get("item").asString),
+                        obj.get("amount").asInt,
+                    )
+                } ?: emptyList()
+
+                val bonusRewards = obj.getAsJsonArray("bonus_rewards")?.map {
+                    CommissionBonusReward(SkyBlockId.item(it.asJsonObject.get("item_id").asString))
+                } ?: emptyList()
+
+                val extraRewards = obj.getAsJsonArray("extra_rewards")?.mapNotNull { rewardEl ->
+                    val rewardObj = rewardEl.asJsonObject ?: return@mapNotNull null
+                    when {
+                        rewardObj.has("powder") -> {
+                            val powderStr = rewardObj.get("powder").asString.uppercase()
+                            val powderType = valueOfOrNull<PowderType>(powderStr) ?: return@mapNotNull null
+                            ExtraReward.Powder(powderType, rewardObj.get("amount").asInt(0))
+                        }
+                        rewardObj.has("enchant") -> {
+                            ExtraReward.Enchant(SkyBlockId.enchantment(rewardObj.get("enchant").asString, rewardObj.get("level").asInt(1)))
+                        }
+                        rewardObj.has("rune") -> {
+                            ExtraReward.Rune(SkyBlockId.rune(rewardObj.get("rune").asString, 1))
+                        }
+                        rewardObj.has("item") && rewardObj.has("red") -> {
+                            ExtraReward.ColoredItem(
+                                SkyBlockId.item(rewardObj.get("item").asString),
+                                rewardObj.get("red").asInt(0),
+                                rewardObj.get("green").asInt(0),
+                                rewardObj.get("blue").asInt(0)
+                            )
+                        }
+                        rewardObj.has("candy") -> {
+                            ExtraReward.Candy(SkyBlockId.item(rewardObj.get("candy").asString))
+                        }
+                        rewardObj.has("sowdust") -> {
+                            ExtraReward.Sawdust(rewardObj.get("sowdust").asInt(0))
+                        }
+                        rewardObj.has("essence") -> {
+                            val essenceStr = rewardObj.get("essence").asString.uppercase()
+                            val essenceType = valueOfOrNull<EssenceEnum>(essenceStr) ?: return@mapNotNull null
+                            ExtraReward.Essence(rewardObj.get("amount").asInt(0), essenceType)
+                        }
+                        else -> null
+                    }
+                } ?: emptyList()
+
+                id to ActiveCommission(
+                    visitor,
+                    requirements,
+                    obj.get("status")?.asString?.let { valueOfOrNull<CommissionStatus>(it) } ?: CommissionStatus.NOT_STARTED,
+                    obj.get("position").asInt(0),
+                    bonusRewards,
+                    extraRewards,
+                )
+            }.also {
+                println(this)
+                println(it)
+            }
+        }
     }
 
     fun getGardenLevel(): Int = StaticGardenData.miscData.getLevelForExperience(gardenExperience)
@@ -160,3 +227,36 @@ data class ComposterData(
     val lastUpdateTimestamp: Long,
     val upgrades: Map<ComposterUpgrade, Int>,
 )
+
+data class ActiveCommission(
+    val visitor: StaticVisitorData?,
+    val requirement: List<CommissionRequirement>,
+    val status: CommissionStatus,
+    val position: Int,
+    val bonusRewards: List<CommissionBonusReward>,
+    val extraRewards: List<ExtraReward>,
+)
+
+data class CommissionRequirement(
+    @FieldName("original_item") val originalItem: SkyBlockId,
+    @FieldName("original_amount") val originalAmount: Int,
+    val item: SkyBlockId,
+    val amount: Int,
+)
+
+enum class CommissionStatus {
+    NOT_STARTED,
+    STARTED,
+}
+
+data class CommissionBonusReward(val itemId: SkyBlockId)
+
+sealed interface ExtraReward {
+    data class Powder(val powder: PowderType, val amount: Int) : ExtraReward
+    data class Essence(val amount: Int, val essence: EssenceEnum) : ExtraReward
+    data class Enchant(val enchant: SkyBlockId) : ExtraReward
+    data class Rune(val rune: SkyBlockId) : ExtraReward
+    data class ColoredItem(val item: SkyBlockId, val red: Int, val green: Int, val blue: Int) : ExtraReward
+    data class Candy(val candy: SkyBlockId) : ExtraReward
+    data class Sawdust(val amount: Int) : ExtraReward
+}
