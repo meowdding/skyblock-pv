@@ -28,7 +28,6 @@ abstract class BaseFarmingScreen(gameProfile: GameProfile, profile: SkyBlockProf
 enum class FarmingCategory(val screen: KClass<out BaseFarmingScreen>, override val icon: ItemStack, hoverName: String? = null) : Category {
     MAIN(FarmingScreen::class, Items.WHEAT.withCatharsisId("tab/farming/main")),
     VISITORS(VisitorScreen::class, Items.VILLAGER_SPAWN_EGG.withCatharsisId("tab/farming/visitors")),
-    COMMISSIONS(ActiveCommissionsScreen::class, Items.WRITABLE_BOOK.withCatharsisId("tab/farming/commissions"), "Active Commissions"),
     CROP(CropScreen::class, Items.CARROT.withCatharsisId("tab/farming/crops")),
     MUTATIONS(MutationScreen::class, SkyBlockItemsRepo.getItemStackOrDefault("LONELILY").withCatharsisId("tab/farming/mutation")),
     COMPOSTER(ComposterScreen::class, SkyBlockItemsRepo.getItemStackOrDefault("COMPOST").withCatharsisId("tab/farming/composter")),

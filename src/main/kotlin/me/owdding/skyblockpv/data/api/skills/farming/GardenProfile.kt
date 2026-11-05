@@ -8,16 +8,25 @@ import me.owdding.lib.utils.FeatureName
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.data.api.skills.PowderType
 import me.owdding.skyblockpv.data.repo.*
 import me.owdding.skyblockpv.utils.json.getAs
+import net.minecraft.network.chat.Component
+import net.minecraft.util.ARGB
 import net.minecraft.world.item.ItemStack
 import org.joml.Vector2i
+import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.data.Essence as EssenceEnum
-import tech.thatgravyboat.skyblockapi.api.profile.hotm.PowderType
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.api.repo.LazyItemStack
+import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockEnchantmentsRepo
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
+import tech.thatgravyboat.skyblockapi.utils.text.Text
+import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
+import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 
 data class GardenData(
     val copper: Int,
@@ -252,11 +261,56 @@ enum class CommissionStatus {
 data class CommissionBonusReward(val itemId: SkyBlockId)
 
 sealed interface ExtraReward {
-    data class Powder(val powder: PowderType, val amount: Int) : ExtraReward
-    data class Essence(val amount: Int, val essence: EssenceEnum) : ExtraReward
-    data class Enchant(val enchant: SkyBlockId) : ExtraReward
-    data class Rune(val rune: SkyBlockId) : ExtraReward
-    data class ColoredItem(val item: SkyBlockId, val red: Int, val green: Int, val blue: Int) : ExtraReward
-    data class Candy(val candy: SkyBlockId) : ExtraReward
-    data class Sawdust(val amount: Int) : ExtraReward
+    data class Powder(val powder: PowderType, val amount: Int) : ExtraReward {
+        override fun asComponent(): Component = Text.of {
+            append(amount.toFormattedString())
+            append(" ")
+            append(powder.name.toTitleCase())
+            append(" Powder")
+
+            withStyle(powder.formatting)
+        }
+    }
+
+    data class Essence(val amount: Int, val essence: EssenceEnum) : ExtraReward {
+        override fun asComponent(): Component = Text.of {
+            append(amount.toFormattedString())
+            append(" ")
+            append(essence.name.toTitleCase())
+            this.color = TextColor.PINK
+        }
+    }
+
+    data class Enchant(val enchant: SkyBlockId) : ItemLikeReward
+    data class Rune(val rune: SkyBlockId) : ItemLikeReward
+    data class ColoredItem(val item: SkyBlockId, val red: Int, val green: Int, val blue: Int) : ExtraReward {
+        override fun asComponent(): Component = Text.of {
+            append(item.toItem().hoverName)
+            val color = ARGB.color(red, green, blue)
+            append(" (#${(color and 0xffffff).toString(16).lowercase()})", color)
+        }
+    }
+    data class Candy(val candy: SkyBlockId) : ItemLikeReward
+    data class Sawdust(val amount: Int) : ExtraReward {
+        override fun asComponent() = Text.of {
+            append(amount.toFormattedString())
+            append(" Sowdust")
+            this.color = TextColor.DARK_GREEN
+        }
+    }
+
+    interface ItemLikeReward : ExtraReward {
+        operator fun component1(): SkyBlockId
+
+        override fun asComponent(): Component = Text.of {
+            val id = component1()
+            append(id.toItem().hoverName)
+
+            if (id.isEnchantment) {
+                append(id.toItem().getLore().firstOrNull { it.stripped.isNotEmpty() } ?: return@of)
+            }
+        }
+    }
+
+    fun asComponent(): Component
 }
