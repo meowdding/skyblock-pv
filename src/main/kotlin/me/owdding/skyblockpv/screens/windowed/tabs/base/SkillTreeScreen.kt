@@ -119,10 +119,7 @@ data class SkillTreeItems(
             tierItems = tierItems,
             coreItems = CoreNodeItems(
                 maxLevel = Items.DIAMOND_BLOCK,
-                //? >= 26.2 {
                 unlocked = Items.COPPER_BLOCK.weathering.unaffected,
-                //?} else
-                //unlocked = Items.COPPER_BLOCK,
                 leveling = Items.REDSTONE_BLOCK,
                 locked = Items.BEDROCK,
             ),

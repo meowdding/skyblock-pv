@@ -19,7 +19,6 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.Style
 import net.minecraft.world.item.ItemStack
-//? >= 26.1
 import net.minecraft.world.item.ItemStackTemplate
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
@@ -180,13 +179,8 @@ object PartyFinderJoin {
 
                 val item = Items.BARRIER.defaultInstance
                 item.set(DataComponents.CUSTOM_NAME, Text.of("Inventory") { italic = false })
-                //? >= 26.1 {
                 val hoverEvent = HoverEvent.ShowItem(ItemStackTemplate.fromNonEmptyStack(item))
                 itemComponentMap[item] = InventoryTooltipComponent(reorderedItems, 9)
-                //? } else {
-                /*val hoverEvent = HoverEvent.ShowItem(item)
-                itemComponentMap[hoverEvent.item()] = InventoryTooltipComponent(reorderedItems, 9)
-                *///? }
 
                 this.style = Style.EMPTY.withHoverEvent(hoverEvent)
             }

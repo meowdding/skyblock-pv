@@ -30,17 +30,11 @@ abstract public class GuiGraphicsExtractorMixin implements GuiGraphicsExtractorA
         return true;
     }
 
-    //~ if >= 26.2 'Lnet/minecraft/client/gui/navigation/ScreenRectangle;"' -> 'V"'
     @WrapOperation(method = "enableScissor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack;push(Lnet/minecraft/client/gui/navigation/ScreenRectangle;)V"))
-    //~ if >= 26.2 'public ScreenRectangle' -> 'public void'
     public void ignoreIfExclusive(GuiGraphicsExtractor.ScissorStack instance, ScreenRectangle scissor, Operation<ScreenRectangle> original) {
         if (this.scissor == null || scissor == this.scissor) {
-            //? < 26.2
-             //return
             original.call(instance, scissor);
         }
-        //? < 26.2
-        //return null;
     }
 
     @Override
