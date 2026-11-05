@@ -52,6 +52,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
@@ -98,19 +99,17 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         }.asScrollable(bg.width - 10, bg.height)
     }
 
-    private fun getActiveCommissions(orientation: Orientation = Orientation.HORIZONTAL): LayoutElement = PvWidgets.label(
+    private fun getActiveCommissions(): LayoutElement = PvWidgets.label(
         "Active Commissions",
         loadedDisplay { garden ->
 
             val maxSize = 5 + (garden.gardenUpgrades[GardenUpgrades.MAX_OCCUPANCY] ?: 0)
-            val secondaryDirection = maxSize.coerceIn(5, 6) - 4
 
-            val columns = if (orientation != Orientation.HORIZONTAL) secondaryDirection else 5
-            val rows = (5 + secondaryDirection - columns)
+            val rows = maxSize.coerceIn(5, 6) - 4
+            val columns = 5
 
-            garden.activeCommission.entries.map { (visitor, commission) ->
-
-                val visitor = StaticGardenData.visitors.find { it.id == visitor }
+            garden.activeCommission.values.map { commission ->
+                val visitor = commission.visitor
                 Displays.item(visitor?.itemStack ?: Utils.failedTestBlockStack()).withTooltip {
                     add(visitor?.name ?: "Unknown Visitor") {
                         color = visitor?.rarity?.skyBlockColor ?: TextColor.GRAY
@@ -120,24 +119,15 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
                     add("Queue Position: ") {
                         this.color = TextColor.GRAY
-                        append("#${commission.position}") {
-                            this.color = TextColor.YELLOW
-                        }
+                        append("#${commission.position}", TextColor.YELLOW)
                     }
 
                     add("Status: ") {
                         this.color = TextColor.GRAY
                         append(
-                            when (commission.status) {
-                                CommissionStatus.STARTED -> "Started"
-                                CommissionStatus.NOT_STARTED -> "Not Started"
-                            },
-                        ) {
-                            this.color = when (commission.status) {
-                                CommissionStatus.STARTED -> TextColor.GREEN
-                                CommissionStatus.NOT_STARTED -> TextColor.RED
-                            }
-                        }
+                            commission.status.name.toTitleCase(),
+                            commission.status.color
+                        )
                     }
 
                     if (commission.requirement.isNotEmpty()) {
@@ -146,7 +136,14 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                         commission.requirement.forEach { req ->
                             add(" ") {
                                 append(req.item.toItem().hoverName)
-                                append(" x${req.amount}", TextColor.DARK_GRAY)
+                                append(" x") {
+                                    this.color = TextColor.DARK_GRAY
+                                    if (req.amount != req.originalAmount && req.originalItem == req.item) {
+                                        append(req.amount.toFormattedString(), TextColor.GREEN)
+                                        append("/", TextColor.GRAY)
+                                    }
+                                    append(req.originalAmount.toFormattedString())
+                                }
                             }
                         }
                     }

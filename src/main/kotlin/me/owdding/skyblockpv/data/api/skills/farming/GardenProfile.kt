@@ -250,14 +250,29 @@ data class CommissionRequirement(
     val amount: Int,
 )
 
-enum class CommissionStatus {
-    NOT_STARTED,
-    STARTED,
+enum class CommissionStatus(val color: Int) {
+    NOT_STARTED(TextColor.GREEN),
+    STARTED(TextColor.RED),
 }
 
 data class CommissionBonusReward(val itemId: SkyBlockId)
 
 sealed interface ExtraReward {
+    fun asComponent(): Component
+
+    interface ItemLikeReward : ExtraReward {
+        operator fun component1(): SkyBlockId
+
+        override fun asComponent(): Component = Text.of {
+            val id = component1()
+            append(id.toItem().hoverName)
+
+            if (id.isEnchantment) {
+                append(id.toItem().getLore().firstOrNull { it.stripped.isNotEmpty() } ?: return@of)
+            }
+        }
+    }
+
     data class Powder(val powder: PowderType, val amount: Int) : ExtraReward {
         override fun asComponent(): Component = Text.of {
             append(amount.toFormattedString())
@@ -277,9 +292,9 @@ sealed interface ExtraReward {
             this.color = TextColor.PINK
         }
     }
-
     data class Enchant(val enchant: SkyBlockId) : ItemLikeReward
     data class Rune(val rune: SkyBlockId) : ItemLikeReward
+
     data class ColoredItem(val item: SkyBlockId, val red: Int, val green: Int, val blue: Int) : ExtraReward {
         override fun asComponent(): Component = Text.of {
             append(item.toItem().hoverName)
@@ -288,6 +303,7 @@ sealed interface ExtraReward {
         }
     }
     data class Candy(val candy: SkyBlockId) : ItemLikeReward
+
     data class Sawdust(val amount: Int) : ExtraReward {
         override fun asComponent() = Text.of {
             append(amount.toFormattedString())
@@ -295,19 +311,4 @@ sealed interface ExtraReward {
             this.color = TextColor.DARK_GREEN
         }
     }
-
-    interface ItemLikeReward : ExtraReward {
-        operator fun component1(): SkyBlockId
-
-        override fun asComponent(): Component = Text.of {
-            val id = component1()
-            append(id.toItem().hoverName)
-
-            if (id.isEnchantment) {
-                append(id.toItem().getLore().firstOrNull { it.stripped.isNotEmpty() } ?: return@of)
-            }
-        }
-    }
-
-    fun asComponent(): Component
 }
