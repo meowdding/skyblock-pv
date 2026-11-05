@@ -195,9 +195,6 @@ data class GardenProfile(
                     bonusRewards,
                     extraRewards,
                 )
-            }.also {
-                println(this)
-                println(it)
             }
         }
     }
