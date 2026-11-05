@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
+import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.api.repo.LazyItemStack
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
@@ -132,6 +133,7 @@ data class GardenUpgradeData(
 @LoadData
 data object StaticGardenData : DefaultedData {
     private var data: GardenData? = null
+    private var data2: ItemLookups? = null
 
     val barnSkins: Map<String, DefaultBarnSkin> get() = data?.barnSkins ?: emptyMap()
     val composterData: Map<ComposterUpgrade, StaticComposterData> get() = data?.composterData ?: emptyMap()
@@ -145,6 +147,9 @@ data object StaticGardenData : DefaultedData {
     val tools: Map<GardenResource, StaticToolInfo> get() = data?.tools ?: emptyMap()
     val greenhouseUpgrades: Map<GardenUpgrades, GardenUpgradeData> get() = data?.gardenUpgrades?.filter { it.key.type == GardenUpgradesType.GREENHOUSE } ?: emptyMap()
     val visitorUpgrades: Map<GardenUpgrades, GardenUpgradeData> get() = data?.gardenUpgrades?.filter { it.key.type == GardenUpgradesType.VISITOR } ?: emptyMap()
+    val compactItemLookups: Map<SkyBlockId, ItemLookupResult> get() = data2?.compacted ?: emptyMap()
+    val quantityMultiplier: Map<SkyBlockId, Double> get() = data2?.quantityMultiplier ?: emptyMap()
+    val baseFarmingXp: Map<SkyBlockId, Double> get() = data2?.baseFarmingXp ?: emptyMap()
 
     val visitorRarities: List<SkyBlockRarity> get() = visitors.distinctBy { it.rarity }.map { it.rarity }.sortedBy { it.ordinal }
 
@@ -169,8 +174,37 @@ data object StaticGardenData : DefaultedData {
         @FieldName("garden_upgrades") val gardenUpgrades: Map<GardenUpgrades, GardenUpgradeData>,
     )
 
+    @GenerateCodec
+    data class ItemLookups(
+        val compacted: Map<SkyBlockId, ItemLookupResult>,
+        @FieldName("quantity_multiplier") val quantityMultiplier: Map<SkyBlockId, Double>,
+        @FieldName("base_farming_xp") val baseFarmingXp: Map<SkyBlockId, Double>,
+    )
+
+    fun quantityMultiplier(id: SkyBlockId): Double = quantityMultiplier[id] ?: 1.0
+    fun baseFarmingXp(id: SkyBlockId): Double = baseFarmingXp[id] ?: 1.0
+
+    fun resolveBase(top: SkyBlockId): SkyBlockId = resolveBase(compactItemLookups[top]?.id ?: return top)
+    fun resolveBaseMultiplier(top: SkyBlockId): Int = compactItemLookups[top]?.let { it.amount * resolveBaseMultiplier(it.id) } ?: 1
+
+    data class ItemLookupResult(val id: SkyBlockId, val amount: Int = 160) {
+        fun base() : Int = amount * (compactItemLookups[id]?.base() ?: 1)
+    }
+
+    @IncludedCodec
+    val lookupCodec: Codec<ItemLookupResult> = Codec.withAlternative(
+        RecordCodecBuilder.create {
+            it.group(
+                SkyBlockId.CODEC.fieldOf("id").forGetter(ItemLookupResult::id),
+                Codec.INT.fieldOf("amount").forGetter(ItemLookupResult::amount)
+            ).apply(it, ::ItemLookupResult)
+        },
+        SkyBlockId.CODEC.xmap(::ItemLookupResult, ItemLookupResult::id)
+    )
+
     override suspend fun load() {
         init(Utils.loadRemoteRepoData<GardenData>("pv/garden_data"))
+        this.data2 = Utils.loadRepoData("garde/test")
     }
 
     fun init(data: GardenData) {
