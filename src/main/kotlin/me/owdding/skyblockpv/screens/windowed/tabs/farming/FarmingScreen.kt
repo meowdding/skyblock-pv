@@ -3,7 +3,15 @@ package me.owdding.skyblockpv.screens.windowed.tabs.farming
 import com.mojang.authlib.GameProfile
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.builder.MIDDLE
-import me.owdding.lib.displays.*
+import me.owdding.lib.displays.Display
+import me.owdding.lib.displays.DisplayWidget
+import me.owdding.lib.displays.Displays
+import me.owdding.lib.displays.asTable
+import me.owdding.lib.displays.asWidget
+import me.owdding.lib.displays.toColumn
+import me.owdding.lib.displays.toRow
+import me.owdding.lib.displays.withPadding
+import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.extensions.ListMerger
 import me.owdding.lib.extensions.rightPad
 import me.owdding.lib.extensions.round
@@ -13,20 +21,28 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.api.predicates.ItemPredicateHelper
 import me.owdding.skyblockpv.api.predicates.ItemPredicates
 import me.owdding.skyblockpv.data.api.skills.Pet
-import me.owdding.skyblockpv.data.api.skills.farming.*
+import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
+import me.owdding.skyblockpv.data.api.skills.farming.Commission
+import me.owdding.skyblockpv.data.api.skills.farming.CommissionStatus
+import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
+import me.owdding.skyblockpv.data.api.skills.farming.GardenProfile
+import me.owdding.skyblockpv.data.api.skills.farming.MedalType
 import me.owdding.skyblockpv.data.repo.FarmingGear
 import me.owdding.skyblockpv.data.repo.GardenResource
 import me.owdding.skyblockpv.data.repo.GardenUpgrades
 import me.owdding.skyblockpv.data.repo.StaticGardenData
 import me.owdding.skyblockpv.utils.LayoutUtils.asScrollable
 import me.owdding.skyblockpv.utils.LayoutUtils.fitsIn
+import me.owdding.skyblockpv.utils.Utils
 import me.owdding.skyblockpv.utils.Utils.skipUntil
 import me.owdding.skyblockpv.utils.components.PvLayouts
 import me.owdding.skyblockpv.utils.components.PvWidgets
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
+import me.owdding.skyblockpv.utils.displays.ExtraDisplays.withInventoryBackground
 import me.owdding.skyblockpv.utils.theme.PvColors
 import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.area.farming.garden.GardenChip
@@ -36,6 +52,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
+import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.wrap
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
@@ -49,8 +66,13 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
         val baseLayout = PvLayouts.frame {
             horizontal(alignment = MIDDLE) {
                 widget(getGear(profile))
-                widget(getContests(profile.farmingData))
-                widget(getChips(profile.gardenChips))
+                vertical(spacing = 10, alignment = MIDDLE) {
+                    horizontal {
+                        widget(getContests(profile.farmingData))
+                        widget(getChips(profile.gardenChips))
+                    }
+                    widget(getActiveCommissions())
+                }
                 vertical(spacing = 10, alignment = MIDDLE) {
                     widget(getInfoWidget(profile))
                     widget(getVisitors())
@@ -73,8 +95,82 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 widget(getInfoWidget(profile))
             }
             widget(getVisitors())
+            widget(getActiveCommissions())
         }.asScrollable(bg.width - 10, bg.height)
     }
+
+    private fun getActiveCommissions(): LayoutElement = PvWidgets.label(
+        "Visitor Queue",
+        loadedDisplay { garden ->
+
+            val maxSize = 5 + (garden.gardenUpgrades[GardenUpgrades.MAX_OCCUPANCY] ?: 0)
+
+            val rows = maxSize.coerceIn(5, 6) - 4
+            val columns = 5
+
+            garden.activeCommission.values.map { commission ->
+                val visitor = commission.visitor
+                Displays.item(visitor?.itemStack ?: Utils.failedTestBlockStack()).withTooltip {
+                    add(visitor?.name ?: "Unknown Visitor") {
+                        color = visitor?.rarity?.skyBlockColor ?: TextColor.GRAY
+                        bold = true
+                    }
+                    space()
+
+                    add("Queue Position: ") {
+                        this.color = TextColor.GRAY
+                        append("#${commission.position}", TextColor.YELLOW)
+                    }
+
+                    add("Status: ") {
+                        this.color = TextColor.GRAY
+                        append(
+                            commission.status.name.toTitleCase(),
+                            commission.status.color
+                        )
+                    }
+
+                    if (commission.requirement.isNotEmpty()) {
+                        space()
+                        add("Items Required:", TextColor.GRAY)
+                        commission.requirement.forEach { req ->
+                            add(" ") {
+                                append(req.item.toItem().hoverName)
+                                append(" x") {
+                                    this.color = TextColor.DARK_GRAY
+                                    if (req.amount != req.originalAmount && req.originalItem == req.item) {
+                                        append(req.amount.toFormattedString(), TextColor.GREEN)
+                                        append("/", TextColor.GRAY)
+                                    }
+                                    append(req.originalAmount.toFormattedString())
+                                }
+                            }
+                        }
+                    }
+
+                    if (commission.extraRewards.isEmpty() && commission.bonusRewards.isEmpty()) return@withTooltip
+
+                    space()
+                    add("Rewards:", TextColor.GRAY)
+                    commission.extraRewards.forEach { reward ->
+                        add(" ") {
+                            color = TextColor.GRAY
+                            append(reward.asComponent())
+                        }
+                    }
+                    commission.bonusRewards.forEach { reward ->
+                        add(" ") {
+                            color = TextColor.GRAY
+                            append(reward.itemId.toItem().hoverName)
+                        }
+                    }
+                }
+            }.rightPad(columns * rows, Displays.empty(16, 16)).map { it.withPadding(2) }.chunked(columns)
+                .asTable(2)
+                .withPadding(2)
+                .withInventoryBackground(columns, rows)
+        }.asWidget(),
+    )
 
     private fun getInfoWidget(profile: SkyBlockProfile) = PvWidgets.label(
         "Information",
