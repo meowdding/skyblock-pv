@@ -20,7 +20,6 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import java.util.function.Supplier
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
-import com.mojang.renderpearl.api.commands.RenderPass
 
 //? >= 26.2
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology
