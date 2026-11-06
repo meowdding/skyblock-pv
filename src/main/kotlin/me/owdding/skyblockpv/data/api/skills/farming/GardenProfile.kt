@@ -149,7 +149,7 @@ data class GardenProfile(
                 } ?: emptyList()
 
                 val extraRewards = obj.getAsJsonArray("extra_rewards")?.mapNotNull { rewardEl ->
-                    val rewardObj = rewardEl.asJsonObject ?: return@mapNotNull null
+                    val rewardObj = rewardEl.asJsonObject
                     when {
                         rewardObj.has("powder") -> {
                             val powderStr = rewardObj.get("powder").asString.uppercase()
