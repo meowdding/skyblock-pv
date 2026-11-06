@@ -15,11 +15,9 @@ import net.minecraft.network.chat.Component
 import net.minecraft.util.ARGB
 import net.minecraft.world.item.ItemStack
 import org.joml.Vector2i
-import tech.thatgravyboat.repolib.api.RepoAPI
 import tech.thatgravyboat.skyblockapi.api.data.Essence as EssenceEnum
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.api.repo.LazyItemStack
-import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockEnchantmentsRepo
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.utils.extentions.*
 import tech.thatgravyboat.skyblockapi.utils.text.Text
@@ -176,7 +174,7 @@ data class GardenProfile(
                             ExtraReward.Candy(SkyBlockId.item(rewardObj.get("candy").asString))
                         }
                         rewardObj.has("sowdust") -> {
-                            ExtraReward.Sawdust(rewardObj.get("sowdust").asInt(0))
+                            ExtraReward.Sowdust(rewardObj.get("sowdust").asInt(0))
                         }
                         rewardObj.has("essence") -> {
                             val essenceStr = rewardObj.get("essence").asString.uppercase()
@@ -304,7 +302,7 @@ sealed interface ExtraReward {
     }
     data class Candy(val candy: SkyBlockId) : ItemLikeReward
 
-    data class Sawdust(val amount: Int) : ExtraReward {
+    data class Sowdust(val amount: Int) : ExtraReward {
         override fun asComponent() = Text.of {
             append(amount.toFormattedString())
             append(" Sowdust")
