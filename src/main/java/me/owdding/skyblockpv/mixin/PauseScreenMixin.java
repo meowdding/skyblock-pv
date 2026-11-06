@@ -34,7 +34,7 @@ public class PauseScreenMixin {
 
     @Unique
     @Final
-    private static Component sbpv$statsHover = Component.literal("Open SkyBlock Profile Viewer.\n")
+    private static Component sbpv$statsHover = Component.literal("Open SkyBlock Profile Viewer\n")
         .append(Component.literal("Disable in the config.").withColor(TextColor.GRAY).withStyle(ChatFormatting.ITALIC));
 
     @WrapOperation(
