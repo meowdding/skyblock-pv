@@ -159,6 +159,13 @@
         "autocomplete_sources": {
             "@value": "Autocomplete Sources",
             "desc": "The sources to use for the username autocomplete in the /pv command."
+        },
+        "replace_statistics_button": {
+            "@value": "Replace Statistics Button",
+            "desc": [
+                "Replaces the Statistics button in the Pause menu to open your own profile.",
+                "<red>Only works while on SkyBlock.</red>"
+            ]
         }
     },
     "dev": {

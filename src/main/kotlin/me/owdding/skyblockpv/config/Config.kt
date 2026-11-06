@@ -60,6 +60,7 @@ object Config : ConfigKt("skyblockpv/config") {
     var socials by boolean(true) { this.translation = "skyblockpv.config.socials" }
     var rememberLastTab by boolean(true) { this.translation = "skyblockpv.config.remember_last_tab" }
     var autocompleteSources by enums(value = SuggestionTypes.entries.toTypedArray()) { this.translation = "skyblockpv.config.autocomplete_sources" }
+    var replaceStatisticsButton by boolean(true) { this.translation = "skyblockpv.config.replace_statistics_button" }
 
     val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
 
