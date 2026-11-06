@@ -100,7 +100,7 @@ class FarmingScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
     }
 
     private fun getActiveCommissions(): LayoutElement = PvWidgets.label(
-        "Active Commissions",
+        "Visitor Queue",
         loadedDisplay { garden ->
 
             val maxSize = 5 + (garden.gardenUpgrades[GardenUpgrades.MAX_OCCUPANCY] ?: 0)
