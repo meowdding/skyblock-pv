@@ -15,12 +15,12 @@ plugins {
 }
 rootProject.name = "skyblockpv"
 
-val versions = listOf("26.3", "26.2", "26.1")
+val versions = listOf("26.3", "26.2")
 
 stonecutter {
     create(rootProject) {
         versions.forEach {
-            version(it).buildscript = "build.gradle.kts"
+            version(it)
         }
         vcsVersion = versions.first()
     }
