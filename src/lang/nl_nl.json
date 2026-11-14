@@ -444,8 +444,8 @@
         },
         "inventory": {
             "accessory": {
-                "highest_magical_power": [
-                    "Dit is de hoogste hoeveelheid magical power",
+                "highest_accessory_power": [
+                    "Dit is de hoogste hoeveelheid accessory power",
                     "dat de speler ooit heeft gehad op dit profiel. Dit",
                     "nummer is rechtstreeks van Hypixel, dus het zou",
                     "altijd accuraat moeten zijn, maar het kan afwijken",
