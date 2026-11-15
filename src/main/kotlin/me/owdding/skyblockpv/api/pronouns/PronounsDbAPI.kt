@@ -23,7 +23,7 @@ object PronounsDbAPI {
             val id = uuid.toString()
             val result = Http.getResult<JsonObject>(
                 url = API_URL,
-                headers = mapOf("User-Agent" to SkyBlockPv.useragent),
+                headers = mapOf("User-Agent" to SkyBlockPv.userAgent),
                 queries = mapOf(
                     "ids" to id,
                     "platform" to "minecraft",

@@ -230,7 +230,7 @@ class BestiaryScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null)
 
         val fullBracket = if (bracketType != null) {
             val upperType = bracketType.uppercase()
-            val bracketSets = BestiaryCodecs.data.bracketSets ?: emptyMap()
+            val bracketSets = BestiaryCodecs.data.bracketSets
 
             val typeBrackets = bracketSets[upperType] ?: bracketSets[BRACKET_TYPE_ALIASES[upperType]]
 

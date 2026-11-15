@@ -12,7 +12,6 @@ import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.data.api.skills.Crystal
 import me.owdding.skyblockpv.data.api.skills.MiningCore
 import me.owdding.skyblockpv.data.api.skills.RockBracket
-import me.owdding.skyblockpv.data.api.skills.SkillTree
 import me.owdding.skyblockpv.data.api.skills.SkillTreeCurrency
 import me.owdding.skyblockpv.data.api.skills.SkillTrees
 import me.owdding.skyblockpv.data.repo.EssenceData.addMiningPerk

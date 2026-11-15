@@ -7,7 +7,6 @@ import net.minecraft.client.entity.ClientMannequin
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.entity.state.AvatarRenderState
 import net.minecraft.network.chat.Component
-import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.player.PlayerModelPart
 import net.minecraft.world.entity.player.PlayerSkin
 import net.minecraft.world.item.ItemStack

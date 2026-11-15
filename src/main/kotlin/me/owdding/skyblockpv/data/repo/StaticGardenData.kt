@@ -10,13 +10,13 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
+import me.owdding.ktmodules.Module
 import me.owdding.lib.extensions.ItemUtils.createSkull
 import me.owdding.lib.extensions.round
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.data.api.skills.farming.ComposterUpgrade
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.CodecUtils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.skyblockpv.utils.codecs.IncludedCodecs
 import me.owdding.skyblockpv.utils.theme.PvColors
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
@@ -129,53 +129,46 @@ data class GardenUpgradeData(
     }
 }
 
-@LoadData
-data object StaticGardenData : DefaultedData {
-    private var data: GardenData? = null
+@Module
+data object StaticGardenData {
+    private val data: GardenData by SkyBlockPv.repoDelegate("pv/garden_data", GardenData())
 
-    val barnSkins: Map<String, DefaultBarnSkin> get() = data?.barnSkins ?: emptyMap()
-    val composterData: Map<ComposterUpgrade, StaticComposterData> get() = data?.composterData ?: emptyMap()
-    val cropMilestones: Map<GardenResource, List<Int>> get() = data?.cropMilestones ?: emptyMap()
-    val miscData: StaticMiscData get() = data?.miscData ?: StaticMiscData.DEFAULT
-    val plotCost: Map<String, List<StaticPlotCost>> get() = data?.plotCost ?: emptyMap()
-    val plots: List<StaticPlotData> get() = data?.plots ?: emptyList()
-    val visitors: List<StaticVisitorData> get() = data?.visitors ?: emptyList()
-    val chips: List<Int> get() = data?.chips ?: emptyList()
-    val mutations: List<MutationData> get() = data?.mutations ?: emptyList()
-    val tools: Map<GardenResource, StaticToolInfo> get() = data?.tools ?: emptyMap()
-    val greenhouseUpgrades: Map<GardenUpgrades, GardenUpgradeData> get() = data?.gardenUpgrades?.filter { it.key.type == GardenUpgradesType.GREENHOUSE } ?: emptyMap()
-    val visitorUpgrades: Map<GardenUpgrades, GardenUpgradeData> get() = data?.gardenUpgrades?.filter { it.key.type == GardenUpgradesType.VISITOR } ?: emptyMap()
+    val barnSkins: Map<String, DefaultBarnSkin> get() = data.barnSkins
+    val composterData: Map<ComposterUpgrade, StaticComposterData> get() = data.composterData
+    val cropMilestones: Map<GardenResource, List<Int>> get() = data.cropMilestones
+    val miscData: StaticMiscData get() = data.miscData
+    val plotCost: Map<String, List<StaticPlotCost>> get() = data.plotCost
+    val plots: List<StaticPlotData> get() = data.plots
+    val visitors: List<StaticVisitorData> get() = data.visitors
+    val chips: List<Int> get() = data.chips
+    val mutations: List<MutationData> get() = data.mutations
+    val tools: Map<GardenResource, StaticToolInfo> get() = data.tools
+    val greenhouseUpgrades: Map<GardenUpgrades, GardenUpgradeData> get() = data.gardenUpgrades.filter { it.key.type == GardenUpgradesType.GREENHOUSE }
+    val visitorUpgrades: Map<GardenUpgrades, GardenUpgradeData> get() = data.gardenUpgrades.filter { it.key.type == GardenUpgradesType.VISITOR }
 
     val visitorRarities: List<SkyBlockRarity> get() = visitors.distinctBy { it.rarity }.map { it.rarity }.sortedBy { it.ordinal }
 
+    // TODO: move to repo
     val RARE_CROPS = listOf("CROPIE", "SQUASH", "FERMENTO", "CONDENSED_FERMENTO", "HELIANTHUS", "CONDENSED_HELIANTHUS")
     const val COPPER = "copper"
 
     @IncludedCodec(named = "garden§crop_milestones")
-    val CODEC: Codec<Map<GardenResource, List<Int>>> = Codec.unboundedMap(GardenResource.CODEC, CodecUtils.CUMULATIVE_INT_LIST)
+    val CODEC: Codec<Map<GardenResource, List<Int>>> = Codec.unboundedMap(GardenResource.CODEC, IncludedCodecs.CUMULATIVE_INT_LIST)
 
     @GenerateCodec
     data class GardenData(
-        @FieldName("barn_skins") val barnSkins: Map<String, DefaultBarnSkin>,
-        @FieldName("composter_data") val composterData: Map<ComposterUpgrade, StaticComposterData>,
-        @NamedCodec("garden§crop_milestones") @FieldName("crop_milestones") val cropMilestones: Map<GardenResource, List<Int>>,
-        @FieldName("misc") val miscData: StaticMiscData,
-        @NamedCodec("cum_int_list") val chips: List<Int>,
-        @FieldName("plot_cost") val plotCost: Map<String, List<StaticPlotCost>>,
-        val mutations: List<MutationData>,
-        val plots: List<StaticPlotData>,
-        val visitors: List<StaticVisitorData>,
-        val tools: Map<GardenResource, StaticToolInfo>,
-        @FieldName("garden_upgrades") val gardenUpgrades: Map<GardenUpgrades, GardenUpgradeData>,
+        @FieldName("barn_skins") val barnSkins: Map<String, DefaultBarnSkin> = emptyMap(),
+        @FieldName("composter_data") val composterData: Map<ComposterUpgrade, StaticComposterData> = emptyMap(),
+        @NamedCodec("garden§crop_milestones") @FieldName("crop_milestones") val cropMilestones: Map<GardenResource, List<Int>> = emptyMap(),
+        @FieldName("misc") val miscData: StaticMiscData = StaticMiscData.DEFAULT,
+        @NamedCodec("cum_int_list") val chips: List<Int> = emptyList(),
+        @FieldName("plot_cost") val plotCost: Map<String, List<StaticPlotCost>> = emptyMap(),
+        val mutations: List<MutationData> = emptyList(),
+        val plots: List<StaticPlotData> = emptyList(),
+        val visitors: List<StaticVisitorData> = emptyList(),
+        val tools: Map<GardenResource, StaticToolInfo> = emptyMap(),
+        @FieldName("garden_upgrades") val gardenUpgrades: Map<GardenUpgrades, GardenUpgradeData> = emptyMap(),
     )
-
-    override suspend fun load() {
-        init(Utils.loadRemoteRepoData<GardenData>("pv/garden_data"))
-    }
-
-    fun init(data: GardenData) {
-        this.data = data
-    }
 }
 
 @GenerateCodec
@@ -333,24 +326,21 @@ enum class FarmingGear {
     PETS,
     ;
 
-    var list: List<String> = emptyList()
-        private set
+    val list: List<String>
+        get() = data[name.lowercase()].orEmpty()
 
+    @Module
     companion object {
-        init {
-            Utils.loadFromRemoteRepo<Map<String, List<String>>>("pv/gear/farming")?.forEach { (key, value) ->
-                runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
-            }
-        }
+        private val data: Map<String, List<String>> by SkyBlockPv.repoDelegate("pv/gear/farming", emptyMap())
 
-        val cloaks = CLOAKS.list
-        val gloves = GLOVES.list
-        val necklaces = NECKLACES.list
-        val belts = BELTS.list
-        val armor = ARMOR.list
-        val vacuum = VACUUM.list
-        val watering_can = WATERING_CAN.list
-        val pets = PETS.list
+        val cloaks get() = CLOAKS.list
+        val gloves get() = GLOVES.list
+        val necklaces get() = NECKLACES.list
+        val belts get() = BELTS.list
+        val armor get() = ARMOR.list
+        val vacuum get() = VACUUM.list
+        val watering_can get() = WATERING_CAN.list
+        val pets get() = PETS.list
     }
 }
 

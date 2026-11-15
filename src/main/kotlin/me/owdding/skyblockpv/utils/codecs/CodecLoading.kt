@@ -14,4 +14,4 @@ interface DefaultedData : ExtraData {
 @AutoCollect("ExtraData")
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
-annotation class LoadData
+internal annotation class LoadData

@@ -2,40 +2,30 @@ package me.owdding.skyblockpv.config
 
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import kotlinx.coroutines.runBlocking
+import me.owdding.lib.utils.config.AutoTranslated
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.PvAPI
 import net.minecraft.client.gui.components.toasts.SystemToast
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 
-object DevConfig : CategoryKt("Dev") {
+object DevConfig : CategoryKt("Dev"), AutoTranslated {
 
-    var devMode by boolean(false) {
-        name = Translated("skyblockpv.dev.dev_mode")
-        description = Translated("skyblockpv.dev.dev_mode.desc")
-    }
+    override val translationBase: String = "skyblockpv.dev"
 
-    var hoppityParser by boolean(false) {
-        name = Translated("skyblockpv.dev.hoppity_parser")
-        description = Translated("skyblockpv.dev.hoppity_parser.desc")
-    }
+    var devMode by autoBoolean(false)
 
-    var sacksParser by boolean(false) {
-        name = Translated("skyblockpv.dev.sacks_parser")
-        description = Translated("skyblockpv.dev.sacks_parser.desc")
-    }
+    var hoppityParser by autoBoolean(false)
 
-    var offlineMode by boolean(false) {
+    var sacksParser by autoBoolean(false)
+
+    var offlineMode by autoBoolean(false) {
         condition = { devMode }
-        translation = "skyblockpv.dev.offline_mode"
     }
 
     init {
         if (SkyBlockPv.isSuperUser) {
-            button {
-                title = "skyblockpv.dev.bypass_cache"
-                description = "skyblockpv.dev.bypass_cache.desc"
-                text = "Bypass Cache"
+            autoButton("bypass_cache") {
                 onClick {
                     runBlocking {
                         PvAPI.authenticate(true)

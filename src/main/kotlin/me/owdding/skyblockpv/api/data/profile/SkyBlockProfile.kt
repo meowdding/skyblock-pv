@@ -404,7 +404,7 @@ data class BackingSkyBlockProfile(
             val perks = this?.asMap { id, amount -> id to amount.asInt(0) } ?: emptyMap()
 
             // perks that are unlocked but not in the repo:
-            val unknownPerks = perks.keys - EssenceData.allPerks.keys
+            val unknownPerks = perks.keys - EssenceData.perks.values.flatMapTo(mutableSetOf()) { it.keys }
 
             if (unknownPerks.isNotEmpty()) {
                 McClient.runNextTick {

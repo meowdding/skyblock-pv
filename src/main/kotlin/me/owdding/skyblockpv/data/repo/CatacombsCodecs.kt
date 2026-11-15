@@ -2,23 +2,14 @@ package me.owdding.skyblockpv.data.repo
 
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.ktmodules.Module
 import me.owdding.lib.utils.MeowddingLogger
 import me.owdding.lib.utils.MeowddingLogger.Companion.featureLogger
 import me.owdding.skyblockpv.SkyBlockPv
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.ExtraData
-import me.owdding.skyblockpv.utils.codecs.LoadData
 
-@LoadData
-object CatacombsCodecs : DefaultedData, MeowddingLogger by SkyBlockPv.featureLogger() {
-    private val defaultData = CatacombsRepoData(emptyList(), Long.MAX_VALUE)
-    private var _data: CatacombsRepoData? = null
-    val data: CatacombsRepoData get() = _data ?: defaultData
-
-    override suspend fun load() {
-        _data = Utils.loadRemoteRepoData<CatacombsRepoData>("pv/catacombs")
-    }
+@Module
+object CatacombsCodecs : MeowddingLogger by SkyBlockPv.featureLogger() {
+    val data: CatacombsRepoData by SkyBlockPv.repoDelegate("pv/catacombs", CatacombsRepoData(emptyList(), Long.MAX_VALUE))
 
     @GenerateCodec
     data class CatacombsRepoData(

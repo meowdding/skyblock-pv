@@ -1,26 +1,17 @@
 package me.owdding.skyblockpv.api.pronouns
 
 import com.mojang.serialization.Codec
+import me.owdding.ktcodecs.IncludedCodec
+import me.owdding.ktmodules.Module
 import me.owdding.lib.rendering.text.TextShader
 import me.owdding.lib.rendering.text.builtin.GradientTextShader
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.skyblockpv.SkyBlockPv
 import net.minecraft.network.chat.TextColor
 
-@LoadData
-object PronounDbDecorations : DefaultedData {
+@Module
+object PronounDbDecorations {
 
-    private val CODEC: Codec<Map<String, DecorationDefinition>> = Codec.unboundedMap(
-        Codec.STRING,
-        TextColor.CODEC.listOf().xmap(::DecorationDefinition, DecorationDefinition::colors),
-    )
-
-    private var decorations: Map<String, DecorationDefinition> = emptyMap()
-
-    override suspend fun load() {
-        decorations = Utils.loadRemoteRepoData("pv/pronoun_decorations", CODEC)
-    }
+    private val decorations: Map<String, DecorationDefinition> by SkyBlockPv.repoDelegate("pv/pronoun_decorations", emptyMap())
 
     fun getShader(id: String): TextShader? = decorations[id]?.shader
 }
@@ -31,4 +22,8 @@ data class DecorationDefinition(
 
     val shader by lazy { GradientTextShader(*colors.toTypedArray()) }
 
+    companion object {
+        @IncludedCodec
+        val CODEC: Codec<DecorationDefinition> = TextColor.CODEC.listOf().xmap(::DecorationDefinition, DecorationDefinition::colors)
+    }
 }

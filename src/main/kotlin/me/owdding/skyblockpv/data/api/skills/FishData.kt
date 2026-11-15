@@ -1,7 +1,8 @@
 package me.owdding.skyblockpv.data.api.skills
 
 import com.google.gson.JsonObject
-import me.owdding.skyblockpv.utils.Utils
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.json.getAs
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
@@ -143,28 +144,25 @@ enum class FishingGear {
     SINKER,
     ;
 
-    var list: List<String> = emptyList()
-        private set
+    val list: List<String>
+        get() = data[name.lowercase()].orEmpty()
 
+    @Module
     companion object {
-        init {
-            Utils.loadFromRemoteRepo<Map<String, List<String>>>("pv/gear/fishing")?.forEach { (key, value) ->
-                runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
-            }
-        }
+        private val data: Map<String, List<String>> by SkyBlockPv.repoDelegate("pv/gear/fishing", emptyMap())
 
-        val cloaks = CLOAKS.list
-        val gloves = GLOVES.list
-        val necklaces = NECKLACES.list
-        val belts = BELTS.list
-        val equipment = listOf(cloaks, gloves, necklaces, belts).flatten()
-        val rods = RODS.list
-        val armor = ARMOR.list
-        val trophyArmor = TROPHY_ARMOR.list
-        val hook = HOOK.list
-        val line = LINE.list
-        val sinker = SINKER.list
-        val parts = listOf(hook, line, sinker).flatten()
+        val cloaks get() = CLOAKS.list
+        val gloves get() = GLOVES.list
+        val necklaces get() = NECKLACES.list
+        val belts get() = BELTS.list
+        val equipment get() = listOf(cloaks, gloves, necklaces, belts).flatten()
+        val rods get() = RODS.list
+        val armor get() = ARMOR.list
+        val trophyArmor get() = TROPHY_ARMOR.list
+        val hook get() = HOOK.list
+        val line get() = LINE.list
+        val sinker get() = SINKER.list
+        val parts get() = listOf(hook, line, sinker).flatten()
     }
 }
 

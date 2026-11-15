@@ -3,38 +3,30 @@ package me.owdding.skyblockpv.data.repo
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.ExtraData
-import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.SkyBlockPv
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
-@LoadData
-object MinionCodecs : DefaultedData {
-    private val defaultMiscData = MiscData(11, emptyMap())
-    private var _miscData: MiscData? = null
-    val miscData: MiscData get() = _miscData ?: defaultMiscData
-    val categories: MutableList<MinionCategory> = mutableListOf()
+@Module
+object MinionCodecs {
 
-    override suspend fun load() {
-        Utils.loadRemoteRepoData<Data>("pv/minions").let { data ->
-            this._miscData = data.miscData
-            this.categories.addAll(data.categories)
-        }
-    }
+    val data: MinionData by SkyBlockPv.repoDelegate("pv/minions", MinionData())
+    val miscData: MiscData
+        get() = data.miscData
+    val categories: List<MinionCategory>
+        get() = data.categories
 
     @GenerateCodec
-    @NamedCodec("MinionData")
-    data class Data(
-        @FieldName("data") val miscData: MiscData,
-        val categories: List<MinionCategory>,
+    data class MinionData(
+        @FieldName("data") val miscData: MiscData = MiscData(),
+        val categories: List<MinionCategory> = emptyList(),
     )
 
     @GenerateCodec
     data class MiscData(
-        @FieldName("default_max") val defaultMax: Int,
-        @FieldName("max_tier_overrides") val maxOverwrites: Map<String, Int>,
+        @FieldName("default_max") val defaultMax: Int = 11,
+        @FieldName("max_tier_overrides") val maxOverwrites: Map<String, Int> = emptyMap(),
     ) {
         fun getMax(type: String) = maxOverwrites.getOrDefault(type, defaultMax)
     }

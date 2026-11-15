@@ -6,88 +6,64 @@ import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.CodecUtils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.utils.codecs.IncludedCodecs
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
-@LoadData
-object CrimsonIsleCodecs : DefaultedData {
-    val factionRanks = mutableListOf<ThresholdData<String>>()
-    val factionNameMap = mutableMapOf<String, Component>()
+@Module
+object CrimsonIsleCodecs {
+    val data: CrimsonIsleData by SkyBlockPv.repoDelegate("pv/crimson_isle", CrimsonIsleData())
 
-    object KuudraCodecs {
-        val collection = mutableListOf<Int>()
-        val idNameMap = mutableMapOf<String, String>()
-        val requirements = mutableMapOf<String, Int>()
-        val ids: Set<String> get() = idNameMap.keys
+    val factionRanks: List<ThresholdData<String>>
+        get() = data.factionRanks
 
-        @NamedCodec("KuudraData")
-        @GenerateCodec
-        data class Data(
-            val collection: List<Int>,
-            @FieldName("name_map") val idNameMap: Map<String, String>,
-            val requirements: Map<String, Int>,
-        )
+    val factionNameMap: Map<String, Component>
+        get() = data.nameMap
 
-        fun load(data: Data) {
-            this.collection.addAll(data.collection)
-            this.idNameMap.putAll(data.idNameMap)
-            this.requirements.putAll(data.requirements)
-        }
-    }
+    val kuudra: KuudraData
+        get() = data.kuudra
 
-    object DojoCodecs {
-        val grades = mutableListOf<ThresholdData<Component>>()
-        val belts = mutableListOf<ThresholdData<Lazy<ItemStack>>>()
-        val idNameMap = mutableMapOf<String, String>()
-        val ids: Set<String> get() = idNameMap.keys
+    val dojo: DojoData
+        get() = data.dojo
 
-        @IncludedCodec(named = "ci§dojo§grades")
-        val GRADES: Codec<List<ThresholdData<Component>>> = ThresholdData.createCodec(CodecUtils.COMPONENT_TAG, "grade").listOf()
+    @IncludedCodec(named = "ci§dojo§grades")
+    internal val DOJO_GRADES: Codec<List<ThresholdData<Component>>> = ThresholdData.createCodec(IncludedCodecs.COMPONENT_TAG, "grade").listOf()
 
-        @IncludedCodec(named = "ci§dojo§item")
-        val ITEM: Codec<List<ThresholdData<Lazy<ItemStack>>>> = ThresholdData.createCodec(CodecUtils.ITEM_REFERENCE, "item").listOf()
-
-        @NamedCodec("DojoData")
-        @GenerateCodec
-        data class Data(
-            @NamedCodec("ci§dojo§grades") val grades: List<ThresholdData<Component>>,
-            @NamedCodec("ci§dojo§item") val belts: List<ThresholdData<Lazy<ItemStack>>>,
-            @FieldName("name_map") val idNameMap: Map<String, String>,
-        )
-
-        fun load(dojo: Data) {
-            this.grades.addAll(dojo.grades)
-            this.belts.addAll(dojo.belts)
-            this.idNameMap.putAll(dojo.idNameMap)
-        }
-    }
-
+    @IncludedCodec(named = "ci§dojo§item")
+    internal val DOJO_ITEM: Codec<List<ThresholdData<Lazy<ItemStack>>>> = ThresholdData.createCodec(IncludedCodecs.ITEM_REFERENCE, "item").listOf()
 
     @IncludedCodec(named = "ci§rep")
-    val REP: Codec<List<ThresholdData<String>>> = ThresholdData.createCodec(Codec.STRING, "name").listOf()
+    internal val REP: Codec<List<ThresholdData<String>>> = ThresholdData.createCodec(Codec.STRING, "name").listOf()
 
     @IncludedCodec(named = "ci§name")
-    val NAME: Codec<Map<String, Component>> = Codec.unboundedMap(Codec.STRING, CodecUtils.COMPONENT_TAG)
+    internal val NAME: Codec<Map<String, Component>> = Codec.unboundedMap(Codec.STRING, IncludedCodecs.COMPONENT_TAG)
 
     @GenerateCodec
-    @NamedCodec("CiData")
-    data class Data(
-        @NamedCodec("ci§rep") @FieldName("faction_reputation") val factionRanks: List<ThresholdData<String>>,
-        @NamedCodec("ci§name") @FieldName("faction_name_map") val nameMap: Map<String, Component>,
-        val dojo: DojoCodecs.Data,
-        val kuudra: KuudraCodecs.Data,
+    data class CrimsonIsleData(
+        @NamedCodec("ci§rep") @FieldName("faction_reputation") val factionRanks: List<ThresholdData<String>> = emptyList(),
+        @NamedCodec("ci§name") @FieldName("faction_name_map") val nameMap: Map<String, Component> = emptyMap(),
+        val dojo: DojoData = DojoData(),
+        val kuudra: KuudraData = KuudraData(),
     )
 
-    override suspend fun load() {
-        val data = Utils.loadRemoteRepoData<Data>("pv/crimson_isle")
-        this.factionNameMap.putAll(data.nameMap)
-        this.factionRanks.addAll(data.factionRanks)
-        DojoCodecs.load(data.dojo)
-        KuudraCodecs.load(data.kuudra)
+    @GenerateCodec
+    data class KuudraData(
+        val collection: List<Int> = emptyList(),
+        @FieldName("name_map") val idNameMap: Map<String, String> = emptyMap(),
+        val requirements: Map<String, Int> = emptyMap(),
+    ) {
+        val ids: Set<String> get() = idNameMap.keys
+    }
+
+    @GenerateCodec
+    data class DojoData(
+        @NamedCodec("ci§dojo§grades") val grades: List<ThresholdData<Component>> = emptyList(),
+        @NamedCodec("ci§dojo§item") val belts: List<ThresholdData<Lazy<ItemStack>>> = emptyList(),
+        @FieldName("name_map") val idNameMap: Map<String, String> = emptyMap(),
+    ) {
+        val ids: Set<String> get() = idNameMap.keys
     }
 
     fun <T> List<ThresholdData<T>>.getFor(amount: Int): T? {

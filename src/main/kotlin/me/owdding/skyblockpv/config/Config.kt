@@ -2,8 +2,8 @@ package me.owdding.skyblockpv.config
 
 import com.google.gson.JsonObject
 import com.teamresourceful.resourcefulconfig.api.types.info.ResourcefulConfigLink
-import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
+import me.owdding.lib.utils.config.AutoTranslated
 import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.SkyBlockPv.id
 import me.owdding.skyblockpv.command.SkyBlockPlayerSuggestionProvider.SuggestionTypes
@@ -12,26 +12,28 @@ import me.owdding.skyblockpv.utils.Utils
 import net.minecraft.resources.Identifier
 import java.util.function.UnaryOperator
 
-object Config : ConfigKt("skyblockpv/config") {
+object Config : ConfigKt("skyblockpv/config"), AutoTranslated {
 
-    override val name get() = TranslatableValue("SkyBlock Profile Viewer")
-    override val description get() = TranslatableValue("Making Modern Pv'able (v${SkyBlockPv.version})")
+    override val translationBase: String
+        get() = "skyblockpv.config"
+    override val name get() = Literal("SkyBlock Profile Viewer")
+    override val description get() = Literal("Making Modern Pv'able (v${SkyBlockPv.VERSION})")
     override val links: Array<ResourcefulConfigLink>
         get() = arrayOf(
             ResourcefulConfigLink.create(
                 "https://discord.gg/FsRc2GUwZR",
                 "discord",
-                TranslatableValue("Discord"),
+                Literal("Discord"),
             ),
             ResourcefulConfigLink.create(
                 "https://modrinth.com/project/skyblock-profile-viewer",
                 "modrinth",
-                TranslatableValue("Modrinth"),
+                Literal("Modrinth"),
             ),
             ResourcefulConfigLink.create(
                 "https://github.com/meowdding/skyblock-pv",
                 "code",
-                TranslatableValue("GitHub"),
+                Literal("GitHub"),
             ),
         )
 
@@ -42,13 +44,13 @@ object Config : ConfigKt("skyblockpv/config") {
     var profileSpying by boolean(true) { this.translation = "skyblockpv.config.spying" }
     var profileChatClick by boolean(true) { this.translation = "skyblockpv.config.chat" }
     var profileChatClickOther by boolean(false) { this.translation = "skyblockpv.config.chat_other" }
-    var currency by enum(ConfigCurrency.USD) { this.translation = "skyblockpv.config.currency" }
-    var alignCategoryButtonsLeft by boolean(true) { this.translation = "skyblockpv.config.align_category_buttons_left" }
-    var showPronouns by boolean(true) { this.translation = "skyblockpv.config.show_pronouns" }
-    var partyFinderMessage by enum(PartyFinderJoin.State.OPEN_PV) { this.translation = "skyblockpv.config.party_finder_message" }
-    var disableOutsideHypixel by boolean(false) { this.translation = "skyblockpv.config.disable_outside_hypixel" }
-    var skillOverflow by boolean(false) { this.translation = "skyblockpv.config.skill_overflow" }
-    var displayScaling by boolean(false) { this.translation = "skyblockpv.config.display_scaling" }
+    var currency by autoEnum(ConfigCurrency.USD)
+    var alignCategoryButtonsLeft by autoBoolean(true)
+    var showPronouns by autoBoolean(true)
+    var partyFinderMessage by autoEnum(PartyFinderJoin.State.OPEN_PV)
+    var disableOutsideHypixel by autoBoolean(false)
+    var skillOverflow by autoBoolean(false)
+    var displayScaling by autoBoolean(false)
     var theme by transform(
         string("skyblock-pv:default") {
             renderer = THEME_RENDERER
@@ -56,11 +58,11 @@ object Config : ConfigKt("skyblockpv/config") {
         { it.toString() },
         { Identifier.tryParse(it) ?: id("normal") },
     )
-    var seenAutoThemes by strings() { condition = { false } }
-    var socials by boolean(true) { this.translation = "skyblockpv.config.socials" }
-    var rememberLastTab by boolean(true) { this.translation = "skyblockpv.config.remember_last_tab" }
-    var autocompleteSources by enums(value = SuggestionTypes.entries.toTypedArray()) { this.translation = "skyblockpv.config.autocomplete_sources" }
-    var replaceStatisticsButton by boolean(true) { this.translation = "skyblockpv.config.replace_statistics_button" }
+    var seenAutoThemes by strings { condition = { false } }
+    var socials by autoBoolean(true)
+    var rememberLastTab by autoBoolean(true)
+    var autocompleteSources by autoEnums(value = SuggestionTypes.entries.toTypedArray())
+    var replaceStatisticsButton by autoBoolean(true)
 
     val isDisabled: Boolean get() = disableOutsideHypixel && !Utils.onHypixel
 

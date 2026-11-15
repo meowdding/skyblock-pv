@@ -28,7 +28,7 @@ data class CrimsonIsleData(
             }
             val selectedFaction = data.get("selected_faction").asEnum<Faction> { it.id }
             val kuudraObject = data.getAs<JsonObject>("kuudra_completed_tiers") ?: JsonObject()
-            val kuudraStats = CrimsonIsleCodecs.KuudraCodecs.ids.map {
+            val kuudraStats = CrimsonIsleCodecs.kuudra.ids.map {
                 KuudraEntry(
                     highestWave = kuudraObject["highest_wave_$it"].asInt(0),
                     completions = kuudraObject[it].asInt(0),
@@ -37,7 +37,7 @@ data class CrimsonIsleData(
             }
 
             val dojoObject = data.getAs<JsonObject>("dojo") ?: JsonObject()
-            val dojoStats = CrimsonIsleCodecs.DojoCodecs.ids.map {
+            val dojoStats = CrimsonIsleCodecs.dojo.ids.map {
                 DojoEntry(
                     time = dojoObject["dojo_time_$it"].asInt(-1),
                     points = dojoObject["dojo_points_$it"].asInt(-1),

@@ -2,33 +2,32 @@ package me.owdding.skyblockpv.utils
 
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktmodules.Module
-import me.owdding.lib.events.FinishRepoLoadingEvent
-import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.utils.components.PvToast
-import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.utils.extentions.toTitleCase
 
 @Module
 object PageIssueManager {
-    var issues: PageIssue? = null
+
+    private val issues: PageIssue? by SkyBlockPv.repoDelegate("pv/issues")
 
     fun notifyGlobal() {
         issues?.global?.let { issue ->
-            if (issue.isBlank() || issue.isEmpty()) return
-            PvToast.addPageIssueToast("Global Issue", issue)
+            toast("global", issue)
         }
     }
 
     fun notifyTab(tab: PvTab) {
-        issues?.tabs[tab.name]?.let { issue ->
-            PvToast.addPageIssueToast("${tab.name.toTitleCase()} Issue", issue)
+        val name = tab.name
+        issues?.tabs[name]?.let { issue ->
+            toast(name, issue)
         }
     }
 
-    @Subscription
-    private fun onRemote(event: FinishRepoLoadingEvent) {
-        issues = Utils.loadRemoteRepoData("pv/issues", SkyBlockPvCodecs.getCodec<PageIssue>())
+    private fun toast(tab: String, issue: String) {
+        if (issue.isBlank()) return
+        PvToast.addPageIssueToast("${tab.toTitleCase()} Issue", issue)
     }
 
     @GenerateCodec

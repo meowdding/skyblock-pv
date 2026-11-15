@@ -181,7 +181,7 @@ abstract class BaseWindowedPvScreen(name: String, gameProfile: GameProfile, prof
                 gameProfile.name,
                 gameProfile.id,
                 McClient.version,
-                SkyBlockPv.version,
+                SkyBlockPv.VERSION,
                 throwable.javaClass.name,
                 throwable.message,
                 throwable.getStackTraceString(7),

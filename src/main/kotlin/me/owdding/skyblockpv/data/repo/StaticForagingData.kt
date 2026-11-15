@@ -3,16 +3,14 @@ package me.owdding.skyblockpv.data.repo
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.ExtraData
-import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.SkyBlockPv
 
 @GenerateCodec
 data class TreeGifts(
-    @NamedCodec("cum_int_list_alt") val fig: List<Int>,
-    @NamedCodec("cum_int_list_alt") val mangrove: List<Int>,
-    @NamedCodec("cum_int_list_alt") val helix: List<Int>,
+    @NamedCodec("cum_int_list_alt") val fig: List<Int> = emptyList(),
+    @NamedCodec("cum_int_list_alt") val mangrove: List<Int> = emptyList(),
+    @NamedCodec("cum_int_list_alt") val helix: List<Int> = emptyList(),
 )
 
 @GenerateCodec
@@ -29,15 +27,9 @@ data class MiscForagingData(
     @FieldName("agatha_power") val agathaPower: Int,
 )
 
-@LoadData
-data object StaticForagingData : DefaultedData {
-    val treeDataDefault = TreeGifts(
-        emptyList(),
-        emptyList(),
-        emptyList(),
-    )
-
-    val miscDataDefault = MiscForagingData(
+@Module
+data object StaticForagingData {
+    private val miscDataDefault = MiscForagingData(
         "level",
         100000,
         50,
@@ -49,25 +41,17 @@ data object StaticForagingData : DefaultedData {
         50,
         5,
     )
+    private val data: ForagingData by SkyBlockPv.repoDelegate("pv/foraging", ForagingData())
 
-    private var treeData: TreeGifts? = null
-    private var miscData: MiscForagingData? = null
-
-    val treeGifts: TreeGifts get() = treeData ?: treeDataDefault
-    val misc: MiscForagingData get() = miscData ?: miscDataDefault
+    val treeGifts: TreeGifts
+        get() = data.treeGifts
+    val misc: MiscForagingData
+        get() = data.misc
 
     @GenerateCodec
     data class ForagingData(
-        @FieldName("tree_gifts") val treeGifts: TreeGifts,
-        val misc: MiscForagingData,
+        @FieldName("tree_gifts") val treeGifts: TreeGifts = TreeGifts(),
+        val misc: MiscForagingData = miscDataDefault,
     )
 
-    override suspend fun load() {
-        init(Utils.loadRemoteRepoData<ForagingData>("pv/foraging"))
-    }
-
-    fun init(data: ForagingData) {
-        treeData = data.treeGifts
-        miscData = data.misc
-    }
 }

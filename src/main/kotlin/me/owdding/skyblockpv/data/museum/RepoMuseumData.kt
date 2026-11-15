@@ -4,6 +4,7 @@ import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.NamedCodec
 import me.owdding.skyblockpv.utils.Utils
 
+// TODO: replace with sbapi museum data
 object RepoMuseumData {
 
     @NamedCodec("museum_data")
