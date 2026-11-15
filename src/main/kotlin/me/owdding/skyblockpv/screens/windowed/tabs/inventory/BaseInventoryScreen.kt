@@ -88,6 +88,7 @@ abstract class BasePagedInventoryScreen<T>(gameProfile: GameProfile, profile: Sk
     open fun getExtraLine(): Display? = null
 
     open val itemStackSize = true
+    open val iconTooltip = false
 
     override fun getLayout(bg: DisplayWidget) = PvLayouts.vertical(5, MIDDLE) {
         val rawData = getRawInventory() ?: run {
@@ -107,7 +108,7 @@ abstract class BasePagedInventoryScreen<T>(gameProfile: GameProfile, profile: Sk
             List(inventories.size) { index ->
                 val icon = icons[index]
                 if (itemStackSize) icon.count = index + 1
-                Displays.item(icon, showStackSize = true)
+                Displays.item(icon, showStackSize = true, showTooltip = iconTooltip)
             }
         }
 

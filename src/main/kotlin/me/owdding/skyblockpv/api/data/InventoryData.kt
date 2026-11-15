@@ -39,7 +39,6 @@ data class InventoryData(
     val backpacks: List<Backpack>?,
     val potionBag: Inventory?,
     val talismans: List<Inventory>?,
-    val fishingBag: Inventory?,
     val sacks: Map<String, Long>,
     val quiver: Inventory?,
     val personalVault: Inventory?,
@@ -110,7 +109,6 @@ data class InventoryData(
         addAll(backpacks?.flatten())
         addAll(potionBag)
         addAll(talismans?.flatten())
-        addAll(fishingBag)
         addAll(quiver)
         addAll(personalVault)
         addAll(loadouts?.equipmentSets?.flatMap { it.value.getStacks() })
@@ -141,7 +139,6 @@ data class InventoryData(
             val enderChestPages = inventory.getAs<JsonObject>("ender_chest_contents")?.completableInventory()?.thenApply { it.chunked(45) }
             val potionBag = bagContents?.getAs<JsonObject>("potion_bag")?.completableInventory()
             val talismanBag = bagContents?.getAs<JsonObject>("talisman_bag")?.completableInventory()?.thenApply { it.chunked(45) }
-            val fishingBag = bagContents?.getAs<JsonObject>("fishing_bag")?.completableInventory()
             val quiver = bagContents?.getAs<JsonObject>("quiver")?.completableInventory()
             val invArmor = inventory.getAs<JsonObject>("inv_armor")?.completableInventory()
             val equipment = inventory.getAs<JsonObject>("equipment_contents")?.completableInventory()
@@ -169,7 +166,6 @@ data class InventoryData(
                     enderChestPages,
                     potionBag,
                     talismanBag,
-                    fishingBag,
                     quiver,
                     invArmor,
                     equipment,
@@ -185,7 +181,6 @@ data class InventoryData(
                     enderChestPages = enderChestPages?.get(),
                     potionBag = potionBag?.get(),
                     talismans = talismanBag?.get(),
-                    fishingBag = fishingBag?.get(),
                     quiver = quiver?.get(),
                     armorItems = invArmor?.get(),
                     equipmentItems = equipment?.get(),

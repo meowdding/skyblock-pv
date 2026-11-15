@@ -24,7 +24,6 @@ enum class NetworthCategory(val source: NetworthSource, formatted: String? = nul
     LOADOUT(LoadoutSource),
     EQUIPMENT(EquipmentSource),
     TALISMAN_BAG(TalismanBagSource),
-    FISHING_BAG(FishingBagSource),
     QUIVER_BAG(QuiverBagSource),
     PERSONAL_VAULT(PersonalVaultSource),
     MUSEUM(MuseumSource),
@@ -118,10 +117,6 @@ object EquipmentSource : ItemListNetworthSource {
 
 object TalismanBagSource : ItemListNetworthSource {
     override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.talismans?.flatten()
-}
-
-object FishingBagSource : ItemListNetworthSource {
-    override fun getItems(profile: SkyBlockProfile): List<ItemStack>? = profile.inventory?.fishingBag
 }
 
 object QuiverBagSource : ItemListNetworthSource {
