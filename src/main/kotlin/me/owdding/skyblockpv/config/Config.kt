@@ -14,28 +14,26 @@ import java.util.function.UnaryOperator
 
 object Config : ConfigKt("skyblockpv/config"), AutoTranslated {
 
-    override val translationBase: String
-        get() = "skyblockpv.config"
-    override val name get() = Literal("SkyBlock Profile Viewer")
-    override val description get() = Literal("Making Modern Pv'able (v${SkyBlockPv.VERSION})")
-    override val links: Array<ResourcefulConfigLink>
-        get() = arrayOf(
-            ResourcefulConfigLink.create(
-                "https://discord.gg/FsRc2GUwZR",
-                "discord",
-                Literal("Discord"),
-            ),
-            ResourcefulConfigLink.create(
-                "https://modrinth.com/project/skyblock-profile-viewer",
-                "modrinth",
-                Literal("Modrinth"),
-            ),
-            ResourcefulConfigLink.create(
-                "https://github.com/meowdding/skyblock-pv",
-                "code",
-                Literal("GitHub"),
-            ),
-        )
+    override val translationBase: String = "skyblockpv.config"
+    override val name = Literal("SkyBlock Profile Viewer")
+    override val description = Literal("Making Modern Pv'able (v${SkyBlockPv.VERSION})")
+    override val links: Array<ResourcefulConfigLink> = arrayOf(
+        ResourcefulConfigLink.create(
+            "https://discord.gg/FsRc2GUwZR",
+            "discord",
+            Literal("Discord"),
+        ),
+        ResourcefulConfigLink.create(
+            "https://modrinth.com/project/skyblock-profile-viewer",
+            "modrinth",
+            Literal("Modrinth"),
+        ),
+        ResourcefulConfigLink.create(
+            "https://github.com/meowdding/skyblock-pv",
+            "code",
+            Literal("GitHub"),
+        ),
+    )
 
     init {
         category(DevConfig)
