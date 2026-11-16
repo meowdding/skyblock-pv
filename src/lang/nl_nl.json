@@ -90,15 +90,15 @@
         }
     },
     "config": {
-        "spying": {
+        "profile_spying": {
             "@value": "Spiek Knop",
             "desc": "Voegt een knop to aan de Hypixel Profile Viewer die je onze Profile Viewer laat openen."
         },
-        "chat": {
+        "profile_chat_click": {
             "@value": "Klikbare Speler Berichten",
             "desc": "Verander de klik actie van speler berichten om hun pv pagina to open in plaats van hun social menu"
         },
-        "chat_other": {
+        "profile_chat_click_other": {
             "@value": "Klikbare Speler Berichten in Party, Guild en Co-op",
             "desc": "Verander de klik actie van speler berichten in party en guild chat om hun pv pagina te openen"
         },

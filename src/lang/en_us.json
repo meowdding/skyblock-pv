@@ -95,15 +95,15 @@
         }
     },
     "config": {
-        "spying": {
+        "profile_spying": {
             "@value": "Spying Button",
             "desc": "Add a button to the Hypixel Profile Viewer that allows you to open our Profile Viewer directly."
         },
-        "chat": {
+        "profile_chat_click": {
             "@value": "Clickable Player Messages",
             "desc": "Change the click action of player messages to open their pv page rather than their social menu"
         },
-        "chat_other": {
+        "profile_chat_click_other": {
             "@value": "Clickable Player Messages in Party, Guild and Co-op",
             "desc": "Change the click action of player messages in party and guild chat to open their pv page"
         },

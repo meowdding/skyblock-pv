@@ -41,9 +41,9 @@ object Config : ConfigKt("skyblockpv/config"), AutoTranslated {
         category(DevConfig)
     }
 
-    var profileSpying by boolean(true) { this.translation = "skyblockpv.config.spying" }
-    var profileChatClick by boolean(true) { this.translation = "skyblockpv.config.chat" }
-    var profileChatClickOther by boolean(false) { this.translation = "skyblockpv.config.chat_other" }
+    var profileSpying by autoBoolean(true)
+    var profileChatClick by autoBoolean(true)
+    var profileChatClickOther by autoBoolean(false)
     var currency by autoEnum(ConfigCurrency.USD)
     var alignCategoryButtonsLeft by autoBoolean(true)
     var showPronouns by autoBoolean(true)
