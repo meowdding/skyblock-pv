@@ -1,28 +1,21 @@
 package me.owdding.skyblockpv.data.repo
 
 import me.owdding.ktcodecs.GenerateCodec
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.LoadData
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.SkyBlockPv
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 
-@LoadData
-object SafariCodecs : DefaultedData {
-    private val defaultData = Safari(emptyList(), emptyList())
-    private var _data: Safari? = null
-    val data: Safari get() = _data ?: defaultData
-
-    override suspend fun load() {
-        _data = Utils.loadRemoteRepoData<Safari>("pv/safari")
-    }
+@Module
+object SafariCodecs {
+    val data: Safari by SkyBlockPv.repoDelegate("pv/safari", Safari())
 
     @GenerateCodec
     data class Safari(
-        val milestones: List<Int>,
-        val critters: List<Critter>,
+        val milestones: List<Int> = emptyList(),
+        val critters: List<Critter> = emptyList(),
     )
 
     @GenerateCodec

@@ -3,7 +3,6 @@ package me.owdding.skyblockpv.feature
 import me.owdding.ktmodules.Module
 import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.utils.ChatUtils.join
-import me.owdding.skyblockpv.utils.ChatUtils.joinToComponent
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component

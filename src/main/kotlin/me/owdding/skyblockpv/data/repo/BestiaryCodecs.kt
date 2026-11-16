@@ -9,27 +9,20 @@ import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.IncludedCodec
 import me.owdding.ktcodecs.Inline
 import me.owdding.ktcodecs.NamedCodec
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.generated.SkyBlockPvCodecs
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
 import me.owdding.skyblockpv.utils.codecs.DispatchedCodec
-import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.codecs.ReservedUnboundMapCodec
 import kotlin.jvm.optionals.getOrNull
 
 typealias BestiaryIcon = Either<String, Pair<String, String>>
 typealias BestiaryCategoriesEntry = Either<BestiaryCategoryEntry, ComplexBestiaryCategoryEntry>
 
-@LoadData
-object BestiaryCodecs : DefaultedData {
+@Module
+object BestiaryCodecs {
 
-    private val defaultData: BestiaryRepoData = BestiaryRepoData(
-        emptyMap(),
-        emptyMap(),
-        emptyMap(),
-    )
-    private var _data: BestiaryRepoData? = null
-    val data: BestiaryRepoData get() = _data ?: defaultData
+    val data: BestiaryRepoData by SkyBlockPv.repoDelegate("neu/bestiary", BestiaryRepoData(categories = emptyMap()))
 
     val allMobs: List<String> by lazy {
         data.categories.values.flatMap { categoryEntry ->
@@ -100,16 +93,13 @@ object BestiaryCodecs : DefaultedData {
             "bracketSets",
         ),
     )
-
-    override suspend fun load() {
-        _data = Utils.loadRemoteRepoData<BestiaryRepoData>("neu/bestiary")
-    }
 }
 
 @GenerateCodec
 data class BestiaryRepoData(
-    @NamedCodec("be§brackets") val brackets: Map<Int, List<Int>>,
-    @NamedCodec("be§bracketSets") val bracketSets: Map<String, Map<Int, List<Int>>>?,
+    @NamedCodec("be§brackets") val brackets: Map<Int, List<Int>> = emptyMap(),
+    @NamedCodec("be§bracketSets") val bracketSets: Map<String, Map<Int, List<Int>>> = emptyMap(),
+    // cant give a default value here, inline seems to break with that?
     @NamedCodec("be§categories") @Inline val categories: Map<String, BestiaryCategoriesEntry>,
 )
 

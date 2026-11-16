@@ -1,20 +1,18 @@
 package me.owdding.skyblockpv.data.repo
 
-import com.mojang.serialization.Codec
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
 import me.owdding.ktcodecs.GenerateDispatchCodec
 import me.owdding.ktcodecs.Inline
 import me.owdding.ktcodecs.OptionalNullable
+import me.owdding.ktmodules.Module
 import me.owdding.lib.builder.LayoutBuilder
 import me.owdding.lib.displays.Displays
 import me.owdding.lib.displays.withTooltip
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.api.data.profile.SkyBlockProfile
 import me.owdding.skyblockpv.generated.DispatchHelper
 import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.CodecUtils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.LoadData
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
 import me.owdding.skyblockpv.utils.displays.withTranslatedTooltip
 import me.owdding.skyblockpv.utils.theme.PvColors
@@ -83,12 +81,12 @@ data class SkullEssenceStack(val texture: String) : EssenceStack {
 data class RepoEssencePerk(
     val name: String,
     @FieldName("max_level") val maxLevel: Int,
-    @Inline @OptionalNullable val display: EssenceStack?,
+    @Inline @OptionalNullable val display: EssenceStack? = null,
 )
 
-@LoadData
-object EssenceData : DefaultedData {
-    val allPerks: MutableMap<String, RepoEssencePerk> = mutableMapOf()
+@Module
+object EssenceData {
+    val perks: Map<String, Map<String, RepoEssencePerk>> by SkyBlockPv.repoDelegate("pv/essence_perks", emptyMap())
 
     fun LayoutBuilder.addFishingPerk(profile: SkyBlockProfile, id: String) {
         addPerk(profile, id, "fishing")
@@ -104,7 +102,7 @@ object EssenceData : DefaultedData {
 
     fun LayoutBuilder.addPerk(profile: SkyBlockProfile, id: String, category: String, showItemStack: Boolean = false) {
         val perkLevel = profile.essenceUpgrades[id] ?: 0
-        val perk = allPerks.entries.find { it.key == id }?.value
+        val perk = perks.values.firstNotNullOfOrNull { it[id] }
         val maxLevel = perk?.maxLevel ?: 0
         val isMaxed = perkLevel == maxLevel
 
@@ -130,12 +128,5 @@ object EssenceData : DefaultedData {
             val display = ExtraDisplays.text(name, { PvColors.DARK_GRAY.toUInt() }, false)
             display(display.withTranslatedTooltip("skyblockpv.essence.$category.$id"))
         }
-    }
-
-    override suspend fun load() {
-        allPerks.putAll(
-            Utils.loadRemoteRepoData("pv/essence_perks", Codec.unboundedMap(Codec.STRING, CodecUtils.map<String, RepoEssencePerk>()))
-                .flatMap { it.value.entries }.associateBy({ it.key }, { it.value }),
-        )
     }
 }

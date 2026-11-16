@@ -9,13 +9,6 @@ import net.minecraft.client.renderer.RenderPipelines
 import org.joml.Matrix3x2f
 import org.joml.Vector2i
 import tech.thatgravyboat.skyblockapi.utils.extentions.scaled
-import com.mojang.renderpearl.api.pipeline.BlendFunction
-import com.mojang.renderpearl.api.pipeline.ColorTargetState
-import com.mojang.renderpearl.api.pipeline.DepthStencilState
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
-import com.mojang.renderpearl.api.pipeline.CompareOp
-import com.mojang.renderpearl.api.pipeline.UniformType
-import com.mojang.renderpearl.api.vertex.VertexFormat
 import com.mojang.renderpearl.api.pipeline.BindGroupLayout
 
 object InventoryTextureRender {

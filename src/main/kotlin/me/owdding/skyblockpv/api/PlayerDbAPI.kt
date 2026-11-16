@@ -67,7 +67,7 @@ object PlayerDbAPI {
     private suspend fun get(name: String): JsonObject? {
         return Http.getResult<JsonObject>(
             url = API_URL.format(name),
-            headers = mapOf("User-Agent" to SkyBlockPv.useragent),
+            headers = mapOf("User-Agent" to SkyBlockPv.userAgent),
         ).map { it.takeIf { it.get("success")?.asBoolean == true } }.getOrNull()
     }
 

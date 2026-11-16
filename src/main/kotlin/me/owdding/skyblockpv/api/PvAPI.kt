@@ -39,9 +39,9 @@ object PvAPI {
 
     private val startTime = currentInstant()
 
-    @Subscription
+    @Subscription(TickEvent::class)
     @OnlyOnSkyBlock
-    private fun onTick(event: TickEvent) {
+    private fun onTick() {
         scheduledSendMessage?.let {
             it().sendWithPrefix()
             scheduledSendMessage = null
@@ -95,7 +95,7 @@ object PvAPI {
                     emptyMap()
                 },
                 headers = mapOf(
-                    "User-Agent" to "SkyBlockPV/${SkyBlockPv.version.friendlyString}/${McClient.version}",
+                    "User-Agent" to "SkyBlockPV/${SkyBlockPv.VERSION}/${McClient.version}",
                     "x-minecraft-username" to user.name,
                     "x-minecraft-server" to server,
                 ),
@@ -121,7 +121,7 @@ object PvAPI {
         val response = Http.get(
             url = API_URL.format(endpoint),
             headers = mapOf(
-                "User-Agent" to "SkyBlockPV/${SkyBlockPv.version.friendlyString}/${McClient.version}",
+                "User-Agent" to "SkyBlockPV/${SkyBlockPv.VERSION}/${McClient.version}",
                 "Authorization" to this.key!!,
                 "X-Intent" to (intent ?: "unknown"),
             ),

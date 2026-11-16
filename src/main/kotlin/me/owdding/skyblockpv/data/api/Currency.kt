@@ -3,11 +3,7 @@ package me.owdding.skyblockpv.data.api
 import com.google.gson.JsonObject
 import me.owdding.skyblockpv.data.SortedEntry.Companion.sortToEssenceOrder
 import me.owdding.skyblockpv.utils.ParseHelper
-import me.owdding.skyblockpv.utils.json.getPathAs
-import tech.thatgravyboat.skyblockapi.utils.extentions.asList
 import tech.thatgravyboat.skyblockapi.utils.extentions.asLong
-import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
-import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 import tech.thatgravyboat.skyblockapi.utils.json.getPath
 
 data class Currency(override val json: JsonObject) : ParseHelper {

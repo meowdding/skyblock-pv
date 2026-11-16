@@ -7,7 +7,6 @@ import me.owdding.skyblockpv.screens.PvTab
 import me.owdding.skyblockpv.screens.windowed.BaseWindowedPvScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.AbstractCategorizedScreen
 import me.owdding.skyblockpv.screens.windowed.tabs.base.Category
-import me.owdding.skyblockpv.screens.windowed.tabs.mining.MiningCategory.GLACITE
 import me.owdding.skyblockpv.utils.CatharsisSupport.withCatharsisId
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items

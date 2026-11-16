@@ -66,7 +66,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                     )
                 }
                 val highestRep = crimsonIsleData.factionReputation.values.max()
-                val maxTier = CrimsonIsleCodecs.KuudraCodecs.requirements.entries
+                val maxTier = CrimsonIsleCodecs.kuudra.requirements.entries
                     .sortedByDescending { it.value }.firstOrNull { (_, value) -> value <= highestRep }?.key
 
                 string(
@@ -75,7 +75,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                         if (maxTier == null) {
                             append("None")
                         } else {
-                            append(CrimsonIsleCodecs.KuudraCodecs.idNameMap[maxTier] ?: "Unknown :c")
+                            append(CrimsonIsleCodecs.kuudra.idNameMap[maxTier] ?: "Unknown :c")
                         }
                     },
                 )
@@ -89,11 +89,11 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
             PvLayouts.vertical {
                 val totalPoints = stats.sumOf { it.points.coerceAtLeast(0) }.takeUnless { stats.all { it.points == -1 } } ?: -1
                 stats.forEach { (points, id, _) ->
-                    val name = CrimsonIsleCodecs.DojoCodecs.idNameMap.getOrDefault(id, id)
+                    val name = CrimsonIsleCodecs.dojo.idNameMap.getOrDefault(id, id)
                     string(
                         Text.of {
                             append("$name: ${points.takeUnless { it == -1 } ?: "None"} (")
-                            append(CrimsonIsleCodecs.DojoCodecs.grades.getFor(points.coerceAtLeast(0)) ?: Text.of("Error") { this.color = PvColors.RED })
+                            append(CrimsonIsleCodecs.dojo.grades.getFor(points.coerceAtLeast(0)) ?: Text.of("Error") { this.color = PvColors.RED })
                             append(")")
                         },
                     )
@@ -102,7 +102,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                     Text.of {
                         append("Total points: ${totalPoints.takeUnless { it == -1 } ?: "None"} (")
                         append(
-                            CrimsonIsleCodecs.DojoCodecs.belts.getFor(totalPoints.coerceAtLeast(0))?.value?.hoverName ?: Text.of("Error") {
+                            CrimsonIsleCodecs.dojo.belts.getFor(totalPoints.coerceAtLeast(0))?.value?.hoverName ?: Text.of("Error") {
                                 this.color = PvColors.RED
                             },
                         )
@@ -122,8 +122,8 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                 string("Total Runs: ${stats.sumOf { it.completions }.toFormattedString()}")
 
                 val kuudraCollection = stats.mapIndexed { index, it -> it.completions * (index + 1) }.sum()
-                val currentTier = CrimsonIsleCodecs.KuudraCodecs.collection.indexOfFirst { it <= kuudraCollection }.plus(1)
-                val maxTier = CrimsonIsleCodecs.KuudraCodecs.collection.size
+                val currentTier = CrimsonIsleCodecs.kuudra.collection.indexOfFirst { it <= kuudraCollection }.plus(1)
+                val maxTier = CrimsonIsleCodecs.kuudra.collection.size
                 string("Collection: ${kuudraCollection.toFormattedString()} (${currentTier.toFormattedString()}/${maxTier})")
 
                 display(
@@ -132,7 +132,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
                         color = { PvColors.DARK_GRAY.toUInt() },
                         shadow = false,
                     ).withTooltip {
-                        stats.map { "${CrimsonIsleCodecs.KuudraCodecs.idNameMap[it.id] ?: it.id}: ${it.highestWave.toFormattedString()}" }
+                        stats.map { "${CrimsonIsleCodecs.kuudra.idNameMap[it.id] ?: it.id}: ${it.highestWave.toFormattedString()}" }
                             .forEach { add(it) }
                     },
                 )
@@ -142,7 +142,7 @@ class CrimsonIsleScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = nu
 
     private fun createKuudraStat(kuudraEntry: KuudraEntry): String {
         val (_, completions, id) = kuudraEntry
-        val name = CrimsonIsleCodecs.KuudraCodecs.idNameMap[id] ?: id
+        val name = CrimsonIsleCodecs.kuudra.idNameMap[id] ?: id
 
         return "$name: ${completions.toFormattedString()}"
     }

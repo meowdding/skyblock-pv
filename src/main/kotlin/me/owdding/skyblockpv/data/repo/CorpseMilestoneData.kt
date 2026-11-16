@@ -2,19 +2,13 @@ package me.owdding.skyblockpv.data.repo
 
 import me.owdding.ktcodecs.FieldName
 import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.data.api.skills.GlaciteData
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.LoadData
 
-@LoadData
-object CorpseMilestoneData: DefaultedData {
-    private var _data: CorpseMilestoneRepoData? = null
-    val data: CorpseMilestoneRepoData get() = _data ?: CorpseMilestoneRepoData(0, emptyList())
-
-    override suspend fun load() {
-        _data = Utils.loadRemoteRepoData<CorpseMilestoneRepoData>("pv/corpse_milestones")
-    }
+@Module
+object CorpseMilestoneData {
+    val data: CorpseMilestoneRepoData by SkyBlockPv.repoDelegate("pv/corpse_milestones", CorpseMilestoneRepoData(0, emptyList()))
 
     @GenerateCodec
     data class CorpseMilestoneRepoData(

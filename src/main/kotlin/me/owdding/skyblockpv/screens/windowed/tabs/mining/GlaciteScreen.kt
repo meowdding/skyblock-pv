@@ -77,15 +77,15 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
 
     private fun getFossilWidget(glacite: GlaciteData) = PvWidgets.label(
         title = "Fossils",
-        element = FossilTypes.fossils.map {
-            val unlocked = glacite.fossilsDonated.contains(it.id.split("_").first())
-            val inPetMenu = profile.pets.any { pet -> pet.type == it.pet }
+        element = FossilTypes.fossils.map { (id, fossil) ->
+            val unlocked = glacite.fossilsDonated.contains(id.split("_").first())
+            val inPetMenu = profile.pets.any { pet -> pet.type == fossil.pet }
 
-            val item = if (unlocked) SkyBlockItemsRepo.getItemStackOrDefault(it.id)
+            val item = if (unlocked) SkyBlockItemsRepo.getItemStackOrDefault(id)
             else Items.DYE.gray().defaultInstance
 
             val hover = Text.multiline(
-                Text.of(it.name).apply {
+                Text.of(fossil.name).apply {
                     bold = true
                 },
                 Text.join(
@@ -95,7 +95,7 @@ class GlaciteScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null) 
                 Text.join(
                     Text.of("In Pet Menu: ").withColor(PvColors.GRAY),
                     Text.of(if (inPetMenu) "Yes" else "No").withColor(if (inPetMenu) PvColors.GREEN else PvColors.RED),
-                    if (!inPetMenu) Text.of("§a${it.pet.toTitleCase()}").wrap(" §7(", "§7)") else null,
+                    if (!inPetMenu) Text.of("§a${fossil.pet.toTitleCase()}").wrap(" §7(", "§7)") else null,
                 ),
             )
 

@@ -2,16 +2,14 @@ package me.owdding.skyblockpv.data.api.skills
 
 
 import com.google.gson.JsonObject
+import me.owdding.ktcodecs.GenerateCodec
+import me.owdding.ktmodules.Module
+import me.owdding.skyblockpv.SkyBlockPv
 import me.owdding.skyblockpv.utils.ParseHelper
-import me.owdding.skyblockpv.utils.Utils
-import me.owdding.skyblockpv.utils.codecs.DefaultedData
-import me.owdding.skyblockpv.utils.codecs.LoadData
 import net.minecraft.ChatFormatting
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockItemsRepo
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockPetsRepo
-import tech.thatgravyboat.skyblockapi.utils.extentions.asMap
-import tech.thatgravyboat.skyblockapi.utils.extentions.asString
 
 data class MiningCore(override val json: JsonObject) : ParseHelper {
     val crystals: Map<String, Crystal> by map("crystals") { id, data -> id to Crystal(data.asJsonObject) }
@@ -70,25 +68,21 @@ enum class MiningGear {
     SUSPICIOUS_SCRAP,
     ;
 
-    var list: List<String> = emptyList()
-        private set
+    val list: List<String>
+        get() = data[name.lowercase()].orEmpty()
 
     companion object {
-        init {
-            Utils.loadFromRemoteRepo<Map<String, List<String>>>("pv/gear/mining")?.forEach { (key, value) ->
-                runCatching { valueOf(key.uppercase()).list = value }.onFailure { it.printStackTrace() }
-            }
-        }
+        private val data: Map<String, List<String>> by SkyBlockPv.repoDelegate("pv/gear/mining", emptyMap())
 
-        val cloaks = CLOAKS.list
-        val gloves = GLOVES.list
-        val necklaces = NECKLACES.list
-        val belts = BELTS.list
-        val equipment = listOf(cloaks, gloves, necklaces, belts).flatten()
-        val armor = ARMOR.list
-        val pickaxes = PICKAXES.list
-        val chisels = CHISELS.list
-        val suspicious_scrap = SUSPICIOUS_SCRAP.list
+        val cloaks get() = CLOAKS.list
+        val gloves get() = GLOVES.list
+        val necklaces get() = NECKLACES.list
+        val belts get() = BELTS.list
+        val equipment get() = listOf(cloaks, gloves, necklaces, belts).flatten()
+        val armor get() = ARMOR.list
+        val pickaxes get() = PICKAXES.list
+        val chisels get() = CHISELS.list
+        val suspicious_scrap get() = SUSPICIOUS_SCRAP.list
     }
 }
 
@@ -100,9 +94,7 @@ enum class RockBracket(val oresRequired: Int, val rarity: SkyBlockRarity) {
     LEGENDARY(250000, SkyBlockRarity.LEGENDARY);
 
     companion object {
-        fun getByOres(kills: Int): RockBracket? {
-            return RockBracket.entries.reversed().firstOrNull { it.oresRequired <= kills }
-        }
+        fun getByOres(kills: Int): RockBracket? = entries.lastOrNull { it.oresRequired <= kills }
     }
 }
 
@@ -112,22 +104,14 @@ enum class PowderType(val formatting: ChatFormatting) {
     GLACITE(ChatFormatting.AQUA);
 }
 
-@LoadData
-object FossilTypes : DefaultedData {
+@Module
+object FossilTypes {
 
+    @GenerateCodec
     data class Fossil(
-        val id: String,
-        val name: String,
-        val pet: String,
+        val name: String = "",
+        val pet: String = "",
     )
 
-    var fossils: List<Fossil> = listOf()
-        private set
-
-    override suspend fun load() {
-        Utils.loadFromRemoteRepo<JsonObject>("pv/fossils")?.asMap { id, data ->
-            val obj = data.asJsonObject
-            id to Fossil(id, obj["name"].asString(""), obj["pet"].asString(""))
-        }?.map { it.value }?.let { fossils = it }
-    }
+    val fossils: Map<String, Fossil> by SkyBlockPv.repoDelegate("pv/fossils", emptyMap())
 }
