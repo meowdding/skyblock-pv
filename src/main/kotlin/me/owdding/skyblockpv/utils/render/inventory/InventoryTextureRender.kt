@@ -1,15 +1,18 @@
 package me.owdding.skyblockpv.utils.render.inventory
 
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout
 import com.mojang.renderpearl.api.pipeline.RenderPipeline
 import earth.terrarium.olympus.client.utils.Orientation
 import me.owdding.lib.layouts.ScalableWidget
 import me.owdding.skyblockpv.SkyBlockPv
+import me.owdding.skyblockpv.utils.theme.ThemeSupport
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.util.ARGB
 import org.joml.Matrix3x2f
 import org.joml.Vector2i
+import tech.thatgravyboat.skyblockapi.platform.scale
 import tech.thatgravyboat.skyblockapi.utils.extentions.scaled
-import com.mojang.renderpearl.api.pipeline.BindGroupLayout
 
 object InventoryTextureRender {
 
@@ -54,7 +57,20 @@ object InventoryTextureRender {
         orientation: Orientation,
         color: Int,
     ) {
-        graphics.scaled(1 / ScalableWidget.getCurrentScale(), 1 / ScalableWidget.getCurrentScale()) {
+        graphics.scale(1 / ScalableWidget.getCurrentScale(), 1 / ScalableWidget.getCurrentScale())
+        if (size == 1) {
+            graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                ThemeSupport.texture(SINGULAR_TEXTURE),
+                x, y,
+                0f, 0f,
+                (width * ScalableWidget.getCurrentScale()).toInt(),
+                (height * ScalableWidget.getCurrentScale()).toInt(),
+                (width * ScalableWidget.getCurrentScale()).toInt(),
+                (height * ScalableWidget.getCurrentScale()).toInt(),
+                ARGB.opaque(color),
+            )
+        } else {
             graphics.guiRenderState.addPicturesInPictureState(
                 MonoInventoryPipState(
                     x,
@@ -69,6 +85,7 @@ object InventoryTextureRender {
                 ),
             )
         }
+        graphics.scale(ScalableWidget.getCurrentScale(), ScalableWidget.getCurrentScale())
     }
 
     fun drawInventory(

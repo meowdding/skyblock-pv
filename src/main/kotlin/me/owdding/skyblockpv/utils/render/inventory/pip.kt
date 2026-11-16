@@ -2,6 +2,7 @@ package me.owdding.skyblockpv.utils.render.inventory
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology
 import com.mojang.renderpearl.api.pipeline.RenderPipeline
 import earth.terrarium.olympus.client.pipelines.pips.OlympusPictureInPictureRenderState
 import earth.terrarium.olympus.client.pipelines.renderer.PipelineSubmit
@@ -20,8 +21,8 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import java.util.function.Supplier
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
-import com.mojang.renderpearl.api.pipeline.PrimitiveTopology
 
+val SINGULAR_TEXTURE = SkyBlockPv.id("textures/gui/inventory/singular.png")
 val MONO_TEXTURE = SkyBlockPv.id("textures/gui/inventory/mono.png")
 val POLY_TEXTURE = SkyBlockPv.id("textures/gui/inventory/poly.png")
 

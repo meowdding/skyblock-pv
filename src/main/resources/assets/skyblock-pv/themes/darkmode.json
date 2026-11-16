@@ -3,6 +3,7 @@
     "textures": {
         "skyblock-pv:textures/gui/inventory/poly.png": "skyblock-pv:textures/darkmode/inventory/poly.png",
         "skyblock-pv:textures/gui/inventory/mono.png": "skyblock-pv:textures/darkmode/inventory/mono.png",
+        "skyblock-pv:textures/gui/inventory/singular.png": "skyblock-pv:textures/darkmode/inventory/singular.png",
         "skyblock-pv:buttons/normal": "skyblock-pv:darkmode/buttons/normal",
         "skyblock-pv:buttons/disabled": "skyblock-pv:darkmode/buttons/disabled",
         "skyblock-pv:box/box": "skyblock-pv:darkmode/box/box",
