@@ -24,10 +24,12 @@ import tech.thatgravyboat.skyblockapi.api.data.SkyBlockRarity
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockAttributesRepo
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.builders.TooltipBuilder
+import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.getRawLore
 import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.strikethrough
 import kotlin.math.absoluteValue
@@ -124,17 +126,10 @@ class AttributeScreen(gameProfile: GameProfile, profile: SkyBlockProfile? = null
             if (repo == null) {
                 builder.add("Unknown shard!")
             } else {
-                builder.add {
-                    append(repo.name)
-                    append(" (")
-                    append(repo.shardName)
-                    append(")")
-
-                    color = rarity?.color ?: -1
-                }
-                ListMerger(item?.getRawLore() ?: emptyList()).apply {
-                    addUntil { it.startsWith("You can Syphon this shard") }
-                    skipUntil { it.endsWith("SHARD") }
+                builder.add(repo.shardName, rarity?.color ?: -1)
+                ListMerger(item?.getLore() ?: emptyList()).apply {
+                    addUntil { it.stripped.startsWith("You can Syphon this shard") }
+                    skipUntil { it.stripped.endsWith("SHARD") }
 
                     addRemaining()
                 }.destination.forEach(builder::add)
