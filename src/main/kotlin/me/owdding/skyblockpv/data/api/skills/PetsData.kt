@@ -24,7 +24,7 @@ data class Pet(
     val candyUsed: Int,
     val skin: String?,
 ) {
-    val rarity = SkyBlockRarity.entries.find { it.name == tier } ?: SkyBlockRarity.COMMON
+    val rarity = SkyBlockRarity.fromName(tier)
     val data = PetCodecs.getData(type)
     val cumulativeLevels = data.getCurveForRarity(rarity).toMutableList().also { it.addFirst(0) }.runningFold(0, Int::plus).drop(1)
 
