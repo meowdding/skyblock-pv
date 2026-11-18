@@ -39,8 +39,8 @@ import me.owdding.skyblockpv.data.api.skills.combat.SlayerTypeData
 import me.owdding.skyblockpv.data.api.skills.farming.ChipsData
 import me.owdding.skyblockpv.data.api.skills.farming.FarmingData
 import me.owdding.skyblockpv.data.api.skills.farming.GardenData
-import me.owdding.skyblockpv.data.repo.EssenceData
 import me.owdding.skyblockpv.data.repo.AccessoryPowerCalculator
+import me.owdding.skyblockpv.data.repo.EssenceData
 import me.owdding.skyblockpv.feature.networth.Networth
 import me.owdding.skyblockpv.feature.networth.NetworthCalculator
 import me.owdding.skyblockpv.utils.ChatUtils.sendWithPrefix
@@ -401,7 +401,10 @@ data class BackingSkyBlockProfile(
             this["slayer_bosses"].asMap { n, e -> n to SlayerTypeData.fromJson(e.asJsonObject) }.sortToSlayerOrder()
 
         private fun JsonObject?.parseEssencePerks(): Map<String, Int> {
-            val perks = this?.asMap { id, amount -> id to amount.asInt(0) } ?: emptyMap()
+            val perks = this?.asMap { id, amount -> id to amount }?.mapNotNull { (id, element) ->
+                if (element.isJsonPrimitive && element.asJsonPrimitive.isNumber) id to element.asInt(0)
+                else null
+            }?.toMap() ?: emptyMap()
 
             // perks that are unlocked but not in the repo:
             val unknownPerks = perks.keys - EssenceData.perks.values.flatMapTo(mutableSetOf()) { it.keys }
