@@ -7,6 +7,7 @@ import me.owdding.lib.displays.withTooltip
 import me.owdding.lib.rendering.text.textShader
 import me.owdding.skyblockpv.api.pronouns.PronounDbDecorations
 import me.owdding.skyblockpv.api.pronouns.PronounsDbAPI
+import me.owdding.skyblockpv.config.Config
 import me.owdding.skyblockpv.utils.Utils.asTranslated
 import me.owdding.skyblockpv.utils.Utils.unaryPlus
 import me.owdding.skyblockpv.utils.displays.ExtraDisplays
@@ -24,10 +25,9 @@ object PronounWidget {
                     1 -> "${pronouns.first().first}/${pronouns.first().second}"
                     else -> pronouns.fold("") { acc, set -> if (acc.isEmpty()) set.first else "$acc/${set.first}" }
                 }
-                val shader = PronounDbDecorations.getShader(decoration ?: "")
                 ExtraDisplays.component(
                     component = "widgets.pronouns".asTranslated(display).apply {
-                        textShader = shader
+                        if (Config.showPronounsDecoration) textShader = PronounDbDecorations.getShader(decoration ?: "")
                     },
                     color = { PvColors.DARK_GRAY.toUInt() or 0xFF000000u },
                     shadow = false,

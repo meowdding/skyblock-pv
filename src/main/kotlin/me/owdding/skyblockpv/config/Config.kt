@@ -45,6 +45,7 @@ object Config : ConfigKt("skyblockpv/config"), AutoTranslated {
     var currency by autoEnum(ConfigCurrency.USD)
     var alignCategoryButtonsLeft by autoBoolean(true)
     var showPronouns by autoBoolean(true)
+    var showPronounsDecoration by autoBoolean(true)
     var partyFinderMessage by autoEnum(PartyFinderJoin.State.OPEN_PV)
     var disableOutsideHypixel by autoBoolean(false)
     var skillOverflow by autoBoolean(false)

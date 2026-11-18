@@ -119,6 +119,10 @@
             "@value": "Show Pronouns",
             "desc": "Show the pronouns of the player in the profile viewer if available. (Loaded from pronoundb.org)"
         },
+        "show_pronouns_decoration": {
+            "@value": "Show Pronouns Decoration",
+            "desc": "Shows the decoration as a gradient in the pronouns field."
+        },
         "party_finder_message": {
             "@value": "Party Finder Message",
             "desc": "Shows a breakdown of the joined player's profile in chat, giving you a quick overview.",
