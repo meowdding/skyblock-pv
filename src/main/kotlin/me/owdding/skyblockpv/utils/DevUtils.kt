@@ -35,7 +35,7 @@ internal inline fun <reified T : Enum<T>> debugSelect(
 
 @Module
 internal data object SkyblockPvDevUtils : DevUtils() {
-    override val commandName: String = "sbpv toggle"
+    override val commandName: String = "sbpv dev toggle"
     override val namespace: String = SkyBlockPv.MOD_ID
     override val path: Path = loadPath()
     val propertiesMap: Map<String, String> = loadFromProperties(path)
